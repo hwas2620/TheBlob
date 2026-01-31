@@ -20,8 +20,11 @@ void main() {
     float threshold = {{FADE_START}};
     float maxValue = {{MAX_VALUE}};
 
-    // ── 3x3 이웃 평균 → 고립 점 무시, 밀집 영역만 막 형성 ──
-    vec2 texel = {{DILATE_RADIUS}} / u_mapSize;
+    // ── 줌 레벨에 따른 동적 샘플링 반경 ──
+    // 줌 아웃 시 뷰포트가 맵보다 커지므로 더 넓은 영역 샘플링 필요
+    float zoomFactor = max(1.0, max(u_viewportSize.x / u_mapSize.x, u_viewportSize.y / u_mapSize.y));
+    float sampleRadius = {{DILATE_RADIUS}} * zoomFactor;
+    vec2 texel = sampleRadius / u_mapSize;
     float neighborSum = 0.0;
     for (int dy = -1; dy <= 1; dy++) {
         for (int dx = -1; dx <= 1; dx++) {
@@ -34,17 +37,23 @@ void main() {
     // 본체 판정: 이웃 평균 기준 (에이전트 밀집도)
     float bodyThreshold = 25.0;  // 본체: 에이전트가 많이 모인 곳
 
+    // 줌 아웃 시 임계값 낮춤 (넓은 영역 평균화로 값이 낮아지므로)
+    float adjustedThreshold = threshold / zoomFactor;
+
     // 최소 임계값 미만이면 투명
-    if (avgVal < threshold) {
+    if (avgVal < adjustedThreshold) {
         fragColor = vec4(0.0);
         return;
     }
 
-    if (avgVal >= bodyThreshold) {
+    // 줌 아웃 시 bodyThreshold도 조정
+    float adjustedBodyThreshold = bodyThreshold / zoomFactor;
+
+    if (avgVal >= adjustedBodyThreshold) {
         // ── 본체: 에이전트가 밀집한 활성 영역 ──
         // 선명한 경계를 위해 가파른 smoothstep
-        float alpha = smoothstep(bodyThreshold * 0.95, bodyThreshold * 1.1, avgVal);
-        float densityT = clamp((value - bodyThreshold) / (maxValue - bodyThreshold), 0.0, 1.0);
+        float alpha = smoothstep(adjustedBodyThreshold * 0.95, adjustedBodyThreshold * 1.1, avgVal);
+        float densityT = clamp((value - adjustedBodyThreshold) / (maxValue - adjustedBodyThreshold), 0.0, 1.0);
 
         vec3 baseColor = u_isDormant
             ? vec3({{DORMANT_BASE_R}}, {{DORMANT_BASE_G}}, {{DORMANT_BASE_B}})
@@ -58,7 +67,7 @@ void main() {
     } else {
         // ── 점액 흔적: 에이전트가 지나갔지만 떠난 영역 ──
         // 매우 얇고 투명한 막
-        float trailAlpha = smoothstep(threshold, bodyThreshold * 0.6, avgVal) * 0.06;
+        float trailAlpha = smoothstep(adjustedThreshold, adjustedBodyThreshold * 0.6, avgVal) * 0.06;
         vec3 trailColor = u_isDormant
             ? vec3(0.20, 0.16, 0.10)  // 휴면: 어두운 갈색
             : vec3(0.45, 0.40, 0.15);  // 활성: 연한 갈색

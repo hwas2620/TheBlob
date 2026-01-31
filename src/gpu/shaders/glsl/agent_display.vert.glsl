@@ -7,6 +7,7 @@ uniform vec2 u_viewportSize;
 uniform vec2 u_camera;
 uniform int u_agentCount;
 uniform int u_texWidth;
+uniform int u_instanceOffset;  // 인스턴스별 오프셋 (0~8)
 
 void main() {
     int agentIdx = gl_VertexID;
@@ -27,15 +28,31 @@ void main() {
         return;
     }
 
-    // 월드 좌표 → 스크린 좌표 (블롭 본체와 동일한 변환)
+    // 인스턴스 오프셋 계산 (3x3 그리드: -1, 0, +1)
+    int ox = u_instanceOffset % 3 - 1;  // -1, 0, 1
+    int oy = u_instanceOffset / 3 - 1;  // -1, 0, 1
+
+    // 월드 좌표 → 스크린 좌표
     vec2 worldPos = state.xy;
     vec2 screenPos = worldPos - u_camera;
 
-    // 토러스 래핑: mod로 [0, mapSize) 범위로 정규화
-    screenPos.x = mod(screenPos.x, u_mapSize.x);
-    screenPos.y = mod(screenPos.y, u_mapSize.y);
+    // 토러스 래핑: [0, mapSize) 범위로 정규화
+    screenPos.x = screenPos.x - u_mapSize.x * floor(screenPos.x / u_mapSize.x);
+    screenPos.y = screenPos.y - u_mapSize.y * floor(screenPos.y / u_mapSize.y);
 
-    // 스크린 좌표 → 클립 좌표 (블롭 본체와 동일)
+    // 인스턴스 오프셋 적용 (맵 반복 위치)
+    screenPos.x += float(ox) * u_mapSize.x;
+    screenPos.y += float(oy) * u_mapSize.y;
+
+    // 뷰포트 밖이면 클리핑
+    if (screenPos.x < 0.0 || screenPos.x >= u_viewportSize.x ||
+        screenPos.y < 0.0 || screenPos.y >= u_viewportSize.y) {
+        gl_Position = vec4(2.0, 2.0, 0.0, 1.0);
+        gl_PointSize = 0.0;
+        return;
+    }
+
+    // 스크린 좌표 → 클립 좌표
     vec2 clipPos = (screenPos / u_viewportSize) * 2.0 - 1.0;
     gl_Position = vec4(clipPos.x, -clipPos.y, 0.0, 1.0);
     gl_PointSize = 1.0;

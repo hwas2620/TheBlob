@@ -42,6 +42,7 @@ export class SceneRenderer {
     camera: WebGLUniformLocation | null;
     agentCount: WebGLUniformLocation | null;
     texWidth: WebGLUniformLocation | null;
+    instanceOffset: WebGLUniformLocation | null;
   };
 
   // 풀스크린 쿼드 VAO
@@ -82,6 +83,7 @@ export class SceneRenderer {
       camera: gl.getUniformLocation(this.agentDisplayProgram, 'u_camera'),
       agentCount: gl.getUniformLocation(this.agentDisplayProgram, 'u_agentCount'),
       texWidth: gl.getUniformLocation(this.agentDisplayProgram, 'u_texWidth'),
+      instanceOffset: gl.getUniformLocation(this.agentDisplayProgram, 'u_instanceOffset'),
     };
 
     // 어트랙터 텍스처
@@ -281,7 +283,7 @@ export class SceneRenderer {
     gl.bindVertexArray(null);
   }
 
-  // 에이전트 렌더링 (GL_POINTS)
+  // 에이전트 렌더링 (GL_POINTS, 토러스 반복용 9x 렌더링)
   private renderAgents(
     agentTexture: WebGLTexture,
     camera: { x: number; y: number },
@@ -303,8 +305,17 @@ export class SceneRenderer {
     gl.uniform1i(this.agentDisplayUniforms.agentCount, agentCount);
     gl.uniform1i(this.agentDisplayUniforms.texWidth, AGENT_TEX.WIDTH);
 
-    // VAO 없이 gl_VertexID 사용
-    gl.drawArrays(gl.POINTS, 0, agentCount);
+    // 토러스 맵 반복을 위해 3x3 그리드로 렌더링 (총 9번)
+    // 뷰포트가 맵보다 작으면 중앙(인스턴스 4)만 렌더링
+    const needsRepeat = viewportWidth > mapSize.width || viewportHeight > mapSize.height;
+    const instanceCount = needsRepeat ? 9 : 1;
+    const startInstance = needsRepeat ? 0 : 4; // 중앙 = 인스턴스 4 (1*3+1)
+
+    for (let i = 0; i < instanceCount; i++) {
+      const instance = needsRepeat ? i : startInstance;
+      gl.uniform1i(this.agentDisplayUniforms.instanceOffset, instance);
+      gl.drawArrays(gl.POINTS, 0, agentCount);
+    }
   }
 
   private createQuadVAO(): WebGLVertexArrayObject {

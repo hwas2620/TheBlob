@@ -93,7 +93,7 @@ export class TrailMapGPU {
     // GL_REPEAT으로 토러스 래핑 자동 처리
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-    // NEAREST: 정확한 텍셀 읽기 (블러는 셰이더에서 직접)
+    // NEAREST: R32F 텍스처는 LINEAR 필터 미지원 가능
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.bindTexture(gl.TEXTURE_2D, null);

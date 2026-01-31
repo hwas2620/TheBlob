@@ -14,8 +14,11 @@ void main() {
     vec2 worldPos = mod(u_camera + screenPos, u_mapSize);
     vec2 trailUV = worldPos / u_mapSize;
 
+    // 줌 레벨에 따른 동적 샘플링
+    float zoomFactor = max(1.0, max(u_viewportSize.x / u_mapSize.x, u_viewportSize.y / u_mapSize.y));
+
     // 블록 영역 평균 (5x5 샘플링으로 근사)
-    float step_ = {{SAMPLE_STEP}};
+    float step_ = {{SAMPLE_STEP}} * zoomFactor;
     float sum = 0.0;
     for (int dy = -2; dy <= 2; dy++) {
         for (int dx = -2; dx <= 2; dx++) {

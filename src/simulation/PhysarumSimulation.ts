@@ -3,7 +3,7 @@
 
 import { TrailMapGPU } from '../gpu/TrailMapGPU';
 import { AgentGPU } from '../gpu/AgentGPU';
-import { MAP, AGENT, ATTRACTION, CONNECTIVITY, BLOB_BODY, VEINS, PHEROMONE, CUBIC_GLOW, NUCLEUS, MINIMAP, AGENT_TEX } from '../config';
+import { MAP, AGENT, ATTRACTION, BLOB_BODY, VEINS, PHEROMONE, CUBIC_GLOW, NUCLEUS, MINIMAP, AGENT_TEX } from '../config';
 
 export interface SimulationConfig {
   width: number;
@@ -331,7 +331,8 @@ export class PhysarumSimulation {
     }
   }
 
-  // 에이전트 업데이트
+  // 에이전트 업데이트 - Jeff Jones 알고리즘 + 충돌 감지
+  // "at most one particle in each grid square" (논문)
   private updateAgents(pulseDeposit?: number, pulseSpeed?: number) {
     const {
       width,
@@ -341,133 +342,69 @@ export class PhysarumSimulation {
     } = this.config;
     const moveSpeed = pulseSpeed ?? this.config.moveSpeed;
     const depositAmount = pulseDeposit ?? this.config.depositAmount;
+    const densityThreshold = 50; // 과밀 임계값
 
     for (const agent of this.agents) {
-      // === 직접 유인력 체크 (가까운 에이전트만 - 촉수 형성 유지) ===
-      let directAttraction = false;
-      let closestAttractor: Attractor | null = null;
-      let closestDist = Infinity;
+      // 현재 위치의 페로몬 (밀도 체크)
+      const curIdx = Math.floor(agent.y) * width + Math.floor(agent.x);
+      const currentTrail = this.trailMap[curIdx] || 0;
 
-      for (const attractor of this.attractors) {
-        const dx = attractor.x - agent.x;
-        const dy = attractor.y - agent.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+      // === SENSE ===
+      const frontSense = this.sense(agent.x, agent.y, agent.angle, sensorDistance);
+      const leftSense = this.sense(agent.x, agent.y, agent.angle - sensorAngle, sensorDistance);
+      const rightSense = this.sense(agent.x, agent.y, agent.angle + sensorAngle, sensorDistance);
 
-        if (dist < closestDist) {
-          closestDist = dist;
-          closestAttractor = attractor;
-        }
-      }
+      // === COLLISION DETECTION (밀도 기반) ===
+      const isOvercrowded = currentTrail > densityThreshold;
 
-      // 가까울 때만 직접 유인 (멀면 페로몬 따라가게)
-      if (closestAttractor && closestDist > ATTRACTION.DIRECT_MIN_DIST && closestDist < ATTRACTION.DIRECT_MAX_DIST) {
-        const dx = closestAttractor.x - agent.x;
-        const dy = closestAttractor.y - agent.y;
-        const targetAngle = Math.atan2(dy, dx);
-        let angleDiff = targetAngle - agent.angle;
-
-        // 각도 정규화 (-PI ~ PI)
-        while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-        while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
-
-        // 거리 기반 강도 (가까울수록 강하게)
-        const strength = (1 - closestDist / ATTRACTION.DIRECT_MAX_DIST) * ATTRACTION.STRENGTH;
-        agent.angle += angleDiff * strength;
-        directAttraction = true;
-      }
-
-      // === SENSE (기존 Jeff Jones 알고리즘) ===
-      // 3개의 센서로 페로몬 밀도 측정
-      const frontSense = this.sense(
-        agent.x,
-        agent.y,
-        agent.angle,
-        sensorDistance,
-      );
-      const leftSense = this.sense(
-        agent.x,
-        agent.y,
-        agent.angle - sensorAngle,
-        sensorDistance,
-      );
-      const rightSense = this.sense(
-        agent.x,
-        agent.y,
-        agent.angle + sensorAngle,
-        sensorDistance,
-      );
-
-      // === ROTATE (직접 유인이 없을 때만 페로몬 기반 회전) ===
-      if (!directAttraction) {
-        if (frontSense > leftSense && frontSense > rightSense) {
-          // 앞이 가장 강함 - 직진
-        } else if (frontSense < leftSense && frontSense < rightSense) {
-          // 앞이 가장 약함 - 랜덤하게 좌우 회전
-          agent.angle += (Math.random() > 0.5 ? 1 : -1) * turnSpeed;
-        } else if (leftSense > rightSense) {
-          // 왼쪽이 강함 - 왼쪽으로
+      if (isOvercrowded) {
+        // 과밀 상태: 페로몬이 가장 낮은 방향으로 탈출
+        if (frontSense <= leftSense && frontSense <= rightSense) {
+          // 앞이 가장 낮음 → 직진 (탈출)
+        } else if (leftSense < rightSense) {
           agent.angle -= turnSpeed;
-        } else if (rightSense > leftSense) {
-          // 오른쪽이 강함 - 오른쪽으로
+        } else {
           agent.angle += turnSpeed;
         }
+      } else {
+        // === ROTATE (일반 Jeff Jones) ===
+        if (frontSense > leftSense && frontSense > rightSense) {
+          // Case 1: 전방이 가장 강함 → 직진
+        } else if (frontSense < leftSense && frontSense < rightSense) {
+          // Case 2: 전방이 가장 약함 → 랜덤 좌/우
+          agent.angle += (Math.random() > 0.5 ? 1 : -1) * turnSpeed;
+        } else if (leftSense > rightSense) {
+          // Case 3: 좌측이 더 강함 → 좌회전
+          agent.angle -= turnSpeed;
+        } else if (rightSense > leftSense) {
+          // Case 4: 우측이 더 강함 → 우회전
+          agent.angle += turnSpeed;
+        }
+        // Case 5: 모두 동일 → 직진
       }
 
-      // 약간의 랜덤 회전 (탐색 행동) - 직접 유인 시 약하게
-      agent.angle += (Math.random() - 0.5) * (directAttraction ? CONNECTIVITY.JITTER_ATTRACTED : CONNECTIVITY.JITTER_FREE);
+      // === MOVE ===
+      const newX = this.wrapX(agent.x + Math.cos(agent.angle) * moveSpeed);
+      const newY = this.wrapY(agent.y + Math.sin(agent.angle) * moveSpeed);
+      const targetIdx = Math.floor(newY) * width + Math.floor(newX);
+      const targetTrail = this.trailMap[targetIdx] || 0;
 
-      // === CONNECTIVITY (물리적 연속성 보장) ===
-      // 실제 점균류는 단일 유기체이므로 끊어지면 안 됨
-      // 현재 위치의 trail이 낮으면 → 고립된 상태 → 고밀도 방향으로 회귀
-      // 단, 근처에 먹이가 없으면 탐색을 위해 복귀 강도를 약화
-      const curIdx = Math.floor(agent.y) * width + Math.floor(agent.x);
-      const curTrail = this.trailMap[curIdx] || 0;
-
-      // 먹이 근처 여부에 따라 연결성 강도 조절
-      const hasNearbyFood = closestDist < ATTRACTION.RADIUS;
-      const connectivityMult = hasNearbyFood ? 1.0 : 0.5;
-
-      if (curTrail < CONNECTIVITY.ISOLATION_THRESHOLD && !directAttraction) {
-        // 고립됨: 여러 거리에서 trail 탐색
-        let bestTrail = 0;
-        let bestAngle = agent.angle;
-
-        for (const searchDist of CONNECTIVITY.SEARCH_DISTANCES) {
-          for (let i = 0; i < CONNECTIVITY.SEARCH_DIRECTIONS; i++) {
-            const a = (i / CONNECTIVITY.SEARCH_DIRECTIONS) * Math.PI * 2;
-            const sx = Math.floor(this.wrapX(agent.x + Math.cos(a) * searchDist));
-            const sy = Math.floor(this.wrapY(agent.y + Math.sin(a) * searchDist));
-            const trail = this.trailMap[sy * width + sx];
-            if (trail > bestTrail) {
-              bestTrail = trail;
-              bestAngle = a;
-            }
-          }
-        }
-
-        if (bestTrail > CONNECTIVITY.RECOVERY_TRAIL_MIN) {
-          // 고밀도 방향으로 회전 (먹이 없으면 약하게 → 탐색 허용)
-          let angleDiff = bestAngle - agent.angle;
-          while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-          while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
-          const baseStrength = curTrail < 2 ? CONNECTIVITY.STRENGTH_SEVERE : CONNECTIVITY.STRENGTH_MILD;
-          agent.angle += angleDiff * baseStrength * connectivityMult;
-        }
+      // 과밀 상태면 무조건 이동 (탈출), 아니면 충돌 감지
+      if (isOvercrowded || targetTrail < densityThreshold * 1.5) {
+        agent.x = newX;
+        agent.y = newY;
+      } else {
+        // 이동 실패: 랜덤 회전
+        agent.angle += (Math.random() - 0.5) * Math.PI;
       }
-
-      // === MOVE (토러스 래핑 - 구체처럼 가장자리 연결) ===
-      agent.x = this.wrapX(agent.x + Math.cos(agent.angle) * moveSpeed);
-      agent.y = this.wrapY(agent.y + Math.sin(agent.angle) * moveSpeed);
 
       // === DEPOSIT ===
       const ix = Math.floor(agent.x);
       const iy = Math.floor(agent.y);
       const idx = iy * width + ix;
       if (this.gpuEnabled) {
-        // GPU 모드: depositBuffer에 누적 (나중에 GPU에서 블렌드)
         this.depositBuffer[idx] = Math.min(255, this.depositBuffer[idx] + depositAmount);
       } else {
-        // CPU 모드: 직접 trailMap에 기록
         this.trailMap[idx] = Math.min(255, this.trailMap[idx] + depositAmount);
       }
     }

@@ -4,7 +4,7 @@ import type { Vector2, WaterDrop, WaterRipple } from '../types/game';
 import { GAME_CONFIG } from '../types/game';
 import { PhysarumSimulation, MAP_WIDTH, MAP_HEIGHT } from '../simulation/PhysarumSimulation';
 import { SceneRenderer } from '../gpu/SceneRenderer';
-import { ZOOM, GAME, WATER_EFFECT, SPORULATION, UI, FRAGMENT } from '../config';
+import { ZOOM, GAME, WATER_EFFECT, SPORULATION, UI, FRAGMENT, ATTRACTION } from '../config';
 import { TEXT, formatText } from '../text';
 
 // Utility functions
@@ -423,8 +423,8 @@ function updateGrowingPhase(
         const n = unharvested[idx];
         const tierStrength = GAME.TIER_SMELL_STRENGTH[n.tier - 1];
         const strength = (n.value / n.maxValue) * tierStrength;
-        // 페로몬 강도 대폭 증가 (에이전트 트레일보다 강하게)
-        simulation.injectPheromone(n.position.x, n.position.y, strength * 2000);
+        // 페로몬 주입: 집중된 소스로 급한 구배 형성
+        simulation.injectPheromone(n.position.x, n.position.y, strength * ATTRACTION.PHEROMONE_INJECT_AMOUNT);
       }
       pheromoneInjectIndex = (pheromoneInjectIndex + batchSize) % unharvested.length;
     }

@@ -18,16 +18,18 @@ void main() {
 
     float value = texture(u_trailMap, trailUV).r;
 
-    float veinMin = {{VEIN_MIN}};
+    // 줌 레벨 계산
+    float zoomFactor = max(1.0, max(u_viewportSize.x / u_mapSize.x, u_viewportSize.y / u_mapSize.y));
+
+    // 줌 아웃 시 임계값 조정
+    float veinMin = {{VEIN_MIN}} / zoomFactor;
     float veinMax = {{VEIN_MAX}};
 
     if (value < veinMin) {
         fragColor = vec4(0.0);
         return;
     }
-
-    // 이웃 4방향 샘플링
-    vec2 texel = {{STEP}} / u_mapSize;
+    vec2 texel = ({{STEP}} * zoomFactor) / u_mapSize;
     float right = texture(u_trailMap, fract(trailUV + vec2(texel.x, 0.0))).r;
     float up    = texture(u_trailMap, fract(trailUV + vec2(0.0, texel.y))).r;
     float left  = texture(u_trailMap, fract(trailUV - vec2(texel.x, 0.0))).r;

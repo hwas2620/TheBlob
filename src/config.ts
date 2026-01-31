@@ -28,15 +28,18 @@ export const AGENT = {
 } as const;
 
 // ── 에이전트 유인(Attraction) ────────────────────────────────
+// 순수 Jeff Jones: 직접 유인 없음, 페로몬으로만 간접 유도
 export const ATTRACTION = {
-  RADIUS: 300,             // 어트랙터 감지 범위
-  DIRECT_MIN_DIST: 5,     // 직접 유인 최소 거리
-  DIRECT_MAX_DIST: 150,   // 직접 유인 최대 거리 (240→150: 탐험 증가)
-  STRENGTH: 0.25,          // 유인 강도 계수 (0.35→0.25: 탐험 증가)
-  PHEROMONE_INJECT_RADIUS: 180, // 페로몬 주입 반경 (넓은 구배로 원거리 유도)
-  // 포화 기반 탐험 (밀집 지역에서 탐험 유도)
-  SATURATION_THRESHOLD: 40,  // 이 트레일값 이상이면 "포화" 상태
-  SATURATION_EXPLORE_CHANCE: 0.6, // 포화 시 유인 무시 확률 (60%)
+  RADIUS: 300,             // 어트랙터 감지 범위 (게임 로직용)
+  DIRECT_MIN_DIST: 5,     // (미사용 - 순수 Jeff Jones)
+  DIRECT_MAX_DIST: 150,   // (미사용 - 순수 Jeff Jones)
+  STRENGTH: 0.25,          // (미사용 - 순수 Jeff Jones)
+  // 페로몬 주입: 넓은 구배로 원거리 유도
+  PHEROMONE_INJECT_RADIUS: 120, // 페로몬 주입 반경 (넓게 = 멀리서도 감지)
+  PHEROMONE_INJECT_AMOUNT: 8000, // 페로몬 주입량 (강하게)
+  // (미사용)
+  SATURATION_THRESHOLD: 40,
+  SATURATION_EXPLORE_CHANCE: 0.6,
 } as const;
 
 // ── 에이전트 연결성(Connectivity) ────────────────────────────
