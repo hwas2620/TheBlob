@@ -1,6 +1,10 @@
 // Jeff Jones Agent-Based Physarum Simulation
 // Based on "Characteristics of Pattern Formation and Evolution in Approximations of Physarum Transport Networks"
 
+import { TrailMapGPU } from '../gpu/TrailMapGPU';
+import { AgentGPU } from '../gpu/AgentGPU';
+import { MAP, AGENT, ATTRACTION, CONNECTIVITY, BLOB_BODY, VEINS, PHEROMONE, CUBIC_GLOW, NUCLEUS, MINIMAP, AGENT_TEX } from '../config';
+
 export interface SimulationConfig {
   width: number;
   height: number;
@@ -15,20 +19,20 @@ export interface SimulationConfig {
 }
 
 // 맵 크기 상수 (고정 - 윈도우 리사이즈에 영향 안받음)
-export const MAP_WIDTH = 1500;
-export const MAP_HEIGHT = 1500;
+export const MAP_WIDTH = MAP.WIDTH;
+export const MAP_HEIGHT = MAP.HEIGHT;
 
 const DEFAULT_CONFIG: SimulationConfig = {
   width: MAP_WIDTH,
   height: MAP_HEIGHT,
-  agentCount: 5000, // 1500x1500 맵
-  sensorAngle: Math.PI / 8, // 22.5도 (논문 표준 SA)
-  sensorDistance: 9, // 논문 표준 SO
-  turnSpeed: Math.PI / 4, // 45도 (논문 표준 RA)
-  moveSpeed: 1, // 논문 표준 SS (1px/step)
-  depositAmount: 5, // 논문 표준 depT
-  decayFactor: 0.9, // 논문 표준 (트레일 빠르게 사라짐 → 응집력 유지)
-  diffuseStrength: 1,
+  agentCount: AGENT.COUNT,
+  sensorAngle: AGENT.SENSOR_ANGLE,
+  sensorDistance: AGENT.SENSOR_DISTANCE,
+  turnSpeed: AGENT.TURN_SPEED,
+  moveSpeed: AGENT.MOVE_SPEED,
+  depositAmount: AGENT.DEPOSIT_AMOUNT,
+  decayFactor: AGENT.DECAY_FACTOR,
+  diffuseStrength: AGENT.DIFFUSE_STRENGTH,
 };
 
 // 에이전트 (파티클)
@@ -51,12 +55,21 @@ export class PhysarumSimulation {
   private agents: Agent[] = [];
   private trailMap: Float32Array; // 페로몬 맵 (시뮬레이션용 - 음식 포함)
   private trailMapTemp: Float32Array; // 페로몬 맵 (버퍼)
-  private visualMap: Float32Array; // 시각화 맵 (에이전트만 - 렌더링용)
+  // visualMap 제거됨 (GPU 렌더링으로 이전)
   private isDormant: boolean = false;
   private nucleusX: number;
   private nucleusY: number;
   private attractors: Attractor[] = []; // 음식 위치 - 직접 유인
   private showCubic: boolean = false; // 큐빅(그리드 글로우) 표시 여부
+  private showParticles: boolean = false; // 알갱이(파티클) 표시 여부
+  private stepCount = 0; // 맥동 카운터
+
+  // GPU 가속
+  private gpu: TrailMapGPU | null = null;        // Phase 1: 트레일맵
+  private agentGPU: AgentGPU | null = null;      // Phase 3: 에이전트
+  private depositBuffer: Float32Array;             // 에이전트 분비물 버퍼
+  private gpuEnabled = false;
+  private agentGPUEnabled = false;
 
   constructor(config: Partial<SimulationConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
@@ -64,7 +77,7 @@ export class PhysarumSimulation {
     this.trailMapTemp = new Float32Array(
       this.config.width * this.config.height,
     );
-    this.visualMap = new Float32Array(this.config.width * this.config.height);
+    this.depositBuffer = new Float32Array(this.config.width * this.config.height);
     this.nucleusX = this.config.width / 2;
     this.nucleusY = this.config.height / 2;
     this.initAgents();
@@ -76,7 +89,7 @@ export class PhysarumSimulation {
     const { agentCount, width, height } = this.config;
     const centerX = width / 2;
     const centerY = height / 2;
-    const spawnRadius = 30;
+    const spawnRadius = AGENT.SPAWN_RADIUS;
 
     for (let i = 0; i < agentCount; i++) {
       // 원형 분포로 스폰
@@ -121,11 +134,78 @@ export class PhysarumSimulation {
     return this.showCubic;
   }
 
+  // 파티클 표시 토글
+  setShowParticles(show: boolean) {
+    this.showParticles = show;
+  }
+
+  getShowParticles(): boolean {
+    return this.showParticles;
+  }
+
+  // GPU 초기화 (WebGL2 컨텍스트 전달)
+  initGPU(gl: WebGL2RenderingContext): boolean {
+    try {
+      // Phase 1: 트레일맵 GPU 처리
+      this.gpu = new TrailMapGPU(gl, this.config.width, this.config.height);
+      this.gpu.uploadTrailMap(this.trailMap);
+      this.gpuEnabled = true;
+      console.log('GPU 트레일맵 처리 활성화');
+
+      // Phase 3: 에이전트 GPU 처리
+      try {
+        this.agentGPU = new AgentGPU(gl, this.config.width, this.config.height);
+        this.agentGPU.uploadAgents(this.agents);
+        this.agentGPUEnabled = true;
+        console.log('GPU 에이전트 처리 활성화');
+      } catch (e2) {
+        console.warn('GPU 에이전트 초기화 실패, CPU 폴백:', e2);
+        this.agentGPU = null;
+        this.agentGPUEnabled = false;
+      }
+
+      return true;
+    } catch (e) {
+      console.warn('GPU 초기화 실패, CPU 폴백:', e);
+      this.gpu = null;
+      this.gpuEnabled = false;
+      return false;
+    }
+  }
+
+  isGPUEnabled(): boolean {
+    return this.gpuEnabled;
+  }
+
+  // 현재 GPU 트레일 텍스처 반환 (렌더링용)
+  getCurrentTrailTexture(): WebGLTexture | null {
+    return this.gpu ? this.gpu.getCurrentTrailTexture() : null;
+  }
+
+  // GPU → CPU 동기화 (프레임당 1회)
+  syncTrailMapFromGPU() {
+    if (this.gpu) {
+      this.gpu.readTrailMap(this.trailMap);
+    }
+    if (this.agentGPU) {
+      this.agentGPU.readbackAgents();
+    }
+  }
+
+  // GPU 에이전트 어트랙터 업데이트
+  syncAttractorsToAgentGPU() {
+    if (this.agentGPU) {
+      this.agentGPU.updateAttractors(
+        this.attractors.map(a => ({ x: a.x, y: a.y, strength: a.strength }))
+      );
+    }
+  }
+
   // 유인점(음식) 설정 - 매 프레임 갱신
   setAttractors(attractors: Array<{ x: number; y: number; strength: number }>) {
     this.attractors = attractors.map((a) => ({
       ...a,
-      radius: 300, // 유인 범위 (넓게 - 다른 먹이 감지용)
+      radius: ATTRACTION.RADIUS, // 유인 범위 (넓게 - 다른 먹이 감지용)
     }));
   }
 
@@ -139,7 +219,7 @@ export class PhysarumSimulation {
     const { width, height } = this.config;
     const ix = Math.floor(x);
     const iy = Math.floor(y);
-    const radius = 50; // 넓은 범위로 멀리까지 신호 전달
+    const radius = ATTRACTION.PHEROMONE_INJECT_RADIUS;
 
     for (let dy = -radius; dy <= radius; dy++) {
       for (let dx = -radius; dx <= radius; dx++) {
@@ -154,7 +234,11 @@ export class PhysarumSimulation {
           const idx = py * width + px;
           const newValue = amount * falloff;
           // 누적 대신 최댓값만 유지 (프레임 누적 방지)
-          this.trailMap[idx] = Math.max(this.trailMap[idx], newValue);
+          if (this.gpuEnabled) {
+            this.depositBuffer[idx] = Math.max(this.depositBuffer[idx], newValue);
+          } else {
+            this.trailMap[idx] = Math.max(this.trailMap[idx], newValue);
+          }
         }
       }
     }
@@ -162,6 +246,12 @@ export class PhysarumSimulation {
 
   // 특정 위치의 파티클 밀도 확인
   getParticleDensity(x: number, y: number, radius: number = 20): number {
+    // GPU 모드: 리드백 데이터에서 계산
+    if (this.agentGPUEnabled && this.agentGPU) {
+      return this.agentGPU.getParticleDensity(x, y, radius);
+    }
+
+    // CPU 모드
     let count = 0;
     const r2 = radius * radius;
 
@@ -180,29 +270,77 @@ export class PhysarumSimulation {
   update() {
     if (this.isDormant) {
       // 휴면 상태: 느린 감쇠만
-      this.decayTrailMap(0.98);
+      if (this.gpuEnabled && this.gpu) {
+        this.gpu.runDiffuseDecay(AGENT.DECAY_FACTOR_DORMANT);
+      } else {
+        this.decayTrailMap(AGENT.DECAY_FACTOR_DORMANT);
+      }
       return;
     }
 
-    // 1. 에이전트 업데이트 (Sense → Rotate → Move → Deposit)
-    this.updateAgents();
+    // 맥동: deposit과 speed를 사인파로 변조 (주기 ~3초 @60fps)
+    this.stepCount++;
+    const pulse = Math.sin(this.stepCount * 0.035); // 주기 ≈ 180스텝 ≈ 3초
+    const depositPulse = this.config.depositAmount * (1.0 + pulse * 0.4); // ±40%
+    const speedPulse = this.config.moveSpeed * (1.0 + pulse * 0.2); // ±20%
 
-    // 2. 환경 업데이트 (Diffuse → Decay)
-    this.diffuseTrailMap();
-    this.decayTrailMap(this.config.decayFactor);
+    if (this.agentGPUEnabled && this.agentGPU && this.gpu) {
+      // === 전체 GPU 경로 (Phase 1+3) ===
+      const trailTex = this.gpu.getCurrentTrailTexture();
+
+      // 1. GPU 에이전트 업데이트 (Jeff Jones 알고리즘 — 직접 유인 없음)
+      this.agentGPU.runUpdate(
+        trailTex,
+        {
+          sensorAngle: this.config.sensorAngle,
+          sensorDistance: this.config.sensorDistance,
+          turnSpeed: this.config.turnSpeed,
+          moveSpeed: speedPulse,
+        },
+      );
+
+      // 2. GPU 분비: 에이전트 위치에 페로몬 추가
+      const currentFbo = this.gpu.getCurrentFBO();
+      this.agentGPU.runDeposit(
+        currentFbo,
+        this.config.width, this.config.height,
+        depositPulse,
+      );
+
+      // 3. GPU 확산+감쇠
+      this.gpu.runDiffuseDecay(this.config.decayFactor, AGENT.DIFFUSE_PASSES);
+    } else {
+      // === CPU/하이브리드 경로 ===
+      // 1. 에이전트 업데이트 (CPU, 맥동 적용)
+      this.updateAgents(depositPulse, speedPulse);
+
+      // 2. 환경 업데이트
+      if (this.gpuEnabled && this.gpu) {
+        // GPU 트레일맵 처리
+        this.gpu.uploadDeposits(this.depositBuffer);
+        this.gpu.blendDeposits();
+        this.depositBuffer.fill(0);
+        this.gpu.runDiffuseDecay(this.config.decayFactor, AGENT.DIFFUSE_PASSES);
+      } else {
+        // 전체 CPU 폴백 (멀티패스 확산, 마지막에만 감쇠)
+        for (let p = 0; p < AGENT.DIFFUSE_PASSES; p++) {
+          this.diffuseTrailMap();
+        }
+        this.decayTrailMap(this.config.decayFactor);
+      }
+    }
   }
 
   // 에이전트 업데이트
-  private updateAgents() {
+  private updateAgents(pulseDeposit?: number, pulseSpeed?: number) {
     const {
       width,
-      height,
       sensorAngle,
       sensorDistance,
       turnSpeed,
-      moveSpeed,
-      depositAmount,
     } = this.config;
+    const moveSpeed = pulseSpeed ?? this.config.moveSpeed;
+    const depositAmount = pulseDeposit ?? this.config.depositAmount;
 
     for (const agent of this.agents) {
       // === 직접 유인력 체크 (가까운 에이전트만 - 촉수 형성 유지) ===
@@ -222,7 +360,7 @@ export class PhysarumSimulation {
       }
 
       // 가까울 때만 직접 유인 (멀면 페로몬 따라가게)
-      if (closestAttractor && closestDist > 5 && closestDist < 120) {
+      if (closestAttractor && closestDist > ATTRACTION.DIRECT_MIN_DIST && closestDist < ATTRACTION.DIRECT_MAX_DIST) {
         const dx = closestAttractor.x - agent.x;
         const dy = closestAttractor.y - agent.y;
         const targetAngle = Math.atan2(dy, dx);
@@ -233,7 +371,7 @@ export class PhysarumSimulation {
         while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
 
         // 거리 기반 강도 (가까울수록 강하게)
-        const strength = (1 - closestDist / 120) * 0.4;
+        const strength = (1 - closestDist / ATTRACTION.DIRECT_MAX_DIST) * ATTRACTION.STRENGTH;
         agent.angle += angleDiff * strength;
         directAttraction = true;
       }
@@ -276,23 +414,27 @@ export class PhysarumSimulation {
       }
 
       // 약간의 랜덤 회전 (탐색 행동) - 직접 유인 시 약하게
-      agent.angle += (Math.random() - 0.5) * (directAttraction ? 0.03 : 0.1);
+      agent.angle += (Math.random() - 0.5) * (directAttraction ? CONNECTIVITY.JITTER_ATTRACTED : CONNECTIVITY.JITTER_FREE);
 
       // === CONNECTIVITY (물리적 연속성 보장) ===
       // 실제 점균류는 단일 유기체이므로 끊어지면 안 됨
       // 현재 위치의 trail이 낮으면 → 고립된 상태 → 고밀도 방향으로 회귀
+      // 단, 근처에 먹이가 없으면 탐색을 위해 복귀 강도를 약화
       const curIdx = Math.floor(agent.y) * width + Math.floor(agent.x);
       const curTrail = this.trailMap[curIdx] || 0;
 
-      if (curTrail < 8 && !directAttraction) {
+      // 먹이 근처 여부에 따라 연결성 강도 조절
+      const hasNearbyFood = closestDist < ATTRACTION.RADIUS;
+      const connectivityMult = hasNearbyFood ? 1.0 : 0.5;
+
+      if (curTrail < CONNECTIVITY.ISOLATION_THRESHOLD && !directAttraction) {
         // 고립됨: 여러 거리에서 trail 탐색
         let bestTrail = 0;
         let bestAngle = agent.angle;
 
-        // 가까운 거리(20px)와 먼 거리(60px) 모두 탐색
-        for (const searchDist of [20, 60]) {
-          for (let i = 0; i < 16; i++) {
-            const a = (i / 16) * Math.PI * 2;
+        for (const searchDist of CONNECTIVITY.SEARCH_DISTANCES) {
+          for (let i = 0; i < CONNECTIVITY.SEARCH_DIRECTIONS; i++) {
+            const a = (i / CONNECTIVITY.SEARCH_DIRECTIONS) * Math.PI * 2;
             const sx = Math.floor(this.wrapX(agent.x + Math.cos(a) * searchDist));
             const sy = Math.floor(this.wrapY(agent.y + Math.sin(a) * searchDist));
             const trail = this.trailMap[sy * width + sx];
@@ -303,13 +445,13 @@ export class PhysarumSimulation {
           }
         }
 
-        if (bestTrail > 3) {
-          // 고밀도 방향으로 강하게 회전 (고립도에 따라 강도 조절)
+        if (bestTrail > CONNECTIVITY.RECOVERY_TRAIL_MIN) {
+          // 고밀도 방향으로 회전 (먹이 없으면 약하게 → 탐색 허용)
           let angleDiff = bestAngle - agent.angle;
           while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
           while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
-          const isolationStrength = curTrail < 2 ? 0.6 : 0.4;
-          agent.angle += angleDiff * isolationStrength;
+          const baseStrength = curTrail < 2 ? CONNECTIVITY.STRENGTH_SEVERE : CONNECTIVITY.STRENGTH_MILD;
+          agent.angle += angleDiff * baseStrength * connectivityMult;
         }
       }
 
@@ -321,7 +463,13 @@ export class PhysarumSimulation {
       const ix = Math.floor(agent.x);
       const iy = Math.floor(agent.y);
       const idx = iy * width + ix;
-      this.trailMap[idx] = Math.min(255, this.trailMap[idx] + depositAmount);
+      if (this.gpuEnabled) {
+        // GPU 모드: depositBuffer에 누적 (나중에 GPU에서 블렌드)
+        this.depositBuffer[idx] = Math.min(255, this.depositBuffer[idx] + depositAmount);
+      } else {
+        // CPU 모드: 직접 trailMap에 기록
+        this.trailMap[idx] = Math.min(255, this.trailMap[idx] + depositAmount);
+      }
     }
   }
 
@@ -413,9 +561,9 @@ export class PhysarumSimulation {
     ctx.lineWidth = 1.5;
     ctx.lineCap = "round";
 
-    const veinMin = 5;
-    const veinMax = 25;
-    const step = 4;
+    const veinMin = VEINS.MIN;
+    const veinMax = VEINS.MAX;
+    const step = VEINS.STEP;
 
     // 스크린 좌표로 순회
     for (let sy = 0; sy < vh; sy += step) {
@@ -475,9 +623,9 @@ export class PhysarumSimulation {
     if (this.attractors.length === 0) return;
 
     const { width: mapW, height: mapH } = this.config;
-    const scale = 8; // 그라데이션은 저해상도 OK
-    const fieldRadius = 600;
-    const softening = 8000;
+    const scale = PHEROMONE.SCALE;
+    const fieldRadius = PHEROMONE.FIELD_RADIUS;
+    const softening = PHEROMONE.SOFTENING;
     const smallW = Math.ceil(vw / scale);
     const smallH = Math.ceil(vh / scale);
 
@@ -523,16 +671,16 @@ export class PhysarumSimulation {
         }
 
         const gridIdx = sy * smallW + sx;
-        const intensity = totalField / (totalField + 0.5);
+        const intensity = totalField / (totalField + PHEROMONE.NORMALIZATION);
         fieldGrid[gridIdx] = intensity;
 
-        if (totalField < 0.02) continue;
+        if (totalField < PHEROMONE.MIN_THRESHOLD) continue;
 
         const idx = gridIdx * 4;
-        data[idx] = Math.round(60 * intensity);
-        data[idx + 1] = Math.round(140 * intensity);
-        data[idx + 2] = Math.round(40 * intensity);
-        data[idx + 3] = Math.round(180 * intensity);
+        data[idx] = Math.round(PHEROMONE.COLOR.r * intensity);
+        data[idx + 1] = Math.round(PHEROMONE.COLOR.g * intensity);
+        data[idx + 2] = Math.round(PHEROMONE.COLOR.b * intensity);
+        data[idx + 3] = Math.round(PHEROMONE.COLOR.a * intensity);
       }
     }
 
@@ -546,11 +694,12 @@ export class PhysarumSimulation {
     ctx.restore();
 
     // === 2단계: 등고선을 벡터(marching squares)로 그리기 ===
-    const contourLevels = [0.10, 0.22, 0.34, 0.46, 0.58, 0.70];
+    const contourLevels = PHEROMONE.CONTOUR_LEVELS;
 
     ctx.save();
-    ctx.strokeStyle = 'rgba(120, 220, 100, 0.35)';
-    ctx.lineWidth = 1.2;
+    const cc = PHEROMONE.CONTOUR_COLOR;
+    ctx.strokeStyle = `rgba(${cc.r}, ${cc.g}, ${cc.b}, ${cc.a})`;
+    ctx.lineWidth = PHEROMONE.CONTOUR_LINE_WIDTH;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
 
@@ -631,7 +780,7 @@ export class PhysarumSimulation {
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
 
-    const step = 20;
+    const step = CUBIC_GLOW.BLOCK_SIZE;
 
     // 스크린 좌표로 순회
     for (let sy = 0; sy < vh; sy += step) {
@@ -650,8 +799,8 @@ export class PhysarumSimulation {
 
         const avgDensity = sum / count;
 
-        if (avgDensity > 30) {
-          const intensity = Math.min(1, (avgDensity - 30) / 100);
+        if (avgDensity > CUBIC_GLOW.THRESHOLD) {
+          const intensity = Math.min(1, (avgDensity - CUBIC_GLOW.THRESHOLD) / CUBIC_GLOW.INTENSITY_RANGE);
           const gradient = ctx.createRadialGradient(
             sx + step / 2,
             sy + step / 2,
@@ -660,7 +809,7 @@ export class PhysarumSimulation {
             sy + step / 2,
             step,
           );
-          gradient.addColorStop(0, `rgba(255, 220, 50, ${intensity * 0.3})`);
+          gradient.addColorStop(0, `rgba(255, 220, 50, ${intensity * CUBIC_GLOW.ALPHA_MULTIPLIER})`);
           gradient.addColorStop(1, "rgba(255, 200, 0, 0)");
           ctx.fillStyle = gradient;
           ctx.fillRect(sx, sy, step, step);
@@ -685,17 +834,12 @@ export class PhysarumSimulation {
     const imageData = ctx.getImageData(0, 0, vw, vh);
     const data = imageData.data;
 
-    const baseColor = this.isDormant
-      ? { r: 120, g: 100, b: 60 }
-      : { r: 255, g: 200, b: 50 };
+    const baseColor = this.isDormant ? BLOB_BODY.DORMANT_BASE : BLOB_BODY.ACTIVE_BASE;
+    const darkColor = this.isDormant ? BLOB_BODY.DORMANT_DARK : BLOB_BODY.ACTIVE_DARK;
 
-    const darkColor = this.isDormant
-      ? { r: 80, g: 65, b: 40 }
-      : { r: 200, g: 150, b: 20 };
-
-    const fadeStart = 10;
-    const fadeEnd = 60;
-    const maxValue = 150;
+    const fadeStart = BLOB_BODY.FADE_START;
+    const fadeEnd = BLOB_BODY.FADE_END;
+    const maxValue = BLOB_BODY.MAX_VALUE;
 
     for (let vy = 0; vy < vh; vy++) {
       const mapY = (((camY + vy) % height) + height) % height;
@@ -719,7 +863,7 @@ export class PhysarumSimulation {
           const r = darkColor.r + (baseColor.r - darkColor.r) * smooth;
           const g = darkColor.g + (baseColor.g - darkColor.g) * smooth;
           const b = darkColor.b + (baseColor.b - darkColor.b) * smooth;
-          const alpha = Math.min(255, 20 + fadeT * 180 + smooth * 55);
+          const alpha = Math.min(255, BLOB_BODY.ALPHA_BASE + fadeT * BLOB_BODY.ALPHA_FADE + smooth * BLOB_BODY.ALPHA_SMOOTH);
 
           data[pixelIdx] = Math.round(r);
           data[pixelIdx + 1] = Math.round(g);
@@ -736,8 +880,8 @@ export class PhysarumSimulation {
   renderNucleus(ctx: CanvasRenderingContext2D, pulsePhase: number) {
     const x = this.nucleusX;
     const y = this.nucleusY;
-    const baseRadius = 20;
-    const pulseRadius = baseRadius + Math.sin(pulsePhase) * 3;
+    const baseRadius = NUCLEUS.BASE_RADIUS;
+    const pulseRadius = baseRadius + Math.sin(pulsePhase) * NUCLEUS.PULSE_AMPLITUDE;
 
     ctx.save();
 
@@ -770,10 +914,10 @@ export class PhysarumSimulation {
     ctx.beginPath();
 
     // 불규칙한 형태
-    const points = 10;
+    const points = NUCLEUS.SHAPE_POINTS;
     for (let i = 0; i <= points; i++) {
       const angle = (i / points) * Math.PI * 2;
-      const variation = Math.sin(angle * 3 + pulsePhase) * 0.1;
+      const variation = Math.sin(angle * 3 + pulsePhase) * NUCLEUS.SHAPE_VARIATION;
       const r = pulseRadius * (1 + variation);
       const px = x + Math.cos(angle) * r;
       const py = y + Math.sin(angle) * r;
@@ -789,9 +933,9 @@ export class PhysarumSimulation {
       : "rgba(255, 255, 200, 0.4)";
     ctx.beginPath();
     ctx.arc(
-      x - pulseRadius * 0.3,
-      y - pulseRadius * 0.3,
-      pulseRadius * 0.25,
+      x - pulseRadius * NUCLEUS.HIGHLIGHT_OFFSET,
+      y - pulseRadius * NUCLEUS.HIGHLIGHT_OFFSET,
+      pulseRadius * NUCLEUS.HIGHLIGHT_SIZE,
       0,
       Math.PI * 2,
     );
@@ -805,6 +949,11 @@ export class PhysarumSimulation {
     return this.agents;
   }
 
+  // GPU 에이전트 인스턴스 반환
+  getAgentGPU(): AgentGPU | null {
+    return this.agentGPU;
+  }
+
   // 트레일 맵 반환
   getTrailMap(): Float32Array {
     return this.trailMap;
@@ -812,36 +961,39 @@ export class PhysarumSimulation {
 
   // 에이전트 수 반환
   getAgentCount(): number {
+    if (this.agentGPUEnabled && this.agentGPU) {
+      return this.agentGPU.agentCount;
+    }
     return this.agents.length;
   }
 
-  // 에이전트 추가 (바이오매스 증가)
-  addAgents(count: number) {
+  // 에이전트 추가 (바이오매스 증가, 지정 위치 근처에 스폰)
+  addAgents(count: number, nearX?: number, nearY?: number) {
+    if (this.agentGPUEnabled && this.agentGPU) {
+      this.agentGPU.addAgents(count, nearX, nearY);
+      return;
+    }
+
     const { width, height } = this.config;
+    const spawnX = nearX ?? width / 2;
+    const spawnY = nearY ?? height / 2;
 
     for (let i = 0; i < count; i++) {
-      // 기존 에이전트 근처에 스폰
-      if (this.agents.length > 0) {
-        const parent =
-          this.agents[Math.floor(Math.random() * this.agents.length)];
-        this.agents.push({
-          x: parent.x + (Math.random() - 0.5) * 10,
-          y: parent.y + (Math.random() - 0.5) * 10,
-          angle: Math.random() * Math.PI * 2,
-        });
-      } else {
-        this.agents.push({
-          x: width / 2 + (Math.random() - 0.5) * 30,
-          y: height / 2 + (Math.random() - 0.5) * 30,
-          angle: Math.random() * Math.PI * 2,
-        });
-      }
+      this.agents.push({
+        x: this.wrapX(spawnX + (Math.random() - 0.5) * 20),
+        y: this.wrapY(spawnY + (Math.random() - 0.5) * 20),
+        angle: Math.random() * Math.PI * 2,
+      });
     }
   }
 
   // 에이전트 제거 (바이오매스 감소)
   removeAgents(count: number) {
-    for (let i = 0; i < count && this.agents.length > 100; i++) {
+    if (this.agentGPUEnabled && this.agentGPU) {
+      this.agentGPU.removeAgents(count);
+      return;
+    }
+    for (let i = 0; i < count && this.agents.length > AGENT_TEX.MIN_AGENTS; i++) {
       this.agents.pop();
     }
   }
@@ -856,61 +1008,134 @@ export class PhysarumSimulation {
     }
   }
 
-  // 미니맵 렌더링 - 전체 맵을 축소해서 그림
+  // 미니맵 렌더링 - 뷰포트 중심 기준
   renderMinimap(ctx: CanvasRenderingContext2D, miniW: number, miniH: number) {
     const { width, height } = this.config;
+    const vp = this.viewport;
+
+    // 뷰포트와 동일한 영역 (줌 레벨 반영)
+    const minimapWorldSize = Math.max(vp.width, vp.height);
+
+    // 뷰포트 중심을 기준으로 정사각형 범위 계산
+    const viewCenterX = vp.x + vp.width / 2;
+    const viewCenterY = vp.y + vp.height / 2;
+    const minimapWorldX = viewCenterX - minimapWorldSize / 2;
+    const minimapWorldY = viewCenterY - minimapWorldSize / 2;
+
     const imageData = ctx.createImageData(miniW, miniH);
     const data = imageData.data;
 
-    const scaleX = width / miniW;
-    const scaleY = height / miniH;
+    const scale = minimapWorldSize / miniW;
+    const sampleRadius = Math.max(1, Math.ceil(scale / 2));
 
+    // 페로몬 필드 파라미터
+    const fieldRadius = PHEROMONE.FIELD_RADIUS;
+    const fieldRadiusSq = fieldRadius * fieldRadius;
+    const softening = PHEROMONE.SOFTENING;
+    const normalization = PHEROMONE.NORMALIZATION;
+    const minThreshold = PHEROMONE.MIN_THRESHOLD;
+    const contourLevels = PHEROMONE.CONTOUR_LEVELS;
+    const lineWidthPx = PHEROMONE.CONTOUR_LINE_WIDTH_PX;
+
+    // smoothstep 함수
+    const smoothstep = (edge0: number, edge1: number, x: number): number => {
+      const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+      return t * t * (3 - 2 * t);
+    };
+
+    // 필드 강도 계산 함수
+    const computeField = (wx: number, wy: number): number => {
+      let total = 0;
+      for (const att of this.attractors) {
+        let dx = att.x - wx;
+        let dy = att.y - wy;
+        dx = dx - Math.round(dx / width) * width;
+        dy = dy - Math.round(dy / height) * height;
+        const distSq = dx * dx + dy * dy;
+        if (distSq > fieldRadiusSq) continue;
+        const fadeStart = fieldRadiusSq * 0.7;
+        const falloff = 1.0 - smoothstep(fadeStart, fieldRadiusSq, distSq);
+        total += att.strength * softening / (distSq + softening) * falloff;
+      }
+      return total;
+    };
+
+    // 모든 픽셀을 한 번에 처리 (페로몬 먼저, 블롭이 덮어씀)
     for (let my = 0; my < miniH; my++) {
       for (let mx = 0; mx < miniW; mx++) {
-        // 해당 미니맵 픽셀에 대응하는 맵 영역의 평균값
-        const mapX = Math.floor(mx * scaleX);
-        const mapY = Math.floor(my * scaleY);
-        const value = this.trailMap[mapY * width + mapX];
-
+        const wx = minimapWorldX + mx * scale;
+        const wy = minimapWorldY + my * scale;
         const pixelIdx = (my * miniW + mx) * 4;
 
-        if (value > 5) {
-          const t = Math.min(1, value / 100);
-          data[pixelIdx] = Math.round(200 * t + 50); // R
-          data[pixelIdx + 1] = Math.round(180 * t + 30); // G
-          data[pixelIdx + 2] = Math.round(20 * t + 10); // B
-          data[pixelIdx + 3] = Math.round(100 + 155 * t); // A
-        } else {
-          data[pixelIdx] = 15;
-          data[pixelIdx + 1] = 15;
-          data[pixelIdx + 2] = 15;
-          data[pixelIdx + 3] = 200;
+        // 1. 배경색으로 초기화
+        data[pixelIdx] = MINIMAP.EMPTY_COLOR.r;
+        data[pixelIdx + 1] = MINIMAP.EMPTY_COLOR.g;
+        data[pixelIdx + 2] = MINIMAP.EMPTY_COLOR.b;
+        data[pixelIdx + 3] = MINIMAP.EMPTY_COLOR.a;
+
+        // 2. 페로몬 필드 계산
+        const totalField = computeField(wx, wy);
+        if (totalField >= minThreshold) {
+          const intensity = totalField / (totalField + normalization);
+
+          let r = PHEROMONE.COLOR.r * intensity;
+          let g = PHEROMONE.COLOR.g * intensity;
+          let b = PHEROMONE.COLOR.b * intensity;
+          let a = PHEROMONE.COLOR.a * intensity;
+
+          // 등고선
+          const fieldR = computeField(wx + scale, wy);
+          const fieldU = computeField(wx, wy + scale);
+          const iR = fieldR / (fieldR + normalization);
+          const iU = fieldU / (fieldU + normalization);
+          const gradLen = Math.sqrt((iR - intensity) ** 2 + (iU - intensity) ** 2);
+
+          let contourColor = 0;
+          for (const level of contourLevels) {
+            const dist = Math.abs(intensity - level);
+            const pixelDist = gradLen > 0.0001 ? dist / gradLen : 9999;
+            contourColor = Math.max(contourColor, 1.0 - smoothstep(0, lineWidthPx, pixelDist));
+          }
+
+          const cR = PHEROMONE.CONTOUR_COLOR.r * contourColor;
+          const cG = PHEROMONE.CONTOUR_COLOR.g * contourColor;
+          const cB = PHEROMONE.CONTOUR_COLOR.b * contourColor;
+          const cA = PHEROMONE.CONTOUR_COLOR.a * 255 * contourColor;
+
+          r += cR * (1 - a / 255);
+          g += cG * (1 - a / 255);
+          b += cB * (1 - a / 255);
+          a = Math.min(255, a + cA);
+
+          data[pixelIdx] = Math.round(r);
+          data[pixelIdx + 1] = Math.round(g);
+          data[pixelIdx + 2] = Math.round(b);
+          data[pixelIdx + 3] = Math.round(a);
+        }
+
+        // 3. 블롭 본체 (페로몬 위에 덮어씀)
+        const mapCX = Math.floor(wx);
+        const mapCY = Math.floor(wy);
+        let blobValue = 0;
+        for (let dy = -sampleRadius; dy <= sampleRadius; dy += sampleRadius) {
+          for (let dx = -sampleRadius; dx <= sampleRadius; dx += sampleRadius) {
+            const sx = ((mapCX + dx) % width + width) % width;
+            const sy = ((mapCY + dy) % height + height) % height;
+            blobValue = Math.max(blobValue, this.trailMap[sy * width + sx]);
+          }
+        }
+
+        if (blobValue > MINIMAP.DENSITY_THRESHOLD) {
+          const t = Math.min(1, blobValue / MINIMAP.INTENSITY_NORM);
+          data[pixelIdx] = Math.round(MINIMAP.BLOB_COLOR.r * t + MINIMAP.BLOB_BASE.r);
+          data[pixelIdx + 1] = Math.round(MINIMAP.BLOB_COLOR.g * t + MINIMAP.BLOB_BASE.g);
+          data[pixelIdx + 2] = Math.round(MINIMAP.BLOB_COLOR.b * t + MINIMAP.BLOB_BASE.b);
+          data[pixelIdx + 3] = 255;  // 블롭은 불투명
         }
       }
     }
 
     ctx.putImageData(imageData, 0, 0);
-
-    // 뷰포트 영역 표시
-    const vp = this.viewport;
-    const vpX = (vp.x / width) * miniW;
-    const vpY = (vp.y / height) * miniH;
-    const vpW = (vp.width / width) * miniW;
-    const vpH = (vp.height / height) * miniH;
-
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
-    ctx.lineWidth = 1;
-    ctx.strokeRect(vpX, vpY, vpW, vpH);
-
-    // 영양분 위치 표시
-    for (const attractor of this.attractors) {
-      const ax = (attractor.x / width) * miniW;
-      const ay = (attractor.y / height) * miniH;
-      ctx.fillStyle = `rgba(100, 200, 50, ${0.5 + attractor.strength * 0.5})`;
-      ctx.beginPath();
-      ctx.arc(ax, ay, 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
   }
 
   getMapSize() {
@@ -921,6 +1146,14 @@ export class PhysarumSimulation {
   reset() {
     this.trailMap.fill(0);
     this.trailMapTemp.fill(0);
+    this.depositBuffer.fill(0);
     this.initAgents();
+    // GPU 텍스처도 초기화
+    if (this.gpu) {
+      this.gpu.uploadTrailMap(this.trailMap);
+    }
+    if (this.agentGPU) {
+      this.agentGPU.uploadAgents(this.agents);
+    }
   }
 }

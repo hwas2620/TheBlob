@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
+import { TEXT } from '../text';
 
 export const MoistureBar: React.FC = () => {
   const { moisture, maxMoisture, blobState } = useGameStore();
@@ -18,7 +19,7 @@ export const MoistureBar: React.FC = () => {
     <div className="w-full">
       <div className="flex justify-between items-center mb-1">
         <span className="text-xs text-blue-400 flex items-center gap-1">
-          💧 습도
+          {TEXT.LABEL_MOISTURE}
         </span>
         <span className="text-xs text-blue-300 font-mono">
           {moisture.toFixed(0)}%
@@ -32,7 +33,7 @@ export const MoistureBar: React.FC = () => {
       </div>
       {isDormant && (
         <p className="text-xs text-red-400 mt-1 animate-pulse">
-          ⚠️ 휴면 상태 - 물을 주세요!
+          {TEXT.WARNING_DORMANT}
         </p>
       )}
     </div>

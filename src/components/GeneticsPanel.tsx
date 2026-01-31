@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
+import { TEXT, formatText } from '../text';
 
 export const GeneticsPanel: React.FC = () => {
   const { genetics, totalSporulations } = useGameStore();
@@ -7,22 +8,22 @@ export const GeneticsPanel: React.FC = () => {
   const upgrades = [
     {
       key: 'permanentBiomassBoost' as const,
-      name: '질량 부스트',
-      description: '시작 질량 +5',
+      name: TEXT.GENETICS_BIOMASS,
+      description: TEXT.GENETICS_BIOMASS_DESC,
       cost: 5,
       icon: '🧬',
     },
     {
       key: 'permanentMoistureBoost' as const,
-      name: '습도 부스트',
-      description: '시작 습도 +10',
+      name: TEXT.GENETICS_MOISTURE,
+      description: TEXT.GENETICS_MOISTURE_DESC,
       cost: 3,
       icon: '💧',
     },
     {
       key: 'permanentATPBoost' as const,
-      name: 'ATP 부스트',
-      description: 'ATP 획득량 +10%',
+      name: TEXT.GENETICS_ATP,
+      description: TEXT.GENETICS_ATP_DESC,
       cost: 8,
       icon: '⚡',
     },
@@ -48,7 +49,7 @@ export const GeneticsPanel: React.FC = () => {
     <div className="bg-black/80 backdrop-blur-sm border border-purple-900/50 rounded-xl p-4">
       <h3 className="text-purple-400 font-bold mb-3 flex items-center gap-2">
         <span>🧬</span>
-        유전자 ({genetics.points.toFixed(0)} GP)
+        {formatText(TEXT.PANEL_GENETICS, genetics.points.toFixed(0))}
       </h3>
 
       <div className="space-y-2">
@@ -84,7 +85,7 @@ export const GeneticsPanel: React.FC = () => {
       </div>
 
       <div className="mt-3 pt-3 border-t border-purple-900/30 text-xs text-gray-500">
-        포자화 횟수: {totalSporulations}
+        {formatText(TEXT.GENETICS_SPORULATIONS, totalSporulations)}
       </div>
     </div>
   );

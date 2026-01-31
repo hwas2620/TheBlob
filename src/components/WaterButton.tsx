@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { spawnWaterEffect } from '../hooks/useGameLoop';
+import { TEXT } from '../text';
 
 export const WaterButton: React.FC = () => {
   const { addWater, moisture, maxMoisture, blobState, nucleus } = useGameStore();
@@ -38,7 +39,7 @@ export const WaterButton: React.FC = () => {
     >
       <span className="flex items-center justify-center gap-2">
         💧
-        {isFull ? '습도 충분' : '물 주기'}
+        {isFull ? TEXT.BTN_WATER_FULL : TEXT.BTN_WATER}
       </span>
 
       {/* 물방울 효과 */}

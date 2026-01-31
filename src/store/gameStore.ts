@@ -11,6 +11,8 @@ import type {
   GamePhase,
 } from '../types/game';
 import { UPGRADE_COSTS, UPGRADE_MAX_LEVEL, GAME_CONFIG } from '../types/game';
+import { UI, FRAGMENT, SPORULATION } from '../config';
+import { TEXT } from '../text';
 
 const SAVE_KEY = 'the_blob_save_v2';
 
@@ -69,10 +71,10 @@ const createInitialStage = (stageNumber: number): StageInfo => ({
 
 const getInitialState = (): GameState => ({
   // 핵심 자원
-  moisture: 80,
-  maxMoisture: 100,
+  moisture: UI.INITIAL_MOISTURE,
+  maxMoisture: UI.MAX_MOISTURE,
   biomass: 0,
-  atp: 30,
+  atp: UI.INITIAL_ATP,
 
   // 스테이지
   stage: createInitialStage(1),
@@ -131,7 +133,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     // 휴면에서 깨어남
     if (wasInDormant && newMoisture > GAME_CONFIG.DORMANT_THRESHOLD) {
-      console.log('블롭이 깨어났습니다!');
+      console.log(TEXT.LOG_WAKE_UP);
     }
   },
 
@@ -145,7 +147,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     // 자동 급수 체크
     const autoWaterLevel = state.upgrades.autoWatering;
-    if (autoWaterLevel > 0 && state.moisture < 30) {
+    if (autoWaterLevel > 0 && state.moisture < UI.AUTO_WATER_THRESHOLD) {
       const autoWaterChance = autoWaterLevel * 0.1; // 레벨당 10% 확률
       if (Math.random() < autoWaterChance * delta) {
         get().addWater();
@@ -211,7 +213,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   startSporulation: () => {
     const state = get();
     if (state.biomass < GAME_CONFIG.MIN_BIOMASS_FOR_SPORULATION) {
-      console.log('바이오매스가 부족합니다!');
+      console.log(TEXT.WARNING_LOW_BIOMASS);
       return;
     }
 
@@ -233,7 +235,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const centerX = state.nucleus.position.x;
     const centerY = state.nucleus.position.y;
 
-    for (let i = 0; i < Math.min(sporeCount, 50); i++) {
+    for (let i = 0; i < Math.min(sporeCount, SPORULATION.SPORE_MAX_COUNT); i++) {
       const angle = (i / sporeCount) * Math.PI * 2 + Math.random() * 0.5;
       const speed = 50 + Math.random() * 100;
       spores.push({
@@ -244,7 +246,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           y: Math.sin(angle) * speed,
         },
         collected: false,
-        size: 4 + Math.random() * 4,
+        size: SPORULATION.SPORE_SIZE_MIN + Math.random() * SPORULATION.SPORE_SIZE_RANGE,
         alpha: 1,
         bobPhase: Math.random() * Math.PI * 2,
       });
@@ -269,11 +271,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const fragments: BlobFragment[] = [];
     const centerX = state.nucleus.position.x;
     const centerY = state.nucleus.position.y;
-    const fragmentCount = 5 + Math.floor(state.genetics.points / 10);
+    const fragmentCount = 5 + Math.floor(state.genetics.points * FRAGMENT.GENETICS_RATIO);
 
-    for (let i = 0; i < Math.min(fragmentCount, 12); i++) {
+    for (let i = 0; i < Math.min(fragmentCount, FRAGMENT.MAX_COUNT); i++) {
       const angle = (i / fragmentCount) * Math.PI * 2;
-      const distance = 100 + Math.random() * 150;
+      const distance = FRAGMENT.DISTANCE_MIN + Math.random() * FRAGMENT.DISTANCE_RANGE;
       fragments.push({
         id: `fragment_${i}`,
         position: {
@@ -290,8 +292,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       stage: createInitialStage(newStageNumber),
       gamePhase: 'sporeCollection',
       blobState: 'active',
-      moisture: 50 + state.genetics.permanentMoistureBoost * 10,
-      biomass: state.genetics.permanentBiomassBoost * 5,
+      moisture: 50 + state.genetics.permanentMoistureBoost * UI.GENETICS_MOISTURE_BOOST,
+      biomass: state.genetics.permanentBiomassBoost * UI.GENETICS_BIOMASS_BOOST,
       tendrils: [],
       nutrients: [],
       spores: [],
@@ -407,7 +409,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         const offlineEarnings = get().calculateOfflineEarnings();
 
         set({
-          moisture: Math.min(100, parsed.moisture || 50),
+          moisture: Math.min(UI.MAX_MOISTURE, parsed.moisture || 50),
           biomass: parsed.biomass || 0,
           atp: (parsed.atp || 0) + offlineEarnings,
           stage: parsed.stage || createInitialStage(1),
@@ -421,7 +423,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
         return offlineEarnings;
       } catch (e) {
-        console.error('Failed to load save:', e);
+        console.error(TEXT.LOG_SAVE_FAILED, e);
       }
     }
     return 0;
@@ -433,7 +435,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       try {
         const parsed = JSON.parse(savedData);
         const lastSave = parsed.lastSaveTime || Date.now();
-        const offlineSeconds = Math.min((Date.now() - lastSave) / 1000, 24 * 60 * 60);
+        const offlineSeconds = Math.min((Date.now() - lastSave) / 1000, UI.OFFLINE_MAX_HOURS * 60 * 60);
 
         // 수분이 있었을 때만 수익 발생
         const hadMoisture = parsed.moisture > GAME_CONFIG.DORMANT_THRESHOLD;

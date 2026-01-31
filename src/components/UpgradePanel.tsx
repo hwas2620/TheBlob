@@ -2,6 +2,7 @@ import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import type { Upgrades } from '../types/game';
 import { UPGRADE_MAX_LEVEL } from '../types/game';
+import { TEXT } from '../text';
 
 interface UpgradeItemProps {
   type: keyof Upgrades;
@@ -51,14 +52,16 @@ const UpgradeItem: React.FC<UpgradeItemProps> = ({ type, name, description, icon
           <p className="text-xs text-gray-500 mt-0.5 truncate">{description}</p>
           <div className="flex justify-between items-center mt-1.5">
             <span className="text-xs text-green-400">
-              {type === 'autoWatering' ? `${(multiplier * 10).toFixed(0)}% 확률` : `x${multiplier.toFixed(2)}`}
+              {type === 'autoWatering'
+                ? TEXT.UPGRADE_CHANCE.replace('{0}', (multiplier * 10).toFixed(0))
+                : TEXT.UPGRADE_MULTIPLIER.replace('{0}', multiplier.toFixed(2))}
             </span>
             {!isMaxed ? (
               <span className={`text-xs font-mono ${canAfford ? 'text-yellow-300' : 'text-red-400'}`}>
-                {cost.toFixed(0)} ATP
+                {cost.toFixed(0)} {TEXT.UNIT_ATP}
               </span>
             ) : (
-              <span className="text-xs text-green-400 font-bold">MAX</span>
+              <span className="text-xs text-green-400 font-bold">{TEXT.UPGRADE_MAX}</span>
             )}
           </div>
         </div>
@@ -71,38 +74,38 @@ export const UpgradePanel: React.FC = () => {
   return (
     <div className="bg-black/80 backdrop-blur-sm border border-yellow-900/50 rounded-xl p-3">
       <h2 className="text-sm font-bold text-yellow-400 mb-3 flex items-center gap-2">
-        ⬆️ 업그레이드
+        {TEXT.PANEL_UPGRADE}
       </h2>
 
       <div className="space-y-2">
         <UpgradeItem
           type="moistureRetention"
-          name="습도 유지"
-          description="습도 감소 속도 감소"
+          name={TEXT.UPGRADE_MOISTURE}
+          description={TEXT.UPGRADE_MOISTURE_DESC}
           icon="💧"
         />
         <UpgradeItem
           type="expansionSpeed"
-          name="확장 속도"
-          description="촉수 성장 속도 증가"
+          name={TEXT.UPGRADE_EXPANSION}
+          description={TEXT.UPGRADE_EXPANSION_DESC}
           icon="🌿"
         />
         <UpgradeItem
           type="digestiveEnzyme"
-          name="분해 효소"
-          description="영양분 흡수 속도 증가"
+          name={TEXT.UPGRADE_ENZYME}
+          description={TEXT.UPGRADE_ENZYME_DESC}
           icon="🧪"
         />
         <UpgradeItem
           type="autoWatering"
-          name="자동 급수"
-          description="자동으로 물 주기"
+          name={TEXT.UPGRADE_AUTO_WATER}
+          description={TEXT.UPGRADE_AUTO_WATER_DESC}
           icon="🚿"
         />
         <UpgradeItem
           type="sporeQuality"
-          name="포자 품질"
-          description="환생 보너스 증가"
+          name={TEXT.UPGRADE_SPORE_QUALITY}
+          description={TEXT.UPGRADE_SPORE_QUALITY_DESC}
           icon="✨"
         />
       </div>

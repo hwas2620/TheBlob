@@ -3,6 +3,9 @@ import { useGameStore } from '../store/gameStore';
 import type { Vector2, WaterDrop, WaterRipple } from '../types/game';
 import { GAME_CONFIG } from '../types/game';
 import { PhysarumSimulation, MAP_WIDTH, MAP_HEIGHT } from '../simulation/PhysarumSimulation';
+import { SceneRenderer } from '../gpu/SceneRenderer';
+import { ZOOM, GAME, WATER_EFFECT, SPORULATION, UI, FRAGMENT } from '../config';
+import { TEXT, formatText } from '../text';
 
 // Utility functions
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -12,7 +15,8 @@ const distance = (a: Vector2, b: Vector2): number => {
 };
 
 interface UseGameLoopProps {
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
+  glCanvasRef: React.RefObject<HTMLCanvasElement | null>;
+  overlayCanvasRef: React.RefObject<HTMLCanvasElement | null>;
   width: number;
   height: number;
 }
@@ -27,6 +31,11 @@ let sporangiaPositions: Array<{ x: number; y: number; size: number; alpha: numbe
 // Jeff Jones 파티클 시뮬레이션
 let simulation: PhysarumSimulation | null = null;
 
+// GPU 가속
+let sceneRenderer: SceneRenderer | null = null;
+let pheromoneInjectIndex = 0;
+let showBlobGraphics = true;
+
 // 큐빅 표시 토글
 export function toggleCubicVisibility(show: boolean) {
   if (simulation) {
@@ -35,7 +44,27 @@ export function toggleCubicVisibility(show: boolean) {
 }
 
 export function getCubicVisibility(): boolean {
-  return simulation?.getShowCubic() ?? true;
+  return simulation?.getShowCubic() ?? false;
+}
+
+// 파티클 표시 토글
+export function toggleParticleVisibility(show: boolean) {
+  if (simulation) {
+    simulation.setShowParticles(show);
+  }
+}
+
+export function getParticleVisibility(): boolean {
+  return simulation?.getShowParticles() ?? false;
+}
+
+// 블롭 그래픽 표시 토글
+export function toggleBlobGraphics(show: boolean) {
+  showBlobGraphics = show;
+}
+
+export function getBlobGraphics(): boolean {
+  return showBlobGraphics;
 }
 
 // 미니맵용 시뮬레이션 접근
@@ -45,18 +74,19 @@ export function getSimulation() {
 
 // 물방울 효과 생성
 export function spawnWaterEffect(x: number, y: number) {
-  for (let i = 0; i < 12; i++) {
-    const angle = (i / 12) * Math.PI * 2 + Math.random() * 0.5;
-    const speed = 30 + Math.random() * 60;
+  const W = WATER_EFFECT;
+  for (let i = 0; i < W.DROP_COUNT; i++) {
+    const angle = (i / W.DROP_COUNT) * Math.PI * 2 + Math.random() * 0.5;
+    const speed = W.DROP_SPEED_MIN + Math.random() * W.DROP_SPEED_RANGE;
     waterDrops.push({
       id: generateId(),
       position: { x, y },
       velocity: {
         x: Math.cos(angle) * speed,
-        y: Math.sin(angle) * speed - 20,
+        y: Math.sin(angle) * speed + W.DROP_GRAVITY_OFFSET,
       },
-      size: 2 + Math.random() * 4,
-      alpha: 0.8,
+      size: W.DROP_SIZE_MIN + Math.random() * W.DROP_SIZE_RANGE,
+      alpha: W.DROP_INITIAL_ALPHA,
       age: 0,
     });
   }
@@ -64,20 +94,20 @@ export function spawnWaterEffect(x: number, y: number) {
   waterRipples.push({
     id: generateId(),
     position: { x, y },
-    radius: 5,
-    maxRadius: 50 + Math.random() * 30,
-    alpha: 0.6,
+    radius: W.RIPPLE_INITIAL_RADIUS,
+    maxRadius: W.RIPPLE_MAX_RADIUS_MIN + Math.random() * W.RIPPLE_MAX_RADIUS_RANGE,
+    alpha: W.RIPPLE_INITIAL_ALPHA,
   });
 
   setTimeout(() => {
     waterRipples.push({
       id: generateId(),
       position: { x, y },
-      radius: 5,
-      maxRadius: 30 + Math.random() * 20,
-      alpha: 0.4,
+      radius: W.RIPPLE_INITIAL_RADIUS,
+      maxRadius: W.SECONDARY_MAX_RADIUS_MIN + Math.random() * W.SECONDARY_MAX_RADIUS_RANGE,
+      alpha: W.SECONDARY_ALPHA,
     });
-  }, 100);
+  }, W.SECONDARY_DELAY);
 }
 
 // 물 이펙트 업데이트
@@ -85,15 +115,15 @@ function updateWaterEffects(deltaTime: number) {
   waterDrops = waterDrops.filter((drop) => {
     drop.position.x += drop.velocity.x * deltaTime;
     drop.position.y += drop.velocity.y * deltaTime;
-    drop.velocity.y += 150 * deltaTime;
-    drop.alpha -= deltaTime * 1.5;
+    drop.velocity.y += WATER_EFFECT.DROP_GRAVITY * deltaTime;
+    drop.alpha -= deltaTime * WATER_EFFECT.DROP_ALPHA_DECAY;
     drop.age += deltaTime;
     return drop.alpha > 0;
   });
 
   waterRipples = waterRipples.filter((ripple) => {
-    ripple.radius += 80 * deltaTime;
-    ripple.alpha -= deltaTime * 1.2;
+    ripple.radius += WATER_EFFECT.RIPPLE_EXPANSION_RATE * deltaTime;
+    ripple.alpha -= deltaTime * WATER_EFFECT.RIPPLE_ALPHA_DECAY;
     return ripple.alpha > 0 && ripple.radius < ripple.maxRadius;
   });
 }
@@ -103,7 +133,7 @@ function renderWaterEffects(ctx: CanvasRenderingContext2D) {
   for (const ripple of waterRipples) {
     const { x, y } = ripple.position;
     ctx.strokeStyle = `rgba(100, 180, 255, ${ripple.alpha})`;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = UI.WATER_RIPPLE_THICKNESS;
     ctx.beginPath();
     ctx.arc(x, y, ripple.radius, 0, Math.PI * 2);
     ctx.stroke();
@@ -111,7 +141,7 @@ function renderWaterEffects(ctx: CanvasRenderingContext2D) {
     ctx.strokeStyle = `rgba(150, 200, 255, ${ripple.alpha * 0.5})`;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(x, y, ripple.radius * 0.6, 0, Math.PI * 2);
+    ctx.arc(x, y, ripple.radius * UI.WATER_RIPPLE_SECONDARY_SCALE, 0, Math.PI * 2);
     ctx.stroke();
   }
 
@@ -119,7 +149,7 @@ function renderWaterEffects(ctx: CanvasRenderingContext2D) {
     const { x, y } = drop.position;
     ctx.save();
     ctx.shadowColor = '#6Bf';
-    ctx.shadowBlur = 5;
+    ctx.shadowBlur = UI.WATER_DROP_SHADOW_BLUR;
     ctx.fillStyle = `rgba(100, 180, 255, ${drop.alpha})`;
     ctx.beginPath();
     ctx.arc(x, y, drop.size, 0, Math.PI * 2);
@@ -128,17 +158,28 @@ function renderWaterEffects(ctx: CanvasRenderingContext2D) {
   }
 }
 
-export const useGameLoop = ({ canvasRef, width, height }: UseGameLoopProps) => {
+export const useGameLoop = ({ glCanvasRef, overlayCanvasRef, width, height }: UseGameLoopProps) => {
   const animationFrameRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const lastAutoSaveRef = useRef<number>(0);
   const initializedRef = useRef<boolean>(false);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || width === 0 || height === 0) return;
+    const glCanvas = glCanvasRef.current;
+    const overlayCanvas = overlayCanvasRef.current;
+    if (!glCanvas || !overlayCanvas || width === 0 || height === 0) return;
 
-    const ctx = canvas.getContext('2d');
+    // WebGL2 컨텍스트 (메인 렌더링)
+    const gl = glCanvas.getContext('webgl2', {
+      antialias: false,
+      depth: false,
+      stencil: false,
+      premultipliedAlpha: false,
+      alpha: true,
+    });
+
+    // Canvas2D 오버레이 컨텍스트
+    const ctx = overlayCanvas.getContext('2d');
     if (!ctx) return;
 
     // 핵 위치는 맵 중앙 (고정)
@@ -150,16 +191,42 @@ export const useGameLoop = ({ canvasRef, width, height }: UseGameLoopProps) => {
       nucleus: { ...store.nucleus, position: nucleusPos },
     });
 
+    // HMR 감지: 모듈 변수가 null이면 재초기화 필요
+    if (simulation === null) {
+      initializedRef.current = false;
+    }
+
     if (!initializedRef.current) {
       initializedRef.current = true;
 
-      // Jeff Jones 시뮬레이션 초기화 (고정 2000x2000 맵)
+      // Jeff Jones 시뮬레이션 초기화 (고정 1500x1500 맵)
       simulation = new PhysarumSimulation();
+
+      // GPU 가속 초기화
+      if (gl) {
+        // Phase 1: 트레일맵 GPU 처리
+        simulation.initGPU(gl);
+        // Phase 2: GPU 씬 렌더링
+        try {
+          sceneRenderer = new SceneRenderer(gl);
+          console.log(TEXT.LOG_GPU_SCENE_ACTIVE);
+        } catch (e) {
+          console.warn(TEXT.LOG_GPU_SCENE_FAILED, e);
+          sceneRenderer = null;
+        }
+      } else {
+        console.warn(TEXT.LOG_WEBGL2_FALLBACK);
+      }
 
       // 영양분 초기화 (맵 좌표 기준)
       initializeNutrients(MAP_WIDTH, MAP_HEIGHT, nucleusPos);
 
-      console.log('Jeff Jones 시뮬레이션 초기화 완료 (맵: 5000x5000)');
+      console.log(formatText(
+        TEXT.LOG_INIT_COMPLETE,
+        MAP_WIDTH,
+        MAP_HEIGHT,
+        simulation?.isGPUEnabled() ? TEXT.LOG_GPU_STATUS_ON : TEXT.LOG_GPU_STATUS_OFF
+      ));
     }
 
     // 카메라 초기화 (핵이 화면 중앙에 오도록, 항상 [0, MAP) 범위)
@@ -171,8 +238,15 @@ export const useGameLoop = ({ canvasRef, width, height }: UseGameLoopProps) => {
       cameraInitialized = true;
     }
     if (simulation) {
-      simulation.setViewport(cameraX, cameraY, width, height);
+      simulation.setViewport(cameraX, cameraY, width / zoomLevel, height / zoomLevel);
     }
+
+    // 탭 복귀 시 타이머 리셋 (거대 deltaTime 방지)
+    let tabHidden = false;
+    const onVisibilityChange = () => {
+      tabHidden = document.hidden;
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     const gameLoop = (timestamp: number) => {
       if (!lastTimeRef.current) {
@@ -180,7 +254,18 @@ export const useGameLoop = ({ canvasRef, width, height }: UseGameLoopProps) => {
         lastAutoSaveRef.current = timestamp;
       }
 
-      const deltaTime = Math.min((timestamp - lastTimeRef.current) / 1000, 0.1);
+      // 탭 복귀: 타이머만 리셋 (GPU 동기 캐치업은 스톨 유발)
+      if (tabHidden) {
+        lastTimeRef.current = timestamp;
+        animationFrameRef.current = requestAnimationFrame(gameLoop);
+        return;
+      }
+      if (timestamp - lastTimeRef.current > 1000) {
+        // 1초 이상 갭 → 탭 복귀로 간주, 타이머 리셋
+        lastTimeRef.current = timestamp;
+      }
+
+      const deltaTime = Math.min((timestamp - lastTimeRef.current) / 1000, GAME.MAX_DELTA_TIME);
       lastTimeRef.current = timestamp;
 
       const state = useGameStore.getState();
@@ -202,7 +287,8 @@ export const useGameLoop = ({ canvasRef, width, height }: UseGameLoopProps) => {
       updateWaterEffects(deltaTime);
 
       // 렌더링
-      render(ctx, width, height);
+      renderGPU(gl, width, height);
+      renderOverlay(ctx, width, height);
 
       // 자동 저장
       if (timestamp - lastAutoSaveRef.current > GAME_CONFIG.AUTO_SAVE_INTERVAL) {
@@ -219,8 +305,9 @@ export const useGameLoop = ({ canvasRef, width, height }: UseGameLoopProps) => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
-  }, [canvasRef, width, height]);
+  }, [glCanvasRef, overlayCanvasRef, width, height]);
 
   return {};
 };
@@ -231,7 +318,7 @@ function initializeNutrients(width: number, height: number, nucleusPos: Vector2)
   const count = GAME_CONFIG.NUTRIENTS_COUNT_BASE + state.stage.stageNumber * 5;
   const nutrients: import('../types/game').Nutrient[] = [];
 
-  const minRadius = 80;
+  const minRadius = GAME.NUTRIENT_MIN_RADIUS;
 
   for (let i = 0; i < count; i++) {
     // 맵 전체에 고르게 분포 (핵에서 최소 거리만 유지)
@@ -251,11 +338,9 @@ function initializeNutrients(width: number, height: number, nucleusPos: Vector2)
       attempts++;
     } while (attempts < 20);
 
-    // 티어 결정: 60% 소, 30% 중, 10% 대
     const roll = Math.random();
-    const tier: 1 | 2 | 3 = roll < 0.6 ? 1 : roll < 0.9 ? 2 : 3;
-    // 티어별 영양 배율: 소=0.5x, 중=1.5x, 대=4x
-    const tierMultiplier = tier === 1 ? 0.5 : tier === 2 ? 1.5 : 4;
+    const tier: 1 | 2 | 3 = roll < GAME.TIER_DISTRIBUTION[0] ? 1 : roll < GAME.TIER_DISTRIBUTION[1] ? 2 : 3;
+    const tierMultiplier = GAME.TIER_NUTRIENT_MULT[tier - 1];
     const value = (state.stage.totalNutrients / count) * tierMultiplier * (0.8 + Math.random() * 0.4);
     const id = generateId();
 
@@ -296,6 +381,10 @@ function updateGrowingPhase(
   if (state.blobState === 'dormant') {
     if (simulation) {
       simulation.update();
+      // GPU 모드: 동기화
+      if (simulation.isGPUEnabled()) {
+        simulation.syncTrailMapFromGPU();
+      }
     }
 
     const newPulse = (state.nucleus.pulsePhase + deltaTime * 0.5) % (Math.PI * 2);
@@ -306,31 +395,53 @@ function updateGrowingPhase(
     return;
   }
 
-  // === 유인점만 설정 (injectPheromone 제거 - 논문에 충실) ===
+  // === 유인점 설정 + 페로몬 주입 ===
   if (simulation) {
     const attractors: Array<{ x: number; y: number; strength: number }> = [];
+    const unharvested: typeof state.nutrients = [];
     for (const nutrient of state.nutrients) {
       if (!nutrient.harvested) {
-        // 티어별 냄새 세기: 소=0.7, 중=1.0, 대=1.8
-        const tierStrength = nutrient.tier === 1 ? 0.7 : nutrient.tier === 2 ? 1.0 : 1.8;
+        const tierStrength = GAME.TIER_SMELL_STRENGTH[nutrient.tier - 1];
+        const strength = (nutrient.value / nutrient.maxValue) * tierStrength;
         attractors.push({
           x: nutrient.position.x,
           y: nutrient.position.y,
-          strength: (nutrient.value / nutrient.maxValue) * tierStrength,
+          strength,
         });
+        unharvested.push(nutrient);
       }
     }
     simulation.setAttractors(attractors);
+    simulation.syncAttractorsToAgentGPU();
+
+    // 페로몬 주입: 매 프레임 일부 영양분만 (라운드 로빈)
+    if (unharvested.length > 0) {
+      pheromoneInjectIndex = pheromoneInjectIndex % unharvested.length;
+      const batchSize = Math.max(1, Math.ceil(unharvested.length / 10));
+      for (let i = 0; i < batchSize; i++) {
+        const idx = (pheromoneInjectIndex + i) % unharvested.length;
+        const n = unharvested[idx];
+        const tierStrength = GAME.TIER_SMELL_STRENGTH[n.tier - 1];
+        const strength = (n.value / n.maxValue) * tierStrength;
+        // 페로몬 강도 대폭 증가 (에이전트 트레일보다 강하게)
+        simulation.injectPheromone(n.position.x, n.position.y, strength * 2000);
+      }
+      pheromoneInjectIndex = (pheromoneInjectIndex + batchSize) % unharvested.length;
+    }
 
     // 시뮬레이션 업데이트 (매 프레임 여러 번 = 더 빠른 시뮬레이션)
-    const steps = 3;
+    const steps = UI.SIMULATION_STEPS;
     for (let i = 0; i < steps; i++) {
       simulation.update();
+    }
+    // GPU 모드: 3스텝 완료 후 트레일맵+에이전트 CPU 동기화 (프레임당 1회)
+    if (simulation.isGPUEnabled()) {
+      simulation.syncTrailMapFromGPU();
     }
   }
 
   // === 연결 감지: 파티클 밀도 기반 ===
-  const DENSITY_THRESHOLD = 30; // 이 밀도 이상이면 "연결됨"
+  const DENSITY_THRESHOLD = GAME.DENSITY_THRESHOLD;
   let nutrientsConsumed = 0;
 
   const updatedNutrients = state.nutrients.map((nutrient) => {
@@ -340,21 +451,23 @@ function updateGrowingPhase(
 
     // 파티클 밀도 체크
     if (simulation) {
-      const density = simulation.getParticleDensity(nutrient.position.x, nutrient.position.y, 25);
+      const density = simulation.getParticleDensity(nutrient.position.x, nutrient.position.y, UI.DENSITY_CHECK_RADIUS);
 
       if (density >= DENSITY_THRESHOLD) {
         updated.connected = true;
-        updated.glowIntensity = Math.min(1, density / 50);
+        updated.glowIntensity = Math.min(1, density / GAME.DENSITY_GLOW_NORM);
 
-        // ATP 생성 & 영양분 흡수 (티어별 ATP 보너스: 소=1x, 중=1.5x, 대=3x)
-        const tierATPBonus = nutrient.tier === 1 ? 1 : nutrient.tier === 2 ? 1.5 : 3;
-        const absorb = deltaTime * 2 * state.getUpgradeMultiplier('digestiveEnzyme');
+        const tierATPBonus = GAME.TIER_ATP_BONUS[nutrient.tier - 1];
+        const absorb = deltaTime * GAME.NUTRIENT_ABSORB_RATE * state.getUpgradeMultiplier('digestiveEnzyme');
         updated.value -= absorb;
         nutrientsConsumed += absorb * tierATPBonus;
 
-        // 바이오매스(파티클) 증가
-        if (Math.random() < deltaTime * 2) {
-          simulation.addAgents(1);
+        // 바이오매스(파티클) 증가: 흡수량에 비례
+        const spawnCount = Math.floor(absorb * GAME.AGENT_SPAWN_CHANCE);
+        const spawnFrac = absorb * GAME.AGENT_SPAWN_CHANCE - spawnCount;
+        const totalSpawn = spawnCount + (Math.random() < spawnFrac ? 1 : 0);
+        if (totalSpawn > 0) {
+          simulation.addAgents(totalSpawn, nutrient.position.x, nutrient.position.y);
         }
 
         if (updated.value <= 0) {
@@ -386,7 +499,7 @@ function updateGrowingPhase(
   // 스테이지 완료 체크
   const allHarvested = updatedNutrients.every((n) => n.harvested);
   if (allHarvested && updatedNutrients.length > 0) {
-    console.log('모든 영양분 소진! 포자화를 고려해보세요.');
+    console.log(TEXT.INFO_NUTRIENTS_DEPLETED);
   }
 }
 
@@ -400,25 +513,23 @@ function updateSporulatingPhase(deltaTime: number) {
   // Phase 1: 수축 (0~2초)
   if (sporulationPhase === 'retract') {
     if (simulation) {
-      // 강하게 중심으로 수축
-      simulation.retractToCenter(0.05 + sporulationTimer * 0.02);
+      simulation.retractToCenter(SPORULATION.RETRACT_BASE_SPEED + sporulationTimer * SPORULATION.RETRACT_ACCEL);
       simulation.update();
     }
 
-    if (sporulationTimer > 2) {
+    if (sporulationTimer > SPORULATION.RETRACT_DURATION) {
       sporulationPhase = 'form';
       sporulationTimer = 0;
 
-      // 포자낭 위치 생성 (3~5개)
-      const count = 3 + Math.floor(Math.random() * 3);
+      const count = SPORULATION.SPORANGIUM_COUNT_MIN + Math.floor(Math.random() * SPORULATION.SPORANGIUM_COUNT_RANGE);
       sporangiaPositions = [];
       for (let i = 0; i < count; i++) {
         const angle = (i / count) * Math.PI * 2;
-        const dist = 30 + Math.random() * 20;
+        const dist = SPORULATION.SPORANGIUM_DIST_MIN + Math.random() * SPORULATION.SPORANGIUM_DIST_RANGE;
         sporangiaPositions.push({
           x: nucleusPos.x + Math.cos(angle) * dist,
           y: nucleusPos.y + Math.sin(angle) * dist,
-          size: 15 + Math.random() * 10,
+          size: SPORULATION.SPORANGIUM_SIZE_MIN + Math.random() * SPORULATION.SPORANGIUM_SIZE_RANGE,
           alpha: 0,
         });
       }
@@ -428,16 +539,16 @@ function updateSporulatingPhase(deltaTime: number) {
   // Phase 2: 포자낭 형성 (0~1.5초)
   if (sporulationPhase === 'form') {
     if (simulation) {
-      simulation.retractToCenter(0.1); // 더 강하게 수축
+      simulation.retractToCenter(SPORULATION.FORM_RETRACT_STRENGTH);
     }
 
     // 포자낭 페이드인
     sporangiaPositions = sporangiaPositions.map((sp) => ({
       ...sp,
-      alpha: Math.min(1, sp.alpha + deltaTime * 2),
+      alpha: Math.min(1, sp.alpha + deltaTime * SPORULATION.SPORANGIUM_FADE_IN),
     }));
 
-    if (sporulationTimer > 1.5) {
+    if (sporulationTimer > SPORULATION.FORM_DURATION) {
       sporulationPhase = 'explode';
       sporulationTimer = 0;
       state.completeSporulation();
@@ -452,7 +563,7 @@ function updateSporulatingPhase(deltaTime: number) {
     // 포자낭 페이드아웃
     sporangiaPositions = sporangiaPositions.map((sp) => ({
       ...sp,
-      alpha: Math.max(0, sp.alpha - deltaTime * 3),
+      alpha: Math.max(0, sp.alpha - deltaTime * SPORULATION.SPORANGIUM_FADE_OUT),
     }));
 
     if (state.spores.length > 0) {
@@ -465,11 +576,11 @@ function updateSporulatingPhase(deltaTime: number) {
         };
         // 감속
         updated.velocity = {
-          x: updated.velocity.x * 0.97,
-          y: updated.velocity.y * 0.97,
+          x: updated.velocity.x * SPORULATION.SPORE_FRICTION,
+          y: updated.velocity.y * SPORULATION.SPORE_FRICTION,
         };
-        updated.bobPhase += deltaTime * 3;
-        updated.alpha = Math.max(0, updated.alpha - deltaTime * 0.15);
+        updated.bobPhase += deltaTime * SPORULATION.SPORE_BOB_RATE;
+        updated.alpha = Math.max(0, updated.alpha - deltaTime * SPORULATION.SPORE_ALPHA_DECAY);
         return updated;
       });
 
@@ -531,7 +642,7 @@ function updateSporeCollectionPhase(deltaTime: number, nucleusPos: Vector2) {
 
     if (!updated.merged) {
       const dist = distance(updated.position, nucleusPos);
-      if (dist < state.nucleus.radius + 20) {
+      if (dist < state.nucleus.radius + FRAGMENT.MERGE_RANGE) {
         state.collectFragment(updated.id);
         return { ...updated, merged: true };
       }
@@ -561,6 +672,9 @@ function updateSporeCollectionPhase(deltaTime: number, nucleusPos: Vector2) {
 let cameraX = MAP_WIDTH / 2;
 let cameraY = MAP_HEIGHT / 2;
 let cameraInitialized = false;
+let zoomLevel = 1.0;
+const MIN_ZOOM = ZOOM.MIN;
+const MAX_ZOOM = ZOOM.MAX;
 
 export function getCamera() {
   return { x: cameraX, y: cameraY };
@@ -569,10 +683,19 @@ export function getCamera() {
 export function setCamera(x: number, y: number) {
   cameraX = ((x % MAP_WIDTH) + MAP_WIDTH) % MAP_WIDTH;
   cameraY = ((y % MAP_HEIGHT) + MAP_HEIGHT) % MAP_HEIGHT;
+  console.log(`[setCamera] New camera: (${cameraX.toFixed(0)}, ${cameraY.toFixed(0)}), sim:`, !!simulation);
   if (simulation) {
     const vp = simulation.getViewport();
     simulation.setViewport(cameraX, cameraY, vp.width, vp.height);
   }
+}
+
+export function getZoom() {
+  return zoomLevel;
+}
+
+export function setZoom(z: number) {
+  zoomLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, z));
 }
 
 // 월드 좌표 → 스크린 좌표 (토러스 래핑)
@@ -582,12 +705,18 @@ function worldToScreenAll(wx: number, wy: number, vw: number, vh: number, margin
   const baseY = ((wy - cameraY) % MAP_HEIGHT + MAP_HEIGHT) % MAP_HEIGHT;
 
   const results: Array<{ x: number; y: number }> = [];
-  // 토러스 복제: 기본 위치와 ±MAP 오프셋 (화면이 맵보다 클 때 필요)
-  for (const ox of [0, -MAP_WIDTH, MAP_WIDTH]) {
-    for (const oy of [0, -MAP_HEIGHT, MAP_HEIGHT]) {
-      const sx = baseX + ox;
-      const sy = baseY + oy;
-      if (sx > -margin && sx < vw + margin && sy > -margin && sy < vh + margin) {
+
+  // 뷰포트 크기에 맞춰 필요한 타일 개수 계산
+  const tilesX = Math.ceil((vw + 2 * margin) / MAP_WIDTH) + 1;
+  const tilesY = Math.ceil((vh + 2 * margin) / MAP_HEIGHT) + 1;
+
+  // 중심 기준으로 타일 배치
+  for (let ox = -Math.floor(tilesX / 2); ox <= Math.ceil(tilesX / 2); ox++) {
+    for (let oy = -Math.floor(tilesY / 2); oy <= Math.ceil(tilesY / 2); oy++) {
+      const sx = baseX + ox * MAP_WIDTH;
+      const sy = baseY + oy * MAP_HEIGHT;
+      // 마진을 포함한 뷰포트 범위 체크
+      if (sx >= -margin && sx <= vw + margin && sy >= -margin && sy <= vh + margin) {
         results.push({ x: sx, y: sy });
       }
     }
@@ -595,70 +724,149 @@ function worldToScreenAll(wx: number, wy: number, vw: number, vh: number, margin
   return results;
 }
 
-// 렌더링
-function render(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number
+// GPU 렌더링 (WebGL2 캔버스 - 블롭/페로몬/정맥/큐빅)
+function renderGPU(
+  gl: WebGL2RenderingContext | null,
+  _width: number,
+  _height: number
 ) {
+  if (!gl) return;
+
+  // 캔버스 실제 크기 사용 (리사이즈 즉시 반영)
+  const width = gl.canvas.width;
+  const height = gl.canvas.height;
+
+  const state = useGameStore.getState();
+  const isDormant = state.blobState === 'dormant';
+
+  // 뷰포트 업데이트 (줌 반영: 월드 공간 크기)
+  if (simulation) {
+    simulation.setViewport(cameraX, cameraY, width / zoomLevel, height / zoomLevel);
+  }
+
+  // 배경 클리어 (#0a0a0a)
+  gl.viewport(0, 0, width, height);
+  gl.clearColor(10 / 255, 10 / 255, 10 / 255, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  // GPU 씬 렌더링
+  if (sceneRenderer && simulation && simulation.isGPUEnabled()) {
+    // 어트랙터 데이터 업데이트
+    const attractors: Array<{ x: number; y: number; strength: number }> = [];
+    for (const nutrient of state.nutrients) {
+      if (!nutrient.harvested) {
+        const tierStrength = GAME.TIER_SMELL_STRENGTH[nutrient.tier - 1];
+        attractors.push({
+          x: nutrient.position.x,
+          y: nutrient.position.y,
+          strength: (nutrient.value / nutrient.maxValue) * tierStrength,
+        });
+      }
+    }
+    sceneRenderer.updateAttractors(attractors);
+
+    const trailTex = simulation.getCurrentTrailTexture();
+    const agentGPU = simulation.getAgentGPU();
+    if (trailTex) {
+      const timeInSeconds = performance.now() / 1000;
+      sceneRenderer.render(
+        trailTex,
+        { x: cameraX, y: cameraY },
+        simulation.getMapSize(),
+        width, height,
+        width / zoomLevel, height / zoomLevel,
+        isDormant,
+        attractors.length,
+        simulation.getShowCubic(),
+        simulation.getShowParticles(),
+        agentGPU?.getCurrentAgentTexture() ?? null,
+        agentGPU?.agentCount ?? 0,
+        showBlobGraphics,
+        timeInSeconds,
+      );
+    }
+  } else if (simulation) {
+    // CPU 폴백: 기존 Canvas2D 렌더링을 위해 2D 컨텍스트가 필요하지만
+    // 듀얼 캔버스에서는 WebGL 캔버스에 2D를 그릴 수 없으므로
+    // CPU 폴백 시 오버레이 캔버스에서 처리
+  }
+}
+
+// Canvas2D 오버레이 렌더링 (영양분/핵/포자/물 이펙트/텍스트)
+function renderOverlay(
+  ctx: CanvasRenderingContext2D,
+  _width: number,
+  _height: number
+) {
+  // 캔버스 실제 크기 사용 (리사이즈 즉시 반영)
+  const width = ctx.canvas.width;
+  const height = ctx.canvas.height;
+
   const state = useGameStore.getState();
   const isDormant = state.blobState === 'dormant';
   const isSporulating = state.blobState === 'sporulating';
 
-  // 뷰포트 업데이트
-  if (simulation) {
-    simulation.setViewport(cameraX, cameraY, width, height);
-  }
+  // 오버레이 클리어 (투명)
+  ctx.clearRect(0, 0, width, height);
 
-  // 배경 (화면 좌표)
-  ctx.fillStyle = '#0a0a0a';
-  ctx.fillRect(0, 0, width, height);
-
-  // 수분 효과 (화면 좌표)
-  if (state.moisture > 20) {
+  // 수분 효과 (화면 좌표 - 줌 무관)
+  if (state.moisture > UI.WATER_EFFECT_THRESHOLD) {
     const moistureAlpha = (state.moisture / 100) * 0.1;
     ctx.fillStyle = `rgba(100, 150, 200, ${moistureAlpha})`;
     ctx.fillRect(0, 0, width, height);
   }
 
-  // 파티클 시뮬레이션 렌더링 (내부에서 자체 카메라 적용)
-  if (simulation) {
+  // 줌 적용 (월드 오브젝트에만)
+  const zoom = zoomLevel;
+  const zoomedW = width / zoom;
+  const zoomedH = height / zoom;
+
+  ctx.save();
+  ctx.scale(zoom, zoom);
+
+  // CPU 폴백: GPU 씬 렌더러가 없으면 Canvas2D로 시뮬레이션 렌더링
+  if (!sceneRenderer && simulation) {
     simulation.render(ctx);
   }
 
   // === 월드 오브젝트 렌더링 (토러스 래핑 적용) ===
 
   // 영양분 그리기
-  renderNutrients(ctx, state.nutrients, width, height);
+  renderNutrients(ctx, state.nutrients, zoomedW, zoomedH);
 
   // 포자낭 그리기 (포자화 중)
   if (isSporulating) {
-    renderSporangia(ctx, width, height);
+    renderSporangia(ctx, zoomedW, zoomedH);
   }
 
   // 포자 그리기
-  renderSpores(ctx, state.spores, width, height);
+  renderSpores(ctx, state.spores, zoomedW, zoomedH);
 
   // 조각 그리기
-  renderFragments(ctx, state.fragments, width, height);
+  renderFragments(ctx, state.fragments, zoomedW, zoomedH);
 
-  // 상태 표시 (화면 중앙 - 화면 좌표)
+  ctx.restore();
+
+  // 상태 표시 (화면 중앙 - 화면 좌표, 줌 무관)
   if (isDormant) {
     ctx.fillStyle = 'rgba(100, 100, 100, 0.8)';
     ctx.font = 'bold 14px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('휴면 중 - 물을 주세요!', width / 2, height / 2 + 50);
+    ctx.fillText(TEXT.SCREEN_DORMANT, width / 2, height / 2 + 50);
   }
 
   if (isSporulating) {
     ctx.fillStyle = 'rgba(255, 200, 100, 0.9)';
     ctx.font = 'bold 16px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('포자화 중...', width / 2, height / 2 + 50);
+    ctx.fillText(TEXT.SCREEN_SPORULATING, width / 2, height / 2 + 50);
   }
 
-  // 물 이펙트 렌더링 (화면 좌표)
+  // 물 이펙트 렌더링 (화면 좌표 - 줌 적용)
+  ctx.save();
+  ctx.scale(zoom, zoom);
   renderWaterEffects(ctx);
+  ctx.restore();
 }
 
 // 영양분 렌더링 - 소비에 따라 축소 (토러스 래핑, 다중 복제)
@@ -666,10 +874,9 @@ function renderNutrients(ctx: CanvasRenderingContext2D, nutrients: import('../ty
   for (const nutrient of nutrients) {
     if (nutrient.harvested) continue;
 
-    const positions = worldToScreenAll(nutrient.position.x, nutrient.position.y, vw, vh, 20);
+    const positions = worldToScreenAll(nutrient.position.x, nutrient.position.y, vw, vh, UI.SPORANGIUM_RENDER_MARGIN);
     const ratio = nutrient.value / nutrient.maxValue;
-    // 티어별 크기: 소=4, 중=7, 대=12
-    const baseSize = nutrient.tier === 1 ? 4 : nutrient.tier === 2 ? 7 : 12;
+    const baseSize = GAME.TIER_BASE_SIZE[nutrient.tier - 1];
     const size = baseSize * (0.3 + 0.7 * ratio);
     // 티어별 색상: 소=연한 베이지, 중=진한 베이지, 대=황금빛
     const fillColor = nutrient.tier === 1 ? '#c8b898' : nutrient.tier === 2 ? '#d4c4a8' : '#e8d090';
@@ -707,9 +914,9 @@ function renderSpores(ctx: CanvasRenderingContext2D, spores: import('../types/ga
   for (const spore of spores) {
     if (spore.alpha <= 0) continue;
 
-    const positions = worldToScreenAll(spore.position.x, spore.position.y, vw, vh, 30);
+    const positions = worldToScreenAll(spore.position.x, spore.position.y, vw, vh, UI.SPORANGIUM_RENDER_MARGIN);
     for (const { x, y } of positions) {
-      const bobOffset = Math.sin(spore.bobPhase) * 3;
+      const bobOffset = Math.sin(spore.bobPhase) * SPORULATION.SPORE_BOB_OFFSET;
 
       ctx.save();
       ctx.shadowColor = '#FFD700';

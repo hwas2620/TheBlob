@@ -1,6 +1,7 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { GAME_CONFIG } from '../types/game';
+import { TEXT, formatText } from '../text';
 
 const formatNumber = (num: number): string => {
   if (num >= 1_000_000) return (num / 1_000_000).toFixed(2) + 'M';
@@ -30,7 +31,7 @@ export const StatsPanel: React.FC = () => {
         <div className="text-2xl font-bold text-yellow-400">{stage.stageNumber}</div>
         {totalSporulations > 0 && (
           <div className="text-xs text-purple-400">
-            🧬 {totalSporulations}회 환생
+            {formatText(TEXT.STAT_SPORULATIONS, totalSporulations)}
           </div>
         )}
       </div>
@@ -48,14 +49,14 @@ export const StatsPanel: React.FC = () => {
       {/* Biomass */}
       <div className="bg-green-900/20 rounded-lg p-3">
         <div className="flex justify-between items-center">
-          <span className="text-green-500/80 text-xs">🧫 질량</span>
+          <span className="text-green-500/80 text-xs">{TEXT.STAT_BIOMASS}</span>
           <span className="text-green-300 font-mono font-bold">
             {formatNumber(biomass)}
           </span>
         </div>
         {canSporulate && gamePhase === 'growing' && (
           <div className="text-xs text-purple-400 mt-1">
-            ✨ 포자화 가능!
+            {TEXT.INFO_SPORULATION_READY}
           </div>
         )}
       </div>
@@ -63,7 +64,7 @@ export const StatsPanel: React.FC = () => {
       {/* 영양분 잔량 */}
       <div className="space-y-1">
         <div className="flex justify-between text-xs">
-          <span className="text-amber-500/80">🌾 영양분</span>
+          <span className="text-amber-500/80">{TEXT.STAT_NUTRIENTS}</span>
           <span className="text-amber-300">
             {formatNumber(stage.remainingNutrients)} / {formatNumber(stage.totalNutrients)}
           </span>
@@ -80,7 +81,7 @@ export const StatsPanel: React.FC = () => {
       {genetics.points > 0 && (
         <div className="bg-purple-900/20 rounded-lg p-3">
           <div className="flex justify-between items-center">
-            <span className="text-purple-500/80 text-xs">🧬 유전자</span>
+            <span className="text-purple-500/80 text-xs">{TEXT.STAT_GENETICS}</span>
             <span className="text-purple-300 font-mono">
               {genetics.points.toFixed(1)} GP
             </span>
@@ -91,16 +92,16 @@ export const StatsPanel: React.FC = () => {
       {/* 상태 표시 */}
       <div className="text-center text-xs">
         {blobState === 'dormant' && (
-          <span className="text-gray-400">💤 휴면 중</span>
+          <span className="text-gray-400">{TEXT.STATUS_DORMANT}</span>
         )}
         {blobState === 'active' && gamePhase === 'growing' && (
-          <span className="text-yellow-400">🌱 성장 중</span>
+          <span className="text-yellow-400">{TEXT.STATUS_ACTIVE}</span>
         )}
         {blobState === 'sporulating' && (
-          <span className="text-orange-400">✨ 포자화 중</span>
+          <span className="text-orange-400">{TEXT.STATUS_SPORULATING}</span>
         )}
         {gamePhase === 'sporeCollection' && (
-          <span className="text-yellow-400">🔗 조각 수집 중</span>
+          <span className="text-yellow-400">{TEXT.STATUS_FRAGMENT}</span>
         )}
       </div>
     </div>

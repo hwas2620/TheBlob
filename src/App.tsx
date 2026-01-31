@@ -6,13 +6,16 @@ import { ActionPanel } from './components/ActionPanel';
 import { GeneticsPanel } from './components/GeneticsPanel';
 import { Minimap } from './components/Minimap';
 import { useGameStore } from './store/gameStore';
-import { toggleCubicVisibility } from './hooks/useGameLoop';
+import { toggleCubicVisibility, toggleParticleVisibility, toggleBlobGraphics } from './hooks/useGameLoop';
+import { TEXT } from './text';
+import { UI } from './config';
 
 function App() {
   const [offlineEarnings, setOfflineEarnings] = useState<number | null>(null);
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [showCubic, setShowCubic] = useState(false);
+  const [showParticles, setShowParticles] = useState(false);
   const { loadGame, blobState } = useGameStore();
 
   // 큐빅 표시 토글
@@ -22,6 +25,37 @@ function App() {
     toggleCubicVisibility(checked);
   };
 
+  // 파티클 표시 토글
+  const handleParticleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    setShowParticles(checked);
+    toggleParticleVisibility(checked);
+  };
+
+  // 숫자 단축키 (1: 큐빅, 2: 파티클)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === '1') {
+        setShowCubic(prev => {
+          const next = !prev;
+          toggleCubicVisibility(next);
+          return next;
+        });
+      } else if (e.key === '2') {
+        setShowParticles(prev => {
+          const next = !prev;
+          // 에이전트 표시 + 블롭 그래픽 숨김 (또는 그 반대)
+          toggleParticleVisibility(next);
+          toggleBlobGraphics(!next);
+          return next;
+        });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Load game on mount
   useEffect(() => {
     const earnings = loadGame();
@@ -29,20 +63,20 @@ function App() {
       setOfflineEarnings(earnings);
       requestAnimationFrame(() => setIsVisible(true));
 
-      // 3초 후 자동으로 사라짐
+      // 자동으로 사라짐
       setTimeout(() => {
         setIsClosing(true);
         setTimeout(() => {
           setOfflineEarnings(null);
           setIsClosing(false);
           setIsVisible(false);
-        }, 300);
-      }, 3000);
+        }, UI.TOAST_FADE_OUT);
+      }, UI.TOAST_DURATION);
     }
   }, []);
 
   return (
-    <div className="w-full h-full bg-black relative overflow-hidden">
+    <div className="w-full h-full relative overflow-hidden" style={{ backgroundColor: '#0a1a0a' }}>
       {/* Game Canvas - Full Screen Background */}
       <div className="absolute inset-0">
         <GameCanvas />
@@ -57,7 +91,7 @@ function App() {
               <span className={blobState === 'dormant' ? 'grayscale' : ''}>🟡</span>
               The Blob
             </h1>
-            <p className="text-xs text-yellow-600/80">황색망사점균 시뮬레이터</p>
+            <p className="text-xs text-yellow-600/80">{TEXT.APP_SUBTITLE}</p>
           </div>
         </header>
 
@@ -76,7 +110,7 @@ function App() {
         {/* Footer Info */}
         <footer className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center pointer-events-none">
           <p className="text-xs text-gray-600">
-            💧 물을 주어 블롭을 깨우세요 • 🌾 영양분을 흡수하여 성장 • ✨ 포자화로 다음 스테이지 진행
+            {TEXT.GAME_GUIDE}
           </p>
         </footer>
 
@@ -90,7 +124,16 @@ function App() {
               onChange={handleCubicToggle}
               className="w-4 h-4 rounded border-gray-600 bg-gray-800 text-yellow-500 focus:ring-yellow-500"
             />
-            큐빅 표시
+            {TEXT.TOGGLE_CUBIC}
+          </label>
+          <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={showParticles}
+              onChange={handleParticleToggle}
+              className="w-4 h-4 rounded border-gray-600 bg-gray-800 text-yellow-500 focus:ring-yellow-500"
+            />
+            {TEXT.TOGGLE_PARTICLES}
           </label>
         </div>
       </div>
@@ -106,8 +149,8 @@ function App() {
           <div className="bg-gray-900/95 border border-yellow-500/50 rounded-xl px-6 py-4 flex items-center gap-4 shadow-lg backdrop-blur-sm">
             <span className="text-3xl">🌙</span>
             <div>
-              <p className="text-yellow-400 text-sm font-medium">오프라인 수익</p>
-              <p className="text-yellow-300 text-xl font-bold font-mono">+{offlineEarnings.toFixed(1)} ATP</p>
+              <p className="text-yellow-400 text-sm font-medium">{TEXT.TOAST_OFFLINE_REWARD}</p>
+              <p className="text-yellow-300 text-xl font-bold font-mono">+{offlineEarnings.toFixed(1)} {TEXT.UNIT_ATP}</p>
             </div>
           </div>
         </div>
