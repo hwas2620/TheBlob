@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-memory"]
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-puppeteer"]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    }
+  }
+}
