@@ -68,6 +68,7 @@ export class PhysarumSimulation {
   private gpu: TrailMapGPU | null = null;        // Phase 1: 트레일맵
   private agentGPU: AgentGPU | null = null;      // Phase 3: 에이전트
   private depositBuffer: Float32Array;             // 에이전트 분비물 버퍼
+  private hasDeposits = false;                       // depositBuffer에 값이 있는지 플래그
   private gpuEnabled = false;
   private agentGPUEnabled = false;
 
@@ -216,26 +217,36 @@ export class PhysarumSimulation {
 
   // 특정 위치에 페로몬 주입 (음식 위치)
   injectPheromone(x: number, y: number, amount: number = 255) {
+    this.depositAtPosition(x, y, amount, ATTRACTION.PHEROMONE_INJECT_RADIUS);
+  }
+
+  // 특정 위치에 페로몬 분비 (먹이가 에이전트를 유인하기 위해)
+  // 논문: "fixing concentration at food sources"
+  depositAtPosition(x: number, y: number, amount: number, radius: number) {
     const { width, height } = this.config;
     const ix = Math.floor(x);
     const iy = Math.floor(y);
-    const radius = ATTRACTION.PHEROMONE_INJECT_RADIUS;
+
+    // 가우시안 시그마 (radius의 1/3 지점에서 ~37% 감쇠)
+    const sigma = radius / 3;
+    const twoSigmaSq = 2 * sigma * sigma;
 
     for (let dy = -radius; dy <= radius; dy++) {
       for (let dx = -radius; dx <= radius; dx++) {
-        const px = ix + dx;
-        const py = iy + dy;
-        if (px < 0 || px >= width || py < 0 || py >= height) continue;
+        // 토러스 맵 래핑
+        const px = ((ix + dx) % width + width) % width;
+        const py = ((iy + dy) % height + height) % height;
 
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist <= radius) {
-          // 거리에 따라 자연스럽게 감쇠
-          const falloff = Math.pow(1 - dist / radius, 0.5);
+        const distSq = dx * dx + dy * dy;
+        if (distSq <= radius * radius) {
+          // 가우시안 falloff (무아레 패턴 방지)
+          const falloff = Math.exp(-distSq / twoSigmaSq);
           const idx = py * width + px;
           const newValue = amount * falloff;
           // 누적 대신 최댓값만 유지 (프레임 누적 방지)
           if (this.gpuEnabled) {
             this.depositBuffer[idx] = Math.max(this.depositBuffer[idx], newValue);
+            this.hasDeposits = true;
           } else {
             this.trailMap[idx] = Math.max(this.trailMap[idx], newValue);
           }
@@ -288,7 +299,10 @@ export class PhysarumSimulation {
       // === 전체 GPU 경로 (Phase 1+3) ===
       const trailTex = this.gpu.getCurrentTrailTexture();
 
-      // 1. GPU 에이전트 업데이트 (Jeff Jones 알고리즘 — 직접 유인 없음)
+      // 0. Occupancy Map 업데이트 (셀 기반 충돌 감지용)
+      this.agentGPU.runOccupancy();
+
+      // 1. GPU 에이전트 업데이트 (Jeff Jones 알고리즘 + 셀 기반 충돌 감지)
       this.agentGPU.runUpdate(
         trailTex,
         {
@@ -296,6 +310,7 @@ export class PhysarumSimulation {
           sensorDistance: this.config.sensorDistance,
           turnSpeed: this.config.turnSpeed,
           moveSpeed: speedPulse,
+          occupancyThreshold: AGENT.OCCUPANCY_THRESHOLD,
         },
       );
 
@@ -309,6 +324,14 @@ export class PhysarumSimulation {
 
       // 3. GPU 확산+감쇠
       this.gpu.runDiffuseDecay(this.config.decayFactor, AGENT.DIFFUSE_PASSES);
+
+      // 3.5. 확산+감쇠 후 먹이 페로몬 복원 (논문: "fixing concentration at food sources")
+      if (this.hasDeposits) {
+        this.gpu.uploadDeposits(this.depositBuffer);
+        this.gpu.blendDeposits();
+        this.depositBuffer.fill(0);
+        this.hasDeposits = false;
+      }
     } else {
       // === CPU/하이브리드 경로 ===
       // 1. 에이전트 업데이트 (CPU, 맥동 적용)
@@ -316,11 +339,14 @@ export class PhysarumSimulation {
 
       // 2. 환경 업데이트
       if (this.gpuEnabled && this.gpu) {
-        // GPU 트레일맵 처리
-        this.gpu.uploadDeposits(this.depositBuffer);
-        this.gpu.blendDeposits();
-        this.depositBuffer.fill(0);
+        // GPU 트레일맵 처리: 확산+감쇠 후 먹이 페로몬 복원
         this.gpu.runDiffuseDecay(this.config.decayFactor, AGENT.DIFFUSE_PASSES);
+        if (this.hasDeposits) {
+          this.gpu.uploadDeposits(this.depositBuffer);
+          this.gpu.blendDeposits();
+          this.depositBuffer.fill(0);
+          this.hasDeposits = false;
+        }
       } else {
         // 전체 CPU 폴백 (멀티패스 확산, 마지막에만 감쇠)
         for (let p = 0; p < AGENT.DIFFUSE_PASSES; p++) {

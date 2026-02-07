@@ -10,5 +10,6 @@ out float fragColor;
 void main() {
     float trail = texture(u_trailMap, v_uv).r;
     float deposit = texture(u_depositMap, v_uv).r;
-    fragColor = min(255.0, trail + deposit);
+    // 논문: "fixing concentration at food sources" = 최댓값 유지
+    fragColor = max(trail, deposit);
 }

@@ -46,7 +46,7 @@ void main() {
 
     float intensity = totalField / (totalField + norm);
 
-    // 그라데이션 색상
+    // 그라데이션 색상 (초록색 글로우)
     vec4 baseColor = vec4(
         {{COLOR_R}} * intensity,
         {{COLOR_G}} * intensity,

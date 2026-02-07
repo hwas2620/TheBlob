@@ -4,7 +4,7 @@ import type { Vector2, WaterDrop, WaterRipple } from '../types/game';
 import { GAME_CONFIG } from '../types/game';
 import { PhysarumSimulation, MAP_WIDTH, MAP_HEIGHT } from '../simulation/PhysarumSimulation';
 import { SceneRenderer } from '../gpu/SceneRenderer';
-import { ZOOM, GAME, WATER_EFFECT, SPORULATION, UI, FRAGMENT, ATTRACTION } from '../config';
+import { ZOOM, GAME, WATER_EFFECT, SPORULATION, UI, FRAGMENT } from '../config';
 import { TEXT, formatText } from '../text';
 
 // Utility functions
@@ -33,7 +33,6 @@ let simulation: PhysarumSimulation | null = null;
 
 // GPU 가속
 let sceneRenderer: SceneRenderer | null = null;
-let pheromoneInjectIndex = 0;
 let showBlobGraphics = true;
 
 // 큐빅 표시 토글
@@ -65,6 +64,29 @@ export function toggleBlobGraphics(show: boolean) {
 
 export function getBlobGraphics(): boolean {
   return showBlobGraphics;
+}
+
+// 페로몬 모드 토글 (역제곱 ↔ 트레일맵)
+export function setPheromoneMode(mode: 'inverse-square' | 'trailmap') {
+  if (sceneRenderer) {
+    sceneRenderer.setPheromoneMode(mode);
+  }
+}
+
+export function getPheromoneMode(): 'inverse-square' | 'trailmap' {
+  return sceneRenderer?.getPheromoneMode() ?? 'inverse-square';
+}
+
+// 뷰 모드 토글 (페로몬 ↔ 밀집도)
+export function toggleViewMode(): 'pheromone' | 'density' {
+  if (sceneRenderer) {
+    return sceneRenderer.toggleViewMode();
+  }
+  return 'pheromone';
+}
+
+export function getViewMode(): 'pheromone' | 'density' {
+  return sceneRenderer?.getViewMode() ?? 'pheromone';
 }
 
 // 미니맵용 시뮬레이션 접근
@@ -414,19 +436,14 @@ function updateGrowingPhase(
     simulation.setAttractors(attractors);
     simulation.syncAttractorsToAgentGPU();
 
-    // 페로몬 주입: 매 프레임 일부 영양분만 (라운드 로빈)
-    if (unharvested.length > 0) {
-      pheromoneInjectIndex = pheromoneInjectIndex % unharvested.length;
-      const batchSize = Math.max(1, Math.ceil(unharvested.length / 10));
-      for (let i = 0; i < batchSize; i++) {
-        const idx = (pheromoneInjectIndex + i) % unharvested.length;
-        const n = unharvested[idx];
-        const tierStrength = GAME.TIER_SMELL_STRENGTH[n.tier - 1];
-        const strength = (n.value / n.maxValue) * tierStrength;
-        // 페로몬 주입: 집중된 소스로 급한 구배 형성
-        simulation.injectPheromone(n.position.x, n.position.y, strength * ATTRACTION.PHEROMONE_INJECT_AMOUNT);
-      }
-      pheromoneInjectIndex = (pheromoneInjectIndex + batchSize) % unharvested.length;
+    // 먹이 페로몬 분비: 모든 영양분에서 강한 페로몬 방출 (에이전트가 감지 가능)
+    // 논문: "fixing concentration at food sources"
+    for (const n of unharvested) {
+      const tierStrength = GAME.TIER_SMELL_STRENGTH[n.tier - 1];
+      const ratio = n.value / n.maxValue;
+      // 먹이 잔량에 비례하는 페로몬 (다 먹히면 냄새 감소)
+      const amount = GAME.FOOD_DEPOSIT_AMOUNT * ratio * tierStrength;
+      simulation.depositAtPosition(n.position.x, n.position.y, amount, GAME.FOOD_DEPOSIT_RADIUS);
     }
 
     // 시뮬레이션 업데이트 (매 프레임 여러 번 = 더 빠른 시뮬레이션)
@@ -767,6 +784,12 @@ function renderGPU(
 
     const trailTex = simulation.getCurrentTrailTexture();
     const agentGPU = simulation.getAgentGPU();
+
+    // 밀집도 맵 텍스처 전달 (페로몬 ↔ 밀집도 토글용)
+    if (agentGPU) {
+      sceneRenderer.setOccupancyTexture(agentGPU.getOccupancyTexture());
+    }
+
     if (trailTex) {
       const timeInSeconds = performance.now() / 1000;
       sceneRenderer.render(
@@ -831,7 +854,7 @@ function renderOverlay(
 
   // === 월드 오브젝트 렌더링 (토러스 래핑 적용) ===
 
-  // 영양분 그리기
+  // 영양분 그리기 (항상 표시)
   renderNutrients(ctx, state.nutrients, zoomedW, zoomedH);
 
   // 포자낭 그리기 (포자화 중)

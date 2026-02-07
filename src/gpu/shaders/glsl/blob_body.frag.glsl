@@ -2,10 +2,12 @@
 precision highp float;
 
 uniform sampler2D u_trailMap;
+uniform sampler2D u_occupancyMap;  // 밀집도 맵 (에이전트 수/셀)
 uniform vec2 u_mapSize;
 uniform vec2 u_viewportSize;
 uniform vec2 u_camera;
 uniform bool u_isDormant;
+uniform int u_viewMode;  // 0 = 페로몬, 1 = 밀집도
 
 in vec2 v_uv;
 out vec4 fragColor;
@@ -15,16 +17,60 @@ void main() {
     vec2 worldPos = mod(u_camera + screenPos, u_mapSize);
     vec2 trailUV = worldPos / u_mapSize;
 
-    float value = texture(u_trailMap, trailUV).r;
+    // === 밀집도 뷰 모드 ===
+    if (u_viewMode == 1) {
+        float density = texture(u_occupancyMap, trailUV).r;
 
-    float threshold = {{FADE_START}};
-    float maxValue = {{MAX_VALUE}};
+        // 밀집도 히트맵 색상 (파랑 → 초록 → 노랑 → 빨강)
+        vec3 color;
+        if (density < 1.0) {
+            // 빈 셀: 투명
+            fragColor = vec4(0.0);
+            return;
+        } else if (density < 3.0) {
+            // 저밀도: 파랑 → 초록
+            float t = (density - 1.0) / 2.0;
+            color = mix(vec3(0.0, 0.3, 0.8), vec3(0.0, 0.8, 0.2), t);
+        } else if (density < 10.0) {
+            // 중밀도: 초록 → 노랑
+            float t = (density - 3.0) / 7.0;
+            color = mix(vec3(0.0, 0.8, 0.2), vec3(1.0, 0.9, 0.0), t);
+        } else {
+            // 고밀도: 노랑 → 빨강
+            float t = clamp((density - 10.0) / 20.0, 0.0, 1.0);
+            color = mix(vec3(1.0, 0.9, 0.0), vec3(1.0, 0.1, 0.0), t);
+        }
 
-    // ── 줌 레벨에 따른 동적 샘플링 반경 ──
-    // 줌 아웃 시 뷰포트가 맵보다 커지므로 더 넓은 영역 샘플링 필요
+        float alpha = clamp(density / 5.0, 0.3, 0.95);
+        fragColor = vec4(color, alpha);
+        return;
+    }
+
+    // === 기존 페로몬 뷰 ===
+
+    // 디버그: occupancy 값을 빨간색으로 출력
+    float occupancy = texture(u_occupancyMap, trailUV).r;
+    fragColor = vec4(occupancy / 10.0, 0.0, 0.0, 1.0);
+    return;
+
+    // 에이전트 밀집도 체크 (단일 픽셀 - 밀집도 뷰와 동일 방식)
+    if (occupancy < 1.0) {
+        fragColor = vec4(0.0);
+        return;
+    }
+
+    // 에이전트 수에 비례한 알파 (1~30 → 0.1~1.0)
+    float occupancyAlpha = clamp(occupancy / 30.0, 0.1, 1.0);
+
     float zoomFactor = max(1.0, max(u_viewportSize.x / u_mapSize.x, u_viewportSize.y / u_mapSize.y));
     float sampleRadius = {{DILATE_RADIUS}} * zoomFactor;
     vec2 texel = sampleRadius / u_mapSize;
+
+    // 페로몬 값
+    float value = texture(u_trailMap, trailUV).r;
+    float threshold = {{FADE_START}};
+    float maxValue = {{MAX_VALUE}};
+
     float neighborSum = 0.0;
     for (int dy = -1; dy <= 1; dy++) {
         for (int dx = -1; dx <= 1; dx++) {
@@ -34,44 +80,24 @@ void main() {
     }
     float avgVal = neighborSum / 9.0;
 
-    // 본체 판정: 이웃 평균 기준 (에이전트 밀집도)
-    float bodyThreshold = 25.0;  // 본체: 에이전트가 많이 모인 곳
-
-    // 줌 아웃 시 임계값 낮춤 (넓은 영역 평균화로 값이 낮아지므로)
     float adjustedThreshold = threshold / zoomFactor;
-
-    // 최소 임계값 미만이면 투명
     if (avgVal < adjustedThreshold) {
         fragColor = vec4(0.0);
         return;
     }
 
-    // 줌 아웃 시 bodyThreshold도 조정
+    // 본체 색상 (에이전트 밀집도에 비례한 알파)
+    float bodyThreshold = 25.0;
     float adjustedBodyThreshold = bodyThreshold / zoomFactor;
+    float densityT = clamp((avgVal - adjustedThreshold) / (maxValue - adjustedThreshold), 0.0, 1.0);
 
-    if (avgVal >= adjustedBodyThreshold) {
-        // ── 본체: 에이전트가 밀집한 활성 영역 ──
-        // 선명한 경계를 위해 가파른 smoothstep
-        float alpha = smoothstep(adjustedBodyThreshold * 0.95, adjustedBodyThreshold * 1.1, avgVal);
-        float densityT = clamp((value - adjustedBodyThreshold) / (maxValue - adjustedBodyThreshold), 0.0, 1.0);
+    vec3 baseColor = u_isDormant
+        ? vec3({{DORMANT_BASE_R}}, {{DORMANT_BASE_G}}, {{DORMANT_BASE_B}})
+        : vec3({{ACTIVE_BASE_R}}, {{ACTIVE_BASE_G}}, {{ACTIVE_BASE_B}});
+    vec3 darkColor = u_isDormant
+        ? vec3({{DORMANT_DARK_R}}, {{DORMANT_DARK_G}}, {{DORMANT_DARK_B}})
+        : vec3({{ACTIVE_DARK_R}}, {{ACTIVE_DARK_G}}, {{ACTIVE_DARK_B}});
 
-        vec3 baseColor = u_isDormant
-            ? vec3({{DORMANT_BASE_R}}, {{DORMANT_BASE_G}}, {{DORMANT_BASE_B}})
-            : vec3({{ACTIVE_BASE_R}}, {{ACTIVE_BASE_G}}, {{ACTIVE_BASE_B}});
-        vec3 darkColor = u_isDormant
-            ? vec3({{DORMANT_DARK_R}}, {{DORMANT_DARK_G}}, {{DORMANT_DARK_B}})
-            : vec3({{ACTIVE_DARK_R}}, {{ACTIVE_DARK_G}}, {{ACTIVE_DARK_B}});
-
-        vec3 bodyColor = mix(darkColor, baseColor, sqrt(densityT));
-        fragColor = vec4(bodyColor, alpha);
-    } else {
-        // ── 점액 흔적: 에이전트가 지나갔지만 떠난 영역 ──
-        // 매우 얇고 투명한 막
-        float trailAlpha = smoothstep(adjustedThreshold, adjustedBodyThreshold * 0.6, avgVal) * 0.06;
-        vec3 trailColor = u_isDormant
-            ? vec3(0.20, 0.16, 0.10)  // 휴면: 어두운 갈색
-            : vec3(0.45, 0.40, 0.15);  // 활성: 연한 갈색
-
-        fragColor = vec4(trailColor, trailAlpha);
-    }
+    vec3 bodyColor = mix(darkColor, baseColor, sqrt(densityT));
+    fragColor = vec4(bodyColor, occupancyAlpha);
 }

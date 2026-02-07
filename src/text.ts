@@ -11,8 +11,14 @@ export const TEXT = {
   GAME_GUIDE: '💧 물을 주어 블롭을 깨우세요 • 🌾 영양분을 흡수하여 성장 • ✨ 포자화로 다음 스테이지 진행',
 
   // 토글 & 버튼
-  TOGGLE_CUBIC: '[1] 큐빅 표시',
-  TOGGLE_PARTICLES: '[2] 에이전트 표시',
+  TOGGLE_CUBIC: '큐빅 표시',
+  TOGGLE_PARTICLES: '에이전트 표시',
+  TOGGLE_PHEROMONE_MODE: '등고선: ',
+  PHEROMONE_MODE_INVERSE: '역제곱',
+  PHEROMONE_MODE_TRAILMAP: '트레일맵',
+  TOGGLE_VIEW_MODE: '뷰 모드: ',
+  VIEW_MODE_PHEROMONE: '페로몬',
+  VIEW_MODE_DENSITY: '밀집도',
   BTN_SAVE: '💾 저장',
   BTN_RESET: '🔄 초기화',
   BTN_WATER: '물 주기',

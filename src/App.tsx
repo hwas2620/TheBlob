@@ -6,7 +6,7 @@ import { ActionPanel } from './components/ActionPanel';
 import { GeneticsPanel } from './components/GeneticsPanel';
 import { Minimap } from './components/Minimap';
 import { useGameStore } from './store/gameStore';
-import { toggleCubicVisibility, toggleParticleVisibility, toggleBlobGraphics } from './hooks/useGameLoop';
+import { toggleCubicVisibility, toggleParticleVisibility, toggleBlobGraphics, setPheromoneMode, toggleViewMode } from './hooks/useGameLoop';
 import { TEXT } from './text';
 import { UI } from './config';
 
@@ -16,20 +16,17 @@ function App() {
   const [isVisible, setIsVisible] = useState(false);
   const [showCubic, setShowCubic] = useState(false);
   const [showParticles, setShowParticles] = useState(false);
+  const [pheromoneMode, _setPheromoneMode] = useState<'inverse-square' | 'trailmap'>('inverse-square');
+  const [viewMode, setViewMode] = useState<'pheromone' | 'density'>('pheromone');
   const { loadGame, blobState } = useGameStore();
 
-  // 큐빅 표시 토글
-  const handleCubicToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    setShowCubic(checked);
-    toggleCubicVisibility(checked);
-  };
-
-  // 파티클 표시 토글
-  const handleParticleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    setShowParticles(checked);
-    toggleParticleVisibility(checked);
+  // 페로몬 모드 토글
+  const handlePheromoneModeToggle = () => {
+    _setPheromoneMode(prev => {
+      const next = prev === 'inverse-square' ? 'trailmap' : 'inverse-square';
+      setPheromoneMode(next);
+      return next;
+    });
   };
 
   // 숫자 단축키 (1: 큐빅, 2: 파티클)
@@ -50,6 +47,16 @@ function App() {
           toggleBlobGraphics(!next);
           return next;
         });
+      } else if (e.key === '3') {
+        _setPheromoneMode(prev => {
+          const next = prev === 'inverse-square' ? 'trailmap' : 'inverse-square';
+          setPheromoneMode(next);
+          return next;
+        });
+      } else if (e.key === '4' || e.key.toLowerCase() === 'd') {
+        // 밀집도 뷰 토글
+        const newMode = toggleViewMode();
+        setViewMode(newMode);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -115,26 +122,62 @@ function App() {
         </footer>
 
         {/* Bottom Right - Minimap & Toggle */}
-        <div className="absolute bottom-4 right-4 pointer-events-auto space-y-2">
+        <div className="absolute bottom-4 right-4 pointer-events-auto space-y-1">
           <Minimap />
-          <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={showCubic}
-              onChange={handleCubicToggle}
-              className="w-4 h-4 rounded border-gray-600 bg-gray-800 text-yellow-500 focus:ring-yellow-500"
-            />
-            {TEXT.TOGGLE_CUBIC}
-          </label>
-          <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={showParticles}
-              onChange={handleParticleToggle}
-              className="w-4 h-4 rounded border-gray-600 bg-gray-800 text-yellow-500 focus:ring-yellow-500"
-            />
-            {TEXT.TOGGLE_PARTICLES}
-          </label>
+          <div className="flex flex-col gap-1 text-xs">
+            <button
+              onClick={() => {
+                setShowCubic(prev => {
+                  const next = !prev;
+                  toggleCubicVisibility(next);
+                  return next;
+                });
+              }}
+              className="flex items-center gap-2 text-gray-400 hover:text-yellow-400 transition-colors text-left"
+            >
+              <span className="w-4 text-center text-gray-600">[1]</span>
+              {TEXT.TOGGLE_CUBIC}
+              <span className={showCubic ? 'text-green-400' : 'text-gray-600'}>{showCubic ? 'ON' : 'OFF'}</span>
+            </button>
+            <button
+              onClick={() => {
+                setShowParticles(prev => {
+                  const next = !prev;
+                  toggleParticleVisibility(next);
+                  toggleBlobGraphics(!next);
+                  return next;
+                });
+              }}
+              className="flex items-center gap-2 text-gray-400 hover:text-yellow-400 transition-colors text-left"
+            >
+              <span className="w-4 text-center text-gray-600">[2]</span>
+              {TEXT.TOGGLE_PARTICLES}
+              <span className={showParticles ? 'text-green-400' : 'text-gray-600'}>{showParticles ? 'ON' : 'OFF'}</span>
+            </button>
+            <button
+              onClick={handlePheromoneModeToggle}
+              className="flex items-center gap-2 text-gray-400 hover:text-yellow-400 transition-colors text-left"
+            >
+              <span className="w-4 text-center text-gray-600">[3]</span>
+              {TEXT.TOGGLE_PHEROMONE_MODE}
+              <span className="text-yellow-400">
+                {pheromoneMode === 'inverse-square' ? TEXT.PHEROMONE_MODE_INVERSE : TEXT.PHEROMONE_MODE_TRAILMAP}
+              </span>
+            </button>
+            <button
+              onClick={() => {
+                const newMode = toggleViewMode();
+                setViewMode(newMode);
+              }}
+              className="flex items-center gap-2 text-gray-400 hover:text-yellow-400 transition-colors text-left"
+            >
+              <span className="w-4 text-center text-gray-600">[4]</span>
+              {TEXT.TOGGLE_VIEW_MODE}
+              <span className={viewMode === 'density' ? 'text-red-400' : 'text-yellow-400'}>
+                {viewMode === 'pheromone' ? TEXT.VIEW_MODE_PHEROMONE : TEXT.VIEW_MODE_DENSITY}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 

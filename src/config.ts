@@ -20,11 +20,13 @@ export const AGENT = {
   TURN_SPEED: Math.PI / 4,     // RA = 45° (논문)
   MOVE_SPEED: 1,               // SS = 1 px/step (논문 원본)
   DEPOSIT_AMOUNT: 5,           // depT = 5 (논문 원본값)
-  DECAY_FACTOR: 0.95,          // 트레일 감쇠 (느리게: 경로 오래 유지)
-  DECAY_FACTOR_DORMANT: 0.98,  // 트레일 감쇠 (휴면)
+  DECAY_FACTOR: 0.99,          // 트레일 감쇠 (아주 느리게: 원거리 확산 가능)
+  DECAY_FACTOR_DORMANT: 0.995, // 트레일 감쇠 (휴면: 거의 유지)
   DIFFUSE_STRENGTH: 1,
   DIFFUSE_PASSES: 1,           // 확산 패스 1회 (논문 원본)
   SPAWN_RADIUS: 20,            // 초기 스폰 반경 (중간: 중심 밀집하되 확장 가능)
+  // 밀도 기반 회피 (물처럼 퍼짐)
+  OCCUPANCY_THRESHOLD: 5,      // 이 밀도 이상이면 낮은 밀도 방향으로 회피
 } as const;
 
 // ── 에이전트 유인(Attraction) ────────────────────────────────
@@ -34,9 +36,9 @@ export const ATTRACTION = {
   DIRECT_MIN_DIST: 5,     // (미사용 - 순수 Jeff Jones)
   DIRECT_MAX_DIST: 150,   // (미사용 - 순수 Jeff Jones)
   STRENGTH: 0.25,          // (미사용 - 순수 Jeff Jones)
-  // 페로몬 주입: 넓은 구배로 원거리 유도
-  PHEROMONE_INJECT_RADIUS: 120, // 페로몬 주입 반경 (넓게 = 멀리서도 감지)
-  PHEROMONE_INJECT_AMOUNT: 8000, // 페로몬 주입량 (강하게)
+  // 페로몬 주입: 넓은 범위 + 확산으로 구배 확장
+  PHEROMONE_INJECT_RADIUS: 80, // 페로몬 주입 반경 (넓게: 원거리 유인)
+  PHEROMONE_INJECT_AMOUNT: 200, // 페로몬 주입량 (낮게: 확산 후 자연스러운 구배)
   // (미사용)
   SATURATION_THRESHOLD: 40,
   SATURATION_EXPLORE_CHANCE: 0.6,
@@ -85,11 +87,11 @@ export const BLOB_BODY = {
 
 // ── 정맥(Vein) 렌더링 ───────────────────────────────────────
 export const VEINS = {
-  MIN: 20,         // 정맥 표시 최소 트레일 값 (본체 내부만)
+  MIN: 8,          // 정맥 표시 최소 트레일 값 (낮춤: 더 많은 영역에서 정맥 표시)
   MAX: 120,        // 정맥 표시 최대 트레일 값
   STEP: 2,         // 샘플링 간격 (px)
   MAX_ALPHA: 0.8,  // 최대 투명도
-  RIDGE_SCALE: 6.0,  // 능선 강도 스케일 (value - avg 를 확대)
+  RIDGE_SCALE: 12.0, // 능선 강도 스케일 (높임: 작은 ridge도 잘 보이게)
   // 색상 (vec3 형식, 0-1)
   ACTIVE_COLOR: { r: 0.95, g: 0.85, b: 0.3 },    // 밝은 황금색 (정맥 하이라이트)
   DORMANT_COLOR: { r: 0.45, g: 0.38, b: 0.22 },
@@ -161,6 +163,9 @@ export const GAME = {
   TIER_SMELL_STRENGTH: [0.7, 1.0, 1.8] as readonly number[],
   TIER_BASE_SIZE: [4, 7, 12] as readonly number[],
   MAX_DELTA_TIME: 0.1,      // 최대 deltaTime 클램프 (초)
+  // 먹이 페로몬 분비 (에이전트가 먹이를 감지할 수 있게)
+  FOOD_DEPOSIT_AMOUNT: 150,  // 먹이가 뿌리는 페로몬 양 (에이전트 5의 30배)
+  FOOD_DEPOSIT_RADIUS: 80,   // 먹이 페로몬 확산 반경 (넓게)
 } as const;
 
 // ── 물 이펙트 ────────────────────────────────────────────────

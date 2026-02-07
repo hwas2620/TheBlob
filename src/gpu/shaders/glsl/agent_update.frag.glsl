@@ -2,17 +2,18 @@
 precision highp float;
 
 // ============================================================
-// Jeff Jones 알고리즘 (2010 논문) + 충돌 감지
+// Jeff Jones 알고리즘 (2010 논문) + 셀 기반 충돌 감지
 // "Characteristics of Pattern Formation and Evolution in
 //  Approximations of Physarum Transport Networks"
 //
 // 핵심: "at most one particle in each grid square"
-// GPU 근사: 밀도 기반 회피 (높은 페로몬 = 밀집 = 이동 실패)
+// GPU 구현: Occupancy Map으로 셀당 에이전트 수 추적
 // ============================================================
 
 uniform sampler2D u_agentState;
 uniform sampler2D u_trailMap;
 uniform sampler2D u_random;
+uniform sampler2D u_occupancyMap;
 
 uniform int u_agentCount;
 uniform int u_texWidth;
@@ -22,6 +23,7 @@ uniform float u_sensorDistance;
 uniform float u_turnSpeed;
 uniform float u_moveSpeed;
 uniform float u_frameIndex;
+uniform float u_occupancyThreshold;  // 셀당 최대 에이전트 수
 
 in vec2 v_uv;
 out vec4 fragColor;
@@ -63,58 +65,60 @@ void main() {
     // 현재 위치의 페로몬 (밀도 체크용)
     float currentTrail = texture(u_trailMap, pos / u_mapSize).r;
 
-    // === SENSE ===
+    // === SENSE (페로몬) ===
     float frontSense = senseTrail(pos, angle, u_sensorDistance);
     float leftSense  = senseTrail(pos, angle - u_sensorAngle, u_sensorDistance);
     float rightSense = senseTrail(pos, angle + u_sensorAngle, u_sensorDistance);
 
-    // === COLLISION DETECTION (밀도 기반) ===
-    // 현재 위치가 과밀(페로몬 > 임계값)이면 → 낮은 방향으로 탈출
-    float densityThreshold = 50.0;
-    bool isOvercrowded = currentTrail > densityThreshold;
+    // === SENSE (밀도) - 물처럼 퍼지기 위해 밀집 지역 회피 ===
+    float sensorDist = u_sensorDistance * 2.0;  // 밀도는 더 멀리 감지
+    vec2 frontPos = mod(pos + vec2(cos(angle), sin(angle)) * sensorDist, u_mapSize);
+    vec2 leftPos  = mod(pos + vec2(cos(angle - u_sensorAngle), sin(angle - u_sensorAngle)) * sensorDist, u_mapSize);
+    vec2 rightPos = mod(pos + vec2(cos(angle + u_sensorAngle), sin(angle + u_sensorAngle)) * sensorDist, u_mapSize);
 
-    if (isOvercrowded) {
-        // 과밀 상태: 페로몬이 가장 낮은 방향으로 회전 (탈출)
-        if (frontSense <= leftSense && frontSense <= rightSense) {
-            // 앞이 가장 낮음 → 직진 (탈출)
-        } else if (leftSense < rightSense) {
-            // 왼쪽이 더 낮음 → 좌회전
+    float frontDensity = texture(u_occupancyMap, frontPos / u_mapSize).r;
+    float leftDensity  = texture(u_occupancyMap, leftPos / u_mapSize).r;
+    float rightDensity = texture(u_occupancyMap, rightPos / u_mapSize).r;
+    float currentDensity = texture(u_occupancyMap, pos / u_mapSize).r;
+
+    // === ROTATE ===
+    // 밀도가 높으면 무조건 회피, 아니면 페로몬 추적
+
+    // 현재 위치 밀도가 높으면 → 강제로 낮은 밀도 방향으로
+    if (currentDensity > 1.0) {
+        // 밀집: 가장 낮은 밀도 방향으로 회전
+        if (frontDensity <= leftDensity && frontDensity <= rightDensity) {
+            // 전방이 가장 비어있음 → 직진
+        } else if (leftDensity < rightDensity) {
             angle -= u_turnSpeed;
-        } else {
-            // 오른쪽이 더 낮음 → 우회전
+        } else if (rightDensity < leftDensity) {
             angle += u_turnSpeed;
+        } else {
+            // 모두 비슷 → 강한 랜덤 회전
+            angle += (rnd.x - 0.5) * 3.14159;
         }
     } else {
-        // === ROTATE (일반 Jeff Jones) ===
+        // 여유: Jeff Jones 페로몬 추적
         if (frontSense > leftSense && frontSense > rightSense) {
-            // Case 1: 전방이 가장 강함 → 직진
+            // 직진
         } else if (frontSense < leftSense && frontSense < rightSense) {
-            // Case 2: 전방이 가장 약함 → 랜덤 좌/우
             angle += (rnd.x > 0.5 ? 1.0 : -1.0) * u_turnSpeed;
         } else if (leftSense > rightSense) {
-            // Case 3: 좌측이 더 강함 → 좌회전
             angle -= u_turnSpeed;
         } else if (rightSense > leftSense) {
-            // Case 4: 우측이 더 강함 → 우회전
             angle += u_turnSpeed;
+        } else {
+            // 페로몬 없음 → 랜덤 탐색
+            angle += (rnd.x - 0.5) * u_turnSpeed;
         }
-        // Case 5: 모두 동일 → 직진
     }
 
     // === MOVE ===
-    vec2 newPos = mod(pos + vec2(cos(angle), sin(angle)) * u_moveSpeed, u_mapSize);
-
-    // 목표 위치의 밀도 체크 (충돌 감지)
-    float targetTrail = texture(u_trailMap, newPos / u_mapSize).r;
-
-    // 과밀 상태면 무조건 이동 (탈출), 아니면 충돌 감지
-    if (isOvercrowded || targetTrail < densityThreshold * 1.5) {
-        x = newPos.x;
-        y = newPos.y;
-    } else {
-        // 이동 실패: 랜덤 회전
-        angle += (rnd.z - 0.5) * 3.14159;
-    }
+    // 밀도 그래디언트로 회전 방향이 결정되었으므로, 항상 이동
+    vec2 direction = vec2(cos(angle), sin(angle));
+    vec2 newPos = mod(pos + direction * u_moveSpeed, u_mapSize);
+    x = newPos.x;
+    y = newPos.y;
 
     fragColor = vec4(x, y, angle, flags);
 }

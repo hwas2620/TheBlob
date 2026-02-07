@@ -4,10 +4,14 @@
 import { FULLSCREEN_QUAD_VERT } from './shaders';
 import { BLOB_BODY_FRAG } from './shaders/blob_body';
 import { PHEROMONE_FIELD_FRAG } from './shaders/pheromone_field';
+import { PHEROMONE_FIELD_TRAILMAP_FRAG } from './shaders/pheromone_field_trailmap';
 import { AGENT_TEX } from '../config';
 import { VEINS_FRAG } from './shaders/veins';
 import { CUBIC_GLOW_FRAG } from './shaders/cubic_glow';
 import { AGENT_DISPLAY_VERT, AGENT_DISPLAY_FRAG } from './shaders/agent_display';
+
+export type PheromoneMode = 'inverse-square' | 'trailmap';
+export type ViewMode = 'pheromone' | 'density';  // 페로몬 vs 밀집도
 
 interface SceneUniforms {
   trailMap: WebGLUniformLocation | null;
@@ -18,6 +22,8 @@ interface SceneUniforms {
   attractors?: WebGLUniformLocation | null;
   attractorCount?: WebGLUniformLocation | null;
   time?: WebGLUniformLocation | null;
+  occupancyMap?: WebGLUniformLocation | null;  // 밀집도 맵
+  viewMode?: WebGLUniformLocation | null;       // 뷰 모드
 }
 
 export class SceneRenderer {
@@ -26,13 +32,24 @@ export class SceneRenderer {
   // 셰이더 프로그램
   private blobProgram: WebGLProgram;
   private pheromoneProgram: WebGLProgram;
+  private pheromoneTrailmapProgram: WebGLProgram;
   private veinsProgram: WebGLProgram;
   private cubicProgram: WebGLProgram;
   private agentDisplayProgram: WebGLProgram;
 
+  // 페로몬 모드
+  private pheromoneMode: PheromoneMode = 'inverse-square';
+
+  // 뷰 모드 (페로몬 vs 밀집도)
+  private viewMode: ViewMode = 'pheromone';
+
+  // 밀집도 맵 텍스처 참조
+  private occupancyTex: WebGLTexture | null = null;
+
   // 유니폼 캐시
   private blobUniforms: SceneUniforms;
   private pheromoneUniforms: SceneUniforms;
+  private pheromoneTrailmapUniforms: SceneUniforms;
   private veinsUniforms: SceneUniforms;
   private cubicUniforms: SceneUniforms;
   private agentDisplayUniforms: {
@@ -60,17 +77,23 @@ export class SceneRenderer {
     // 셰이더 컴파일
     this.blobProgram = this.createProgram(FULLSCREEN_QUAD_VERT, BLOB_BODY_FRAG);
     this.pheromoneProgram = this.createProgram(FULLSCREEN_QUAD_VERT, PHEROMONE_FIELD_FRAG);
+    this.pheromoneTrailmapProgram = this.createProgram(FULLSCREEN_QUAD_VERT, PHEROMONE_FIELD_TRAILMAP_FRAG);
     this.veinsProgram = this.createProgram(FULLSCREEN_QUAD_VERT, VEINS_FRAG);
     this.cubicProgram = this.createProgram(FULLSCREEN_QUAD_VERT, CUBIC_GLOW_FRAG);
     this.agentDisplayProgram = this.createProgram(AGENT_DISPLAY_VERT, AGENT_DISPLAY_FRAG);
 
     // 유니폼 위치 캐시
-    this.blobUniforms = this.getUniforms(this.blobProgram, true);
+    this.blobUniforms = {
+      ...this.getUniforms(this.blobProgram, true),
+      occupancyMap: gl.getUniformLocation(this.blobProgram, 'u_occupancyMap'),
+      viewMode: gl.getUniformLocation(this.blobProgram, 'u_viewMode'),
+    };
     this.pheromoneUniforms = {
       ...this.getUniforms(this.pheromoneProgram, false),
       attractors: gl.getUniformLocation(this.pheromoneProgram, 'u_attractors'),
       attractorCount: gl.getUniformLocation(this.pheromoneProgram, 'u_attractorCount'),
     };
+    this.pheromoneTrailmapUniforms = this.getUniforms(this.pheromoneTrailmapProgram, false);
     this.veinsUniforms = {
       ...this.getUniforms(this.veinsProgram, true),
       time: gl.getUniformLocation(this.veinsProgram, 'u_time'),
@@ -145,6 +168,34 @@ export class SceneRenderer {
     gl.bindTexture(gl.TEXTURE_2D, null);
   }
 
+  // 페로몬 모드 설정
+  setPheromoneMode(mode: PheromoneMode) {
+    this.pheromoneMode = mode;
+  }
+
+  getPheromoneMode(): PheromoneMode {
+    return this.pheromoneMode;
+  }
+
+  // 뷰 모드 설정 (페로몬 ↔ 밀집도 토글)
+  setViewMode(mode: ViewMode) {
+    this.viewMode = mode;
+  }
+
+  getViewMode(): ViewMode {
+    return this.viewMode;
+  }
+
+  toggleViewMode(): ViewMode {
+    this.viewMode = this.viewMode === 'pheromone' ? 'density' : 'pheromone';
+    return this.viewMode;
+  }
+
+  // 밀집도 맵 텍스처 설정 (AgentGPU에서 전달받음)
+  setOccupancyTexture(tex: WebGLTexture | null) {
+    this.occupancyTex = tex;
+  }
+
   // 씬 렌더링 (모든 패스)
   // canvasWidth/Height: 실제 캔버스 픽셀 크기 (gl.viewport용)
   // logicalWidth/Height: 줌 적용된 논리적 뷰포트 크기 (셰이더 u_viewportSize용)
@@ -173,9 +224,10 @@ export class SceneRenderer {
     // 블렌딩 활성화
     gl.enable(gl.BLEND);
 
-    // 1. 페로몬 필드 (항상 표시)
-    if (attractorCount > 0) {
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    // 1. 페로몬 등고선 (항상 표시)
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    if (this.pheromoneMode === 'inverse-square' && attractorCount > 0) {
+      // 역제곱 필드 등고선
       this.renderPass(
         this.pheromoneProgram,
         this.pheromoneUniforms,
@@ -184,10 +236,19 @@ export class SceneRenderer {
         isDormant,
         attractorCount,
       );
+    } else if (this.pheromoneMode === 'trailmap') {
+      // 트레일맵 기반 등고선
+      this.renderPass(
+        this.pheromoneTrailmapProgram,
+        this.pheromoneTrailmapUniforms,
+        trailTexture,
+        camera, mapSize, logicalWidth, logicalHeight,
+        isDormant,
+      );
     }
 
     if (showBlobGraphics) {
-      // 2. 블롭 본체
+      // 2. 블롭 본체 (에이전트 밀집도 기반 렌더링)
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
       this.renderPass(
         this.blobProgram,
@@ -197,17 +258,19 @@ export class SceneRenderer {
         isDormant,
       );
 
-      // 3. 정맥 (맥동 효과)
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-      this.renderPass(
-        this.veinsProgram,
-        this.veinsUniforms,
-        trailTexture,
-        camera, mapSize, logicalWidth, logicalHeight,
-        isDormant,
-        undefined,
-        time,
-      );
+      // 3. 정맥 (맥동 효과) - 밀집도 뷰에서는 숨김
+      if (this.viewMode !== 'density') {
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        this.renderPass(
+          this.veinsProgram,
+          this.veinsUniforms,
+          trailTexture,
+          camera, mapSize, logicalWidth, logicalHeight,
+          isDormant,
+          undefined,
+          time,
+        );
+      }
     }
 
     // 4. 큐빅 글로우 (독립 토글)
@@ -271,6 +334,16 @@ export class SceneRenderer {
       gl.bindTexture(gl.TEXTURE_2D, this.attractorTex);
       gl.uniform1i(uniforms.attractors, 1);
       gl.uniform1i(uniforms.attractorCount!, attractorCount);
+    }
+
+    // 밀집도 맵 + 뷰 모드 (블롭 본체 셰이더용)
+    if (uniforms.viewMode) {
+      gl.uniform1i(uniforms.viewMode, this.viewMode === 'density' ? 1 : 0);
+    }
+    if (uniforms.occupancyMap && this.occupancyTex) {
+      gl.activeTexture(gl.TEXTURE2);
+      gl.bindTexture(gl.TEXTURE_2D, this.occupancyTex);
+      gl.uniform1i(uniforms.occupancyMap!, 2);
     }
 
     this.drawQuad();
@@ -374,6 +447,7 @@ export class SceneRenderer {
     const gl = this.gl;
     gl.deleteProgram(this.blobProgram);
     gl.deleteProgram(this.pheromoneProgram);
+    gl.deleteProgram(this.pheromoneTrailmapProgram);
     gl.deleteProgram(this.veinsProgram);
     gl.deleteProgram(this.cubicProgram);
     gl.deleteProgram(this.agentDisplayProgram);

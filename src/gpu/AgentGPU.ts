@@ -4,6 +4,7 @@
 import { FULLSCREEN_QUAD_VERT } from './shaders';
 import { AGENT_UPDATE_FRAG } from './shaders/agent_update';
 import { DEPOSIT_POINTS_VERT, DEPOSIT_POINTS_FRAG } from './shaders/deposit_points';
+import { OCCUPANCY_COUNT_VERT, OCCUPANCY_COUNT_FRAG } from './shaders/occupancy_count';
 import { AGENT_TEX } from '../config';
 
 const AGENT_TEX_WIDTH = AGENT_TEX.WIDTH;
@@ -28,9 +29,14 @@ export class AgentGPU {
   private attractorTex: WebGLTexture;
   private attractorData: Float32Array;
 
+  // Occupancy Map (셀 기반 충돌 감지용)
+  private occupancyTex: WebGLTexture;
+  private occupancyFbo: WebGLFramebuffer;
+
   // 셰이더
   private updateProgram: WebGLProgram;
   private depositProgram: WebGLProgram;
+  private occupancyProgram: WebGLProgram;
 
   // 풀스크린 쿼드 VAO (에이전트 업데이트용)
   private quadVAO: WebGLVertexArrayObject;
@@ -42,6 +48,7 @@ export class AgentGPU {
   // 유니폼 캐시
   private updateUniforms: Record<string, WebGLUniformLocation | null>;
   private depositUniforms: Record<string, WebGLUniformLocation | null>;
+  private occupancyUniforms: Record<string, WebGLUniformLocation | null>;
 
   // CPU 리드백 버퍼 (에이전트 위치 캐시)
   private readbackBuffer: Float32Array;
@@ -64,23 +71,32 @@ export class AgentGPU {
     this.fboA = this.createFBO(this.agentTexA, AGENT_TEX_WIDTH, AGENT_TEX_HEIGHT);
     this.fboB = this.createFBO(this.agentTexB, AGENT_TEX_WIDTH, AGENT_TEX_HEIGHT);
 
+    // Occupancy Map (R32F, 맵 크기)
+    this.occupancyTex = this.createR32FTexture(mapWidth, mapHeight);
+    this.occupancyFbo = this.createFBO(this.occupancyTex, mapWidth, mapHeight);
+
     // 쿼드 VAO
     this.quadVAO = this.createQuadVAO();
 
     // 셰이더 컴파일
     this.updateProgram = this.createProgram(FULLSCREEN_QUAD_VERT, AGENT_UPDATE_FRAG);
     this.depositProgram = this.createProgram(DEPOSIT_POINTS_VERT, DEPOSIT_POINTS_FRAG);
+    this.occupancyProgram = this.createProgram(OCCUPANCY_COUNT_VERT, OCCUPANCY_COUNT_FRAG);
 
-    // 유니폼 캐시 (Jeff Jones 알고리즘 — 직접 유인 없음)
+    // 유니폼 캐시 (Jeff Jones 알고리즘 + 셀 기반 충돌 감지)
     this.updateUniforms = this.cacheUniforms(this.updateProgram, [
-      'u_agentState', 'u_trailMap', 'u_random',
+      'u_agentState', 'u_trailMap', 'u_random', 'u_occupancyMap',
       'u_agentCount', 'u_texWidth',
       'u_mapSize', 'u_sensorAngle', 'u_sensorDistance',
-      'u_turnSpeed', 'u_moveSpeed', 'u_frameIndex',
+      'u_turnSpeed', 'u_moveSpeed', 'u_frameIndex', 'u_occupancyThreshold',
     ]);
 
     this.depositUniforms = this.cacheUniforms(this.depositProgram, [
       'u_agentState', 'u_mapSize', 'u_agentCount', 'u_texWidth', 'u_depositAmount',
+    ]);
+
+    this.occupancyUniforms = this.cacheUniforms(this.occupancyProgram, [
+      'u_agentState', 'u_mapSize', 'u_agentCount', 'u_texWidth',
     ]);
 
     // 리드백 버퍼
@@ -89,6 +105,11 @@ export class AgentGPU {
 
   get agentCount(): number {
     return this._agentCount;
+  }
+
+  // 밀집도 맵 텍스처 (SceneRenderer로 전달하여 시각화)
+  getOccupancyTexture(): WebGLTexture {
+    return this.occupancyTex;
   }
 
   // CPU 에이전트 배열을 GPU 텍스처에 업로드
@@ -130,7 +151,7 @@ export class AgentGPU {
     gl.bindTexture(gl.TEXTURE_2D, null);
   }
 
-  // 에이전트 업데이트 실행 (1 스텝) — Jeff Jones 알고리즘
+  // 에이전트 업데이트 실행 (1 스텝) — Jeff Jones 알고리즘 + 셀 기반 충돌 감지
   runUpdate(
     trailTexture: WebGLTexture,
     config: {
@@ -138,6 +159,7 @@ export class AgentGPU {
       sensorDistance: number;
       turnSpeed: number;
       moveSpeed: number;
+      occupancyThreshold: number;  // 셀당 최대 에이전트 수 (1 = 논문 원본)
     },
   ) {
     const gl = this.gl;
@@ -146,7 +168,7 @@ export class AgentGPU {
 
     // 디버깅: 첫 프레임만 로그
     if (this.frameIndex === 0) {
-      console.log(`[AgentGPU] 첫 업데이트 (Jeff Jones): 에이전트 수=${this._agentCount}, 맵=${this.mapWidth}x${this.mapHeight}`);
+      console.log(`[AgentGPU] 첫 업데이트 (Jeff Jones + 셀 충돌): 에이전트 수=${this._agentCount}, 맵=${this.mapWidth}x${this.mapHeight}, threshold=${config.occupancyThreshold}`);
     }
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, dstFbo);
@@ -167,7 +189,11 @@ export class AgentGPU {
     gl.bindTexture(gl.TEXTURE_2D, this.randomTex);
     gl.uniform1i(this.updateUniforms['u_random'], 2);
 
-    // 유니폼 설정 (Jeff Jones 파라미터만)
+    gl.activeTexture(gl.TEXTURE3);
+    gl.bindTexture(gl.TEXTURE_2D, this.occupancyTex);
+    gl.uniform1i(this.updateUniforms['u_occupancyMap'], 3);
+
+    // 유니폼 설정 (Jeff Jones 파라미터 + 충돌 감지)
     gl.uniform1i(this.updateUniforms['u_agentCount'], this._agentCount);
     gl.uniform1i(this.updateUniforms['u_texWidth'], AGENT_TEX_WIDTH);
     gl.uniform2f(this.updateUniforms['u_mapSize'], this.mapWidth, this.mapHeight);
@@ -176,10 +202,43 @@ export class AgentGPU {
     gl.uniform1f(this.updateUniforms['u_turnSpeed'], config.turnSpeed);
     gl.uniform1f(this.updateUniforms['u_moveSpeed'], config.moveSpeed);
     gl.uniform1f(this.updateUniforms['u_frameIndex'], this.frameIndex++);
+    gl.uniform1f(this.updateUniforms['u_occupancyThreshold'], config.occupancyThreshold);
 
     this.drawQuad();
 
     this.currentIsA = !this.currentIsA;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+
+  // Occupancy Map 업데이트: 에이전트 위치를 점으로 렌더링하여 셀당 카운트 계산
+  runOccupancy() {
+    const gl = this.gl;
+    const agentTex = this.currentIsA ? this.agentTexA : this.agentTexB;
+
+    // Occupancy 텍스처 클리어
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.occupancyFbo);
+    gl.viewport(0, 0, this.mapWidth, this.mapHeight);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // 가산 블렌딩
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.ONE, gl.ONE);
+
+    gl.useProgram(this.occupancyProgram);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, agentTex);
+    gl.uniform1i(this.occupancyUniforms['u_agentState'], 0);
+
+    gl.uniform2f(this.occupancyUniforms['u_mapSize'], this.mapWidth, this.mapHeight);
+    gl.uniform1i(this.occupancyUniforms['u_agentCount'], this._agentCount);
+    gl.uniform1i(this.occupancyUniforms['u_texWidth'], AGENT_TEX_WIDTH);
+
+    // 포인트 렌더링
+    gl.drawArrays(gl.POINTS, 0, this._agentCount);
+
+    gl.disable(gl.BLEND);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
@@ -348,6 +407,20 @@ export class AgentGPU {
     return tex;
   }
 
+  // R32F 텍스처 생성 (Occupancy Map용)
+  private createR32FTexture(w: number, h: number): WebGLTexture {
+    const gl = this.gl;
+    const tex = gl.createTexture()!;
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.R32F, w, h, 0, gl.RED, gl.FLOAT, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);  // 토러스
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    return tex;
+  }
+
   private createFBO(texture: WebGLTexture, _w: number, _h: number): WebGLFramebuffer {
     const gl = this.gl;
     const fbo = gl.createFramebuffer()!;
@@ -434,10 +507,13 @@ export class AgentGPU {
     gl.deleteTexture(this.agentTexB);
     gl.deleteTexture(this.randomTex);
     gl.deleteTexture(this.attractorTex);
+    gl.deleteTexture(this.occupancyTex);
     gl.deleteFramebuffer(this.fboA);
     gl.deleteFramebuffer(this.fboB);
+    gl.deleteFramebuffer(this.occupancyFbo);
     gl.deleteProgram(this.updateProgram);
     gl.deleteProgram(this.depositProgram);
+    gl.deleteProgram(this.occupancyProgram);
     gl.deleteVertexArray(this.quadVAO);
   }
 }

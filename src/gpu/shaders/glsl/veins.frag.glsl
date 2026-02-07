@@ -39,10 +39,13 @@ void main() {
     float avg = (right + left + up + down) * 0.25;
     float ridge = value - avg;
 
-    if (ridge <= 0.0) {
+    // 아주 작은 음수도 허용 (확산으로 평평해진 영역 대응)
+    if (ridge < -0.5) {
         fragColor = vec4(0.0);
         return;
     }
+    // 작은 ridge는 0으로 클램프
+    ridge = max(ridge, 0.0);
 
     // 밀도에 비례한 기본 강도 + 능선 강도
     float densityT = clamp((value - veinMin) / (veinMax - veinMin), 0.0, 1.0);
