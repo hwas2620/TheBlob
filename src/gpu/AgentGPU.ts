@@ -50,8 +50,11 @@ export class AgentGPU {
   private depositUniforms: Record<string, WebGLUniformLocation | null>;
   private occupancyUniforms: Record<string, WebGLUniformLocation | null>;
 
-  // CPU 리드백 버퍼 (에이전트 위치 캐시)
+  // CPU 리드백 버퍼 (에이전트 위치 캐시 - addAgents 폴백용)
   private readbackBuffer: Float32Array;
+
+  // Occupancy Map 밀도 리드백용 재사용 버퍼
+  private densityReadBuffer: Float32Array | null = null;
 
   constructor(gl: WebGL2RenderingContext, mapWidth: number, mapHeight: number) {
     this.gl = gl;
@@ -99,7 +102,7 @@ export class AgentGPU {
       'u_agentState', 'u_mapSize', 'u_agentCount', 'u_texWidth',
     ]);
 
-    // 리드백 버퍼
+    // 리드백 버퍼 (addAgents 부모 위치 참조용 - 드물게 사용)
     this.readbackBuffer = new Float32Array(AGENT_TEX_WIDTH * AGENT_TEX_HEIGHT * 4);
   }
 
@@ -334,7 +337,7 @@ export class AgentGPU {
     this._agentCount = Math.max(100, this._agentCount - count);
   }
 
-  // GPU → CPU 리드백 (프레임당 1회, 80KB)
+  // GPU → CPU 리드백 (동기 - 폴백용)
   readbackAgents() {
     const gl = this.gl;
     const fbo = this.currentIsA ? this.fboA : this.fboB;
@@ -344,31 +347,44 @@ export class AgentGPU {
       gl.RGBA, gl.FLOAT, this.readbackBuffer,
     );
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-    // 디버깅: 10프레임 후 에이전트 위치 샘플 출력
-    if (this.frameIndex === 10) {
-      console.log('[AgentGPU] 10프레임 후 에이전트 위치 샘플:');
-      for (let i = 0; i < 5; i++) {
-        const x = this.readbackBuffer[i * 4 + 0];
-        const y = this.readbackBuffer[i * 4 + 1];
-        const angle = this.readbackBuffer[i * 4 + 2];
-        const flags = this.readbackBuffer[i * 4 + 3];
-        console.log(`  [${i}] x=${x.toFixed(1)}, y=${y.toFixed(1)}, angle=${angle.toFixed(2)}, flags=${flags}`);
-      }
-    }
   }
 
-  // 특정 위치의 파티클 밀도 계산 (CPU 리드백 데이터 기반)
+  // Occupancy Map 기반 밀도 계산 (PBO 불필요 — 작은 영역만 동기 리드백)
+  // 기존 100k 에이전트 순회 대신, Occupancy Map의 관심 영역만 읽어서 합산
   getParticleDensity(x: number, y: number, radius: number): number {
+    const gl = this.gl;
+    const size = Math.ceil(radius * 2);
+
+    // 읽기 영역 (클램핑 — 맵 경계 초과 방지)
+    const startX = Math.max(0, Math.floor(x - radius));
+    const startY = Math.max(0, Math.floor(y - radius));
+    const endX = Math.min(this.mapWidth, startX + size);
+    const endY = Math.min(this.mapHeight, startY + size);
+    const readW = endX - startX;
+    const readH = endY - startY;
+    if (readW <= 0 || readH <= 0) return 0;
+
+    // 재사용 버퍼 (최대 크기 이하면 재할당 안 함)
+    const needed = readW * readH;
+    if (!this.densityReadBuffer || this.densityReadBuffer.length < needed) {
+      this.densityReadBuffer = new Float32Array(size * size);
+    }
+
+    // Occupancy FBO에서 작은 영역만 동기 리드백 (10KB 수준)
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.occupancyFbo);
+    gl.readPixels(startX, startY, readW, readH, gl.RED, gl.FLOAT, this.densityReadBuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    // 원형 마스크 내 합산
     const r2 = radius * radius;
     let count = 0;
-    for (let i = 0; i < this._agentCount; i++) {
-      const ax = this.readbackBuffer[i * 4 + 0];
-      const ay = this.readbackBuffer[i * 4 + 1];
-      const dx = ax - x;
-      const dy = ay - y;
-      if (dx * dx + dy * dy < r2) {
-        count++;
+    for (let dy = 0; dy < readH; dy++) {
+      for (let dx = 0; dx < readW; dx++) {
+        const cx = startX + dx - x;
+        const cy = startY + dy - y;
+        if (cx * cx + cy * cy <= r2) {
+          count += this.densityReadBuffer[dy * readW + dx];
+        }
       }
     }
     return count;

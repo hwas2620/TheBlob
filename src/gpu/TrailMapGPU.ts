@@ -257,7 +257,7 @@ export class TrailMapGPU {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
-  // GPU → CPU: 트레일맵 리드백
+  // GPU → CPU: 트레일맵 리드백 (동기 - 폴백용)
   readTrailMap(dst: Float32Array) {
     const gl = this.gl;
     const fbo = this.currentIsA ? this.fboA : this.fboB;

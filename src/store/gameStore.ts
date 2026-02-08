@@ -13,6 +13,7 @@ import type {
 import { UPGRADE_COSTS, UPGRADE_MAX_LEVEL, GAME_CONFIG } from '../types/game';
 import { UI, FRAGMENT, SPORULATION } from '../config';
 import { TEXT } from '../text';
+import { recordSessionStats } from '../utils/gameStats';
 
 const SAVE_KEY = 'the_blob_save_v2';
 
@@ -58,16 +59,20 @@ interface GameStore extends GameState {
   resetGame: () => void;
 }
 
-const createInitialStage = (stageNumber: number): StageInfo => ({
-  stageNumber,
-  totalNutrients:
+const createInitialStage = (stageNumber: number): StageInfo => {
+  const totalNutrients =
     GAME_CONFIG.BASE_STAGE_NUTRIENTS +
-    (stageNumber - 1) * GAME_CONFIG.NUTRIENTS_PER_STAGE_INCREASE,
-  remainingNutrients:
-    GAME_CONFIG.BASE_STAGE_NUTRIENTS +
-    (stageNumber - 1) * GAME_CONFIG.NUTRIENTS_PER_STAGE_INCREASE,
-  nutrientPositions: [],
-});
+    (stageNumber - 1) * GAME_CONFIG.NUTRIENTS_PER_STAGE_INCREASE;
+  // 난이도 배율: 스테이지가 올라갈수록 영양분 간격 증가, 흡수 속도 감소
+  const difficultyMultiplier = 1 + (stageNumber - 1) * GAME_CONFIG.DIFFICULTY_NUTRIENT_SPACING_SCALE;
+  return {
+    stageNumber,
+    totalNutrients,
+    remainingNutrients: totalNutrients,
+    nutrientPositions: [],
+    difficultyMultiplier,
+  };
+};
 
 const getInitialState = (): GameState => ({
   // 핵심 자원
@@ -251,6 +256,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
         bobPhase: Math.random() * Math.PI * 2,
       });
     }
+
+    // 통계 기록
+    recordSessionStats({
+      stageNumber: state.stage.stageNumber,
+      clearTimeSeconds: state.gameTime,
+      nutrientsConsumed: state.stage.totalNutrients - state.stage.remainingNutrients,
+      peakBiomass: state.biomass,
+      sporulationCount: state.totalSporulations + 1,
+      timestamp: Date.now(),
+    });
 
     set({
       spores,

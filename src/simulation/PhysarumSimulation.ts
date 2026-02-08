@@ -63,6 +63,7 @@ export class PhysarumSimulation {
   private showCubic: boolean = false; // 큐빅(그리드 글로우) 표시 여부
   private showParticles: boolean = false; // 알갱이(파티클) 표시 여부
   private stepCount = 0; // 맥동 카운터
+  private trailSyncCounter = 0; // 트레일맵 리드백 주기 카운터
 
   // GPU 가속
   private gpu: TrailMapGPU | null = null;        // Phase 1: 트레일맵
@@ -183,13 +184,16 @@ export class PhysarumSimulation {
     return this.gpu ? this.gpu.getCurrentTrailTexture() : null;
   }
 
-  // GPU → CPU 동기화 (프레임당 1회)
+  // GPU → CPU 동기화 (트레일맵 전용, 미니맵용 저빈도 동기 리드백)
+  // PBO 완전 제거 — Agent는 Occupancy Map, TrailMap은 동기 리드백
   syncTrailMapFromGPU() {
-    if (this.gpu) {
+    if (!this.gpu) return;
+
+    // 매 30프레임마다 동기 리드백 (미니맵 갱신용, ~2fps 수준)
+    this.trailSyncCounter++;
+    if (this.trailSyncCounter >= 30) {
+      this.trailSyncCounter = 0;
       this.gpu.readTrailMap(this.trailMap);
-    }
-    if (this.agentGPU) {
-      this.agentGPU.readbackAgents();
     }
   }
 
@@ -299,8 +303,10 @@ export class PhysarumSimulation {
       // === 전체 GPU 경로 (Phase 1+3) ===
       const trailTex = this.gpu.getCurrentTrailTexture();
 
-      // 0. Occupancy Map 업데이트 (셀 기반 충돌 감지용)
-      this.agentGPU.runOccupancy();
+      // 0. Occupancy Map 업데이트 (매 2스텝마다, 중간 프레임은 이전 결과 재사용)
+      if (this.stepCount % 2 === 0) {
+        this.agentGPU.runOccupancy();
+      }
 
       // 1. GPU 에이전트 업데이트 (Jeff Jones 알고리즘 + 셀 기반 충돌 감지)
       this.agentGPU.runUpdate(

@@ -146,6 +146,13 @@ Differences from paper:
 - 100k agents (possible via GPU acceleration)
 - Simplified connectivity check (8 directions × 1 distance, paper uses 16 directions × 2 distances)
 
+## Playwright MCP Screenshots
+
+스크린샷은 항상 `screenshots/` 폴더에 저장할 것 (gitignore 등록됨):
+```
+filename: "screenshots/파일명.png"
+```
+
 ## Important Notes
 
 - **Never create both WebGL2 and Canvas2D contexts on the same canvas**

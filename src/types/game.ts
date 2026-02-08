@@ -97,6 +97,7 @@ export interface StageInfo {
   totalNutrients: number;
   remainingNutrients: number;
   nutrientPositions: Vector2[];
+  difficultyMultiplier: number; // 난이도 배율 (1.0 = 기본)
 }
 
 // 유전 포인트 (환생 보너스)
@@ -173,6 +174,10 @@ export const GAME_CONFIG = {
   SPORES_PER_BIOMASS: 0.5,
   GENE_POINTS_PER_SPORE: 0.1,
   MIN_BIOMASS_FOR_SPORULATION: 50,
+
+  // 난이도 스케일링
+  DIFFICULTY_NUTRIENT_SPACING_SCALE: 0.08, // 스테이지당 영양분 간격 증가율 (8%)
+  DIFFICULTY_ABSORB_RATE_SCALE: 0.03,      // 스테이지당 흡수 속도 감소율 (3%)
 
   // 기타
   MAX_TENDRILS: 40,

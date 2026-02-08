@@ -48,12 +48,8 @@ void main() {
 
     // === 기존 페로몬 뷰 ===
 
-    // 디버그: occupancy 값을 빨간색으로 출력
-    float occupancy = texture(u_occupancyMap, trailUV).r;
-    fragColor = vec4(occupancy / 10.0, 0.0, 0.0, 1.0);
-    return;
-
     // 에이전트 밀집도 체크 (단일 픽셀 - 밀집도 뷰와 동일 방식)
+    float occupancy = texture(u_occupancyMap, trailUV).r;
     if (occupancy < 1.0) {
         fragColor = vec4(0.0);
         return;

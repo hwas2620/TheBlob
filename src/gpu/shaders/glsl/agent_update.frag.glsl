@@ -85,7 +85,7 @@ void main() {
     // 밀도가 높으면 무조건 회피, 아니면 페로몬 추적
 
     // 현재 위치 밀도가 높으면 → 강제로 낮은 밀도 방향으로
-    if (currentDensity > 1.0) {
+    if (currentDensity > u_occupancyThreshold) {
         // 밀집: 가장 낮은 밀도 방향으로 회전
         if (frontDensity <= leftDensity && frontDensity <= rightDensity) {
             // 전방이 가장 비어있음 → 직진

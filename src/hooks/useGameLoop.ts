@@ -340,7 +340,8 @@ function initializeNutrients(width: number, height: number, nucleusPos: Vector2)
   const count = GAME_CONFIG.NUTRIENTS_COUNT_BASE + state.stage.stageNumber * 5;
   const nutrients: import('../types/game').Nutrient[] = [];
 
-  const minRadius = GAME.NUTRIENT_MIN_RADIUS;
+  // 난이도 스케일링: 스테이지가 올라갈수록 영양분이 핵에서 더 멀리 스폰
+  const minRadius = GAME.NUTRIENT_MIN_RADIUS * state.stage.difficultyMultiplier;
 
   for (let i = 0; i < count; i++) {
     // 맵 전체에 고르게 분포 (핵에서 최소 거리만 유지)
@@ -475,7 +476,9 @@ function updateGrowingPhase(
         updated.glowIntensity = Math.min(1, density / GAME.DENSITY_GLOW_NORM);
 
         const tierATPBonus = GAME.TIER_ATP_BONUS[nutrient.tier - 1];
-        const absorb = deltaTime * GAME.NUTRIENT_ABSORB_RATE * state.getUpgradeMultiplier('digestiveEnzyme');
+        // 난이도 스케일링: 스테이지가 올라갈수록 흡수 속도 감소
+        const difficultyAbsorbRate = 1 / (1 + (state.stage.difficultyMultiplier - 1) * GAME_CONFIG.DIFFICULTY_ABSORB_RATE_SCALE / GAME_CONFIG.DIFFICULTY_NUTRIENT_SPACING_SCALE);
+        const absorb = deltaTime * GAME.NUTRIENT_ABSORB_RATE * state.getUpgradeMultiplier('digestiveEnzyme') * difficultyAbsorbRate;
         updated.value -= absorb;
         nutrientsConsumed += absorb * tierATPBonus;
 
