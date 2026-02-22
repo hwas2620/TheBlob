@@ -20,8 +20,16 @@ export class TrailMapGPU {
   private fboB: WebGLFramebuffer;
   private currentIsA = true; // 현재 소스가 A인지
 
-  // 분비물 텍스처
+  // 분비물 텍스처 (에이전트 자기 페로몬용 — 현재 미사용, food로 대체)
   private depositTex: WebGLTexture;
+
+  // 먹이 화학물질 핑퐁 텍스처 & FBO (자기 트레일과 완전 분리)
+  private foodTexA: WebGLTexture;
+  private foodTexB: WebGLTexture;
+  private foodFboA: WebGLFramebuffer;
+  private foodFboB: WebGLFramebuffer;
+  private foodCurrentIsA = true;
+  private foodDepositTex: WebGLTexture;
 
   // 셰이더 프로그램
   private diffuseDecayProgram: WebGLProgram;
@@ -80,6 +88,13 @@ export class TrailMapGPU {
     // FBO 생성
     this.fboA = this.createFBO(this.trailTexA);
     this.fboB = this.createFBO(this.trailTexB);
+
+    // 먹이 텍스처 & FBO 생성
+    this.foodTexA = this.createR32FTexture(width, height);
+    this.foodTexB = this.createR32FTexture(width, height);
+    this.foodDepositTex = this.createR32FTexture(width, height);
+    this.foodFboA = this.createFBO(this.foodTexA);
+    this.foodFboB = this.createFBO(this.foodTexB);
   }
 
   // R32F 텍스처 생성 (GL_REPEAT으로 토러스 래핑)
@@ -261,6 +276,75 @@ export class TrailMapGPU {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
+  // === 먹이 채널 메서드 (trail과 동일 구조, 별도 핑퐁) ===
+
+  // CPU → GPU: 먹이 분비물 업로드
+  uploadFoodDeposits(data: Float32Array) {
+    const gl = this.gl;
+    gl.bindTexture(gl.TEXTURE_2D, this.foodDepositTex);
+    gl.texSubImage2D(
+      gl.TEXTURE_2D, 0, 0, 0,
+      this.width, this.height,
+      gl.RED, gl.FLOAT, data,
+    );
+    gl.bindTexture(gl.TEXTURE_2D, null);
+  }
+
+  // 먹이 분비물 블렌드: food += deposit (depositBlendProgram 재사용)
+  blendFoodDeposits() {
+    const gl = this.gl;
+    const srcTex = this.foodCurrentIsA ? this.foodTexA : this.foodTexB;
+    const dstFbo = this.foodCurrentIsA ? this.foodFboB : this.foodFboA;
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, dstFbo);
+    gl.viewport(0, 0, this.width, this.height);
+
+    gl.useProgram(this.depositBlendProgram);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, srcTex);
+    gl.uniform1i(this.dbUniforms.trailMap, 0);
+
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, this.foodDepositTex);
+    gl.uniform1i(this.dbUniforms.depositMap, 1);
+
+    this.drawQuad();
+
+    this.foodCurrentIsA = !this.foodCurrentIsA;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+
+  // 먹이 확산 + 감쇠 (diffuseDecayProgram 재사용, 파라미터만 다름)
+  runFoodDiffuseDecay(decayFactor: number, passes: number, maxTrail: number) {
+    const gl = this.gl;
+    gl.useProgram(this.diffuseDecayProgram);
+    gl.uniform2f(this.ddUniforms.texelSize, 1.0 / this.width, 1.0 / this.height);
+    gl.uniform1f(this.ddUniforms.maxTrail, maxTrail);
+
+    for (let p = 0; p < passes; p++) {
+      const srcTex = this.foodCurrentIsA ? this.foodTexA : this.foodTexB;
+      const dstFbo = this.foodCurrentIsA ? this.foodFboB : this.foodFboA;
+
+      gl.bindFramebuffer(gl.FRAMEBUFFER, dstFbo);
+      gl.viewport(0, 0, this.width, this.height);
+
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, srcTex);
+      gl.uniform1i(this.ddUniforms.trailMap, 0);
+      gl.uniform1f(this.ddUniforms.decayFactor, p === passes - 1 ? decayFactor : 1.0);
+
+      this.drawQuad();
+      this.foodCurrentIsA = !this.foodCurrentIsA;
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+
+  // 현재 먹이 텍스처 반환 (에이전트 셰이더 바인딩용)
+  getCurrentFoodTexture(): WebGLTexture {
+    return this.foodCurrentIsA ? this.foodTexA : this.foodTexB;
+  }
+
   // GPU → CPU: 트레일맵 리드백 (동기 - 폴백용)
   readTrailMap(dst: Float32Array) {
     const gl = this.gl;
@@ -286,8 +370,13 @@ export class TrailMapGPU {
     gl.deleteTexture(this.trailTexA);
     gl.deleteTexture(this.trailTexB);
     gl.deleteTexture(this.depositTex);
+    gl.deleteTexture(this.foodTexA);
+    gl.deleteTexture(this.foodTexB);
+    gl.deleteTexture(this.foodDepositTex);
     gl.deleteFramebuffer(this.fboA);
     gl.deleteFramebuffer(this.fboB);
+    gl.deleteFramebuffer(this.foodFboA);
+    gl.deleteFramebuffer(this.foodFboB);
     gl.deleteProgram(this.diffuseDecayProgram);
     gl.deleteProgram(this.depositBlendProgram);
     gl.deleteVertexArray(this.quadVAO);

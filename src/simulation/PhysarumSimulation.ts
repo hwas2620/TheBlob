@@ -3,7 +3,7 @@
 
 import { TrailMapGPU } from '../gpu/TrailMapGPU';
 import { AgentGPU } from '../gpu/AgentGPU';
-import { MAP, AGENT, ATTRACTION, BLOB_BODY, VEINS, PHEROMONE, CUBIC_GLOW, NUCLEUS, MINIMAP, AGENT_TEX, CONNECTIVITY } from '../config';
+import { MAP, AGENT, ATTRACTION, BLOB_BODY, VEINS, PHEROMONE, CUBIC_GLOW, NUCLEUS, MINIMAP, AGENT_TEX, CONNECTIVITY, FOOD } from '../config';
 
 export interface SimulationConfig {
   width: number;
@@ -68,8 +68,10 @@ export class PhysarumSimulation {
   // GPU 가속
   private gpu: TrailMapGPU | null = null;        // Phase 1: 트레일맵
   private agentGPU: AgentGPU | null = null;      // Phase 3: 에이전트
-  private depositBuffer: Float32Array;             // 에이전트 분비물 버퍼
-  private hasDeposits = false;                       // depositBuffer에 값이 있는지 플래그
+  private depositBuffer: Float32Array;             // CPU 에이전트 분비물 버퍼 (하이브리드 경로용)
+  private foodDepositBuffer: Float32Array;           // 먹이 화학물질 전용 버퍼
+  private hasFoodDeposits = false;
+  private hasTrailDeposits = false;                  // 먹이→self-trail 주입 플래그
   private gpuEnabled = false;
   private agentGPUEnabled = false;
 
@@ -80,6 +82,7 @@ export class PhysarumSimulation {
       this.config.width * this.config.height,
     );
     this.depositBuffer = new Float32Array(this.config.width * this.config.height);
+    this.foodDepositBuffer = new Float32Array(this.config.width * this.config.height);
     this.nucleusX = this.config.width / 2;
     this.nucleusY = this.config.height / 2;
     this.initAgents();
@@ -224,8 +227,8 @@ export class PhysarumSimulation {
     this.depositAtPosition(x, y, amount, ATTRACTION.PHEROMONE_INJECT_RADIUS);
   }
 
-  // 특정 위치에 페로몬 분비 (먹이가 에이전트를 유인하기 위해)
-  // 논문: "fixing concentration at food sources"
+  // 특정 위치에 먹이 화학물질 분비 (별도 food 채널)
+  // 실제 점균의 chemotaxis: 먹이가 화학물질을 방출 → 에이전트가 그래디언트 추적
   depositAtPosition(x: number, y: number, amount: number, radius: number) {
     const { width, height } = this.config;
     const ix = Math.floor(x);
@@ -247,10 +250,14 @@ export class PhysarumSimulation {
           const falloff = Math.exp(-distSq / twoSigmaSq);
           const idx = py * width + px;
           const newValue = amount * falloff;
-          // 누적 대신 최댓값만 유지 (프레임 누적 방지)
+          // 먹이 → food 버퍼 + self-trail 버퍼 (둘 다 주입)
+          // food 채널: 장거리 그래디언트 (스카우트/화학주성용)
+          // self-trail: Jeff Jones 수렴점 (먹이 위치에 강한 trail → 자연 집결)
           if (this.gpuEnabled) {
+            this.foodDepositBuffer[idx] = Math.max(this.foodDepositBuffer[idx], newValue);
+            this.hasFoodDeposits = true;
             this.depositBuffer[idx] = Math.max(this.depositBuffer[idx], newValue);
-            this.hasDeposits = true;
+            this.hasTrailDeposits = true;
           } else {
             this.trailMap[idx] = Math.max(this.trailMap[idx], newValue);
           }
@@ -302,18 +309,19 @@ export class PhysarumSimulation {
     if (this.agentGPUEnabled && this.agentGPU && this.gpu) {
       // === 전체 GPU 경로 (Phase 1+3) ===
       const trailTex = this.gpu.getCurrentTrailTexture();
+      const foodTex = this.gpu.getCurrentFoodTexture();
 
       // 0. Occupancy Map 업데이트 (매 2스텝마다, 중간 프레임은 이전 결과 재사용)
       if (this.stepCount % 2 === 0) {
         this.agentGPU.runOccupancy();
       }
 
-      // 1. GPU 에이전트 업데이트 (순수 Jeff Jones + 셀 점유 제약)
-      // 점유 임계값 = 평균밀도 × 배수 (에이전트 수 변동에 자동 스케일링)
+      // 1. GPU 에이전트 업데이트 (Jeff Jones + 먹이 화학주성)
       const avgDensity = this.agentGPU.agentCount / (this.config.width * this.config.height);
       const occupancyThreshold = avgDensity * AGENT.OCCUPANCY_MULT;
       this.agentGPU.runUpdate(
         trailTex,
+        foodTex,
         {
           sensorAngle: this.config.sensorAngle,
           sensorDistance: this.config.sensorDistance,
@@ -325,10 +333,12 @@ export class PhysarumSimulation {
           recoveryTrailMin: CONNECTIVITY.RECOVERY_TRAIL_MIN,
           jitterStrength: CONNECTIVITY.FRONTIER_JITTER,
           longSensorDist: CONNECTIVITY.LONG_SENSOR_DIST,
+          foodChemotaxisWeight: FOOD.CHEMOTAXIS_WEIGHT,
+          foodSensorMult: FOOD.SENSOR_MULT,
         },
       );
 
-      // 2. GPU 분비: 에이전트 위치에 페로몬 추가
+      // 2. GPU 분비: 에이전트 자기 페로몬 → trail FBO
       const currentFbo = this.gpu.getCurrentFBO();
       this.agentGPU.runDeposit(
         currentFbo,
@@ -336,16 +346,27 @@ export class PhysarumSimulation {
         depositPulse,
       );
 
-      // 3. GPU 확산+감쇠
+      // 3. 자기 트레일 확산+감쇠
       this.gpu.runDiffuseDecay(this.config.decayFactor, AGENT.DIFFUSE_PASSES);
 
-      // 3.5. 확산+감쇠 후 먹이 페로몬 복원 (논문: "fixing concentration at food sources")
-      if (this.hasDeposits) {
+      // 4a. 먹이 → self-trail 주입 (Jeff Jones 수렴점)
+      if (this.hasTrailDeposits) {
         this.gpu.uploadDeposits(this.depositBuffer);
         this.gpu.blendDeposits();
         this.depositBuffer.fill(0);
-        this.hasDeposits = false;
+        this.hasTrailDeposits = false;
       }
+
+      // 4b. 먹이 화학물질 → food 전용 텍스처 (장거리 그래디언트)
+      if (this.hasFoodDeposits) {
+        this.gpu.uploadFoodDeposits(this.foodDepositBuffer);
+        this.gpu.blendFoodDeposits();
+        this.foodDepositBuffer.fill(0);
+        this.hasFoodDeposits = false;
+      }
+
+      // 5. 먹이 확산+감쇠 (느린 감쇠 → 장거리 그래디언트)
+      this.gpu.runFoodDiffuseDecay(FOOD.DECAY_FACTOR, FOOD.DIFFUSE_PASSES, FOOD.MAX_TRAIL);
     } else {
       // === CPU/하이브리드 경로 ===
       // 1. 에이전트 업데이트 (CPU, 맥동 적용)
@@ -353,14 +374,16 @@ export class PhysarumSimulation {
 
       // 2. 환경 업데이트
       if (this.gpuEnabled && this.gpu) {
-        // GPU 트레일맵 처리: 확산+감쇠 후 먹이 페로몬 복원
+        // 자기 트레일 확산+감쇠
         this.gpu.runDiffuseDecay(this.config.decayFactor, AGENT.DIFFUSE_PASSES);
-        if (this.hasDeposits) {
-          this.gpu.uploadDeposits(this.depositBuffer);
-          this.gpu.blendDeposits();
-          this.depositBuffer.fill(0);
-          this.hasDeposits = false;
+        // 먹이 화학물질 (food 전용 텍스처)
+        if (this.hasFoodDeposits) {
+          this.gpu.uploadFoodDeposits(this.foodDepositBuffer);
+          this.gpu.blendFoodDeposits();
+          this.foodDepositBuffer.fill(0);
+          this.hasFoodDeposits = false;
         }
+        this.gpu.runFoodDiffuseDecay(FOOD.DECAY_FACTOR, FOOD.DIFFUSE_PASSES, FOOD.MAX_TRAIL);
       } else {
         // 전체 CPU 폴백 (멀티패스 확산, 마지막에만 감쇠)
         for (let p = 0; p < AGENT.DIFFUSE_PASSES; p++) {
@@ -1091,6 +1114,9 @@ export class PhysarumSimulation {
     this.trailMap.fill(0);
     this.trailMapTemp.fill(0);
     this.depositBuffer.fill(0);
+    this.foodDepositBuffer.fill(0);
+    this.hasFoodDeposits = false;
+    this.hasTrailDeposits = false;
     this.initAgents();
     // GPU 텍스처도 초기화
     if (this.gpu) {

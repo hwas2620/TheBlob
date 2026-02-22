@@ -7,13 +7,14 @@ precision highp float;
 // 기반: SENSE → ROTATE → ATTEMPT MOVE (논문 원본)
 // 확장1: 연결성 탐색 (고립 에이전트 → 트레일 복귀 or 탐험)
 // 확장2: 의사족 탐험 (경계 에이전트 → pseudopod 뻗기)
-// 확장3: 장거리 먹이 감지 (확장 센서 8방향 스캔)
+// 확장3: 먹이 화학주성 (별도 foodMap 채널, 자기 트레일 간섭 없음)
 // ============================================================
 
 uniform sampler2D u_agentState;
 uniform sampler2D u_trailMap;
 uniform sampler2D u_random;
 uniform sampler2D u_occupancyMap;
+uniform sampler2D u_foodMap;         // 먹이 화학물질 (자기 트레일과 분리)
 
 uniform int u_agentCount;
 uniform int u_texWidth;
@@ -31,17 +32,26 @@ uniform float u_searchDistance;      // 고립 시 탐색 거리
 uniform float u_recoveryTrailMin;    // 복귀 목표 최소 트레일
 uniform float u_jitterStrength;      // 탐험 지터 강도
 
-// 장거리 먹이 감지
+// 먹이 화학주성
 uniform float u_longSensorDist;      // 확장 센서 거리
+uniform float u_foodChemotaxisWeight; // 먹이 방향 가중치
+uniform float u_foodSensorMult;      // 먹이 센서 거리 배율
 
 in vec2 v_uv;
 out vec4 fragColor;
 
-// 센서 위치의 페로몬 읽기 (토러스 래핑 — GL_REPEAT)
+// 센서 위치의 자기 페로몬 읽기 (토러스 래핑 — GL_REPEAT)
 float senseTrail(vec2 pos, float angle, float dist) {
     vec2 sensorPos = pos + vec2(cos(angle), sin(angle)) * dist;
     vec2 uv = mod(sensorPos, u_mapSize) / u_mapSize;
     return texture(u_trailMap, uv).r;
+}
+
+// 센서 위치의 먹이 화학물질 읽기 (별도 채널)
+float senseFood(vec2 pos, float angle, float dist) {
+    vec2 sensorPos = pos + vec2(cos(angle), sin(angle)) * dist;
+    vec2 uv = mod(sensorPos, u_mapSize) / u_mapSize;
+    return texture(u_foodMap, uv).r;
 }
 
 void main() {
@@ -80,11 +90,24 @@ void main() {
     float mySensorAngle = u_sensorAngle * (0.6 + agentSeed2 * 0.8);    // 60%-140% (13.5°~31.5°)
 
     // ===========================================
-    // 1. SENSE + ROTATE (Jeff Jones 논문 원본)
+    // 1. SENSE + ROTATE (Jeff Jones 논문 원본 + 먹이 신호 통합)
+    //    먹이 신호를 센서 값에 직접 가산하여 Jeff Jones가 자연스럽게 먹이 방향 선택
+    //    경계 가중치: 내부(curTrail>80)=0, 경계(curTrail≈20)=full
     // ===========================================
     float frontSense = senseTrail(pos, angle, mySensorDist);
     float leftSense  = senseTrail(pos, angle - mySensorAngle, mySensorDist);
     float rightSense = senseTrail(pos, angle + mySensorAngle, mySensorDist);
+
+    // 먹이 신호를 Jeff Jones 센서에 직접 가산 (극외곽 에이전트만)
+    // smoothstep(5, 25): curTrail<5=full, 25이상=0 → 매우 바깥쪽만 반응
+    // 도착 후 trail 축적(>25) → foodWeight=0 → Jeff Jones 둥지 유지
+    float foodWeight = u_foodChemotaxisWeight * (1.0 - smoothstep(5.0, 25.0, curTrail));
+    if (foodWeight > 0.01) {
+        float foodSensorDist = mySensorDist * u_foodSensorMult;
+        frontSense += foodWeight * senseFood(pos, angle, foodSensorDist);
+        leftSense  += foodWeight * senseFood(pos, angle - mySensorAngle, foodSensorDist);
+        rightSense += foodWeight * senseFood(pos, angle + mySensorAngle, foodSensorDist);
+    }
 
     // 센서 노이즈: 미세 대칭 파괴 (동일 값에서의 무한 진동 방지)
     frontSense += (rnd.x - 0.5) * 0.5;
@@ -103,9 +126,11 @@ void main() {
 
     // ===========================================
     // 2. 연결성 탐색 (고립 에이전트 → 복귀 or 탐험)
+    //    단, 먹이가 감지되면 복귀 건너뜀 → 먹이까지 도달 가능
     // ===========================================
-    if (curTrail < u_isolationThreshold) {
-        // 8방향 탐색: 가장 강한 트레일 찾기
+    float localFood = texture(u_foodMap, pos / u_mapSize).r;
+    if (curTrail < u_isolationThreshold && localFood < 1.0) {
+        // 먹이 없는 곳에서 고립 → 본체로 복귀
         float bestTrail = 0.0;
         float bestAngle = angle;
         bool found = false;
@@ -122,17 +147,16 @@ void main() {
         }
 
         if (found) {
-            // 트레일 발견 → 그쪽으로 회전 (본체와 재연결)
             float angleDiff = bestAngle - angle;
             angleDiff -= round(angleDiff / 6.28318) * 6.28318;
             float strength = curTrail < 2.0 ? 0.7 : 0.5;
             angle += angleDiff * strength;
-            angle += (rnd.z - 0.5) * 0.06; // 복귀 중 소폭 지터
+            angle += (rnd.z - 0.5) * 0.06;
         } else {
-            // 트레일 없음 → 탐험 (강한 랜덤 회전)
             angle += (rnd.z - 0.5) * u_jitterStrength * 2.0;
         }
     }
+    // 먹이 근처 고립 에이전트: 복귀 안 함 → 섹션 1의 food bias가 먹이로 안내
 
     // ===========================================
     // 3. 의사족 탐험 (pseudopod — 경계 에이전트 동적 행동)
@@ -196,26 +220,35 @@ void main() {
     }
 
     // ===========================================
-    // 4. 장거리 먹이 감지 (확장 센서 8방향 스캔)
+    // 4. 장거리 먹이 감지 (스카우트 방향 정보용)
+    //    근거리 3-way 보정은 섹션 1의 Jeff Jones 센서 통합으로 대체됨
     // ===========================================
-    float bestLong = 0.0;
-    float bestLongAngle = angle;
-    for (int i = 0; i < 8; i++) {
-        float a = float(i) / 8.0 * 6.28318;
-        vec2 searchPos = mod(pos + vec2(cos(a), sin(a)) * u_longSensorDist, u_mapSize);
-        float trail = texture(u_trailMap, searchPos / u_mapSize).r;
-        if (trail > bestLong) {
-            bestLong = trail;
-            bestLongAngle = a;
+
+    // 2단계 거리 × 16방향 먹이 감지
+    //     장거리(150px)만 스캔하면 먹이 근접 시 모든 방향 값이 비슷 → 방향 잃음
+    //     근거리(50px) 추가로 가까운 먹이도 정밀 추적
+    float bestFood = 0.0;
+    float bestFoodAngle = angle;
+    for (int i = 0; i < 16; i++) {
+        float a = float(i) / 16.0 * 6.28318;
+        vec2 dir = vec2(cos(a), sin(a));
+        vec2 spFar  = mod(pos + dir * u_longSensorDist, u_mapSize);
+        vec2 spNear = mod(pos + dir * (u_longSensorDist * 0.33), u_mapSize);
+        float food = max(texture(u_foodMap, spFar / u_mapSize).r,
+                         texture(u_foodMap, spNear / u_mapSize).r);
+        if (food > bestFood) {
+            bestFood = food;
+            bestFoodAngle = a;
         }
     }
-    // 먹이 페로몬(150~270)이 현재 위치보다 확실히 강할 때 유인
-    // 가산 비교: 블롭 내부(200)에선 발동 안 됨, 경계(~60 이하)에서만 작동
-    if (bestLong > curTrail + 20.0 && bestLong > 30.0) {
-        float angleDiff = bestLongAngle - angle;
-        angleDiff -= round(angleDiff / 6.28318) * 6.28318;
-        float pullStrength = min(0.4, (bestLong - curTrail) / 200.0);
-        angle += angleDiff * pullStrength;
+    // 외곽 에이전트: 16방향 스캔 결과로 먹이 방향 직행
+    // 3-way 센서(~45px)는 원거리 먹이 방향 구별 불가 → 16방향 스캔(150px) 사용
+    // curTrail < 30인 외곽만 영향, 도착 후 trail 쌓이면 자동 해제
+    if (bestFood > 5.0 && curTrail < 30.0) {
+        float foodPull = 1.0 - smoothstep(0.0, 30.0, curTrail);
+        float ad = bestFoodAngle - angle;
+        ad -= round(ad / 6.28318) * 6.28318;
+        angle += ad * foodPull;
     }
 
     // ===========================================
@@ -247,29 +280,43 @@ void main() {
     //   (c) senseRange > 20: 트레일 구배가 있는 곳 (경계 근처)
     float scoutPhase = floor(u_frameIndex / 120.0);
     float scoutHash = fract(sin(float(agentIdx) * 127.1 + scoutPhase * 311.7) * 43758.5453);
-    bool isScout = scoutHash < 0.25 && curTrail > 1.0
+    bool isScout = scoutHash < 0.25
+                   && (curTrail > 1.0 || bestFood > 5.0)  // 먹이 근처면 블롭 밖에서도 스카우트
                    && (pMag > 0.3 || curTrail < 160.0 || senseRange > 20.0);
 
     if (isScout) {
-        bool foodDetected = bestLong > curTrail + 20.0 && bestLong > 30.0;
-        if (pMag > 0.3) {
-            // (a) 밀도 그래디언트로 외부 방향 + 에이전트별 고유 편차 (격자 방지)
-            float baseAngle = atan(pressureDir.y, pressureDir.x);
-            float personalOffset = (fract(sin(float(agentIdx) * 73.13 + scoutPhase * 17.31) * 43758.5453) - 0.5) * 2.5;
-            angle = baseAngle + personalOffset;
-        } else if (senseRange > 30.0 && !foodDetected) {
-            // (c) 트레일 구배 기반: 가장 약한 센서 = 외부 방향
-            float minS = min(frontSense, min(leftSense, rightSense));
-            float outAngle = origAngle;
-            if (minS == leftSense) outAngle = origAngle - mySensorAngle;
-            else if (minS == rightSense) outAngle = origAngle + mySensorAngle;
-            float personalOffset2 = (fract(sin(float(agentIdx) * 53.71 + scoutPhase * 29.17) * 43758.5453) - 0.5) * 1.5;
-            angle = outAngle + personalOffset2;
-        } else if (!foodDetected) {
-            // (b) 외부: 현재 방향 유지 (Jeff Jones 무시, 직진)
-            angle = origAngle;
+        bool foodDetected = bestFood > 5.0;
+
+        // 먹이 추종: 스카우트는 100% 먹이 방향으로 이동 (의사족 선봉)
+        // 비스카우트 경계 에이전트는 섹션 1의 Jeff Jones 센서 통합으로 점진 이동
+        if (foodDetected) {
+            float ad = bestFoodAngle - angle;
+            ad -= round(ad / 6.28318) * 6.28318;
+            angle += ad;  // 100% 먹이 방향
+            float personalJitter = (fract(sin(float(agentIdx) * 73.13 + u_frameIndex * 17.31) * 43758.5453) - 0.5) * 0.2;
+            angle += personalJitter;
         }
-        // 먹이 감지 시: section 4가 설정한 방향 유지
+
+        // 먹이 미감지 또는 내부 에이전트(curTrail > 80): 기존 스카우트 탐험 로직
+        if (!foodDetected || curTrail > 80.0) {
+            if (pMag > 0.3) {
+                // (a) 밀도 그래디언트로 외부 방향 + 고유 편차
+                float baseAngle = atan(pressureDir.y, pressureDir.x);
+                float personalOffset = (fract(sin(float(agentIdx) * 73.13 + scoutPhase * 17.31) * 43758.5453) - 0.5) * 2.5;
+                angle = baseAngle + personalOffset;
+            } else if (senseRange > 30.0) {
+                // (c) 트레일 구배 기반: 가장 약한 센서 = 외부 방향
+                float minS = min(frontSense, min(leftSense, rightSense));
+                float outAngle = origAngle;
+                if (minS == leftSense) outAngle = origAngle - mySensorAngle;
+                else if (minS == rightSense) outAngle = origAngle + mySensorAngle;
+                float personalOffset2 = (fract(sin(float(agentIdx) * 53.71 + scoutPhase * 29.17) * 43758.5453) - 0.5) * 1.5;
+                angle = outAngle + personalOffset2;
+            } else {
+                // (b) 외부: 현재 방향 유지 (Jeff Jones 무시, 직진)
+                angle = origAngle;
+            }
+        }
     } else if (localDensity > 1.0 && pMag > 0.1) {
         // 비스카우트: 부드러운 외부 압력 (경계 생동감)
         float pAngle = atan(pressureDir.y, pressureDir.x);
@@ -298,7 +345,7 @@ void main() {
     float finalFlags = 1.0;
     if (isScout) finalFlags = 2.0;
     if (isFollower) finalFlags = 2.0;
-    if (bestLong > curTrail + 20.0 && bestLong > 30.0) finalFlags = 2.0;
+    if (bestFood > 5.0) finalFlags = 2.0;
 
     fragColor = vec4(x, y, angle, finalFlags);
 }

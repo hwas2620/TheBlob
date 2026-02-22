@@ -29,6 +29,16 @@ export const AGENT = {
   OCCUPANCY_MULT: 500,         // 점유 임계값 높여서 격자 패턴 제거 (논문의 "one particle per cell"이 격자 원인)
 } as const;
 
+// ── 먹이 화학주성(Food Chemotaxis) ────────────────────────────
+// 자기 트레일과 분리된 먹이 전용 채널
+export const FOOD = {
+  DECAY_FACTOR: 0.998,      // 매우 느린 감쇠 → 장거리 그래디언트 유지
+  DIFFUSE_PASSES: 4,        // 넓은 확산
+  MAX_TRAIL: 1000,          // 높은 상한 (먹이원은 강력)
+  CHEMOTAXIS_WEIGHT: 2.0,   // Jeff Jones 센서 가산 가중치 (극외곽만, 강하게: 둥지 형성)
+  SENSOR_MULT: 5.0,         // 먹이 센서 거리 배율 (기본 9px × 5 = ~45px)
+} as const;
+
 // ── 에이전트 유인(Attraction) ────────────────────────────────
 // 순수 Jeff Jones: 직접 유인 없음, 페로몬으로만 간접 유도
 export const ATTRACTION = {
