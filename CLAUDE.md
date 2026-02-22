@@ -153,6 +153,32 @@ Differences from paper:
 filename: "screenshots/파일명.png"
 ```
 
+## Development Workflow
+
+### Spec → Plan → Implementation
+
+각 기능/버그 수정 작업 시 다음 워크플로우를 따른다:
+
+1. **Spec 작성**: `specs/[feature-name]/spec.md` — 문제 정의, 현재 상태, 요구사항
+2. **Plan 작성**: `specs/[feature-name]/plan.md` — 구현 단계, 수정 파일, 의존성, 검증 방법
+3. **Feature branch 생성**: `feat/[feature-name]` (main에서 분기)
+4. **Spec/Plan 커밋**: 문서만 먼저 커밋 (코드 변경 전)
+5. **구현 + 검증**: `npm run build` 통과 확인
+6. **구현 커밋**: 코드 변경사항 커밋
+7. **Main 병합**: `git merge --no-ff` 사용 (merge commit으로 브랜치 히스토리 보존)
+
+### Git Branch Strategy
+
+```
+main ─────────────────────────────●── merge commit
+       \                         /
+        feat/feature-name ──●──●
+                          spec  impl
+```
+
+- **`--no-ff` 필수**: fast-forward 방지, 브랜치 흔적 보존
+- Spec/Plan 커밋과 구현 커밋을 분리하여 리뷰 용이성 확보
+
 ## Important Notes
 
 - **Never create both WebGL2 and Canvas2D contexts on the same canvas**
