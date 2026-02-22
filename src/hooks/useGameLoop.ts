@@ -786,6 +786,7 @@ function renderGPU(
     sceneRenderer.updateAttractors(attractors);
 
     const trailTex = simulation.getCurrentTrailTexture();
+    const foodTex = simulation.getCurrentFoodTexture();
     const agentGPU = simulation.getAgentGPU();
 
     // 밀집도 맵 텍스처 전달 (페로몬 ↔ 밀집도 토글용)
@@ -797,6 +798,7 @@ function renderGPU(
       const timeInSeconds = performance.now() / 1000;
       sceneRenderer.render(
         trailTex,
+        foodTex,
         { x: cameraX, y: cameraY },
         simulation.getMapSize(),
         width, height,

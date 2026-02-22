@@ -39,6 +39,20 @@ export const FOOD = {
   SENSOR_MULT: 5.0,         // 먹이 센서 거리 배율 (기본 9px × 5 = ~45px)
 } as const;
 
+// ── 먹이 등고선 렌더링 ────────────────────────────────────────
+// 먹이 채널(foodMap) 전용 등고선 색상/레벨 (자기 페로몬과 분리)
+export const FOOD_CONTOUR = {
+  MIN_THRESHOLD: 1.0,
+  MAX_VALUE: 500,
+  LOW_COLOR: { r: 120, g: 60, b: 0 },
+  HIGH_COLOR: { r: 255, g: 160, b: 30 },
+  BASE_ALPHA: 0.25,
+  LINE_WIDTH: 2.0,
+  CONTOUR_COLOR: { r: 255, g: 180, b: 50 },
+  CONTOUR_ALPHA: 0.7,
+  LEVELS: [0.05, 0.15, 0.3, 0.5, 0.7] as readonly number[],
+} as const;
+
 // ── 에이전트 유인(Attraction) ────────────────────────────────
 // 순수 Jeff Jones: 직접 유인 없음, 페로몬으로만 간접 유도
 export const ATTRACTION = {

@@ -24,6 +24,7 @@ interface SceneUniforms {
   time?: WebGLUniformLocation | null;
   occupancyMap?: WebGLUniformLocation | null;  // 밀집도 맵
   viewMode?: WebGLUniformLocation | null;       // 뷰 모드
+  foodMap?: WebGLUniformLocation | null;        // 먹이 화학물질 맵
 }
 
 export class SceneRenderer {
@@ -93,7 +94,10 @@ export class SceneRenderer {
       attractors: gl.getUniformLocation(this.pheromoneProgram, 'u_attractors'),
       attractorCount: gl.getUniformLocation(this.pheromoneProgram, 'u_attractorCount'),
     };
-    this.pheromoneTrailmapUniforms = this.getUniforms(this.pheromoneTrailmapProgram, false);
+    this.pheromoneTrailmapUniforms = {
+      ...this.getUniforms(this.pheromoneTrailmapProgram, false),
+      foodMap: gl.getUniformLocation(this.pheromoneTrailmapProgram, 'u_foodMap'),
+    };
     this.veinsUniforms = {
       ...this.getUniforms(this.veinsProgram, true),
       time: gl.getUniformLocation(this.veinsProgram, 'u_time'),
@@ -201,6 +205,7 @@ export class SceneRenderer {
   // logicalWidth/Height: 줌 적용된 논리적 뷰포트 크기 (셰이더 u_viewportSize용)
   render(
     trailTexture: WebGLTexture,
+    foodTexture: WebGLTexture | null,
     camera: { x: number; y: number },
     mapSize: { width: number; height: number },
     canvasWidth: number,
@@ -237,13 +242,16 @@ export class SceneRenderer {
         attractorCount,
       );
     } else if (this.pheromoneMode === 'trailmap') {
-      // 트레일맵 기반 등고선
+      // 트레일맵 기반 등고선 (trail + food 이중 채널)
       this.renderPass(
         this.pheromoneTrailmapProgram,
         this.pheromoneTrailmapUniforms,
         trailTexture,
         camera, mapSize, logicalWidth, logicalHeight,
         isDormant,
+        undefined,
+        undefined,
+        foodTexture,
       );
     }
 
@@ -305,6 +313,7 @@ export class SceneRenderer {
     isDormant: boolean,
     attractorCount?: number,
     time?: number,
+    foodTexture?: WebGLTexture | null,
   ) {
     const gl = this.gl;
 
@@ -334,6 +343,13 @@ export class SceneRenderer {
       gl.bindTexture(gl.TEXTURE_2D, this.attractorTex);
       gl.uniform1i(uniforms.attractors, 1);
       gl.uniform1i(uniforms.attractorCount!, attractorCount);
+    }
+
+    // 먹이 맵 (food 등고선용)
+    if (foodTexture && uniforms.foodMap) {
+      gl.activeTexture(gl.TEXTURE3);
+      gl.bindTexture(gl.TEXTURE_2D, foodTexture);
+      gl.uniform1i(uniforms.foodMap, 3);
     }
 
     // 밀집도 맵 + 뷰 모드 (블롭 본체 셰이더용)

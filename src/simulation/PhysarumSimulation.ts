@@ -71,7 +71,6 @@ export class PhysarumSimulation {
   private depositBuffer: Float32Array;             // CPU 에이전트 분비물 버퍼 (하이브리드 경로용)
   private foodDepositBuffer: Float32Array;           // 먹이 화학물질 전용 버퍼
   private hasFoodDeposits = false;
-  private hasTrailDeposits = false;                  // 먹이→self-trail 주입 플래그
   private gpuEnabled = false;
   private agentGPUEnabled = false;
 
@@ -187,6 +186,10 @@ export class PhysarumSimulation {
     return this.gpu ? this.gpu.getCurrentTrailTexture() : null;
   }
 
+  getCurrentFoodTexture(): WebGLTexture | null {
+    return this.gpu ? this.gpu.getCurrentFoodTexture() : null;
+  }
+
   // GPU → CPU 동기화 (트레일맵 전용, 미니맵용 저빈도 동기 리드백)
   // PBO 완전 제거 — Agent는 Occupancy Map, TrailMap은 동기 리드백
   syncTrailMapFromGPU() {
@@ -250,14 +253,11 @@ export class PhysarumSimulation {
           const falloff = Math.exp(-distSq / twoSigmaSq);
           const idx = py * width + px;
           const newValue = amount * falloff;
-          // 먹이 → food 버퍼 + self-trail 버퍼 (둘 다 주입)
-          // food 채널: 장거리 그래디언트 (스카우트/화학주성용)
-          // self-trail: Jeff Jones 수렴점 (먹이 위치에 강한 trail → 자연 집결)
+          // 먹이 → food 전용 버퍼만 (trailMap과 완전 분리)
+          // trailMap은 에이전트 자기 페로몬만 유지 → 등고선 색 분리
           if (this.gpuEnabled) {
             this.foodDepositBuffer[idx] = Math.max(this.foodDepositBuffer[idx], newValue);
             this.hasFoodDeposits = true;
-            this.depositBuffer[idx] = Math.max(this.depositBuffer[idx], newValue);
-            this.hasTrailDeposits = true;
           } else {
             this.trailMap[idx] = Math.max(this.trailMap[idx], newValue);
           }
@@ -349,15 +349,7 @@ export class PhysarumSimulation {
       // 3. 자기 트레일 확산+감쇠
       this.gpu.runDiffuseDecay(this.config.decayFactor, AGENT.DIFFUSE_PASSES);
 
-      // 4a. 먹이 → self-trail 주입 (Jeff Jones 수렴점)
-      if (this.hasTrailDeposits) {
-        this.gpu.uploadDeposits(this.depositBuffer);
-        this.gpu.blendDeposits();
-        this.depositBuffer.fill(0);
-        this.hasTrailDeposits = false;
-      }
-
-      // 4b. 먹이 화학물질 → food 전용 텍스처 (장거리 그래디언트)
+      // 4. 먹이 화학물질 → food 전용 텍스처 (trailMap과 완전 분리)
       if (this.hasFoodDeposits) {
         this.gpu.uploadFoodDeposits(this.foodDepositBuffer);
         this.gpu.blendFoodDeposits();
@@ -1116,7 +1108,6 @@ export class PhysarumSimulation {
     this.depositBuffer.fill(0);
     this.foodDepositBuffer.fill(0);
     this.hasFoodDeposits = false;
-    this.hasTrailDeposits = false;
     this.initAgents();
     // GPU 텍스처도 초기화
     if (this.gpu) {
