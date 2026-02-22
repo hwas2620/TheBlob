@@ -86,12 +86,16 @@ export class AgentGPU {
     this.depositProgram = this.createProgram(DEPOSIT_POINTS_VERT, DEPOSIT_POINTS_FRAG);
     this.occupancyProgram = this.createProgram(OCCUPANCY_COUNT_VERT, OCCUPANCY_COUNT_FRAG);
 
-    // 유니폼 캐시 (Jeff Jones 알고리즘 + 셀 기반 충돌 감지)
+    // 유니폼 캐시 (Jeff Jones + 연결성 탐색 + 프론티어 지터 + 장거리 감지)
     this.updateUniforms = this.cacheUniforms(this.updateProgram, [
       'u_agentState', 'u_trailMap', 'u_random', 'u_occupancyMap',
       'u_agentCount', 'u_texWidth',
       'u_mapSize', 'u_sensorAngle', 'u_sensorDistance',
-      'u_turnSpeed', 'u_moveSpeed', 'u_frameIndex', 'u_occupancyThreshold',
+      'u_turnSpeed', 'u_moveSpeed', 'u_frameIndex',
+      'u_occupancyThreshold',
+      'u_isolationThreshold', 'u_searchDistance',
+      'u_recoveryTrailMin', 'u_jitterStrength',
+      'u_longSensorDist',
     ]);
 
     this.depositUniforms = this.cacheUniforms(this.depositProgram, [
@@ -154,7 +158,7 @@ export class AgentGPU {
     gl.bindTexture(gl.TEXTURE_2D, null);
   }
 
-  // 에이전트 업데이트 실행 (1 스텝) — Jeff Jones 알고리즘 + 셀 기반 충돌 감지
+  // 에이전트 업데이트 실행 (1 스텝) — Jeff Jones + 연결성/프론티어/장거리
   runUpdate(
     trailTexture: WebGLTexture,
     config: {
@@ -162,7 +166,12 @@ export class AgentGPU {
       sensorDistance: number;
       turnSpeed: number;
       moveSpeed: number;
-      occupancyThreshold: number;  // 셀당 최대 에이전트 수 (1 = 논문 원본)
+      occupancyThreshold: number;
+      isolationThreshold: number;
+      searchDistance: number;
+      recoveryTrailMin: number;
+      jitterStrength: number;
+      longSensorDist: number;
     },
   ) {
     const gl = this.gl;
@@ -171,7 +180,7 @@ export class AgentGPU {
 
     // 디버깅: 첫 프레임만 로그
     if (this.frameIndex === 0) {
-      console.log(`[AgentGPU] 첫 업데이트 (Jeff Jones + 셀 충돌): 에이전트 수=${this._agentCount}, 맵=${this.mapWidth}x${this.mapHeight}, threshold=${config.occupancyThreshold}`);
+      console.log(`[AgentGPU] 첫 업데이트 (Jeff Jones + 연결성/프론티어/장거리): 에이전트 수=${this._agentCount}, 맵=${this.mapWidth}x${this.mapHeight}, threshold=${config.occupancyThreshold}, isolation=${config.isolationThreshold}, search=${config.searchDistance}, longSensor=${config.longSensorDist}`);
     }
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, dstFbo);
@@ -206,6 +215,11 @@ export class AgentGPU {
     gl.uniform1f(this.updateUniforms['u_moveSpeed'], config.moveSpeed);
     gl.uniform1f(this.updateUniforms['u_frameIndex'], this.frameIndex++);
     gl.uniform1f(this.updateUniforms['u_occupancyThreshold'], config.occupancyThreshold);
+    gl.uniform1f(this.updateUniforms['u_isolationThreshold'], config.isolationThreshold);
+    gl.uniform1f(this.updateUniforms['u_searchDistance'], config.searchDistance);
+    gl.uniform1f(this.updateUniforms['u_recoveryTrailMin'], config.recoveryTrailMin);
+    gl.uniform1f(this.updateUniforms['u_jitterStrength'], config.jitterStrength);
+    gl.uniform1f(this.updateUniforms['u_longSensorDist'], config.longSensorDist);
 
     this.drawQuad();
 

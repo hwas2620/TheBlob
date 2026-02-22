@@ -3,7 +3,7 @@
 
 import { TrailMapGPU } from '../gpu/TrailMapGPU';
 import { AgentGPU } from '../gpu/AgentGPU';
-import { MAP, AGENT, ATTRACTION, BLOB_BODY, VEINS, PHEROMONE, CUBIC_GLOW, NUCLEUS, MINIMAP, AGENT_TEX } from '../config';
+import { MAP, AGENT, ATTRACTION, BLOB_BODY, VEINS, PHEROMONE, CUBIC_GLOW, NUCLEUS, MINIMAP, AGENT_TEX, CONNECTIVITY } from '../config';
 
 export interface SimulationConfig {
   width: number;
@@ -308,7 +308,10 @@ export class PhysarumSimulation {
         this.agentGPU.runOccupancy();
       }
 
-      // 1. GPU 에이전트 업데이트 (Jeff Jones 알고리즘 + 셀 기반 충돌 감지)
+      // 1. GPU 에이전트 업데이트 (순수 Jeff Jones + 셀 점유 제약)
+      // 점유 임계값 = 평균밀도 × 배수 (에이전트 수 변동에 자동 스케일링)
+      const avgDensity = this.agentGPU.agentCount / (this.config.width * this.config.height);
+      const occupancyThreshold = avgDensity * AGENT.OCCUPANCY_MULT;
       this.agentGPU.runUpdate(
         trailTex,
         {
@@ -316,7 +319,12 @@ export class PhysarumSimulation {
           sensorDistance: this.config.sensorDistance,
           turnSpeed: this.config.turnSpeed,
           moveSpeed: speedPulse,
-          occupancyThreshold: AGENT.OCCUPANCY_THRESHOLD,
+          occupancyThreshold,
+          isolationThreshold: CONNECTIVITY.ISOLATION_THRESHOLD,
+          searchDistance: CONNECTIVITY.SEARCH_DISTANCES[0],
+          recoveryTrailMin: CONNECTIVITY.RECOVERY_TRAIL_MIN,
+          jitterStrength: CONNECTIVITY.FRONTIER_JITTER,
+          longSensorDist: CONNECTIVITY.LONG_SENSOR_DIST,
         },
       );
 
@@ -363,8 +371,8 @@ export class PhysarumSimulation {
     }
   }
 
-  // 에이전트 업데이트 - Jeff Jones 알고리즘 + 충돌 감지
-  // "at most one particle in each grid square" (논문)
+  // 에이전트 업데이트 — 순수 Jeff Jones (CPU 폴백)
+  // GPU 경로와 동일한 SENSE → ROTATE → MOVE 로직
   private updateAgents(pulseDeposit?: number, pulseSpeed?: number) {
     const {
       width,
@@ -374,70 +382,37 @@ export class PhysarumSimulation {
     } = this.config;
     const moveSpeed = pulseSpeed ?? this.config.moveSpeed;
     const depositAmount = pulseDeposit ?? this.config.depositAmount;
-    const densityThreshold = 50; // 과밀 임계값
 
     for (const agent of this.agents) {
-      // 현재 위치의 페로몬 (밀도 체크)
-      const curIdx = Math.floor(agent.y) * width + Math.floor(agent.x);
-      const currentTrail = this.trailMap[curIdx] || 0;
-
       // === SENSE ===
       const frontSense = this.sense(agent.x, agent.y, agent.angle, sensorDistance);
       const leftSense = this.sense(agent.x, agent.y, agent.angle - sensorAngle, sensorDistance);
       const rightSense = this.sense(agent.x, agent.y, agent.angle + sensorAngle, sensorDistance);
 
-      // === COLLISION DETECTION (밀도 기반) ===
-      const isOvercrowded = currentTrail > densityThreshold;
-
-      if (isOvercrowded) {
-        // 과밀 상태: 페로몬이 가장 낮은 방향으로 탈출
-        if (frontSense <= leftSense && frontSense <= rightSense) {
-          // 앞이 가장 낮음 → 직진 (탈출)
-        } else if (leftSense < rightSense) {
-          agent.angle -= turnSpeed;
-        } else {
-          agent.angle += turnSpeed;
-        }
-      } else {
-        // === ROTATE (일반 Jeff Jones) ===
-        if (frontSense > leftSense && frontSense > rightSense) {
-          // Case 1: 전방이 가장 강함 → 직진
-        } else if (frontSense < leftSense && frontSense < rightSense) {
-          // Case 2: 전방이 가장 약함 → 랜덤 좌/우
-          agent.angle += (Math.random() > 0.5 ? 1 : -1) * turnSpeed;
-        } else if (leftSense > rightSense) {
-          // Case 3: 좌측이 더 강함 → 좌회전
-          agent.angle -= turnSpeed;
-        } else if (rightSense > leftSense) {
-          // Case 4: 우측이 더 강함 → 우회전
-          agent.angle += turnSpeed;
-        }
-        // Case 5: 모두 동일 → 직진
+      // === ROTATE (논문 원본) ===
+      if (frontSense > leftSense && frontSense > rightSense) {
+        // 직진
+      } else if (frontSense < leftSense && frontSense < rightSense) {
+        agent.angle += (Math.random() > 0.5 ? 1 : -1) * turnSpeed;
+      } else if (leftSense > rightSense) {
+        agent.angle -= turnSpeed;
+      } else if (rightSense > leftSense) {
+        agent.angle += turnSpeed;
       }
+      // 모두 동일 → 직진
 
-      // === MOVE ===
-      const newX = this.wrapX(agent.x + Math.cos(agent.angle) * moveSpeed);
-      const newY = this.wrapY(agent.y + Math.sin(agent.angle) * moveSpeed);
-      const targetIdx = Math.floor(newY) * width + Math.floor(newX);
-      const targetTrail = this.trailMap[targetIdx] || 0;
-
-      // 과밀 상태면 무조건 이동 (탈출), 아니면 충돌 감지
-      if (isOvercrowded || targetTrail < densityThreshold * 1.5) {
-        agent.x = newX;
-        agent.y = newY;
-      } else {
-        // 이동 실패: 랜덤 회전
-        agent.angle += (Math.random() - 0.5) * Math.PI;
-      }
+      // === MOVE (CPU 폴백: 점유 체크 생략) ===
+      agent.x = this.wrapX(agent.x + Math.cos(agent.angle) * moveSpeed);
+      agent.y = this.wrapY(agent.y + Math.sin(agent.angle) * moveSpeed);
 
       // === DEPOSIT ===
-      const ix = Math.floor(agent.x);
-      const iy = Math.floor(agent.y);
-      const idx = iy * width + ix;
+      const depIx = Math.floor(agent.x);
+      const depIy = Math.floor(agent.y);
+      const depIdx = depIy * width + depIx;
       if (this.gpuEnabled) {
-        this.depositBuffer[idx] = Math.min(255, this.depositBuffer[idx] + depositAmount);
+        this.depositBuffer[depIdx] = Math.min(255, this.depositBuffer[depIdx] + depositAmount);
       } else {
-        this.trailMap[idx] = Math.min(255, this.trailMap[idx] + depositAmount);
+        this.trailMap[depIdx] = Math.min(255, this.trailMap[depIdx] + depositAmount);
       }
     }
   }

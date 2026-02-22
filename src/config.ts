@@ -20,13 +20,13 @@ export const AGENT = {
   TURN_SPEED: Math.PI / 4,     // RA = 45° (논문)
   MOVE_SPEED: 1,               // SS = 1 px/step (논문 원본)
   DEPOSIT_AMOUNT: 5,           // depT = 5 (논문 원본값)
-  DECAY_FACTOR: 0.99,          // 트레일 감쇠 (아주 느리게: 원거리 확산 가능)
+  DECAY_FACTOR: 0.97,          // 트레일 감쇠 (가산 블렌딩 기준: 블롭 정상상태 ~133, 먹이 ~500 → 3.75배 차이)
   DECAY_FACTOR_DORMANT: 0.995, // 트레일 감쇠 (휴면: 거의 유지)
   DIFFUSE_STRENGTH: 1,
-  DIFFUSE_PASSES: 1,           // 확산 패스 1회 (논문 원본)
-  SPAWN_RADIUS: 20,            // 초기 스폰 반경 (중간: 중심 밀집하되 확장 가능)
-  // 밀도 기반 회피 (물처럼 퍼짐)
-  OCCUPANCY_THRESHOLD: 5,      // 이 밀도 이상이면 낮은 밀도 방향으로 회피
+  DIFFUSE_PASSES: 4,           // 확산 패스 4회 (격자 패턴 방지: lane/gap 구조를 충분히 blur)
+  MAX_TRAIL: 500,              // 트레일 값 상한 (가산 블렌딩으로 축적 허용, 먹이 신호 침투)
+  SPAWN_RADIUS: 100,           // 초기 스폰 반경 (밀도 ≈ 3.2/셀, 임계값 4.4 이하)
+  OCCUPANCY_MULT: 500,         // 점유 임계값 높여서 격자 패턴 제거 (논문의 "one particle per cell"이 격자 원인)
 } as const;
 
 // ── 에이전트 유인(Attraction) ────────────────────────────────
@@ -44,16 +44,18 @@ export const ATTRACTION = {
   SATURATION_EXPLORE_CHANCE: 0.6,
 } as const;
 
-// ── 에이전트 연결성(Connectivity) ────────────────────────────
+// ── 에이전트 연결성(Connectivity) + 탐색 ──────────────────────
 export const CONNECTIVITY = {
-  ISOLATION_THRESHOLD: 10,    // 이 트레일 값 미만이면 '고립' (적당히)
-  SEARCH_DISTANCES: [30],     // 고립 시 탐색 거리 (1개만, 최적화)
-  SEARCH_DIRECTIONS: 8,       // GPU 탐색 방향 수 (8방향으로 간소화)
+  ISOLATION_THRESHOLD: 1,     // 이 트레일 값 미만이면 '고립' (1: 의사족 탐험자 보호, 완전 빈 공간에서만 복귀)
+  SEARCH_DISTANCES: [30],     // 고립 시 탐색 거리
+  SEARCH_DIRECTIONS: 8,       // GPU 탐색 방향 수
   RECOVERY_TRAIL_MIN: 3,      // 복귀 목표 최소 트레일
   STRENGTH_SEVERE: 0.7,       // curTrail < 2 일 때 복귀 강도
   STRENGTH_MILD: 0.5,         // curTrail >= 2 일 때 복귀 강도
   JITTER_ATTRACTED: 0.03,     // 유인 중 랜덤 지터
   JITTER_FREE: 0.3,           // 자유 이동 시 랜덤 지터 (탐색 강화)
+  FRONTIER_JITTER: 0.4,       // 프론티어(경계) 지터 강도 (rad, 강화: 경계 에이전트 적극 탐험)
+  LONG_SENSOR_DIST: 150,      // 장거리 먹이 감지 거리 (px, 경계에서 먼 먹이 감지)
 } as const;
 
 // ── GPU 에이전트 텍스처 ──────────────────────────────────────

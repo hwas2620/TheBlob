@@ -6,6 +6,7 @@ import {
   DIFFUSE_DECAY_FRAG,
   DEPOSIT_BLEND_FRAG,
 } from './shaders';
+import { AGENT } from '../config';
 
 export class TrailMapGPU {
   private gl: WebGL2RenderingContext;
@@ -34,6 +35,7 @@ export class TrailMapGPU {
     trailMap: WebGLUniformLocation | null;
     texelSize: WebGLUniformLocation | null;
     decayFactor: WebGLUniformLocation | null;
+    maxTrail: WebGLUniformLocation | null;
   };
   private dbUniforms: {
     trailMap: WebGLUniformLocation | null;
@@ -63,6 +65,7 @@ export class TrailMapGPU {
       trailMap: gl.getUniformLocation(this.diffuseDecayProgram, 'u_trailMap'),
       texelSize: gl.getUniformLocation(this.diffuseDecayProgram, 'u_texelSize'),
       decayFactor: gl.getUniformLocation(this.diffuseDecayProgram, 'u_decayFactor'),
+      maxTrail: gl.getUniformLocation(this.diffuseDecayProgram, 'u_maxTrail'),
     };
     this.dbUniforms = {
       trailMap: gl.getUniformLocation(this.depositBlendProgram, 'u_trailMap'),
@@ -237,6 +240,7 @@ export class TrailMapGPU {
     const gl = this.gl;
     gl.useProgram(this.diffuseDecayProgram);
     gl.uniform2f(this.ddUniforms.texelSize, 1.0 / this.width, 1.0 / this.height);
+    gl.uniform1f(this.ddUniforms.maxTrail, AGENT.MAX_TRAIL);
 
     for (let p = 0; p < passes; p++) {
       const srcTex = this.currentIsA ? this.trailTexA : this.trailTexB;
