@@ -46,24 +46,12 @@ void main() {
         return;
     }
 
-    // === 기존 페로몬 뷰 ===
-
-    // 에이전트 밀집도 체크 (단일 픽셀 - 밀집도 뷰와 동일 방식)
-    float occupancy = texture(u_occupancyMap, trailUV).r;
-    if (occupancy < 1.0) {
-        fragColor = vec4(0.0);
-        return;
-    }
-
-    // 에이전트 수에 비례한 알파 (1~30 → 0.1~1.0)
-    float occupancyAlpha = clamp(occupancy / 30.0, 0.1, 1.0);
+    // === 트레일맵 직접 렌더링 ===
 
     float zoomFactor = max(1.0, max(u_viewportSize.x / u_mapSize.x, u_viewportSize.y / u_mapSize.y));
     float sampleRadius = {{DILATE_RADIUS}} * zoomFactor;
     vec2 texel = sampleRadius / u_mapSize;
 
-    // 페로몬 값
-    float value = texture(u_trailMap, trailUV).r;
     float threshold = {{FADE_START}};
     float maxValue = {{MAX_VALUE}};
 
@@ -82,9 +70,7 @@ void main() {
         return;
     }
 
-    // 본체 색상 (에이전트 밀집도에 비례한 알파)
-    float bodyThreshold = 25.0;
-    float adjustedBodyThreshold = bodyThreshold / zoomFactor;
+    // 본체 색상 (trail 강도에 비례한 색상/알파)
     float densityT = clamp((avgVal - adjustedThreshold) / (maxValue - adjustedThreshold), 0.0, 1.0);
 
     vec3 baseColor = u_isDormant
@@ -95,5 +81,6 @@ void main() {
         : vec3({{ACTIVE_DARK_R}}, {{ACTIVE_DARK_G}}, {{ACTIVE_DARK_B}});
 
     vec3 bodyColor = mix(darkColor, baseColor, sqrt(densityT));
-    fragColor = vec4(bodyColor, occupancyAlpha);
+    float alpha = smoothstep(adjustedThreshold, adjustedThreshold * 3.0, avgVal);
+    fragColor = vec4(bodyColor, alpha);
 }
