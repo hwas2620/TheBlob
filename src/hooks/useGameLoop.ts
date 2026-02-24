@@ -4,7 +4,7 @@ import type { Vector2, WaterDrop, WaterRipple } from '../types/game';
 import { GAME_CONFIG } from '../types/game';
 import { PhysarumSimulation, MAP_WIDTH, MAP_HEIGHT } from '../simulation/PhysarumSimulation';
 import { SceneRenderer } from '../gpu/SceneRenderer';
-import { ZOOM, GAME, WATER_EFFECT, SPORULATION, UI, FRAGMENT } from '../config';
+import { ZOOM, GAME, WATER_EFFECT, SPORULATION, UI, FRAGMENT, BACKGROUND } from '../config';
 import { TEXT, formatText } from '../text';
 
 // Utility functions
@@ -764,9 +764,9 @@ function renderGPU(
     simulation.setViewport(cameraX, cameraY, width / zoomLevel, height / zoomLevel);
   }
 
-  // 배경 클리어 (#0a0a0a)
+  // 배경 클리어 (한천 색)
   gl.viewport(0, 0, width, height);
-  gl.clearColor(10 / 255, 10 / 255, 10 / 255, 1.0);
+  gl.clearColor(BACKGROUND.CLEAR_COLOR.r / 255, BACKGROUND.CLEAR_COLOR.g / 255, BACKGROUND.CLEAR_COLOR.b / 255, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   // GPU 씬 렌더링

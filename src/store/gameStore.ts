@@ -59,6 +59,13 @@ interface GameStore extends GameState {
   resetGame: () => void;
 }
 
+const isValidStage = (s: unknown): s is StageInfo =>
+  s != null &&
+  typeof s === 'object' &&
+  typeof (s as StageInfo).remainingNutrients === 'number' &&
+  typeof (s as StageInfo).totalNutrients === 'number' &&
+  typeof (s as StageInfo).stageNumber === 'number';
+
 const createInitialStage = (stageNumber: number): StageInfo => {
   const totalNutrients =
     GAME_CONFIG.BASE_STAGE_NUTRIENTS +
@@ -427,7 +434,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
           moisture: Math.min(UI.MAX_MOISTURE, parsed.moisture || 50),
           biomass: parsed.biomass || 0,
           atp: (parsed.atp || 0) + offlineEarnings,
-          stage: parsed.stage || createInitialStage(1),
+          stage: isValidStage(parsed.stage)
+            ? parsed.stage
+            : createInitialStage(parsed.stage?.stageNumber || 1),
           genetics: parsed.genetics || getInitialState().genetics,
           totalSporulations: parsed.totalSporulations || 0,
           upgrades: parsed.upgrades || getInitialState().upgrades,

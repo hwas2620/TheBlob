@@ -90,6 +90,12 @@ export const AGENT_TEX = {
   MIN_AGENTS: 100, // 제거 시 최소 유지 수
 } as const;
 
+// ── 배경 ─────────────────────────────────────────────────────
+export const BACKGROUND = {
+  // 어두운 한천(agar) 색 — 검정보다 따뜻한 올리브/갈색 톤
+  CLEAR_COLOR: { r: 15, g: 12, b: 8 },
+} as const;
+
 // ── 블롭 본체 렌더링 ────────────────────────────────────────
 export const BLOB_BODY = {
   FADE_START: 2,       // 본체 시작 임계값
@@ -102,9 +108,9 @@ export const BLOB_BODY = {
   ALPHA_BASE: 50,      // 기본 알파
   ALPHA_FADE: 150,     // 페이드 알파 범위
   ALPHA_SMOOTH: 55,    // smooth 계수에 따른 추가 알파
-  // 내부 색상 (고밀도 = 매우 밝은 황금) - 명암 대비 강화
-  ACTIVE_BASE: { r: 255, g: 240, b: 100 },    // 더 밝고 선명한 황금
-  ACTIVE_DARK: { r: 240, g: 200, b: 60 },     // 저밀도도 더 밝게
+  // 내부 색상 — 크림~연황색 (리얼 Physarum 톤)
+  ACTIVE_BASE: { r: 245, g: 225, b: 140 },    // 크림 황색
+  ACTIVE_DARK: { r: 200, g: 175, b: 80 },     // 저밀도 연갈색
   // 막(membrane) 색상 — 경계에서 밝은 연두
   MEMBRANE_COLOR: { r: 100, g: 220, b: 80 },  // 더 밝은 초록
   // 휴면 색상 (더 어둡고 대비 강화)
@@ -117,11 +123,19 @@ export const BLOB_BODY = {
 export const VEINS = {
   MIN: 8,          // 정맥 표시 최소 트레일 값 (낮춤: 더 많은 영역에서 정맥 표시)
   MAX: 120,        // 정맥 표시 최대 트레일 값
-  STEP: 2,         // 샘플링 간격 (px)
+  STEP: 4,         // 샘플링 간격 (px, 넓을수록 개별 에이전트 무시 → 수송 채널만 표시)
   MAX_ALPHA: 0.8,  // 최대 투명도
   RIDGE_SCALE: 12.0, // 능선 강도 스케일 (높임: 작은 ridge도 잘 보이게)
-  // 색상 (vec3 형식, 0-1)
-  ACTIVE_COLOR: { r: 0.95, g: 0.85, b: 0.3 },    // 밝은 황금색 (정맥 하이라이트)
+  // 계층화 — 주정맥/모세정맥 분리
+  MAJOR_THRESHOLD: 40,   // 이 값 이상 = 주정맥
+  MAJOR_ALPHA: 0.9,      // 주정맥 최대 알파
+  MINOR_ALPHA: 0.35,     // 모세정맥 최대 알파
+  // 맥동 파라미터
+  PULSE_MIN: 0.5,        // 맥동 최소 강도 (기존 0.85 → 더 넓은 범위)
+  PULSE_MAX: 1.0,        // 맥동 최대 강도
+  // 색상 (vec3 형식, 0-1) — 본체 크림 톤과 통일
+  MAJOR_COLOR: { r: 0.95, g: 0.88, b: 0.55 },     // 주정맥: 밝은 크림
+  MINOR_COLOR: { r: 0.88, g: 0.78, b: 0.45 },     // 모세정맥: 본체와 가까운 톤
   DORMANT_COLOR: { r: 0.45, g: 0.38, b: 0.22 },
 } as const;
 

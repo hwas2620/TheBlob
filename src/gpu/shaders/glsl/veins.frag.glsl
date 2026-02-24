@@ -49,19 +49,34 @@ void main() {
 
     // 밀도에 비례한 기본 강도 + 능선 강도
     float densityT = clamp((value - veinMin) / (veinMax - veinMin), 0.0, 1.0);
-    float ridgeStrength = clamp(ridge * {{RIDGE_SCALE}}, 0.0, 1.0);
+    // 상대적 ridge: 고밀도에서 개별 에이전트 노이즈 억제
+    float relRidge = ridge / max(value, 1.0);
+    float ridgeStrength = clamp(relRidge * {{RIDGE_SCALE}}, 0.0, 1.0);
 
-    // 맥동 효과 (60-180초 주기 → 평균 120초 = 2분)
-    // 실제 Physarum의 cytoplasmic streaming 재현
-    float pulsePeriod = 120.0; // 초
+    // 맥동 효과 — 파라미터화된 진폭
+    float pulsePeriod = 120.0;
     float pulsePhase = mod(u_time, pulsePeriod) / pulsePeriod * 2.0 * 3.14159;
-    float pulseIntensity = 0.85 + 0.15 * sin(pulsePhase); // 0.85~1.0 범위
+    float pulseBase = {{PULSE_MIN}} + ({{PULSE_MAX}} - {{PULSE_MIN}}) * (0.5 + 0.5 * sin(pulsePhase));
 
-    float alpha = densityT * ridgeStrength * {{MAX_ALPHA}} * pulseIntensity;
+    // 정맥 계층화: 주정맥/모세정맥 분리
+    float majorT = smoothstep({{MAJOR_THRESHOLD}} * 0.7, {{MAJOR_THRESHOLD}} * 1.3, value);
 
-    vec3 veinColor = u_isDormant
+    // 계층별 알파 — 주정맥은 전체 맥동, 모세정맥은 약한 맥동
+    float majorPulse = pulseBase;
+    float minorPulse = mix(1.0, pulseBase, 0.3);
+    float layerAlpha = mix({{MINOR_ALPHA}}, {{MAJOR_ALPHA}}, majorT);
+    float layerPulse = mix(minorPulse, majorPulse, majorT);
+
+    float alpha = densityT * ridgeStrength * layerAlpha * layerPulse;
+
+    // 계층별 색상 — 주정맥(밝고 크림) / 모세정맥(어둡고 황갈)
+    vec3 majorColor = u_isDormant
         ? vec3({{DORMANT_R}}, {{DORMANT_G}}, {{DORMANT_B}})
-        : vec3({{ACTIVE_R}}, {{ACTIVE_G}}, {{ACTIVE_B}});
+        : vec3({{MAJOR_R}}, {{MAJOR_G}}, {{MAJOR_B}});
+    vec3 minorColor = u_isDormant
+        ? vec3({{DORMANT_R}}, {{DORMANT_G}}, {{DORMANT_B}})
+        : vec3({{MINOR_R}}, {{MINOR_G}}, {{MINOR_B}});
+    vec3 veinColor = mix(minorColor, majorColor, majorT);
 
     fragColor = vec4(veinColor, alpha);
 }
