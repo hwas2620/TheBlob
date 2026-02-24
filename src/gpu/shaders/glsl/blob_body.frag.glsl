@@ -64,12 +64,26 @@ void main() {
     }
     float avgVal = neighborSum / 9.0;
 
+    float adjustedNoise = {{NOISE_FLOOR}} / zoomFactor;
     float adjustedThreshold = threshold / zoomFactor;
-    if (avgVal < adjustedThreshold) {
+
+    // 1단계: 완전 배경 노이즈 제거
+    if (avgVal < adjustedNoise) {
         fragColor = vec4(0.0);
         return;
     }
 
+    // 2단계: 점막 영역 (noiseFloor ~ FADE_START) — 희미한 노란색
+    if (avgVal < adjustedThreshold) {
+        float t = smoothstep(adjustedNoise, adjustedThreshold, avgVal);
+        vec3 memColor = u_isDormant
+            ? vec3({{DORMANT_BASE_R}}, {{DORMANT_BASE_G}}, {{DORMANT_BASE_B}})
+            : vec3({{ACTIVE_BASE_R}}, {{ACTIVE_BASE_G}}, {{ACTIVE_BASE_B}});
+        fragColor = vec4(memColor, t * {{MEMBRANE_ALPHA}});
+        return;
+    }
+
+    // 3단계: 본체 영역 — 기존 로직 그대로
     // 본체 색상 (trail 강도에 비례한 색상/알파)
     float densityT = clamp((avgVal - adjustedThreshold) / (maxValue - adjustedThreshold), 0.0, 1.0);
 
