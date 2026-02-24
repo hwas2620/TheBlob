@@ -11,6 +11,8 @@ const mc = B.MEMBRANE_COLOR, dm = B.DORMANT_MEMBRANE;
 
 export const BLOB_BODY_FRAG = resolveShader(blobBodyFragSrc, {
   FADE_START: B.FADE_START.toFixed(1),
+  NOISE_FLOOR: B.NOISE_FLOOR.toFixed(2),
+  MEMBRANE_ALPHA: B.MEMBRANE_ALPHA.toFixed(3),
   DILATE_RADIUS: B.DILATE_RADIUS.toFixed(1),
   MAX_VALUE: B.MAX_VALUE.toFixed(1),
   ACTIVE_BASE_R: (ab.r / 255).toFixed(3),
