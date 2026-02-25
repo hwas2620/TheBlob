@@ -15,7 +15,7 @@
 ## Phase 1: 구조 개선 ✅ (커밋 882870b)
 ## Phase 2: 색상 매칭 ✅ (커밋 51fac4b)
 
-## Phase 3: 정맥 렌더링 개선 (진행 중)
+## Phase 3: 정맥 렌더링 개선 ✅ (커밋 622de50)
 
 ### Step 1: Additive Blend 전환
 
@@ -80,6 +80,25 @@ gpu.runDiffuseDecay(4)     // 확산 + 감쇠 (기존)
   - [ ] 본체 위에 밝게 떠 보임
   - [ ] 포화(white-out) 없음
   - [ ] 시뮬레이션 동역학 영향 없음
+
+## Phase 4: 파라미터 튜닝 (진행 중)
+
+### Step 1: config.ts VEINS 파라미터 조정
+
+| 파라미터 | 변경 |
+|---------|------|
+| `RIDGE_THRESHOLD` | 0.1 → 0.02 |
+| `RIDGE_SATURATE` | 0.3 → 0.10 |
+| `MAJOR_ALPHA` | 0.4 → 0.65 |
+| `HESSIAN_STEP` | 1 → 2 |
+| `VEIN_MIN` (= MIN) | 25 → 35 |
+
+### Step 2: 검증
+- [ ] `npm run build` 통과
+- [ ] 브라우저 시각 확인
+  - [ ] 정맥 강도 충분 (본체 대비 눈에 띔)
+  - [ ] 경계 반짝임 감소/제거
+  - [ ] 포화(white-out) 없음
 
 ## 위험 요소
 
