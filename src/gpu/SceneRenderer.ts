@@ -25,6 +25,7 @@ interface SceneUniforms {
   occupancyMap?: WebGLUniformLocation | null;  // 밀집도 맵
   viewMode?: WebGLUniformLocation | null;       // 뷰 모드
   foodMap?: WebGLUniformLocation | null;        // 먹이 화학물질 맵
+  rawTrailMap?: WebGLUniformLocation | null;    // 미확산 트레일맵 (정맥 Hessian용)
 }
 
 export class SceneRenderer {
@@ -101,6 +102,7 @@ export class SceneRenderer {
     this.veinsUniforms = {
       ...this.getUniforms(this.veinsProgram, true),
       time: gl.getUniformLocation(this.veinsProgram, 'u_time'),
+      rawTrailMap: gl.getUniformLocation(this.veinsProgram, 'u_rawTrailMap'),
     };
     this.cubicUniforms = this.getUniforms(this.cubicProgram, false);
     this.agentDisplayUniforms = {
@@ -220,6 +222,7 @@ export class SceneRenderer {
     agentCount: number,
     showBlobGraphics: boolean = true,
     time: number = 0,
+    rawTrailTexture: WebGLTexture | null = null,
   ) {
     const gl = this.gl;
 
@@ -268,7 +271,7 @@ export class SceneRenderer {
 
       // 3. 정맥 (맥동 효과) - 밀집도 뷰에서는 숨김
       if (this.viewMode !== 'density') {
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // additive: 본체 위에 "떠 보이는" 효과
         this.renderPass(
           this.veinsProgram,
           this.veinsUniforms,
@@ -277,6 +280,8 @@ export class SceneRenderer {
           isDormant,
           undefined,
           time,
+          undefined,
+          rawTrailTexture,
         );
       }
     }
@@ -314,6 +319,7 @@ export class SceneRenderer {
     attractorCount?: number,
     time?: number,
     foodTexture?: WebGLTexture | null,
+    rawTrailTexture?: WebGLTexture | null,
   ) {
     const gl = this.gl;
 
@@ -350,6 +356,13 @@ export class SceneRenderer {
       gl.activeTexture(gl.TEXTURE3);
       gl.bindTexture(gl.TEXTURE_2D, foodTexture);
       gl.uniform1i(uniforms.foodMap, 3);
+    }
+
+    // 미확산 트레일맵 (정맥 Hessian ridge용)
+    if (rawTrailTexture && uniforms.rawTrailMap) {
+      gl.activeTexture(gl.TEXTURE4);
+      gl.bindTexture(gl.TEXTURE_2D, rawTrailTexture);
+      gl.uniform1i(uniforms.rawTrailMap, 4);
     }
 
     // 밀집도 맵 + 뷰 모드 (블롭 본체 셰이더용)

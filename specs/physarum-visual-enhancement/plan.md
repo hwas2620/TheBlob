@@ -4,114 +4,86 @@
 
 | 파일 | 변경 내용 |
 |------|----------|
-| `src/config.ts` | BACKGROUND, BLOB_BODY, VEINS 색상 + BODY_MAX_ALPHA |
-| `src/gpu/shaders/glsl/blob_body.frag.glsl` | BODY_MAX_ALPHA 적용 + 알파 공식 |
-| `src/gpu/shaders/blob_body.ts` | BODY_MAX_ALPHA 플레이스홀더 치환 |
-| `src/gpu/shaders/glsl/veins.frag.glsl` | 정맥 노이즈 억제 강화 |
-| `src/gpu/shaders/veins.ts` | (필요 시) 새 플레이스홀더 |
-| `src/index.css` | CSS 배경색 |
+| `src/gpu/SceneRenderer.ts` | 정맥 additive blend + rawTrailMap 바인딩 |
+| `src/gpu/TrailMapGPU.ts` | 미확산 텍스처/FBO + captureRawTrail() |
+| `src/gpu/shaders/glsl/veins.frag.glsl` | Hessian ridge detection 전면 재작성 |
+| `src/gpu/shaders/veins.ts` | 신규 플레이스홀더 치환 |
+| `src/simulation/PhysarumSimulation.ts` | 미확산 캡처 호출 + 접근자 |
+| `src/hooks/useGameLoop.ts` | rawTrailTexture 전달 |
+| `src/config.ts` | VEINS 파라미터 재구성 |
 
-## Phase 1: 구조 개선 ✅ (커밋: 882870b)
+## Phase 1: 구조 개선 ✅ (커밋 882870b)
+## Phase 2: 색상 매칭 ✅ (커밋 51fac4b)
 
-### Step 1: 배경색 + 본체 색상 톤 변경 ✅
-### Step 2: 정맥 계층화 (주정맥/모세정맥) ✅
-### Step 3: 맥동 진폭 증대 ✅
-### Step 4: 노이즈 억제 ✅
-### Step 5: 세이브 데이터 검증 ✅
+## Phase 3: 정맥 렌더링 개선 (진행 중)
 
-## Phase 2: 레퍼런스 색상 매칭 (진행 중)
+### Step 1: Additive Blend 전환
 
-### 물리 모델: 노란 원형질 + 초록 기질 = 올리브 합성
+**SceneRenderer.ts** 271행
+- 정맥 블렌딩: `ONE_MINUS_SRC_ALPHA` → `ONE`
 
-### Step 6: 배경 + 본체 + 정맥 색상 ✅ (구현 완료, 미커밋)
+**config.ts** VEINS 파라미터 (additive 보정)
+- `MAJOR_ALPHA`: 0.85 → 0.4
+- `MINOR_ALPHA`: 0.15 → 0.08
+- `MAJOR_COLOR`: (0.95,0.88,0.35) → (0.6,0.5,0.2) 명도 하향
+- `MINOR_COLOR`: (0.80,0.72,0.25) → (0.45,0.38,0.15)
 
-**config.ts**
-- `BACKGROUND.CLEAR_COLOR`: `(15,12,8)` → `(8,20,10)` 어두운 초록 (한천)
-- `BLOB_BODY.BODY_MAX_ALPHA`: 신규 `0.85`
-- `BLOB_BODY.ACTIVE_BASE`: `(245,225,140)` → `(220,200,60)` 밝은 황색
-- `BLOB_BODY.ACTIVE_DARK`: `(200,175,80)` → `(160,140,30)` 어두운 황색
-- `BLOB_BODY.MEMBRANE_COLOR`: `(100,220,80)` → `(180,170,40)` 연한 황색
-- `VEINS.MAJOR_COLOR`: `(0.95,0.88,0.55)` → `(0.95,0.88,0.35)` 밝은 황금
-- `VEINS.MINOR_COLOR`: `(0.88,0.78,0.45)` → `(0.80,0.72,0.25)` 중간 황색
-- `VEINS.MIN`: 8 → 25, `VEINS.STEP`: 4 → 8, `VEINS.RIDGE_SCALE`: 12 → 3
-- `VEINS.MINOR_ALPHA`: 0.35 → 0.15
+### Step 2: 미확산 트레일맵 분리
 
-**blob_body.frag.glsl**
-- 본체 알파: `sqrt(densityT) * {{BODY_MAX_ALPHA}}`
+**TrailMapGPU.ts**
+- `rawTrailTex` + `rawTrailFbo` 추가 (R32F, 1500×1500)
+- `captureRawTrail()`: 현재 트레일 → rawTrail에 blit
+- box blur 1패스 적용 (기존 diffuseDecay 셰이더 재사용, decay=1.0)
+- `getCurrentRawTrailTexture()` 접근자
 
-**blob_body.ts**
-- `BODY_MAX_ALPHA` 플레이스홀더 추가
+타이밍 (PhysarumSimulation.ts GPU 경로):
+```
+agentGPU.runDeposit()     // 에이전트 deposit → trail FBO
+★ gpu.captureRawTrail()    // 확산 전 상태 캡처 + 1패스 블러
+gpu.runDiffuseDecay(4)     // 확산 + 감쇠 (기존)
+```
 
-**index.css**
-- `#0f0c08` → `#08140a`
+**SceneRenderer.ts**
+- `render()` 파라미터에 `rawTrailTexture` 추가
+- 정맥 패스에서 TEXTURE1에 rawTrailMap 바인딩
+- `veinsUniforms`에 `rawTrailMap` 추가
 
-### Step 7: 본체 알파 다이나믹 레인지 확대 ✅
+**useGameLoop.ts**
+- `simulation.getCurrentRawTrailTexture()` 호출 → 렌더러 전달
 
-**config.ts**
-- `BLOB_BODY.MAX_VALUE`: 60 → 150
+### Step 3: Hessian Ridge Detection
 
-**blob_body.frag.glsl**
-- 알파: `sqrt(densityT)` → `smoothstep(0.1, 0.5, densityT)` (S커브)
-- 색상도 동일 S커브: `mix(dark, base, alphaT)`
+**veins.frag.glsl** 전면 재작성:
+- `u_rawTrailMap`에서 Hessian 2차 미분 계산 (h=1px)
+- 9 texture fetches (center + 상하좌우 4 + 대각 4)
+- 고유값: `lambda2 = 0.5*trace - sqrt(discriminant)`
+- `ridgeness = max(-lambda2, 0.0)` (직접 사용, 감수 반영)
+- 정규화: `ridgeness / max(center, 1.0)`
+- 강도: `smoothstep(THRESHOLD, SATURATE, normalizedRidgeness)`
+- 계층화, 맥동, 색상은 기존 구조 유지
 
-### Step 8: 정맥 에이전트 노이즈 제거 ✅
+**config.ts** VEINS 재구성:
+- `STEP` 제거
+- `HESSIAN_STEP`: 1 (샘플 간격 px)
+- `RIDGE_THRESHOLD`: 0.1 (ridgeness 최소)
+- `RIDGE_SATURATE`: 0.3 (ridgeness 포화)
+- 나머지 (MAJOR_THRESHOLD, PULSE, 색상 등) 유지
 
-**veins.frag.glsl** — A안 채택 + 추가 개선:
-- 입력: 1포인트 → 3x3 블러 (STEP 간격 기준)
-- 능선 검출: STEP → STEP×2 범위 이웃 비교 (더 넓은 스케일)
-- ridgeStrength: `clamp()` → `smoothstep(0.2, 0.5)` (약한 릿지 제거, 선명한 라인)
+**veins.ts**
+- 신규 플레이스홀더: HESSIAN_STEP, RIDGE_THRESHOLD, RIDGE_SATURATE
 
-### Step 9: 검증 (진행 중)
-- [x] `npm run build` 통과
-- [ ] 브라우저 시각 확인 (레퍼런스 05~08과 비교)
-- 체크포인트:
-  - [ ] 중심 불투명 노랑, 의사족 반투명 올리브
-  - [ ] 정맥이 깨끗한 노란 라인 (에이전트 패턴 없음)
-  - [ ] 배경 어두운 초록
-
-## 파라미터 변경 이력
-
-### Phase 1 (커밋 완료: 882870b)
-
-| 파라미터 | 이전 값 | Phase 1 값 |
-|---------|---------|-----------|
-| CLEAR_COLOR | `(10, 10, 10)` | `(15, 12, 8)` |
-| ACTIVE_BASE | `(255, 240, 100)` | `(245, 225, 140)` |
-| ACTIVE_DARK | `(240, 200, 60)` | `(200, 175, 80)` |
-| VEINS.STEP | 2 | 4 |
-| VEINS.MAJOR_COLOR | — | `(0.95, 0.88, 0.55)` |
-| VEINS.MINOR_COLOR | — | `(0.88, 0.78, 0.45)` |
-| VEINS.PULSE_MIN | 0.85 | 0.5 |
-| ridge 검출 | 절대값 | 상대값 (ridge/value) |
-
-### Phase 2 (진행 중, 미커밋)
-
-| 파라미터 | Phase 1 값 | 현재 값 | 비고 |
-|---------|-----------|---------|------|
-| CLEAR_COLOR | `(15, 12, 8)` | `(8, 20, 10)` | 초록 기질 |
-| ACTIVE_BASE | `(245, 225, 140)` | `(220, 200, 60)` | 황색 원형질 |
-| ACTIVE_DARK | `(200, 175, 80)` | `(160, 140, 30)` | 어두운 황색 |
-| BODY_MAX_ALPHA | — (1.0) | `0.85` | 반투명 |
-| MEMBRANE_COLOR | `(100, 220, 80)` | `(180, 170, 40)` | 황색 |
-| MAJOR_COLOR | `(0.95, 0.88, 0.55)` | `(0.95, 0.88, 0.35)` | 황금 |
-| MINOR_COLOR | `(0.88, 0.78, 0.45)` | `(0.80, 0.72, 0.25)` | 황색 |
-| VEINS.MIN | 8 | 25 | 노이즈 컷오프 |
-| VEINS.STEP | 4 | 8 | 넓은 감지 |
-| VEINS.RIDGE_SCALE | 12 | 3 | 노이즈 축소 |
-| VEINS.MINOR_ALPHA | 0.35 | 0.15 | 모세정맥 약화 |
-
-### Phase 2 추가 변경 (Step 7~8에서 구현)
-
-| 파라미터 | 변경 전 | 변경 후 | 비고 |
-|---------|---------|---------|------|
-| MAX_VALUE | 60 | 150 | 알파 다이나믹 레인지 확대 |
-| 본체 알파 곡선 | sqrt(densityT) | smoothstep(0.1, 0.5, densityT) | S커브: 유령감 제거 |
-| 정맥 입력 | 1포인트 | 3x3 블러 | 에이전트 노이즈 평활화 |
-| 정맥 능선 범위 | STEP | STEP×2 | 넓은 수송 채널 감지 |
-| ridgeStrength | clamp | smoothstep(0.2, 0.5) | 선명한 라인 |
+### Step 4: 검증
+- [ ] `npm run build` 통과
+- [ ] 브라우저 시각 확인
+  - [ ] 정맥이 가느다란 선 (구름 아님)
+  - [ ] 경계 날카로움
+  - [ ] 본체 위에 밝게 떠 보임
+  - [ ] 포화(white-out) 없음
+  - [ ] 시뮬레이션 동역학 영향 없음
 
 ## 위험 요소
 
-- **색상 튜닝**: 수치만으로 예측 어려움 → 브라우저 시각 확인 필수
-- **정맥 블러**: 텍스처 샘플 증가 → GPU 성능 확인 필요 (13 샘플은 문제 없을 것)
-- **MAX_VALUE 과도 상향**: 본체가 전부 투명해질 수 있음 → 단계적 조정
+- **Hessian 파라미터**: THRESHOLD/SATURATE 수치를 브라우저에서 반복 튜닝 필요
+- **점 노이즈**: box blur 1패스 부족 시 2패스로 확대
+- **Additive 포화**: 정맥 색상/alpha를 충분히 낮춰야 함
+- **captureRawTrail 타이밍**: deposit 후, diffuse 전 필수

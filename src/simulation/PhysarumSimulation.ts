@@ -186,6 +186,11 @@ export class PhysarumSimulation {
     return this.gpu ? this.gpu.getCurrentTrailTexture() : null;
   }
 
+  // 미확산 트레일 텍스처 반환 (정맥 렌더링용)
+  getCurrentRawTrailTexture(): WebGLTexture | null {
+    return this.gpu ? this.gpu.getCurrentRawTrailTexture() : null;
+  }
+
   getCurrentFoodTexture(): WebGLTexture | null {
     return this.gpu ? this.gpu.getCurrentFoodTexture() : null;
   }
@@ -346,7 +351,10 @@ export class PhysarumSimulation {
         depositPulse,
       );
 
-      // 3. 자기 트레일 확산+감쇠
+      // 3. 미확산 트레일 캡처 (정맥 렌더링용: deposit 후, 확산 전)
+      this.gpu.captureRawTrail();
+
+      // 4. 자기 트레일 확산+감쇠
       this.gpu.runDiffuseDecay(this.config.decayFactor, AGENT.DIFFUSE_PASSES);
 
       // 4. 먹이 화학물질 → food 전용 텍스처 (trailMap과 완전 분리)
@@ -522,7 +530,7 @@ export class PhysarumSimulation {
 
     const veinMin = VEINS.MIN;
     const veinMax = VEINS.MAX;
-    const step = VEINS.STEP;
+    const step = VEINS.HESSIAN_STEP * 4; // CPU 폴백: Hessian 스텝 기반 스캔 간격
 
     // 스크린 좌표로 순회
     for (let sy = 0; sy < vh; sy += step) {

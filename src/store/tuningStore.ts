@@ -7,7 +7,7 @@ export interface TunableParams {
   // 정맥
   veinsMin: number;
   veinsMax: number;
-  veinsRidgeScale: number;
+  veinsRidgeThreshold: number;
   veinsMaxAlpha: number;
 
   // 블롭 본체
@@ -40,7 +40,7 @@ export const DEFAULT_PARAMS: TunableParams = {
   // 정맥
   veinsMin: VEINS.MIN,
   veinsMax: VEINS.MAX,
-  veinsRidgeScale: VEINS.RIDGE_SCALE,
+  veinsRidgeThreshold: VEINS.RIDGE_THRESHOLD,
   veinsMaxAlpha: VEINS.MAX_ALPHA,
 
   // 블롭 본체
@@ -81,7 +81,7 @@ export const PARAM_META: Record<keyof TunableParams, ParamMeta> = {
   // 정맥
   veinsMin: { min: 1, max: 50, step: 1, label: 'Min Trail', category: '정맥' },
   veinsMax: { min: 50, max: 255, step: 5, label: 'Max Trail', category: '정맥' },
-  veinsRidgeScale: { min: 1, max: 30, step: 0.5, label: 'Ridge Scale', category: '정맥' },
+  veinsRidgeThreshold: { min: 0.01, max: 1.0, step: 0.01, label: 'Ridge Threshold', category: '정맥' },
   veinsMaxAlpha: { min: 0.1, max: 1, step: 0.05, label: 'Max Alpha', category: '정맥' },
 
   // 블롭 본체

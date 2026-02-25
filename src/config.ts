@@ -122,21 +122,22 @@ export const BLOB_BODY = {
 
 // ── 정맥(Vein) 렌더링 ───────────────────────────────────────
 export const VEINS = {
-  MIN: 25,         // 정맥 표시 최소 트레일 값 (높임: 본체 내부만)
+  MIN: 25,         // 정맥 표시 최소 트레일 값 (확산 맵 기준, 본체 마스킹)
   MAX: 120,        // 정맥 표시 최대 트레일 값
-  STEP: 8,         // 샘플링 간격 (px, 넓을수록 수송 채널만 감지)
+  HESSIAN_STEP: 1, // Hessian 샘플 간격 (px, 2~5px 정맥에 최적)
   MAX_ALPHA: 0.8,  // 최대 투명도
-  RIDGE_SCALE: 3.0,  // 능선 강도 스케일 (대폭 낮춤: 주요 채널만)
+  RIDGE_THRESHOLD: 0.1,  // Hessian ridgeness 최소 임계값 (정규화된 값)
+  RIDGE_SATURATE: 0.3,   // Hessian ridgeness 포화 값
   // 계층화 — 주정맥/모세정맥 분리
   MAJOR_THRESHOLD: 40,   // 이 값 이상 = 주정맥
-  MAJOR_ALPHA: 0.85,     // 주정맥 최대 알파
-  MINOR_ALPHA: 0.15,     // 모세정맥: 거의 안 보이게 (노이즈 원인)
+  MAJOR_ALPHA: 0.4,      // 주정맥 알파 (additive 보정: 낮춰야 포화 방지)
+  MINOR_ALPHA: 0.08,     // 모세정맥: 거의 안 보이게 (노이즈 원인)
   // 맥동 파라미터
   PULSE_MIN: 0.5,        // 맥동 최소 강도 (기존 0.85 → 더 넓은 범위)
   PULSE_MAX: 1.0,        // 맥동 최대 강도
-  // 색상 (vec3 형식, 0-1) — 밝은 노란색 (농축 원형질 = 본체보다 진한 노랑)
-  MAJOR_COLOR: { r: 0.95, g: 0.88, b: 0.35 },     // 주정맥: 밝은 황금색
-  MINOR_COLOR: { r: 0.80, g: 0.72, b: 0.25 },     // 모세정맥: 중간 황색
+  // 색상 (vec3 형식, 0-1) — additive이므로 명도 하향 (포화 방지)
+  MAJOR_COLOR: { r: 0.6, g: 0.5, b: 0.2 },        // 주정맥: additive 합산 시 밝은 노랑
+  MINOR_COLOR: { r: 0.45, g: 0.38, b: 0.15 },     // 모세정맥: additive 합산 시 중간 황색
   DORMANT_COLOR: { r: 0.45, g: 0.38, b: 0.22 },
 } as const;
 

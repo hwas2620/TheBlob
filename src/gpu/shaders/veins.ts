@@ -9,8 +9,9 @@ const V = VEINS;
 export const VEINS_FRAG = resolveShader(veinsFragSrc, {
   VEIN_MIN: V.MIN.toFixed(1),
   VEIN_MAX: V.MAX.toFixed(1),
-  STEP: V.STEP.toFixed(1),
-  RIDGE_SCALE: V.RIDGE_SCALE.toFixed(1),
+  HESSIAN_STEP: V.HESSIAN_STEP.toFixed(1),
+  RIDGE_THRESHOLD: V.RIDGE_THRESHOLD.toFixed(3),
+  RIDGE_SATURATE: V.RIDGE_SATURATE.toFixed(3),
   // 계층화
   MAJOR_THRESHOLD: V.MAJOR_THRESHOLD.toFixed(1),
   MAJOR_ALPHA: V.MAJOR_ALPHA.toFixed(2),

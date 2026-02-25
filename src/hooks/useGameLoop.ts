@@ -786,6 +786,7 @@ function renderGPU(
     sceneRenderer.updateAttractors(attractors);
 
     const trailTex = simulation.getCurrentTrailTexture();
+    const rawTrailTex = simulation.getCurrentRawTrailTexture();
     const foodTex = simulation.getCurrentFoodTexture();
     const agentGPU = simulation.getAgentGPU();
 
@@ -811,6 +812,7 @@ function renderGPU(
         agentGPU?.agentCount ?? 0,
         showBlobGraphics,
         timeInSeconds,
+        rawTrailTex,
       );
     }
   } else if (simulation) {

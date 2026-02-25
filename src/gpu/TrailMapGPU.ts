@@ -23,6 +23,13 @@ export class TrailMapGPU {
   // 분비물 텍스처 (에이전트 자기 페로몬용 — 현재 미사용, food로 대체)
   private depositTex: WebGLTexture;
 
+  // 미확산 트레일맵 (정맥 렌더링용: deposit 후, 확산 전 상태 + box blur 1패스)
+  private rawTrailTexA: WebGLTexture;
+  private rawTrailTexB: WebGLTexture;
+  private rawTrailFboA: WebGLFramebuffer;
+  private rawTrailFboB: WebGLFramebuffer;
+  private rawTrailCurrentIsA = true;
+
   // 먹이 화학물질 핑퐁 텍스처 & FBO (자기 트레일과 완전 분리)
   private foodTexA: WebGLTexture;
   private foodTexB: WebGLTexture;
@@ -88,6 +95,12 @@ export class TrailMapGPU {
     // FBO 생성
     this.fboA = this.createFBO(this.trailTexA);
     this.fboB = this.createFBO(this.trailTexB);
+
+    // 미확산 트레일맵 텍스처 & FBO (정맥 렌더링용)
+    this.rawTrailTexA = this.createR32FTexture(width, height);
+    this.rawTrailTexB = this.createR32FTexture(width, height);
+    this.rawTrailFboA = this.createFBO(this.rawTrailTexA);
+    this.rawTrailFboB = this.createFBO(this.rawTrailTexB);
 
     // 먹이 텍스처 & FBO 생성
     this.foodTexA = this.createR32FTexture(width, height);
@@ -340,6 +353,50 @@ export class TrailMapGPU {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
 
+  // 미확산 트레일 캡처: 현재 트레일을 blit + box blur 1패스 (점 노이즈 제거)
+  // 타이밍: deposit 후, diffuseDecay 전에 호출
+  captureRawTrail() {
+    const gl = this.gl;
+    const srcFbo = this.currentIsA ? this.fboA : this.fboB;
+
+    // 1. 현재 트레일 → rawTrail에 blit 복사
+    const dstFbo = this.rawTrailCurrentIsA ? this.rawTrailFboA : this.rawTrailFboB;
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, srcFbo);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, dstFbo);
+    gl.blitFramebuffer(
+      0, 0, this.width, this.height,
+      0, 0, this.width, this.height,
+      gl.COLOR_BUFFER_BIT, gl.NEAREST,
+    );
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+
+    // 2. box blur 1패스 (σ≈0.8px, 점 노이즈 제거 필수)
+    // diffuseDecay 셰이더 재사용: decay=1.0(감쇠 없음), 1패스
+    gl.useProgram(this.diffuseDecayProgram);
+    gl.uniform2f(this.ddUniforms.texelSize, 1.0 / this.width, 1.0 / this.height);
+    gl.uniform1f(this.ddUniforms.maxTrail, AGENT.MAX_TRAIL);
+    gl.uniform1f(this.ddUniforms.decayFactor, 1.0); // 감쇠 없이 확산만
+
+    const rawSrcTex = this.rawTrailCurrentIsA ? this.rawTrailTexA : this.rawTrailTexB;
+    const rawDstFbo = this.rawTrailCurrentIsA ? this.rawTrailFboB : this.rawTrailFboA;
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, rawDstFbo);
+    gl.viewport(0, 0, this.width, this.height);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, rawSrcTex);
+    gl.uniform1i(this.ddUniforms.trailMap, 0);
+
+    this.drawQuad();
+    this.rawTrailCurrentIsA = !this.rawTrailCurrentIsA;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+
+  // 미확산 트레일 텍스처 반환 (정맥 렌더링용)
+  getCurrentRawTrailTexture(): WebGLTexture {
+    return this.rawTrailCurrentIsA ? this.rawTrailTexA : this.rawTrailTexB;
+  }
+
   // 현재 먹이 텍스처 반환 (에이전트 셰이더 바인딩용)
   getCurrentFoodTexture(): WebGLTexture {
     return this.foodCurrentIsA ? this.foodTexA : this.foodTexB;
@@ -370,6 +427,10 @@ export class TrailMapGPU {
     gl.deleteTexture(this.trailTexA);
     gl.deleteTexture(this.trailTexB);
     gl.deleteTexture(this.depositTex);
+    gl.deleteTexture(this.rawTrailTexA);
+    gl.deleteTexture(this.rawTrailTexB);
+    gl.deleteFramebuffer(this.rawTrailFboA);
+    gl.deleteFramebuffer(this.rawTrailFboB);
     gl.deleteTexture(this.foodTexA);
     gl.deleteTexture(this.foodTexB);
     gl.deleteTexture(this.foodDepositTex);
