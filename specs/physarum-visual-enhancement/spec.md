@@ -78,25 +78,33 @@ Jeff Jones 알고리즘은 논문 100% 준수 상태. 렌더링만 개선하면 
 | 블렌딩 | additive (본체 위에 떠 보여야 함) |
 | 분포 | 핵에서 방사상, Y분기, 위계적 |
 
-## Phase 4: 파라미터 튜닝 (진행 중)
+## Phase 4: 파라미터 튜닝 ✅ (커밋 8ff57f7)
 
-### 문제 진단 (브라우저 확인)
-1. **정맥 강도 부족** — normalizedRidge 값이 매우 작아서(trail값 100, ridgeness 5 → 0.05) THRESHOLD 0.1에 대부분 컷오프됨
-2. **경계 반짝임** — 경계부 저밀도 영역에서 개별 에이전트 deposit이 매 프레임 ridge로 잡혔다 사라짐 → 깜빡거림
-3. **계층 구분 미약** — 주정맥/모세정맥 차이가 거의 안 보임
+THRESHOLD/ALPHA 조정으로 정맥 강도 증가했으나 경계부 점 노이즈도 증폭됨.
 
-### 조정 내용
-| 파라미터 | Phase 3 값 | Phase 4 값 | 이유 |
-|---------|-----------|-----------|------|
-| `RIDGE_THRESHOLD` | 0.1 | 0.02 | 정규화 후 값이 극소 → 임계값 대폭 하향 |
-| `RIDGE_SATURATE` | 0.3 | 0.10 | 빠른 포화로 대비 강화 |
-| `MAJOR_ALPHA` | 0.4 | 0.65 | additive에서도 충분한 가시성 |
-| `HESSIAN_STEP` | 1 | 2 | 개별 에이전트 노이즈 억제 + 경계 반짝임 감소 |
-| `VEIN_MIN` | 25 | 35 | 경계부 저밀도 영역 제외 강화 |
+## Phase 4-2: 확산 맵 기반 정맥 검출 (진행 중)
+
+### 문제 진단
+미확산 트레일맵(rawTrailMap)의 개별 에이전트 deposit이 Hessian ridge로 오검출됨.
+blur 패스 증가 → "구름" 회귀 위험. 근본적 접근 전환 필요.
+
+### 해법: 확산 맵에서 Hessian ridge detection
+- 확산 맵(trailMap)은 4패스 blur 완료 → 점 노이즈 원천 제거
+- ridge 위치는 확산 후에도 보존됨 (Lindeberg 스케일 스페이스 이론)
+- `HESSIAN_STEP` 확대(2→5)로 확산으로 넓어진 ridge(~10px) 스케일에 맞춤
+- rawTrail 파이프라인 전체 제거 (텍스처 2쌍 + FBO 2쌍 + captureRawTrail())
+
+### 삭제 대상 (브라우저 확인 후)
+- `TrailMapGPU`: rawTrailTexA/B, rawTrailFboA/B, captureRawTrail(), getCurrentRawTrailTexture()
+- `PhysarumSimulation`: captureRawTrail() 호출, getCurrentRawTrailTexture()
+- `useGameLoop`: rawTrailTex 변수
+- `SceneRenderer`: rawTrailTexture 파라미터, TEXTURE4 바인딩
+- `veins.frag.glsl`: u_rawTrailMap uniform
 
 ## 접근 방식
 
 - Phase 1~2: config.ts 파라미터 + 셰이더 수정만으로 구현
-- Phase 3: TrailMapGPU에 미확산 텍스처 추가 (유일한 구조 변경)
-- Phase 4: config.ts 파라미터만 변경 (코드 변경 없음)
+- Phase 3: TrailMapGPU에 미확산 텍스처 추가
+- Phase 4: 파라미터 튜닝 (노이즈 증폭 문제 발견)
+- Phase 4-2: 확산 맵 전환 + rawTrail 파이프라인 제거 (구조 단순화)
 - 알고리즘(AgentGPU) 변경 없음

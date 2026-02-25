@@ -81,28 +81,35 @@ gpu.runDiffuseDecay(4)     // 확산 + 감쇠 (기존)
   - [ ] 포화(white-out) 없음
   - [ ] 시뮬레이션 동역학 영향 없음
 
-## Phase 4: 파라미터 튜닝 (진행 중)
+## Phase 4: 파라미터 튜닝 ✅ (커밋 8ff57f7)
 
-### Step 1: config.ts VEINS 파라미터 조정
+THRESHOLD/ALPHA 조정 → 노이즈도 증폭됨. Phase 4-2에서 근본 해결.
 
-| 파라미터 | 변경 |
-|---------|------|
-| `RIDGE_THRESHOLD` | 0.1 → 0.02 |
-| `RIDGE_SATURATE` | 0.3 → 0.10 |
-| `MAJOR_ALPHA` | 0.4 → 0.65 |
-| `HESSIAN_STEP` | 1 → 2 |
-| `VEIN_MIN` (= MIN) | 25 → 35 |
+## Phase 4-2: 확산 맵 기반 정맥 검출 (진행 중)
 
-### Step 2: 검증
-- [ ] `npm run build` 통과
-- [ ] 브라우저 시각 확인
-  - [ ] 정맥 강도 충분 (본체 대비 눈에 띔)
-  - [ ] 경계 반짝임 감소/제거
-  - [ ] 포화(white-out) 없음
+### Step 1: 셰이더 Hessian 입력 전환
+**veins.frag.glsl**
+- Hessian 9개 texture fetch: `u_rawTrailMap` → `u_trailMap` 으로 변경
+- `u_rawTrailMap` uniform 선언 삭제
+
+### Step 2: 파라미터 조정
+**config.ts**
+- `HESSIAN_STEP`: 2 → 5 (확산 후 ~10px ridge 스케일에 맞춤)
+
+### Step 3: 브라우저 검증
+- [ ] 점 노이즈 제거 확인
+- [ ] 정맥 구조 가시성 확인
+- [ ] 포화 없음 확인
+
+### Step 4: rawTrail 파이프라인 삭제 (Step 3 확인 후)
+**TrailMapGPU.ts**: rawTrailTexA/B, rawTrailFboA/B, rawTrailCurrentIsA, captureRawTrail(), getCurrentRawTrailTexture(), dispose() 정리
+**PhysarumSimulation.ts**: captureRawTrail() 호출, getCurrentRawTrailTexture() 삭제
+**useGameLoop.ts**: rawTrailTex 변수 삭제
+**SceneRenderer.ts**: rawTrailTexture 파라미터, TEXTURE4 바인딩, veinsUniforms.rawTrailMap 삭제
+**veins.ts**: 변경 없음 (플레이스홀더 동일)
 
 ## 위험 요소
 
-- **Hessian 파라미터**: THRESHOLD/SATURATE 수치를 브라우저에서 반복 튜닝 필요
-- **점 노이즈**: box blur 1패스 부족 시 2패스로 확대
+- **확산 맵 ridge 둔화**: 확산으로 ridge가 넓어져 검출 강도 약화 가능 → THRESHOLD 추가 하향
 - **Additive 포화**: 정맥 색상/alpha를 충분히 낮춰야 함
-- **captureRawTrail 타이밍**: deposit 후, diffuse 전 필수
+- **Fallback**: 확산 맵 결과 불만족 시 temporal smoothing(Option B)으로 전환

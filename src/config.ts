@@ -124,7 +124,7 @@ export const BLOB_BODY = {
 export const VEINS = {
   MIN: 35,         // 정맥 표시 최소 트레일 값 (경계 반짝임 방지 위해 상향)
   MAX: 120,        // 정맥 표시 최대 트레일 값
-  HESSIAN_STEP: 2, // Hessian 샘플 간격 (px, 개별 에이전트 노이즈 억제)
+  HESSIAN_STEP: 5, // Hessian 샘플 간격 (px, 확산 맵의 ~10px ridge 스케일에 맞춤)
   MAX_ALPHA: 0.8,  // 최대 투명도
   RIDGE_THRESHOLD: 0.02,  // Hessian ridgeness 최소 임계값 (정규화 후 극소 → 하향)
   RIDGE_SATURATE: 0.10,   // Hessian ridgeness 포화 값 (빠른 포화 → 대비 강화)

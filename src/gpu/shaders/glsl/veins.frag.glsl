@@ -1,8 +1,7 @@
 #version 300 es
 precision highp float;
 
-uniform sampler2D u_trailMap;      // 확산 맵 (본체 마스킹용)
-uniform sampler2D u_rawTrailMap;   // 미확산 맵 (Hessian ridge 입력)
+uniform sampler2D u_trailMap;      // 확산 맵 (본체 마스킹 + Hessian ridge 입력)
 uniform vec2 u_mapSize;
 uniform vec2 u_viewportSize;
 uniform vec2 u_camera;
@@ -28,22 +27,22 @@ void main() {
     // 2. 줌 레벨 계산
     float zoomFactor = max(1.0, max(u_viewportSize.x / u_mapSize.x, u_viewportSize.y / u_mapSize.y));
 
-    // 3. Hessian ridge detection (미확산 맵에서)
+    // 3. Hessian ridge detection (확산 맵에서 — 점 노이즈 원천 제거)
     float h = {{HESSIAN_STEP}} * zoomFactor;
     vec2 dxH = vec2(h / u_mapSize.x, 0.0);
     vec2 dyH = vec2(0.0, h / u_mapSize.y);
 
     // 9 texture fetches: center + 상하좌우 4 + 대각 4
     // GL_REPEAT 래핑으로 토러스 경계 자동 처리 (fract 불필요)
-    float c  = texture(u_rawTrailMap, trailUV).r;
-    float l  = texture(u_rawTrailMap, trailUV - dxH).r;
-    float r  = texture(u_rawTrailMap, trailUV + dxH).r;
-    float up = texture(u_rawTrailMap, trailUV + dyH).r;
-    float dn = texture(u_rawTrailMap, trailUV - dyH).r;
-    float tr = texture(u_rawTrailMap, trailUV + dxH + dyH).r;
-    float tl = texture(u_rawTrailMap, trailUV - dxH + dyH).r;
-    float br = texture(u_rawTrailMap, trailUV + dxH - dyH).r;
-    float bl = texture(u_rawTrailMap, trailUV - dxH - dyH).r;
+    float c  = texture(u_trailMap, trailUV).r;
+    float l  = texture(u_trailMap, trailUV - dxH).r;
+    float r  = texture(u_trailMap, trailUV + dxH).r;
+    float up = texture(u_trailMap, trailUV + dyH).r;
+    float dn = texture(u_trailMap, trailUV - dyH).r;
+    float tr = texture(u_trailMap, trailUV + dxH + dyH).r;
+    float tl = texture(u_trailMap, trailUV - dxH + dyH).r;
+    float br = texture(u_trailMap, trailUV + dxH - dyH).r;
+    float bl = texture(u_trailMap, trailUV - dxH - dyH).r;
 
     // Hessian 행렬 요소
     float h2 = h * h;
