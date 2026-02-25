@@ -94,7 +94,9 @@ void main() {
         ? vec3({{DORMANT_DARK_R}}, {{DORMANT_DARK_G}}, {{DORMANT_DARK_B}})
         : vec3({{ACTIVE_DARK_R}}, {{ACTIVE_DARK_G}}, {{ACTIVE_DARK_B}});
 
-    vec3 bodyColor = mix(darkColor, baseColor, sqrt(densityT));
-    float alpha = smoothstep(adjustedThreshold, adjustedThreshold * 3.0, avgVal);
+    // S커브 알파: 저밀도=투명(초록 비침), 중밀도~고밀도=빠르게 불투명(단단한 노랑)
+    float alphaT = smoothstep(0.1, 0.5, densityT);
+    vec3 bodyColor = mix(darkColor, baseColor, alphaT);
+    float alpha = alphaT * {{BODY_MAX_ALPHA}};
     fragColor = vec4(bodyColor, alpha);
 }

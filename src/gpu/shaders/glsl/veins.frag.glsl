@@ -16,10 +16,18 @@ void main() {
     vec2 worldPos = mod(u_camera + screenPos, u_mapSize);
     vec2 trailUV = worldPos / u_mapSize;
 
-    float value = texture(u_trailMap, trailUV).r;
-
     // 줌 레벨 계산
     float zoomFactor = max(1.0, max(u_viewportSize.x / u_mapSize.x, u_viewportSize.y / u_mapSize.y));
+    vec2 texel = ({{STEP}} * zoomFactor) / u_mapSize;
+
+    // 3x3 블러: 에이전트 개별 트레일을 평활화하여 수송 채널만 남김
+    float value = 0.0;
+    for (int dy = -1; dy <= 1; dy++) {
+        for (int dx = -1; dx <= 1; dx++) {
+            value += texture(u_trailMap, fract(trailUV + vec2(float(dx), float(dy)) * texel)).r;
+        }
+    }
+    value /= 9.0;
 
     // 줌 아웃 시 임계값 조정
     float veinMin = {{VEIN_MIN}} / zoomFactor;
@@ -29,13 +37,13 @@ void main() {
         fragColor = vec4(0.0);
         return;
     }
-    vec2 texel = ({{STEP}} * zoomFactor) / u_mapSize;
-    float right = texture(u_trailMap, fract(trailUV + vec2(texel.x, 0.0))).r;
-    float up    = texture(u_trailMap, fract(trailUV + vec2(0.0, texel.y))).r;
-    float left  = texture(u_trailMap, fract(trailUV - vec2(texel.x, 0.0))).r;
-    float down  = texture(u_trailMap, fract(trailUV - vec2(0.0, texel.y))).r;
 
-    // 능선 검출: 현재 값이 이웃 평균보다 높은 곳 = 고밀도 경로 중심
+    // 능선 검출: 더 넓은 범위 (STEP*2) 이웃과 비교
+    vec2 farTexel = texel * 2.0;
+    float right = texture(u_trailMap, fract(trailUV + vec2(farTexel.x, 0.0))).r;
+    float up    = texture(u_trailMap, fract(trailUV + vec2(0.0, farTexel.y))).r;
+    float left  = texture(u_trailMap, fract(trailUV - vec2(farTexel.x, 0.0))).r;
+    float down  = texture(u_trailMap, fract(trailUV - vec2(0.0, farTexel.y))).r;
     float avg = (right + left + up + down) * 0.25;
     float ridge = value - avg;
 
@@ -51,7 +59,8 @@ void main() {
     float densityT = clamp((value - veinMin) / (veinMax - veinMin), 0.0, 1.0);
     // 상대적 ridge: 고밀도에서 개별 에이전트 노이즈 억제
     float relRidge = ridge / max(value, 1.0);
-    float ridgeStrength = clamp(relRidge * {{RIDGE_SCALE}}, 0.0, 1.0);
+    // smoothstep으로 약한 릿지 제거, 강한 릿지만 선명하게
+    float ridgeStrength = smoothstep(0.2, 0.5, relRidge * {{RIDGE_SCALE}});
 
     // 맥동 효과 — 파라미터화된 진폭
     float pulsePeriod = 120.0;
