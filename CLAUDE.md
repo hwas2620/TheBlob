@@ -47,6 +47,7 @@ npm run preview  # Production preview
 3. `/implement` → branch 생성 → 문서 커밋 → 구현 → build 검증 → `--no-ff` 병합
 
 각 단계는 사용자 확인 후 다음으로 넘어간다.
+상세 규칙은 `.claude/rules/`에 정의됨.
 
 ## Available Skills
 
