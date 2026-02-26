@@ -4,9 +4,9 @@
 
 | 파일 | 변경 내용 |
 |------|----------|
-| `src/config.ts` | BLOB_BODY 파라미터 조정 |
-| `src/gpu/shaders/glsl/blob_body.frag.glsl` | 알파 커브 수정 + occupancyMap 활용 |
-| `src/gpu/shaders/blob_body.ts` | 새 플레이스홀더 추가 (필요시) |
+| `src/config.ts` | BLOB_BODY 파라미터 조정 (NOISE_FLOOR, FADE_START, MEMBRANE_ALPHA, BODY_MAX_ALPHA, ALPHA_GAMMA 추가) |
+| `src/gpu/shaders/glsl/blob_body.frag.glsl` | smoothstep → pow 커브 전환 |
+| `src/gpu/shaders/blob_body.ts` | ALPHA_GAMMA 플레이스홀더 추가 |
 
 파이프라인 구조 변경 없음. SceneRenderer, TrailMapGPU 변경 없음.
 
@@ -19,88 +19,61 @@ shader-dev.md 규칙에 따라 **자율 반복 루프**로 진행:
 
 단순한 것부터 시작, 효과 부족시 단계적으로 확대.
 
-## 구현 단계
+## 구현 결과
 
-### Step 1: 알파 커브 조정 (config.ts만 변경)
+### Step 1: 알파 커브 조정 (config.ts만 변경) ✅
 
-가장 단순한 변경으로 효과 측정. 셰이더 코드 수정 없이 파라미터만.
-
-**변경 대상 — `src/config.ts` BLOB_BODY:**
-
-| 파라미터 | 현재 | 변경 | 근거 |
+| 파라미터 | 원래 | 최종 | 근거 |
 |---------|------|------|------|
-| NOISE_FLOOR | 0.3 | 1.0 | 점막 헤일로 범위 축소 (구름 감소) |
-| FADE_START | 2 | 5~8 | 점막→본체 전환 임계값 올려서 엣지 선명화 |
-| MEMBRANE_ALPHA | 0.15 | 0.25~0.35 | 좁아진 점막이 더 뚜렷해야 경계 인식 |
+| NOISE_FLOOR | 0.3 | 2.0 | 확산 노이즈 공격적 제거 (구름 감소) |
+| FADE_START | 2 | 8 | 점막→본체 전환 임계값 올려서 엣지 선명화 |
+| MEMBRANE_ALPHA | 0.15 | 0.06 | 점막 거의 안 보이게 (구름 효과 제거) |
 | BODY_MAX_ALPHA | 0.85 | 0.92 | 중심부 더 불투명하게 (질량감) |
 
-**검증**: 스크린샷 → 레퍼런스 비교. 구름 감소, 엣지 선명도 향상 확인.
+**이터레이션**: 5회 (Iter 1~5). NOISE_FLOOR 1.0→0.5→0.8→2.0, MEMBRANE_ALPHA 0.3→0.25→0.18→0.06 등 점진적 조정.
 
-### Step 2: S커브 완화 — 내부 밀도 차이 표현 (셰이더 변경)
+### Step 2: pow 커브 — 내부 밀도 차이 표현 (셰이더 변경) ✅
 
-현재 `smoothstep(0.1, 0.5, densityT)`는 densityT 0.5 (avgVal≈76)에서 포화.
-본체 내부 대부분이 avgVal>76이므로 전부 같은 알파 → 평탄.
-
-**변경 — `blob_body.frag.glsl` 3단계 알파 계산:**
+원래 계획은 `smoothstep(ALPHA_EDGE, ALPHA_FULL, densityT)` 이었으나,
+`pow(densityT, ALPHA_GAMMA)` 방식이 더 적합하다고 판단.
 
 ```glsl
-// 현재: 조기 포화
+// 변경 전: 조기 포화
 float alphaT = smoothstep(0.1, 0.5, densityT);
 
-// 변경: 더 넓은 범위에서 밀도 차이 반영
-float alphaT = smoothstep({{ALPHA_EDGE}}, {{ALPHA_FULL}}, densityT);
+// 변경 후: pow 커브 — 빠른 엣지 상승 + 내부 차이 유지
+float alphaT = pow(densityT, {{ALPHA_GAMMA}});  // ALPHA_GAMMA = 0.3
 ```
 
-새 파라미터 `ALPHA_EDGE`, `ALPHA_FULL`을 config.ts에 추가:
-- `ALPHA_EDGE`: 0.02~0.05 (더 빨리 불투명 시작 = 엣지 선명)
-- `ALPHA_FULL`: 0.85~0.95 (더 늦게 포화 = 내부 밀도 차이 유지)
+**근거**: smoothstep은 파라미터 2개(edge, full)가 필요하고 곡선 형태가 제한적.
+pow(x, γ<1)은 γ 하나로 엣지 경사도와 내부 변화를 동시 제어 가능.
 
-**검증**: 본체 내부에서 밀도 차이가 보이는지. 중심↔주변 알파 차이 확인.
+### Step 3: OccupancyMap 혼합 — 시도 후 철회 ❌
 
-### Step 3: OccupancyMap 혼합 — 엣지 강화 + 질감 (셰이더 변경)
+occupancyMap 해상도가 1:1 (1500×1500)이라 개별 에이전트 위치가 격자 노이즈로 드러남.
+OCC_SATURATE=5→1, OCC_MIN_BLEND=0.4→0.85 조정에도 근본적 해상도 문제 해결 불가.
+**블러된 occupancy map이 필요하지만 별도 GPU 패스 필요 → 이번 스코프 밖.**
 
-Step 1-2로 부족할 경우. OccupancyMap은 이미 셰이더에 바인딩됨 (TEXTURE2).
+## 최종 파라미터
 
-**활용 방식**: trailMap 알파에 occupancy 밀도를 곱해서 보정.
-
-```glsl
-float occ = texture(u_occupancyMap, trailUV).r;
-float occFactor = smoothstep(0.0, {{OCC_SATURATE}}, occ);
-
-// trailMap 알파 × occupancy 보정 (에이전트 없는 곳 = 더 투명)
-float finalAlpha = alpha * mix({{OCC_MIN_BLEND}}, 1.0, occFactor);
+```typescript
+BLOB_BODY = {
+  FADE_START: 8,
+  NOISE_FLOOR: 2.0,
+  MEMBRANE_ALPHA: 0.06,
+  BODY_MAX_ALPHA: 0.92,
+  ALPHA_GAMMA: 0.3,      // 신규
+  // 나머지 기존 값 유지
+}
 ```
 
-- `OCC_SATURATE`: occupancy 몇 이상이면 "충분히 밀집" (5~10)
-- `OCC_MIN_BLEND`: 에이전트 없는 영역의 알파 배율 (0.3~0.6)
+## 교훈
 
-**효과**:
-- 에이전트 밀집 영역 = 불투명 (질량감)
-- 에이전트 희박 영역 = 반투명 (정맥 사이 투명 → 레퍼런스와 일치)
-- 엣지가 occupancy 기준으로 더 날카로워짐
+- **점막(membrane) 영역이 구름의 주범**: 트레일맵 확산으로 본체 주변에 항상 기울기(gradient) 존재 → 점막 렌더링 → 구름. MEMBRANE_ALPHA 극소화로 해결.
+- **pow(x, γ) > smoothstep**: 셰이더 알파 커브에서 파라미터 1개로 엣지 경사도+내부 변화 동시 제어 가능.
+- **OccupancyMap 직접 사용 한계**: 1:1 해상도는 본체 렌더링용으로 너무 세밀. 밀집도 뷰 모드(히트맵)에는 적합하지만, 알파 블렌딩에 사용하면 격자 노이즈 발생.
 
-**주의**: occupancy는 프레임별 갱신 → 잠재적 깜빡임. 필요시 trailMap과 가중 평균으로 안정화.
+## 미래 개선 가능성
 
-### Step 4: 검증
-
-- `npm run build` 통과
-- 브라우저에서 시각 확인 (자율 반복 루프 결과보고서)
-- 레퍼런스 이미지(physarum-real/03, 06)와 비교
-
-## 의존성
-
-```
-Step 1 (config만) → 평가
-  ↓ 부족하면
-Step 2 (S커브) → 평가
-  ↓ 부족하면
-Step 3 (occupancy) → 평가
-```
-
-각 Step은 독립적으로 커밋 가능. Step 1만으로 충분하면 2-3 생략.
-
-## 위험 요소
-
-- **occupancy 깜빡임**: 에이전트가 매 프레임 이동 → occupancy 변동. `mix(trail, occ, weight)`로 완화 가능
-- **기존 코드 주석의 경고**: `NOISE_FLOOR` 주석에 "높이면 내부 검은 구멍 발생" → Step 1에서 주의깊게 관찰
-- **줌 레벨 영향**: zoomFactor에 따라 adjustedNoise/Threshold 변경됨 → 줌인/줌아웃 모두 테스트
+- **블러된 Occupancy Map**: 별도 GPU 패스로 occupancy를 가우시안 블러 후 본체 알파에 곱하면 엣지 날카로움 개선 가능
+- **Temporal Smoothing**: Phase 4-3에서 예정된 IIR 필터 적용 시 추가적인 노이즈 감소 기대

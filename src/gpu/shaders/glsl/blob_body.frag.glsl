@@ -94,8 +94,8 @@ void main() {
         ? vec3({{DORMANT_DARK_R}}, {{DORMANT_DARK_G}}, {{DORMANT_DARK_B}})
         : vec3({{ACTIVE_DARK_R}}, {{ACTIVE_DARK_G}}, {{ACTIVE_DARK_B}});
 
-    // S커브 알파: 저밀도=투명(초록 비침), 중밀도~고밀도=빠르게 불투명(단단한 노랑)
-    float alphaT = smoothstep(0.1, 0.5, densityT);
+    // pow 커브: 엣지에서 빠른 상승 + 내부 밀도 차이 유지
+    float alphaT = pow(densityT, {{ALPHA_GAMMA}});
     vec3 bodyColor = mix(darkColor, baseColor, alphaT);
     float alpha = alphaT * {{BODY_MAX_ALPHA}};
     fragColor = vec4(bodyColor, alpha);

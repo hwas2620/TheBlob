@@ -14,6 +14,7 @@ export const BLOB_BODY_FRAG = resolveShader(blobBodyFragSrc, {
   NOISE_FLOOR: B.NOISE_FLOOR.toFixed(2),
   MEMBRANE_ALPHA: B.MEMBRANE_ALPHA.toFixed(3),
   BODY_MAX_ALPHA: B.BODY_MAX_ALPHA.toFixed(2),
+  ALPHA_GAMMA: B.ALPHA_GAMMA.toFixed(3),
   DILATE_RADIUS: B.DILATE_RADIUS.toFixed(1),
   MAX_VALUE: B.MAX_VALUE.toFixed(1),
   ACTIVE_BASE_R: (ab.r / 255).toFixed(3),
