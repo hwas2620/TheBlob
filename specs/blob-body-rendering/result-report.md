@@ -9,7 +9,7 @@
 
 | Iter | 변경 | 파일 | 결과 |
 |------|------|------|------|
-| 0 | 기준점 | - | `screenshots/body-iter0-baseline.png` |
+| 0 | 기준점 | - | 엣지 흐림, 잉크/구름 느낌 |
 | 1 | NOISE_FLOOR=1.0, FADE_START=5, MEM_ALPHA=0.3 | config | 엣지 선명화 but 내부 검은 구멍 발생 |
 | 2 | NOISE_FLOOR=0.5, MEM_ALPHA=0.25 | config | 구멍 해결, 하지만 내부 어두운 패치 |
 | 3 | smoothstep→pow(densityT, 0.35) | shader | 내부 구멍 해결, 질량감 향상, 엣지 아직 구름 |
@@ -52,10 +52,19 @@ float alphaT = pow(densityT, {{ALPHA_GAMMA}});
 2. **내부 텍스처 부족**: 본체 내부가 균일한 노란색 — 실물 physarum의 정맥/네트워크 구조가 본체 렌더링에서는 보이지 않음 (별도 vein 레이어로 처리해야 함)
 3. **촉수 형태 미흡**: 가장자리 돌출부가 촉수라기보다 "뭉툭한 팔"에 가까움 — 에이전트 이동 패턴 자체의 한계
 
+## 수정 파일
+
+- [config.ts](../../src/config.ts) — BLOB_BODY 파라미터 조정
+- [blob_body.frag.glsl](../../src/gpu/shaders/glsl/blob_body.frag.glsl) — smoothstep → pow 커브
+- [blob_body.ts](../../src/gpu/shaders/blob_body.ts) — ALPHA_GAMMA 플레이스홀더 추가
+- [plan.md](./plan.md) — 구현 계획 (최종 결과 반영)
+
 ## 스크린샷
 
-- `screenshots/body-iter0-baseline.png` — 기준점 (변경 전)
-- `screenshots/body-iter3-pow-curve.png` — pow 커브 적용
-- `screenshots/body-iter5-minimal-membrane.png` — **최종 채택** (Iter 5)
-- `screenshots/body-iter6-occmap.png` — OccupancyMap 시도 (실패)
-- `screenshots/body-final.png` — 최종 확인
+| 단계 | 스크린샷 | 설명 |
+|------|---------|------|
+| 기준점 | ![baseline](../../screenshots/body-iter0-baseline.png) | 변경 전 — 잉크/구름 느낌 |
+| Iter 3 | ![pow-curve](../../screenshots/body-iter3-pow-curve.png) | pow 커브 적용 — 질량감 향상 |
+| **Iter 5** | ![final](../../screenshots/body-iter5-minimal-membrane.png) | **최종 채택** — 구름 감소, 엣지 선명 |
+| Iter 6 | ![occmap](../../screenshots/body-iter6-occmap.png) | OccupancyMap 시도 — 격자 노이즈 (실패) |
+| 확인 | ![confirm](../../screenshots/body-final.png) | 최종 확인 (OCC 제거 후) |
