@@ -1,0 +1,140 @@
+{
+ "verdict": "partial",
+ "headline": "전진면 싱크 + 국소(점) 소스 + 전역 압력 풀이 + 비포화 초선형 강화(γ≥1.2)면 손으로 심지 않아도 분기·위계 정맥 나무가 생기며, 시드 4개·격자 4종·N=128~384·이동하는 물방울 몸에서 재현됐다. 다만 소스가 분포형(뒤쪽 경계 전체, 몸 전체)이면 나무가 아니라 평행 수로가 되고, 고리는 생기지 않으며, 공통 채점의 굵기 위계 기준은 경계선 통과이고, 몸 윤곽은 미리 준 것이고 직접 풀이만 썼다.",
+ "model_rules": "e1.py (전임자 코드, 모델 식은 그대로 두고 간선 덤프만 추가).\n- 노드=격자 셀, 간선=격자 링크(sq4 2방향, sq8 4방향, hex 3방향, jitter=노드 좌표 U(-j/2,j/2)). 간선마다 전도도 C_e≥0.\n- 몸 마스크 wet(t)는 운동학적으로 미리 정함(창발 아님). grow: 도착시각 T(x)=(|x-c|-R_init+front_rough*eta(x))/v, eta=sigma 2셀 가우스 평활 백색잡음(표준편차 1), R_init=6. translate: 반지름 Rb 원반이 +x로 속도 v. teardrop: 앞 반원 + 길이 taper*Rb 쐐기 꼬리.\n- 전진면=마른 이웃이 있는 젖은 셀. 싱크 S_i=-j0 (grow), 이동 모드는 -j0*cos(법선,진행방향)(앞쪽 절반만).\n- 소스(총량은 합 S=0이 되게): point=중심 반지름 2셀 원판 균등, body=전진면 제외 몸 전체 균등, ring=0.5R 고리, rear=뒤쪽 경계 셀(-cos 가중), tail=꼬리 근처 반지름 2.5셀 점.\n- 압력: 젖은 노드에서 sum_e w_e (p_i-p_j)=S_i, w_e=g_e (C_e+r)/L_e, r=1e-3(누설), g_e=exp(edge_sigma*N(0,1)) 간선별 정적 백색 잡음. scipy 희소 직접 풀이를 매 스텝.\n- 유량 Q_e=w_e (p_i-p_j).\n- 적응(명시적 오일러, dt=0.1 또는 0.2): dC_e/dt = rate*( f(|Q_e|/Q0) - C_e ), pow: f=x^gamma, sig: f=x^gamma/(1+x^gamma). 선택 항: 같은 방향 간선끼리 측방 확산 Dm*Lap(C).\n- 새로 젖은 간선 C_e=D0*(1+D0_noise*U(-1,1)), D0_noise=0.3. 마른 간선 C_e=0.\n- 초기 조건: 반지름 6 원반(또는 이동 몸 전체), 모든 간선 C=D0(1+-잡음). 정맥 경로를 심지 않음. 공간 구조를 가진 입력은 몸 윤곽, 전진면 도착시각 잡음 eta, 소스 위치뿐.\n- 기본값: pow, gamma=1.5, j0=1, Q0=1, D0=1, rate=1, v=0.5(스케일 계열은 v=1, dt=0.2), sq8, edge_sigma=0.5.\n- 출력: vein.npy는 노드장이 아니라 렌더다. 각 간선을 지름 0.7*C^(1/4)셀 선분으로 4배 해상도에 그림(C>0.008만). native 1셀 정맥은 eval_morph의 작은 객체 제거에 지워져 분기점 0~4가 되기 때문(전임자 결정).\n- 추가 분석 analyze.py(렌더 무관): 정맥 간선=|Q|>=thr*j0 (thr 1,2,4,8), 분기 노드(차수>=3), 고리=E-V+성분 수, Strahler 차수, Horton 분기비, 접합점 Murray 지수(r=C^(1/4), r_p^a=sum r_c^a), 정상상태 편차 log10(C/|Q|^gamma), 반지름 f*R 원(이동 모드는 x 단면)에서 유량 80%를 나르는 간선 수 n80과 유량가중 관 반지름. moving_stats.py: 연속 스냅샷 간 정맥 집합 Jaccard(격자 좌표 vs 몸 좌표).",
+ "runs_summary": "전임자 실행 20개(a_/b_/c_, N=128)는 다시 돌리지 않고 표로 정리. 이번 세션 75개(직접 풀이, 프로세스 시간 합 약 45분으로 예산 30~40분을 조금 넘김).\n- e_ 40개(N=128, grow, 중심 점 소스): 시드 4개 → 전부 나무(그래프 분기 노드 87~100, 고리 0~1, Strahler 4~5), 단 eval all_three 통과는 1/4(wr 1.8/1.9/2.24/1.8). 간선 잡음 sigma 0/0.1/0.25/0.5/1.0과 잡음원 분리 4개 → 잡음 없이도 분기(완전 대칭 대조도 분기 37), 잡음은 등방화용(sq8 A8: 0.54→0.25→0.08→0.11→0.05). 격자 sq4/sq8/hex/jitter × 잡음 유무 8개 → 위상 동일, 무잡음은 격자 방향에 잠김. gamma 0.75~2.0 10개 → 고리/분기 비 0.44, 0.34, 0.20~0.23(gamma=1), 0.05(1.1), 0.03(1.2), ≤0.02(≥1.33). D0 0.01/100, sig 법칙 2개(위계 없음), 소스 body/ring 3개(줄기 없음), v/rate 2/5/16.7 3개.\n- d_ 1 + f_ 9개(스케일, N=128/192/256 시드 2개씩, N=384 1개, gamma=4/3, hex): 전부 all_three 통과(wr 2.0~2.4). Strahler 최대 5(N=128) → 5~6(256) → 7(384), 분기 노드 약 1.75R, 반지름 비율별 정맥 수는 스케일 불변(0.1R 4~6개 → 0.9R 46~59개), 접합 차수 3이 95~99%, Murray 지수 중앙값 = 4/gamma(2.67, 3.00; 정상상태 항등식).\n- g_ 19개(N=192 이동, 스냅샷 8장): translate/teardrop × 소스 rear/tail/body, 시드 2개, gamma=1, rate 0.01~3 스윕 2종. 꼬리 점 소스 → 줄기 1개가 앞에서 10~13개로 갈라지는 나무가 유지(분기 18~24). 뒤쪽 경계 소스 원반 → 평행 수로 3~6개. 정맥은 기질 고정(J_lab 약 0.5, J_body 약 0.03). v/(rate*Rb) ≤0.07 나무, 0.2 줄기+균질 전진 시트, ≥0.67 정맥 없음.\n- h_ 6개: 누설 r 0.03/0.3/1.0(대비 5.7e4→1.5e3, 끝가지부터 소실), 측방 확산 Dm 0.05/0.2(정맥 2~4셀 폭, 나무 유지), 성장 정지 후 60 시간단위 유지(나무 보존).\nb_ 계열 저채점 원인: 잡음이 아니라 native 노드장 채점이었기 때문(같은 실행의 렌더 채점은 bp 47, all_three T).",
+ "best_run_dir": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/runs/f_N384_s1",
+ "best_metrics": {
+  "eval_morph_primary": {
+   "vein_rel": 0.35,
+   "branch_points": 326,
+   "endpoints": 329,
+   "loops": 17,
+   "vein_area_frac": 0.1205,
+   "vein_largest_frac": 0.999,
+   "width_p10": 6.32,
+   "width_p50": 8.49,
+   "width_p90": 13.42,
+   "width_ratio_p90_p10": 2.12,
+   "strength_ratio_p90_p10": 2.45,
+   "body_circularity": 0.599,
+   "body_solidity": 0.984,
+   "verdict": {
+    "network_like": true,
+    "branched": true,
+    "hierarchical": true,
+    "all_three": true
+   },
+   "note": "vein.npy는 간선을 지름 0.7*C^(1/4)셀로 4배 해상도에 그린 렌더. native 노드장 채점은 branch_points 0"
+  },
+  "graph_thr2": {
+   "vein_edges": 5191,
+   "branch_nodes": 286,
+   "tips": 329,
+   "loops": 4,
+   "loops_per_branch": 0.014,
+   "largest_component_frac": 0.876,
+   "strahler_max": 7,
+   "streams_per_order": [
+    310,
+    96,
+    37,
+    13,
+    5,
+    2,
+    1
+   ],
+   "horton_bifurcation_ratio": 2.6,
+   "murray_exponent_p25_p50_p75": [
+    2.59,
+    2.67,
+    2.67
+   ],
+   "murray_predicted_4_over_gamma": 2.667,
+   "junction_degree3_frac": 0.958,
+   "junction_flux_asym_median": 0.576,
+   "steady_log10_C_over_Qgamma_median": -0.013
+  },
+  "radial_profile_n80_at_0.1_to_0.9R": [
+   5,
+   6,
+   8,
+   8,
+   10,
+   13,
+   16,
+   25,
+   47
+  ],
+  "tube_radius_cells_at_0.1_to_0.9R": [
+   7.78,
+   7.3,
+   6.94,
+   6.61,
+   6.05,
+   5.48,
+   4.96,
+   4.13,
+   3.29
+  ],
+  "kirchhoff_rel_resid_float64_in_run": 1.07e-11,
+  "kirchhoff_rel_resid_recomputed_from_float32_dump": 1.7e-07,
+  "conductance_p5_p50_p95_max_on_veins": [
+   1.11,
+   41.4,
+   1826,
+   14040
+  ],
+  "runtime_s": 234.6,
+  "base_seeds_N128_all_three_pass": "1/4",
+  "scale_series_all_three_pass": "9/9"
+ },
+ "images": [
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/montage/m_scale.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/montage/m_gamma_pred.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/montage/m_noise.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/montage/m_move_sources.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/montage/m_move_rates.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/montage/m_contrast.png"
+ ],
+ "structure_is_emergent": true,
+ "gpu_feasibility": {
+  "global_solve_needed": true,
+  "est_fullscreen_passes_per_step": 12,
+  "notes": "추정치이며 이 실험에서는 희소 직접 풀이만 썼다(근사 풀이는 E9 소관, 미검증). 멀티그리드 V(2,2) 1사이클(문헌 노트 기준 미세 격자 9.4패스 분량, 8레벨이면 드로콜 약 56회) + 전진면/소스·싱크 1 + 유량·적응 1(sq8 간선 4방향을 RGBA 한 장에) + 합 S=0 맞춤용 합산 → 풀스크린 환산 12패스 안팎, 드로콜 60회 안팎으로 예산 경계선. 가장 큰 위험: 정맥이 1셀 폭이고 전도도 대비가 10^3~10^6이라 '폭 1셀·대비 500 이상에서 MG 발산' 조건에 정면으로 걸린다. 위계가 C=|Q|^gamma에서 나오므로 줄기/끝가지 대비 10^3 이상은 모델의 본질이다. 직접 풀이로 본 완화 후보: 누설 r=0.3(대비 5.6e3, 나무 유지), r=1.0(1.5e3, 줄기만 남음), 측방 확산 Dm=0.05~0.2(정맥 2~4셀 폭, 나무 유지). 등방성용 간선 잡음 텍스처 1장 필요. 적응 시간 동안 전진면이 몸 길이의 1/5 이하만 움직여야 하므로 소스가 느리게 변해 프레임당 1사이클 웜스타트와는 잘 맞을 것으로 보인다."
+ },
+ "failure_modes": [
+  "포화(sig) 강화 법칙: 관 반지름이 0.8~1.0으로 균일한 방사선/그물, 위계 없음",
+  "gamma ≤ 1.0: 고리 수백 개의 땋은 그물(1.0) 또는 전체가 참(≤0.9). 그물↔나무 경계는 gamma 1.0~1.1",
+  "몸 전체 균등 소스·고리 소스: 줄기 없음(최대 연결 성분 12~17%, Strahler 3)",
+  "뒤쪽 경계 전체가 소스인 평행이동 원반: 뒤→앞 평행 수로 3~6개(분기 15, Strahler 2~3), 나무 아님",
+  "느린 적응 v/(rate*Rb) ≥ 0.67: 정맥이 거의 또는 전혀 없음. 0.2에서는 뒤쪽 절반만 줄기",
+  "D0=100(새 조직이 정맥보다 잘 통함): 전진면 고전도 띠를 통해 닫히는 큰 고리 구조",
+  "간선 잡음 없는 격자: 나무는 생기지만 격자 방향에 잠긴 눈꽃 모양(sq8 A8 0.5~0.7, sq4 A4 0.6, hex A6 0.6)",
+  "고리가 생기지 않음: gamma>1.1에서 고리/분기 비 ≤0.03 (요동 싱크는 돌리지 않음)",
+  "native 노드장으로 eval_morph를 돌리면 분기점 0~4 (1셀 폭 정맥이 지워짐)"
+ ],
+ "limitations": [
+  "몸 윤곽과 전진면 전진은 운동학적으로 미리 준 것이다. 부채꼴 전진면의 창발은 시험하지 않았다",
+  "희소 직접 풀이만 사용. Jacobi/멀티그리드에서 나무가 유지되는지는 미검증(E9 소관)",
+  "공식 eval 지표는 전임자의 렌더 규칙(지름 0.7*C^(1/4)셀, 4배 확대, C>0.008)에 의존한다. hex/jitter 격자는 렌더 뼈대 잔가지로 분기점이 2~3배 부풀려진다. 렌더와 무관한 그래프 지표로 교차 확인했다",
+  "공통 채점의 굵기 위계는 경계선: 기본 조건 4개 시드 중 all_three 통과 1개(wr 1.8~2.24, 렌더 폭이 정수 픽셀로 양자화됨). 스케일 계열 9개는 전부 통과하나 wr 2.0~2.4",
+  "Murray 지수 = 4/gamma는 정상상태 C=|Q|^gamma와 유량 보존에서 나오는 항등식이라 독립적인 창발 결과가 아니다",
+  "N=384는 시드 1개, 스케일 계열은 v=1·dt=0.2로 기본 조건(v=0.5·dt=0.1)과 다르다",
+  "이동 몸은 직선 이동만, Rb=25셀의 작은 몸만 시험. 방향 전환·먹이 연결·맥동은 다루지 않았다",
+  "부피 보존 정규화(Almeida–Dilão)는 넣지 않았다. C는 몸 크기와 함께 무한정 커진다(Cmax 1.4e4 at N=384)",
+  "실제 점균의 v/(rate*R) 약 0.1~0.3이라는 값은 문헌 수치로 한 어림이다",
+  "총 계산 시간이 프로세스 합 약 45분으로 예산(30~40분)을 조금 넘겼다"
+ ],
+ "mass_conserved": "해당 없음(두께장 없이 유량만 푼다). 유량 보존(Kirchhoff) 잔차는 max|sum Q - S|/max|S| = 1e-11(실행 중 float64), float32 덤프에서 독립 재계산 시 1.7e-7",
+ "next_steps": [
+  "요동 싱크(sink_fluct)와 시간평균 Q^2 강화로 고리가 남는지 확인",
+  "전진면을 고정 유량 싱크가 아니라 압력 의존 경계로 바꿔 전진 속도를 유량에 결합하고 부채꼴/손가락 모양이 창발하는지 확인",
+  "측방 확산 Dm>0 + 누설 r≈0.3 조합을 멀티그리드/Jacobi 근사 풀이에 넣어 나무가 유지되는지 확인(E9)",
+  "꼬리 점 소스 가정을 없애기: 뒤쪽이 좁아지는 몸에서 뒤쪽 경계 소스가 스스로 줄기로 모이는지 더 큰 몸·긴 이동으로 확인",
+  "v/(rate*Rb)≈0.2 조건(줄기 + 균질 전진 시트)을 더 큰 몸과 시드 여러 개로 재현",
+  "방향 전환하는 몸과 먹이 소스 여러 개에서 재편 확인"
+ ],
+ "reproduce_command": "cd /tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement && OMP_NUM_THREADS=2 python3 e1.py f_N384_s1 '{\"N\":384,\"law\":\"pow\",\"j0\":1.0,\"D0\":1.0,\"lattice\":\"sq8\",\"edge_sigma\":0.5,\"seed\":1,\"nsnap\":4,\"v\":1.0,\"dt\":0.2}' && python3 table.py f_N384_s1   # 이동 몸: python3 e1.py g_td_tail_s1 '{\"N\":192,\"law\":\"pow\",\"j0\":1.0,\"D0\":1.0,\"lattice\":\"sq8\",\"edge_sigma\":0.5,\"seed\":1,\"nsnap\":8,\"Rb_frac\":0.13,\"v\":0.5,\"dt\":0.1,\"mode\":\"teardrop\",\"travel_frac\":0.5,\"taper\":2.5,\"source\":\"tail\"}' && python3 moving_stats.py g_td_tail_s1   # 배치 전체: python3 batch_run.py batchB1.json 2 (B2, B4, B5도 동일)",
+ "report_path": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/REPORT.md"
+}
