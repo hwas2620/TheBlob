@@ -1,0 +1,21 @@
+a0_r100_c0_s2	{"reservoir": 1, "nsnap": 2, "seed": 2, "T": 100, "foods": [[0, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a27_r100_c0_s2	{"reservoir": 1, "nsnap": 2, "seed": 2, "T": 100, "foods": [[27, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a45_r100_c0_s2	{"reservoir": 1, "nsnap": 2, "seed": 2, "T": 100, "foods": [[45, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a0_r100_c0_s3	{"reservoir": 1, "nsnap": 2, "seed": 3, "T": 100, "foods": [[0, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a27_r100_c0_s3	{"reservoir": 1, "nsnap": 2, "seed": 3, "T": 100, "foods": [[27, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a45_r100_c0_s3	{"reservoir": 1, "nsnap": 2, "seed": 3, "T": 100, "foods": [[45, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a13_r100_c0_s1	{"reservoir": 1, "nsnap": 2, "seed": 1, "T": 100, "foods": [[13, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a13_r000_n8_s1	{"reservoir": 1, "nsnap": 2, "seed": 1, "T": 100, "foods": [[13, 45]]}
+a34_r100_c0_s1	{"reservoir": 1, "nsnap": 2, "seed": 1, "T": 100, "foods": [[34, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a34_r000_n8_s1	{"reservoir": 1, "nsnap": 2, "seed": 1, "T": 100, "foods": [[34, 45]]}
+a13_r100_c0_s2	{"reservoir": 1, "nsnap": 2, "seed": 2, "T": 100, "foods": [[13, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a13_r000_n8_s2	{"reservoir": 1, "nsnap": 2, "seed": 2, "T": 100, "foods": [[13, 45]]}
+a34_r100_c0_s2	{"reservoir": 1, "nsnap": 2, "seed": 2, "T": 100, "foods": [[34, 45]], "wet_rho": 1.0, "curv_cap": 0.0}
+a34_r000_n8_s2	{"reservoir": 1, "nsnap": 2, "seed": 2, "T": 100, "foods": [[34, 45]]}
+nofood_r000_n8_s1	{"reservoir": 1, "nsnap": 2, "seed": 1, "T": 80, "foods": []}
+nofood_r100_c0_s1	{"reservoir": 1, "nsnap": 2, "seed": 1, "T": 80, "foods": [], "wet_rho": 1.0, "curv_cap": 0.0}
+nofood_r000_n8_s2	{"reservoir": 1, "nsnap": 2, "seed": 2, "T": 80, "foods": []}
+nofood_r100_c0_s2	{"reservoir": 1, "nsnap": 2, "seed": 2, "T": 80, "foods": [], "wet_rho": 1.0, "curv_cap": 0.0}
+L27_r100_c0_s1	{"seed": 1, "T": 320, "foods": [[27, 45]], "reservoir": 1, "wet_rho": 1.0, "curv_cap": 0.0}
+L27_r100_c0_s2	{"seed": 2, "T": 320, "foods": [[27, 45]], "reservoir": 1, "wet_rho": 1.0, "curv_cap": 0.0}
+L27_r100_c0_s3	{"seed": 3, "T": 320, "foods": [[27, 45]], "reservoir": 1, "wet_rho": 1.0, "curv_cap": 0.0}

@@ -1,0 +1,15 @@
+a0_r092_g15_s1	{"seed": 1, "T": 100, "foods": [[0, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a27_r092_g15_s1	{"seed": 1, "T": 100, "foods": [[27, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a45_r092_g15_s1	{"seed": 1, "T": 100, "foods": [[45, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a0_r096_g15_s1	{"seed": 1, "T": 100, "foods": [[0, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.96, "curv": "gauss", "curv_sigma": 1.5}
+a27_r096_g15_s1	{"seed": 1, "T": 100, "foods": [[27, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.96, "curv": "gauss", "curv_sigma": 1.5}
+a45_r096_g15_s1	{"seed": 1, "T": 100, "foods": [[45, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.96, "curv": "gauss", "curv_sigma": 1.5}
+a0_r100_g10_s1	{"seed": 1, "T": 100, "foods": [[0, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 1.0, "curv": "gauss", "curv_sigma": 1.0}
+a27_r100_g10_s1	{"seed": 1, "T": 100, "foods": [[27, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 1.0, "curv": "gauss", "curv_sigma": 1.0}
+a45_r100_g10_s1	{"seed": 1, "T": 100, "foods": [[45, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 1.0, "curv": "gauss", "curv_sigma": 1.0}
+a0_r100_g20_s1	{"seed": 1, "T": 100, "foods": [[0, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 1.0, "curv": "gauss", "curv_sigma": 2.0}
+a27_r100_g20_s1	{"seed": 1, "T": 100, "foods": [[27, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 1.0, "curv": "gauss", "curv_sigma": 2.0}
+a45_r100_g20_s1	{"seed": 1, "T": 100, "foods": [[45, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 1.0, "curv": "gauss", "curv_sigma": 2.0}
+a0_r092_g20_s1	{"seed": 1, "T": 100, "foods": [[0, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a27_r092_g20_s1	{"seed": 1, "T": 100, "foods": [[27, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a45_r092_g20_s1	{"seed": 1, "T": 100, "foods": [[45, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}

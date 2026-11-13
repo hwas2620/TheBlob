@@ -1,0 +1,12 @@
+nofood_r000_n8_s3	{"seed": 3, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1}
+nofood_r100_c0_s3	{"seed": 3, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 1.0, "curv_cap": 0.0}
+nofood_r000_n8_s4	{"seed": 4, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1}
+nofood_r100_c0_s4	{"seed": 4, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 1.0, "curv_cap": 0.0}
+nofood_r000_n8_s5	{"seed": 5, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1}
+nofood_r100_c0_s5	{"seed": 5, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 1.0, "curv_cap": 0.0}
+nofood_r000_n8_s6	{"seed": 6, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1}
+nofood_r100_c0_s6	{"seed": 6, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 1.0, "curv_cap": 0.0}
+nofood_r000_n8_s7	{"seed": 7, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1}
+nofood_r100_c0_s7	{"seed": 7, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 1.0, "curv_cap": 0.0}
+nofood_r000_n8_s8	{"seed": 8, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1}
+nofood_r100_c0_s8	{"seed": 8, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 1.0, "curv_cap": 0.0}

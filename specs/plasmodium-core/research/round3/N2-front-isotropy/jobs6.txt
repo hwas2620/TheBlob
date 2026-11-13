@@ -1,0 +1,26 @@
+a0_r092_g15_s2	{"seed": 2, "T": 100, "foods": [[0, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a27_r092_g15_s2	{"seed": 2, "T": 100, "foods": [[27, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a45_r092_g15_s2	{"seed": 2, "T": 100, "foods": [[45, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a0_r092_g15_s3	{"seed": 3, "T": 100, "foods": [[0, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a27_r092_g15_s3	{"seed": 3, "T": 100, "foods": [[27, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a45_r092_g15_s3	{"seed": 3, "T": 100, "foods": [[45, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a13_r092_g15_s1	{"seed": 1, "T": 100, "foods": [[13, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a34_r092_g15_s1	{"seed": 1, "T": 100, "foods": [[34, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a13_r092_g15_s2	{"seed": 2, "T": 100, "foods": [[13, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a34_r092_g15_s2	{"seed": 2, "T": 100, "foods": [[34, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+a0_r092_g20_s2	{"seed": 2, "T": 100, "foods": [[0, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a27_r092_g20_s2	{"seed": 2, "T": 100, "foods": [[27, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a45_r092_g20_s2	{"seed": 2, "T": 100, "foods": [[45, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a0_r092_g20_s3	{"seed": 3, "T": 100, "foods": [[0, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a27_r092_g20_s3	{"seed": 3, "T": 100, "foods": [[27, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a45_r092_g20_s3	{"seed": 3, "T": 100, "foods": [[45, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a13_r092_g20_s1	{"seed": 1, "T": 100, "foods": [[13, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a34_r092_g20_s1	{"seed": 1, "T": 100, "foods": [[34, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a13_r092_g20_s2	{"seed": 2, "T": 100, "foods": [[13, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+a34_r092_g20_s2	{"seed": 2, "T": 100, "foods": [[34, 45]], "reservoir": 1, "nsnap": 2, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+L27_r092_g15_s1	{"seed": 1, "T": 320, "foods": [[27, 45]], "reservoir": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+L27_r092_g15_s2	{"seed": 2, "T": 320, "foods": [[27, 45]], "reservoir": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+L27_r092_g15_s3	{"seed": 3, "T": 320, "foods": [[27, 45]], "reservoir": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+L27_r092_g20_s1	{"seed": 1, "T": 320, "foods": [[27, 45]], "reservoir": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+L27_r092_g20_s2	{"seed": 2, "T": 320, "foods": [[27, 45]], "reservoir": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+L27_r092_g20_s3	{"seed": 3, "T": 320, "foods": [[27, 45]], "reservoir": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}

@@ -1,0 +1,16 @@
+nofood_r092_g15_s1	{"seed": 1, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+nofood_r092_g15_s2	{"seed": 2, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+nofood_r092_g15_s3	{"seed": 3, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+nofood_r092_g15_s4	{"seed": 4, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+nofood_r092_g15_s5	{"seed": 5, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+nofood_r092_g15_s6	{"seed": 6, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+nofood_r092_g15_s7	{"seed": 7, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+nofood_r092_g15_s8	{"seed": 8, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 1.5}
+nofood_r092_g20_s1	{"seed": 1, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+nofood_r092_g20_s2	{"seed": 2, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+nofood_r092_g20_s3	{"seed": 3, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+nofood_r092_g20_s4	{"seed": 4, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+nofood_r092_g20_s5	{"seed": 5, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+nofood_r092_g20_s6	{"seed": 6, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+nofood_r092_g20_s7	{"seed": 7, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
+nofood_r092_g20_s8	{"seed": 8, "T": 40, "foods": [], "reservoir": 1, "nsnap": 1, "wet_rho": 0.92, "curv": "gauss", "curv_sigma": 2.0}
