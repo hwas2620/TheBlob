@@ -1,0 +1,45 @@
+{
+ "kirchhoff_rel_resid_final": 3.535691704692478e-12,
+ "sum_S": [
+  4.263256414560601e-14,
+  3.010230953393034e-13,
+  3.875372245332187e-13
+ ],
+ "dc_out_of_source": 184.000000000005,
+ "dc_into_sink": 183.99999999999977,
+ "I0": 184.0,
+ "qm_code_vs_mine_rel_err_strong_max": 1.1523771909276964e-07,
+ "qm_code_vs_mine_corr": 1.0,
+ "closed_form_vs_12pt_quad_rel_err_strong_p50_max": [
+  1.8420271601014573e-16,
+  0.022404498852558564
+ ],
+ "strong_edges": 874,
+ "strong_dc_dominated_frac": 0.5675057208237986,
+ "steady_state_rel_imbalance_strong_p50_p90_max": [
+  0.02961118924872456,
+  0.27934048414562684,
+  0.6151564415002756
+ ],
+ "sum_C_pre_post": [
+  36598.1510092219,
+  36349.851516025745
+ ],
+ "w_contrast_max_over_min": 15801257.653517196,
+ "Cmax_over_r": 355607.2998046875,
+ "jacobi_lambda2_final_network": 0.00015814845099029965,
+ "jacobi_sweeps_per_decade_omega0.8_final_network": 18199.554584439775,
+ "jacobi_lambda2_uniform_C1": 0.00027582480118157267,
+ "jacobi_sweeps_per_decade_omega0.8_uniform_C1": 10434.998426221457,
+ "jacobi_coldstart_dc_flux_L1_relerr_on_strong_edges": {
+  "60": 0.9234815537267295,
+  "600": 0.7223473249588684,
+  "6000": 0.17578898820883726,
+  "60000": 6.548637588897503e-05
+ },
+ "warmstart_one_step_near_steady_relerr": {
+  "0": 0.008019792276617506,
+  "60": 0.007706546101446366
+ },
+ "rel_change_C_one_step_strong": 0.010116059439285842
+}

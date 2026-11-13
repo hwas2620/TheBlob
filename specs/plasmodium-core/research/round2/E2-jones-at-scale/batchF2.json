@@ -1,0 +1,2 @@
+[{"name":"F06_gameTrail_cap1_sync_s2_T32k","N":512,"SO":9,"cap":1,"SA":22.5,"RA":45,"n_eval":20,"n_snap":5,"seed":2,"geom":"disk","R":220,"dens":0.1,"steps":32000,"sync":1,"damp":0.03,"diff_passes":4},
+ {"name":"F08_lagNoArb_cap1_s1","N":512,"SO":7,"cap":1,"SA":22.5,"RA":45,"n_eval":14,"n_snap":5,"seed":1,"geom":"disk","R":220,"dens":0.1,"steps":8000,"sync":2}]

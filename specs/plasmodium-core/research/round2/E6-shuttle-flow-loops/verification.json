@@ -1,0 +1,307 @@
+{
+ "claim_refuted": false,
+ "corrected_verdict": "partial",
+ "branched_network_seen": true,
+ "hierarchy_seen": true,
+ "fan_front_seen": false,
+ "emergent_not_handplaced": true,
+ "lattice_artifact_suspected": true,
+ "reproduced": "partially",
+ "realism_score_0_10": 3,
+ "independent_metrics": {
+  "files": {
+   "verify_dir": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E6-shuttle-flow-loops/verify",
+   "independent_metrics_json": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E6-shuttle-flow-loops/verify/indep_metrics.json",
+   "solve_check_json": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E6-shuttle-flow-loops/verify/solve_check.json",
+   "rerun_seed3": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E6-shuttle-flow-loops/verify/runs/v_fan_f050_pwob45_s3",
+   "rerun_seed3_no_edge_noise": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E6-shuttle-flow-loops/verify/runs/v_fan_f050_pwob45_s3_sig0",
+   "montage": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E6-shuttle-flow-loops/verify/v_montage_s3_sig05_vs_sig0.png"
+  },
+  "eval_morph_stored_arrays": {
+   "e_fan_f050_pwob45_s1": {
+    "rel0.2": {
+     "branch_points": 120,
+     "loops": 10,
+     "all_three": true
+    },
+    "rel0.35": {
+     "branch_points": 36,
+     "endpoints": 27,
+     "loops": 6,
+     "vein_area_frac": 0.1175,
+     "vein_largest_frac": 1,
+     "width_ratio_p90_p10": 2.06,
+     "strength_ratio_p90_p10": 2.17,
+     "all_three": true
+    },
+    "rel0.5": {
+     "branch_points": 15,
+     "loops": 1,
+     "vein_components": 3,
+     "width_ratio_p90_p10": 1.67,
+     "all_three": false
+    }
+   },
+   "e_fan_f050_pwob45_s2": {
+    "rel0.2": {
+     "branch_points": 196,
+     "loops": 15,
+     "all_three": true
+    },
+    "rel0.35": {
+     "branch_points": 57,
+     "loops": 2,
+     "all_three": true
+    },
+    "rel0.5": {
+     "branch_points": 30,
+     "loops": 1,
+     "all_three": false
+    }
+   },
+   "b_fan_f000_s1_dc_tree_control": {
+    "rel0.2": {
+     "branch_points": 82,
+     "loops": 13,
+     "all_three": true
+    },
+    "rel0.35": {
+     "branch_points": 49,
+     "loops": 2,
+     "all_three": true
+    },
+    "rel0.5": {
+     "branch_points": 31,
+     "loops": 0,
+     "all_three": false
+    }
+   }
+  },
+  "rerun_seed3": {
+   "runtime_s": 25.3,
+   "kirchhoff_rel_resid_step0": 5.7e-10,
+   "experimenter_metric_big_loops_thr0.2_per_snapshot": [
+    16,
+    15,
+    10,
+    9
+   ],
+   "experimenter_metric_big_loops_thr0.35_per_snapshot": [
+    4,
+    2,
+    1,
+    1
+   ],
+   "eval_primary": {
+    "branch_points": 45,
+    "endpoints": 47,
+    "loops": 2,
+    "vein_area_frac": 0.1181,
+    "vein_largest_frac": 0.996,
+    "width_ratio_p90_p10": 2.06,
+    "strength_ratio_p90_p10": 2.26,
+    "all_three": true
+   },
+   "Cmax": 355.6
+  },
+  "rerun_seed3_edge_sigma0": {
+   "experimenter_metric_big_loops_thr0.2_per_snapshot": [
+    15,
+    6,
+    8,
+    8
+   ],
+   "experimenter_metric_big_loops_thr0.35_per_snapshot": [
+    2,
+    1,
+    1,
+    1
+   ],
+   "eval_primary": {
+    "branch_points": 32,
+    "endpoints": 32,
+    "loops": 1,
+    "vein_largest_frac": 1,
+    "width_ratio_p90_p10": 2.12,
+    "strength_ratio_p90_p10": 2.01,
+    "all_three": true
+   }
+  },
+  "graph_cycles_definition": "C >= q*C_p99.9 인 간선의 최대 성분 2-core 순환 수(= 면적 9셀^2 이상 구멍 수와 일치). q = 0.001 / 0.01 / 0.03 / 0.1",
+  "graph_cycles": {
+   "rep_s1": [
+    12,
+    7,
+    6,
+    1
+   ],
+   "rep_s2": [
+    11,
+    3,
+    2,
+    0
+   ],
+   "my_seed3": [
+    9,
+    1,
+    1,
+    0
+   ],
+   "my_seed3_edge_sigma0": [
+    7,
+    1,
+    0,
+    0
+   ],
+   "dc_only_fan_b_fan_f000_s1": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "ac_rotating_fan_b_fan_f097_prot_s1": [
+    14,
+    6,
+    4,
+    2
+   ],
+   "ac_fixed_radial_fan_b_fan_f100_rad_s1": [
+    2,
+    0,
+    0,
+    0
+   ]
+  },
+  "largest_component_frac_q0.01": {
+   "rep_s1": 1,
+   "rep_s2": 0.995,
+   "my_seed3": 1,
+   "dc_only_fan": 1,
+   "ac_rotating_fan": 1,
+   "ac_fixed_radial_fan": 0.196
+  },
+  "taper_spearman_width_vs_dist_to_source_q0.01": {
+   "rep_s1": -0.417,
+   "rep_s2": -0.519,
+   "my_seed3": -0.405,
+   "my_seed3_edge_sigma0": -0.586,
+   "dc_only_fan": -0.832,
+   "ac_rotating_fan": -0.173,
+   "ac_fixed_radial_fan": -0.114
+  },
+  "median_vein_width_C^0.25_rear_mid_front": {
+   "rep_s1": [
+    2.09,
+    1.82,
+    1.59
+   ],
+   "my_seed3": [
+    2.34,
+    2.06,
+    1.71
+   ],
+   "dc_only_fan": [
+    3.45,
+    2.57,
+    1.71
+   ],
+   "ac_rotating_fan": [
+    1.8,
+    1.85,
+    1.5
+   ]
+  },
+  "hole_area_median_rear_vs_front_half_q0.001_cells2": {
+   "rep_s1": [
+    1014.1,
+    208.9
+   ],
+   "rep_s2": [
+    877.8,
+    198.3
+   ],
+   "my_seed3": [
+    416.2,
+    694.5
+   ],
+   "my_seed3_edge_sigma0": [
+    1288.7,
+    234.9
+   ]
+  },
+  "lattice_alignment_strong_edges_q0.03": {
+   "len_share_in_straight_runs_ge6_edges": {
+    "rep_s1": 0.044,
+    "rep_s2": 0.06,
+    "my_seed3": 0.05,
+    "my_seed3_edge_sigma0": 0.559,
+    "dc_only_fan": 0.066
+   },
+   "max_straight_run_edges": {
+    "rep_s1": 8,
+    "my_seed3": 9,
+    "my_seed3_edge_sigma0": 54
+   },
+   "orientation_within_7.5deg_of_lattice_dirs_uniform_0.333": {
+    "rep_s1": 0.418,
+    "rep_s2": 0.444,
+    "my_seed3": 0.352,
+    "my_seed3_edge_sigma0": 0.377,
+    "dc_only_fan": 0.318
+   }
+  },
+  "solve_check_seed3_final_state": {
+   "kirchhoff_rel_resid_own_solver": 3.5e-12,
+   "dc_out_of_source": 184,
+   "dc_into_sink": 184,
+   "I0": 184,
+   "qm_code_vs_independent_max_rel_err_strong_edges": 1.2e-07,
+   "closed_form_vs_12pt_quadrature_rel_err_median_max": [
+    1.8e-16,
+    0.022
+   ],
+   "strong_edges_dc_dominated_frac": 0.568,
+   "steady_state_rel_imbalance_strong_p50_p90_max": [
+    0.03,
+    0.279,
+    0.615
+   ],
+   "sum_C_before_after_one_step": [
+    36598.2,
+    36349.9
+   ],
+   "Cmax_over_r": 355607,
+   "edge_weight_contrast_max_over_min": 15800000
+  },
+  "jacobi_cost_N128": {
+   "sweeps_per_decade_omega0.8_final_network": 18200,
+   "sweeps_per_decade_omega0.8_uniform_C1": 10435,
+   "coldstart_dc_flux_L1_relerr_strong_edges_after_sweeps": {
+    "60": 0.923,
+    "600": 0.722,
+    "6000": 0.176,
+    "60000": 6.5e-05
+   },
+   "warmstart_one_adapt_step_near_steady_relerr_0_and_60_sweeps": [
+    0.008,
+    0.0077
+   ],
+   "multigrid": "시험하지 않음"
+  }
+ },
+ "issues": [
+  "혼합 구성(직류 0.5 + 흔들리는 교류 0.5)의 고리는 대부분 줄기 전도도의 0.1~1% 인 가는 관이 닫은 것이다. 간선 그래프 2-core 순환 수: 전도도 0.1% 이상까지 세면 12/11/9(시드 1/2/3), 1% 이상은 7/3/1, 10% 이상은 1/0/0. 공통 채점도 vein-rel 0.5 에서는 고리 1, all_three 실패(시드 1·2 모두).",
+  "대표 실행(시드 1)은 가장 좋은 시드다. primary 문턱 고리 수가 시드 1은 6, 시드 2는 2, 내 시드 3은 2 로, 같은 채점기에서 직류 나무(b_fan_f000_s1)의 2 와 구별되지 않는다. 담당자 자체 지표(문턱 0.2)로는 8/10/9 로 재현된다.",
+  "공통 채점 all_three 는 이 실험에서 변별력이 없다. width_ratio 가 픽셀 양자화(4px 대 8px)로 거의 모든 실행에서 문턱값 2.0 근처에 걸리고, 직류 나무와 위계 없는 교류 그물도 통과한다. vein-rel 0.2 에서 직류 나무의 loops 가 13 으로 나오는 것은 래스터 인공물이다(그래프 기준 0).",
+  "격자 인공물: 간선 잡음을 끈 재실행(edge_sigma=0, 시드 3)에서 정맥이 축과 45° 대각선의 직선으로 잠기고 잔가지가 빗살 모양이 된다. 굵은 정맥 길이 중 6간선 이상 직선 구간 비율 56%(잡음 있을 때 4~6%), 최장 직선 54간선. 자연스러운 굴곡은 정적 로그정규 간선 잡음이 만든 것이다. 줄기+가지+가는 고리 7개라는 위상은 잡음 없이도 유지됐다(1회).",
+  "고리는 손으로 정한 부하에 의존한다. 고정 몸 마스크, 뒤쪽 점 소스, 전진면 싱크, 교류 위상 패턴, 파 방향 스케줄(±45°, 12회 왕복), 교류 진폭 = 직류 총량을 모두 미리 정했다. 맥동은 두께와 결합된 역학이 아니라 부과한 소스 항이다. 가설 문장 그대로의 구성(뒤쪽 페이스메이커 고정 연동파)은 끊긴 평행 수로만 만들었다(내 측정: 최대 성분 0.19, 순환 0~2). 정맥 무늬 자체는 백색 잡음 초기 조건에서 창발했다.",
+  "실물처럼 교류가 직류보다 훨씬 큰 비율(f>=0.75)에서는 줄기가 사라진다(m_B1.png 에서 확인). 줄기와 고리가 함께 보이는 구간은 f=0.25~0.5 뿐이고, 그 구간에서도 줄기->가지 구배는 직류 나무의 절반 수준이다(내 Spearman -0.41~-0.52 대 -0.83).",
+  "정상 상태가 아니다. 흔들림 주기가 적응 시간의 10배라 망이 계속 다시 쓰인다(강한 간선의 정상상태 불균형 중앙값 3%, p90 28%). 스냅샷 4장이 모두 흔들림 위상 0(파 방향 = 몸 축)에서만 찍혀 흔들림 중간의 모습은 관찰되지 않았다. 내 시드 3 에서 큰 고리가 16->15->10->9 로 줄고 있었다. fan+흔들림 구성의 장시간 지속성은 확인되지 않았다(장시간 실행은 원반·회전파 1시드뿐).",
+  "부피 보존이 없다. 전도도 총합이 보존되지 않고(한 스텝에 36598 -> 36350), 두께장·전진·점액이 없다. 유량 보존(Kirchhoff)은 내 풀이로 3.5e-12 까지 확인했다.",
+  "실물과의 차이: 전진면 시트가 없다(고정 마스크). 그물코가 앞에서 촘촘하고 뒤에서 성긴 구배가 일관되지 않다(구멍 면적 중앙값 뒤/앞: 시드 1은 1014/209, 시드 3은 416/695 로 반대). 그물코 안쪽이 닫힌 가는 그물이 아니라 막다른 수지상 잔가지(하천망 꼴)로 채워진다. 관 폭은 간선 1줄이다.",
+  "GPU 실현성은 근거가 없다. 대표 구성의 Cmax/r 은 3.6e5(보고서의 '6천 이상'은 r=0.03 경우의 값), 간선 가중치 대비는 1.6e7 이고 정맥은 1간선 폭이라 E9 의 멀티그리드 발산 조건(폭 1셀, 대비 500 이상)을 크게 넘는다. 가중 Jacobi 는 N=128 에서 오차 10배 감쇠에 1.8만 스윕, 콜드스타트 60/600/6000 스윕 뒤 유량 오차 92/72/18%. 프레임당 12패스 추정은 측정되지 않았다(담당자도 명시). 직류 + 2방향 교류는 부하 5채널이라 압력 텍스처가 2장 필요하다. r 을 올려 대비를 낮추면 고리가 사라진다는 담당자 결과(G)와 합치면 현재 파라미터로는 구현 경로가 없다.",
+  "보고서 2절의 수치(위상 8점, 주기당 16스텝, 적응 20주기)가 실제 코드 기본값(12, 12, 10)과 다르다. 결과에는 영향이 없는 서술 불일치다. 주기 평균 식과 코드는 일치한다(독립 계산 대비 상대 오차 1e-7).",
+  "먹이 쌍 결과(H3)는 그림(m_D1.png)으로만 확인했고 다시 돌리지 않았다. 먹이를 잇는 굵은 관만 남고 나머지가 완전히 사라지는 것은 부과한 쌍별 소스/싱크에 대한 전류 강화 모델의 표준 결과다."
+ ],
+ "summary": "담당자의 partial 판정과 헤드라인은 독립 검증에서 지지된다. 다만 대표 실행은 가장 좋은 시드이고, 고리는 보고보다 가늘고 시드 의존적이다.\n\n확인된 것: 저장 배열 재채점이 보고값과 일치(vein-rel 0.35: 분기점 36, 고리 6). 새 시드 3 재실행도 줄기+가지+가는 고리를 재현(담당자 지표 문턱 0.2 에서 9개). 내 재풀이로 Kirchhoff 잔차 3.5e-12, 주기 평균 식과 코드 일치(1e-7). 간선 그래프 순환 수로 다시 세면 직류 나무 0, 고정 방사파 0~2(최대 성분 0.19), 회전 교류 14, 직류+교류 9~12. 구배는 직류 나무의 절반(Spearman -0.41~-0.52 대 -0.83).\n\n약한 점: 혼합 구성의 고리는 줄기 전도도의 0.1~1% 인 관이 닫는다. 1% 이상만 세면 7/3/1(시드 1/2/3), 10% 이상은 1/0/0. vein-rel 0.5 에서는 고리 1, all_three 실패. 간선 잡음을 끄면 정맥이 축·45° 직선으로 잠긴다(직선 구간 56% 대 4~6%). 고리는 손으로 정한 파 방향 흔들림에 의존하고, 가설 그대로의 고정 연동파는 실패했다. 몸은 고정 마스크라 전진면, 부피 보존, 두께 맥동이 없다. 전도도 대비 3.6e5, Jacobi 10배 감쇠에 1.8만 스윕으로 GPU 실현성은 근거가 없다."
+}

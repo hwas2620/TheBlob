@@ -1,0 +1,291 @@
+{
+ "claim_refuted": false,
+ "corrected_verdict": "partial",
+ "branched_network_seen": true,
+ "hierarchy_seen": true,
+ "fan_front_seen": false,
+ "emergent_not_handplaced": true,
+ "lattice_artifact_suspected": false,
+ "reproduced": "yes",
+ "realism_score_0_10": 4,
+ "independent_metrics": {
+  "rerun_representative_512_seed3": {
+   "run_dir": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/verify/runs/v_mg15_c1_dt05_N512_s3",
+   "config": "N=512, MG PtAP/1.5 V(2,2) 1사이클/스텝, rate·dt=0.05, 시드 3",
+   "diverged": null,
+   "runtime_s": 214.8,
+   "flux_err_samples": [
+    0.049,
+    0.051,
+    0.017,
+    0.199,
+    0.021,
+    0.037,
+    0.038
+   ],
+   "flux_err_mean": 0.059,
+   "kirchhoff_l1_range": [
+    0.07,
+    0.16
+   ],
+   "Cmax_at_snapshots": [
+    4374,
+    13865,
+    23511
+   ],
+   "eval_by_vein_rel": {
+    "0.2": {
+     "branch_points": 337,
+     "loops": 2,
+     "width_ratio": 2,
+     "strength_ratio": 3.71
+    },
+    "0.35": {
+     "branch_points": 210,
+     "loops": 0,
+     "endpoints": 235,
+     "vein_area_frac": 0.108,
+     "vein_largest_frac": 1,
+     "width_ratio": 2.06,
+     "strength_ratio": 2.37
+    },
+    "0.5": {
+     "branch_points": 168,
+     "loops": 0,
+     "width_ratio": 2,
+     "strength_ratio": 1.92
+    }
+   },
+   "veins_crossing_ring_0.25_0.5_0.75_0.9R": [
+    6,
+    8,
+    17,
+    45
+   ],
+   "gpu_cost_from_code": {
+    "fine_eq": 8.33,
+    "draws": 69,
+    "levels": 8
+   }
+  },
+  "rerun_min_budget_256_seed3": {
+   "config": "N=256, MG PtAP/1.5 V(2,2) 1사이클/스텝, rate·dt=0.2, 시드 3",
+   "diverged": null,
+   "branch_points": 184,
+   "loops": 5,
+   "width_ratio": 2.24,
+   "Cmax_final": 6221,
+   "flux_err_final_step": 0.79,
+   "kirchhoff_l1_final_step": 2.09,
+   "extended_to_R123_check_every_10_steps": {
+    "diverged": null,
+    "flux_err_bursts": {
+     "step390": 1.27,
+     "step420": 1.41,
+     "step510": 0.83,
+     "step570": 3.19
+    },
+    "samples_over_0.4": "59개 중 8개",
+    "Cmax_at_snapshots": [
+     781,
+     56880,
+     8553
+    ]
+   }
+  },
+  "islands_keep_test_256_seed2": {
+   "config": "위와 같은 MG, islands='keep'(연결 성분 제거 없음), 25스텝마다 점검",
+   "diverged": null,
+   "branch_points": 203,
+   "flux_err_max": 0.43
+  },
+  "eval_recheck_best_run_e_mg15_c1_dt05_N512_s1": {
+   "0.2": {
+    "branch_points": 303,
+    "loops": 1,
+    "width_ratio": 2
+   },
+   "0.35": {
+    "branch_points": 182,
+    "loops": 0,
+    "endpoints": 212,
+    "vein_area_frac": 0.0922,
+    "width_ratio": 2.12,
+    "strength_ratio": 2.48,
+    "body_circularity": 0.663,
+    "body_solidity": 0.988
+   },
+   "0.5": {
+    "branch_points": 151,
+    "loops": 0,
+    "width_ratio": 2.24
+   },
+   "matches_report": true
+  },
+  "ring_crossings_count_and_medianC_at_0.15_0.25_0.4_0.55_0.7_0.85_0.95R": {
+   "exact_256_s1": {
+    "count": [
+     7,
+     8,
+     13,
+     19,
+     30,
+     43,
+     67
+    ],
+    "medianC": [
+     980,
+     980,
+     557,
+     254,
+     213,
+     69,
+     22
+    ]
+   },
+   "mg_256_s1": {
+    "count": [
+     8,
+     9,
+     10,
+     14,
+     25,
+     45,
+     70
+    ],
+    "medianC": [
+     1058,
+     731,
+     730,
+     590,
+     213,
+     80,
+     21
+    ]
+   },
+   "mg_512_s1_best": {
+    "count": [
+     6,
+     7,
+     9,
+     14,
+     26,
+     58,
+     127
+    ],
+    "medianC": [
+     5037,
+     3454,
+     2847,
+     1266,
+     541,
+     177,
+     41
+    ]
+   },
+   "mg_512_s3_rerun": {
+    "count": [
+     6,
+     10,
+     12,
+     18,
+     26,
+     61,
+     118
+    ],
+    "medianC": [
+     4704,
+     2353,
+     2112,
+     806,
+     497,
+     167,
+     45
+    ]
+   }
+  },
+  "lattice_bias": {
+   "pooled_trunk_ring_crossing_angles_n": 723,
+   "mean_angle_to_nearest_lattice_direction_deg": 11.33,
+   "uniform_expectation_deg": 11.25,
+   "standard_error_deg": 0.24,
+   "exact_256_s1_strong_edge_diag_fraction": 0.468,
+   "straight_run_len_mean_edges": 1.75,
+   "straight_run_len_max_edges": 8
+  },
+  "ccap_effect": {
+   "exact_256_cap1000": {
+    "frac_vein_nodes_at_cap": 0.024,
+    "cap_reach_over_R": 0.33,
+    "Cmax_uncapped": 4104
+   },
+   "mg_256_cap1000": {
+    "frac_vein_nodes_at_cap": 0.049,
+    "cap_reach_over_R": 0.53
+   },
+   "mg_512_cap3000_s1": {
+    "frac_vein_nodes_at_cap": 0.052,
+    "cap_reach_over_R": 0.665,
+    "medianC_at_0.15_0.25_0.4R": [
+     2988,
+     2985,
+     2723
+    ]
+   },
+   "mg_512_cap3000_s2": {
+    "frac_vein_nodes_at_cap": 0.067,
+    "cap_reach_over_R": 0.612,
+    "medianC_at_0.15_0.25_0.4R": [
+     3000,
+     3000,
+     3000
+    ]
+   },
+   "uncapped_512_Cmax_range": [
+    14042,
+    23511
+   ],
+   "thickest_trunk_render_width_cells_uncapped_vs_capped": "7.6~8.7 대 5.2"
+  },
+  "mg_levels_by_code_rule": {
+   "256": {
+    "levels": 7,
+    "draws_incl_rebuild": 62
+   },
+   "512": {
+    "levels": 8,
+    "draws_incl_rebuild": 69
+   },
+   "750": {
+    "levels": 2
+   },
+   "768": {
+    "levels": 9,
+    "draws_incl_rebuild": 76
+   },
+   "1500": {
+    "levels": 3
+   },
+   "1536": {
+    "levels": 10,
+    "draws_incl_rebuild": 83
+   }
+  },
+  "verify_compute_seconds_total": 255
+ },
+ "issues": [
+  "256² 최소 예산(1사이클/스텝, rate·dt=0.2)은 경계선이다. 시드 3에서 발산 판정은 안 났지만 마지막 스텝 유량 오차 0.79, 반지름을 123까지 늘려 10스텝마다 재면 버스트 1.27/1.41/0.83/3.19, 스냅샷 Cmax 781→56,880→8,553 으로 간헐적 과도 폭주(자가 회복)가 있었다. 담당자의 50스텝 간격 표본에는 안 잡힌 현상이라 '유량 오차 0.19~0.28 로 유지'는 과소 표현이다.",
+  "유량 오차 표본이 성기다. 512² 실행은 4,180스텝 중 7번만 직접 풀이와 비교해서, 보고된 최대값(0.144)은 버스트를 놓쳤을 수 있다. 대표 구성에서 버스트가 없는지는 확인하지 못했다.",
+  "Ccap 은 위계를 깎는다. 512² Ccap=3000 에서 정맥 노드의 5.2~6.7% 가 상한에 붙고(0.61~0.67R 까지), 0.15~0.4R 고리를 지나는 줄기의 중앙 C 가 2,700~3,000 으로 사실상 전부 같아진다(상한 없으면 최대 1.4만~2.4만). 렌더 폭(∝C^¼)으로는 가장 굵은 줄기가 약 7.6~8.7셀 → 5.2셀. 필요한 상한이 몸 크기에 따라 달라서(256² 1000, 512² 3000) 고정값이면 큰 몸에서 줄기 굵기가 균일해진다. 공통 채점의 폭 비(2.06)는 이 평탄화를 못 잡는다.",
+  "750²·1500² 는 돌리지 않았고 외삽은 두 크기뿐이다. 코드의 조대화 규칙(짝수일 때만 절반)으로는 750 은 2레벨, 1500 은 3레벨밖에 안 나와 768²/1536² 같은 격자가 필요하다. 보고의 '768² 8레벨, 드로콜 71'은 코드 기준 9레벨, 약 78 이다.",
+  "패스 수 계산은 코드와 맞지만(512²: V-사이클 62 + 재구성 7 = 69, 미세 8.33회 분량) 조금 낮게 잡혔다. 잔차와 제한을 1드로콜로 셌고(셰이더 하나에 텍스처 조회 약 60회, 아니면 2드로콜), 조대 압력 초기화, 새 셀 웜스타트, 소스 세기에 쓰는 전진면 셀 수 전역 합(밉 축소 약 9패스 또는 리드백)이 빠졌다. 현실적으로 드로콜 80~90, 풀스크린 11~13회 분량으로 본다. 채우기 비용은 예산 안이지만 드로콜 수는 60을 넘는다.",
+  "GPU 로 못 옮기는 연산이 모델 쪽에 있다. islands='drop' 은 매 스텝 scipy 연결 성분 라벨링(전역, CPU)이다. MG 는 이것 없이도 유지됐지만(시드 1 c_ 계열, 내 시드 2 재실행), pcg 와 heavy-ball 은 섬에서 폭주했다. 게임에서 몸이 갈라질 때 성분별 소스 합 0 을 보장하는 방법(누설 항 등)은 시험되지 않았다.",
+  "float32 미검증 구간: 512² 대표 구성(상한 없음, Cmax 1.4만~2.4만)은 float64 로만 돌렸다. float32 확인은 256² 1건과 512² Ccap=3000 2건뿐이다. 상수 모드 표류도 최대 4,180스텝(60fps 로 약 70초)까지만 봤다.",
+  "몸·전진면·소스는 손으로 정했다(미리 정한 속도로 자라는 원반, 중심 점 소스, 테두리 싱크). 창발한 것은 정맥 위상뿐이다. 부채꼴 전진면은 없고(몸 볼록도 0.988), 고리는 0~2개인 순수 나무이며, 이동·맥동·부피 보존은 이 실험에 없다.",
+  "근사 유량은 국소 보존이 깨진다. Kirchhoff L1 잔차가 대표 실행 시드 1에서 0.5, 시드 3에서 0.07~0.16 이다. 이 유량으로 두께장을 옮길 때의 영향은 측정되지 않았다.",
+  "공통 채점은 폭주를 구분하지 못한다. Cmax 5e6 으로 폭주 중인 e_mg15_c1_dt20_N512_s1 도 임계 0.2/0.35 에서 통과한다. '유지' 판정은 diverged 플래그(C>1e12), Cmax, 성긴 유량 오차에 기대고 있고, 폭 비 기준(≥2)은 렌더 규칙에 의존하는 경계선 통과(2.0~2.24)다.",
+  "512² 는 같은 시드 직접 풀이 기준선이 없어 통계 비교는 256² 기준선과 스케일 불변 지표(고리별 정맥 수)에만 기댄다.",
+  "정맥이 1간선 폭이라 셀 규모 계단과 굵은 줄기의 톱니 모양은 보인다. 다만 줄기 방향의 격자 편향은 검출되지 않았다(직선 구간 평균 1.75간선, 최대 8)."
+ ],
+ "summary": "판정 partial 은 지지된다(반박 실패). 대표 구성(512², MG PᵀAP/1.5 V(2,2) 1사이클/스텝, rate·dt=0.05)을 시드 3으로 다시 돌려 재현했다: 발산 없음, 유량 오차 평균 0.059(최대 0.20), 분기점 337/210/168(임계 0.2/0.35/0.5), 고리 0, 폭 비 2.0~2.06. 공통 채점 재실행 값도 보고와 일치한다. 그림은 중심 줄기 6~8개가 반복 분기해 가장자리 잔가지로 가는 방사형 나무다. 고리 교차 수 6→127, 중앙 C 5037→41 로 위계가 뚜렷하고, 줄기 방향의 격자 편향은 없다(n=723, 11.33° 대 균등 11.25°). MG 연산은 전부 국소 스텐실이고 패스 수 계산(512² 드로콜 69, 미세 8.33회 분량)은 코드와 맞는다. 약점: (1) 256² 최소 예산(rate·dt=0.2)은 시드 3에서 유량 오차 버스트 1.3~3.2, Cmax 일시 5.7만으로 간헐적 과도 폭주를 겪는다(담당자의 50스텝 표본에는 안 잡힘). (2) Ccap=3000 은 512² 에서 0.15~0.4R 줄기를 전부 상한에 붙여 안쪽 위계를 지운다. (3) 750²·1500², 이동하는 몸, 맥동, 상한 없는 512² float32 는 미검증이고 750/1500 격자는 레벨이 2~3개뿐이다. 몸은 미리 정한 원반이라 부채꼴 전진면·고리·맥동은 없다. 검증 파일: /tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/verify/"
+}

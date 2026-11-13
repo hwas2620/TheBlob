@@ -1,0 +1,152 @@
+{
+ "verdict": "partial",
+ "headline": "칸당 1입자 제한 + 밀도 5~15% + RA>SA + 몸 마스크 가둠이면 Jones 입자는 512²와 1024²(입자 10만)에서 고리 많은 분기 그물을 만들고 32000스텝까지 유지하며, 입자를 공급하면 커지거나 움직이는 (미리 정한) 몸에도 그물이 새로 생긴다. 그러나 굵기 위계는 없고, 유지에 필요한 것은 고정점이 아니라 가둠이며, 게임 trail 규칙에서는 점유 제한을 켜도 그물이 수축해 사라진다.",
+ "model_rules": "Jones 2010 입자 규칙(jones.py, 코드 확인). 상태: 위치(x,y) 실수, 방향 단위벡터 h, 격자 trail, 칸별 점유 수 occ, 몸 마스크 body.\n1) motor: p' = p + 1px·h (토러스). p' 칸이 몸 밖이거나, 다른 칸인데 occ>=cap(=1) 이면 실패 → 이동·침착 없이 방향을 균등 무작위로 재추첨. 성공하면 이동하고 그 칸 trail += 5. 갱신 순서는 매 스텝 Fisher-Yates 셔플(비동기).\n2) sensor: F,FL,FR = trail[p + SO·dir(θ), dir(θ∓SA)]. F>FL&&F>FR 직진 / F<FL&&F<FR 무작위 ±RA / FL<FR → +RA / FR<FL → −RA. 기본 SA=22.5°, RA=45°, SO=7px.\n3) trail ← 3×3 평균 × 0.9 (매 스텝 1회, 토러스).\n4) 고정점(선택): 먹이 노드 3×3 칸 또는 전진면 띠에 매 스텝 trail += w.\n5) 초기 조건: 입자를 몸 칸에 균등 무작위(서로 다른 칸), 방향 균등 무작위, trail=0. 잡음은 초기 배치, 갱신 순서, 충돌 시 방향 재추첨, 좌우 동률 선택뿐. 구조를 심지 않음.\n확장(jones2.py): growdisk R(t)=min(R0+floor(v·t),R), movedisk 는 원반이 +x 로 v px/스텝 병진(둘 다 마스크를 손으로 움직임, v=0.05). front_inject=p: 새로 젖은 칸마다 확률 p 로 입자 생성. relocate: 몸 밖 입자를 새로 젖은 빈 칸으로 이동. Jones 성장/수축: 3스텝마다, 이동 성공 입자의 9×9 창 점유 칸 수 1~10 이면 3×3 이웃 빈 칸에 새 입자, 5×5 창 >24 면 삭제. SO 구배: SO(x)=SO+(SO_rear−SO)·age01(x). sync=1: 2패스 claim(모든 입자가 이전 상태 기준 목표 칸에 무작위 우선순위로 claim, 칸마다 최댓값만 승리, 승자만 이동). \"게임 trail\": 3×3 평균 4패스, 마지막에 ×0.97, SO=9.\n이번 추가(jones3.py): geom=free(몸 마스크 없음, 입자는 반지름 init_R 원반에서 시작, 평가용 몸 = 점유 맵을 σ=6 으로 흐려 >0.02 인 영역의 구멍 채움). sync=2 지연 점유 검사(스텝 시작 시점 점유 맵에서 목표 칸이 비었으면 이동, 중재 없음, 같은 칸 안 이동은 항상 허용).\n출력: vein.npy = 마지막 40스텝 trail 평균, body.npy = 몸 마스크 × (1 + 9×9 국소 점유율).",
+ "runs_summary": "전임자 실행 45개(전부 완주 확인)를 정리하고 새 실행 6개를 추가했다. 격자는 대부분 512², 원반 R=220, 입자 15200개(밀도 10%).\nA(20개, T=8000): cap=1 이면 밀도 3~40% 12개 모두 연결 그물(BP 20~101, 최대 성분 0.99~1.0). cap=0 이면 7개 모두 BP 0~1(고리/직선). 밀도 90% 는 균일하게 참. SA=RA(45/45, 60/60)는 수축 중(BP 20, 26). SO5 BP 95, SO7 52·59, SO12 큰 방 몇 개.\nB(4개, T=32000): 기본 2시드 BP 176·187@500 → 43·42@32k(기울기 −0.37·−0.60, 조대화 계속). SA15 는 94(−0.14). SA=RA=45 는 BP 0.\nC(5개, T=32000): 노드 12개 2시드 BP 57·61(조대화 정지). SA=RA=45+노드 BP 10. 전진면 띠 54.\nD(6개): 성장+주입 BP 163, 성장+Jones 규칙 127, 공급 없는 성장 15(따라오지 않음), 이동+재배치 2시드 33·35(정상 상태), 이동+삭제+규칙 32. 앞/뒤 뼈대 밀도 비 1.4~2.2.\nE(5개): SO 4→16 구배. 뒤/앞 폭 비 1.12(원반), 1.33·1.67(이동, 2시드), 1.24(부채). 가지 길이 비 2.3~3.0.\nF(5개): 동기 claim 2시드 BP 49·52(비동기와 같음). 1024²·99707입자 BP 243, 고리 121. 게임 trail+cap=1 BP 10, cap=0 은 점 2개.\n새 실행: F06 게임 trail+cap=1 시드 2, T=32000 → BP 115→3, 수축. F08 지연 점유 검사 → BP 58, 고리 25(입자 28% 가 겹친 칸). G01/G02 가둠 없음 2시드 → 회전반경 157→271, 맵 전체로 흩어짐. G03 가둠 없음+노드 12 → 똑같이 흩어짐. G04 가둠 없음+게임 trail → 윤곽 면적 13.8만→5.6만 px, 굵은 고리 하나(BP 2). 새 실행 계산 시간 합 270초. 그 밖에 256²·400스텝 스모크 2개를 돌리고 지웠다.",
+ "best_run_dir": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E2-jones-at-scale/runs/F05_scale1024_100k_sync",
+ "best_metrics": {
+  "run": "F05_scale1024_100k_sync (1024², 입자 99707, 밀도 0.15, 동기 claim, SA22.5/RA45/SO9, T=8000, 시드 1개)",
+  "eval_primary": {
+   "vein_rel": 0.35,
+   "body_area": 664713,
+   "body_components": 1,
+   "body_circularity": 0.901,
+   "vein_area_frac": 0.2324,
+   "vein_components": 2,
+   "vein_largest_frac": 1,
+   "loops": 121,
+   "skeleton_len": 13069,
+   "branch_points": 243,
+   "endpoints": 15,
+   "width_p10": 6.32,
+   "width_p50": 10,
+   "width_p90": 22,
+   "width_ratio_p90_p10": 3.48,
+   "strength_ratio_p90_p10": 2.15,
+   "verdict_all_three": true
+  },
+  "own_metrics": {
+   "BP_time_curve_t_BP": [
+    [
+     200,
+     1222
+    ],
+    [
+     547,
+     702
+    ],
+    [
+     1070,
+     473
+    ],
+    [
+     2092,
+     355
+    ],
+    [
+     4091,
+     273
+    ],
+    [
+     8000,
+     243
+    ]
+   ],
+   "late_slope_dlnBP_dlnt": -0.17,
+   "moved_frac_end": 0.161,
+   "wall_s_2threads": 110.9
+  },
+  "caveat": "width_ratio 3.48 은 접합부 뭉침이 굵은 관으로 세어진 값이다. 접합부를 뺀 가지 폭 비는 다른 실행에서 1.3~2.0 이고 세기 비는 3 미만이라 실제 굵기 위계는 없다고 판단했다.",
+  "reference_runs": {
+   "B01_B02_T32k_BP_end": [
+    43,
+    42
+   ],
+   "C01_C02_nodes_T32k_BP_end": [
+    57,
+    61
+   ],
+   "D04_D05_moving_BP_end": [
+    33,
+    35
+   ],
+   "E03_E04_SOgrad_rear_over_front_width": [
+    1.33,
+    1.67
+   ],
+   "F01_F02_sync_BP_end": [
+    49,
+    52
+   ],
+   "F08_lagged_BP_end": 58,
+   "F06_gameTrail_cap1_T32k_BP_end": 3,
+   "G01_G02_free_rg_start_end": [
+    [
+     157,
+     271
+    ],
+    [
+     156,
+     271
+    ]
+   ],
+   "cap0_runs_BP_at_2000": [
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "images": [
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E2-jones-at-scale/figs/A_final_montage.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E2-jones-at-scale/figs/B_montage.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E2-jones-at-scale/figs/D_montage.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E2-jones-at-scale/figs/E_montage.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E2-jones-at-scale/figs/F_montage.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E2-jones-at-scale/figs/G_new_montage.png"
+ ],
+ "structure_is_emergent": true,
+ "gpu_feasibility": {
+  "global_solve_needed": false,
+  "est_fullscreen_passes_per_step": 2,
+  "notes": "입자 층은 전역 풀이가 필요 없다. 풀스크린 패스는 trail 확산·감쇠 1회 + 침착 합성 1회로 약 2회(추정)이고, 나머지는 10만 정점 점 렌더와 512×256 상태 텍스처 패스다. 점유 제한 구현은 두 가지다. (A) 지연 검사: 게임에 이미 있는 occupancy 점 렌더 맵을 문턱 1 로 쓰고, 자기 칸 안 이동은 허용, 매 스텝 갱신, texelFetch 로 읽기, 이동 성공 플래그로 침착을 거른다. 추가 풀스크린 0, 추가 점 렌더 0(기존 것을 2스텝마다에서 매 스텝으로). numpy 에서 엄격한 제한과 같은 그물이 나왔다(F08, 시드 1개, 입자의 28% 가 겹친 칸). (B) 엄격한 2패스 claim: 목표 칸에 고유 정수 우선순위를 gl.MAX 블렌딩으로 그리고 자기 값이 남았을 때만 이동. 추가 점 렌더 1회. 1024²·10만 입자에서 확인(F05). 게임의 현재 문턱은 avgDensity·500 = 22.2개/칸이다(PhysarumSimulation.ts:321). 확인하지 못한 것: occupancy 를 2스텝마다 갱신하는 경우, GPU 의 감지→이동 한 패스 순서, 이동 실패 시에도 침착하는 게임 방식."
+ },
+ "failure_modes": [
+  "점유 제한 없음(cap=0): 밀도 10/40/100%, SA/RA 3종, 게임 trail 포함 8개 실행 모두 고리·직선·점으로 붕괴(BP 0~1)",
+  "가둠 없음(몸 마스크 없음): cap=1 이어도 가닥이 뻗어 나가 맵 전체로 흩어짐(G01/G02 시드 2개). 먹이 노드 12개를 줘도 같음(G03). 뻗는 가닥이 가로·세로 축에 정렬(원인 미확인)",
+  "게임 trail 규칙(확산 4패스, 감쇠 0.97): cap=1 이어도 흐린 굵은 그물이 수축해 고리 하나로(F03, F06 시드 2개, BP 3@32k). 가둠 없이도 수축(G04)",
+  "SA=RA(45/45): 벽에서 떨어져 수축, T=32000 에 BP 0. 노드가 있으면 노드 사이 굵은 망만 남음(BP 10)",
+  "굵기 위계 없음: 관 폭 6~8px 로 균일. SO 구배·SO 혼합으로도 뒤/앞 폭 비 1.1~1.85(기준 2 미달), 세기 비 3 미만",
+  "공급 없는 성장(D02): 입자 덩어리가 가운데 남고 그물이 몸을 따라가지 않음",
+  "밀도 90%: 전체가 균일하게 참. 20~40% 는 구멍 난 판",
+  "기본 영역(SA22.5/RA45)은 T=32000 에서도 조대화 진행 중(BP 176→43, 기울기 −0.37·−0.60)"
+ ],
+ "limitations": [
+  "그물은 균등 무작위 초기 조건에서 창발했지만 몸의 모양과 움직임(원반, 부채꼴, 정해진 속도의 성장·병진)은 전부 손으로 정한 마스크다. 창발한 몸과의 결합은 시험하지 않았다",
+  "이동·성장 속도는 v=0.05px/스텝 하나만 시험",
+  "대부분 512²·입자 1.5만. 1024²·10만은 1회(시드 1개, T=8000). 1500² 는 돌리지 않음(코드가 2의 거듭제곱만 지원)",
+  "시드 1개뿐인 결론: B03, B04, C03~C05, D01~D03, D06, E01, E02, E05, F04, F05, F08, G03, G04",
+  "게임 셰이더의 부가 규칙(입자별 SO/SA 변이, 스카우트, 추종, 압력, 복귀, 먹이 화학주성, 침착 맥동, trail 상한 500, 실패 시에도 침착)은 재현하지 않음. '게임 trail'은 확산·감쇠·SO 만 맞춤",
+  "게임 trail 에서 그물이 수축하는 원인(퍼짐 길이 약 9.4px ≈ SO)은 해석이며 확산 패스 수와 감쇠를 따로 바꿔 검증하지 않음",
+  "공통 eval 의 hierarchical 판정은 접합부 뭉침 때문에 거의 모든 그물 실행에서 참이 되고, 몸이 흩어진 G01~G03 도 all3=True 가 나온다. 판정은 눈으로 본 것과 가지 단위 지표로 했다",
+  "맥동, 부채꼴 전진면, 점액 기피, 먹이 사이 관의 정량 평가는 다루지 않음",
+  "32000스텝(60스텝/초로 약 9분)보다 긴 거동은 모름",
+  "유량 정맥 모델과 입자의 결합 방식은 의견이며 실험하지 않음"
+ ],
+ "mass_conserved": "입자 수 기준으로 고정 N 실행(A, B, C, E, F, G, D02, D04, D05)은 오차 0(정수 개수 보존). D01, D03, D06 은 주입·성장·삭제 규칙상 입자 수가 변한다. 두께장이 없어 부피 보존 자체는 해당 없음.",
+ "next_steps": [
+  "E7 의 두께장 h>문턱을 몸 마스크로 써서 입자를 가두고, 새로 젖은 칸에 확률 0.1 로 주입·h<문턱에서 삭제하는 결합을 numpy 로 시험",
+  "입자 감지값에 유량 전도도 C 를 더해(자기 trail + α·C) 입자 그물이 굵은 유량 정맥에 달라붙는지 확인",
+  "전진면에서 밀도 60~90% → 뒤에서 10% 로 솎는 공간 구배로 '앞은 시트, 뒤는 그물' 전이가 나오는지 시험",
+  "게임 trail 을 1패스·감쇠 0.9 로 바꾸고 확산 패스 수와 감쇠를 따로 스윕해 수축 원인 분리",
+  "GPU 순서(확산 뒤 trail 로 감지→이동 한 패스), occupancy 2스텝 갱신, 실패 시 침착을 numpy 로 재현해 차이 확인",
+  "이동 속도 스윕(v=0.1~0.5px/스텝)으로 그물이 따라오는 한계 속도 측정",
+  "F08(지연 점유 검사)과 G04 를 시드 2개 이상으로 재현, 1500² 비거듭제곱 격자 지원"
+ ],
+ "reproduce_command": "cd /tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E2-jones-at-scale && export NUMBA_NUM_THREADS=2 OMP_NUM_THREADS=2 NUMBA_CACHE_DIR=$PWD/nbcache PYTHONWARNINGS=ignore && python3 jones3.py --batch batchF2.json && python3 jones3.py --batch batchG.json && python3 jones3.py --batch batchG2.json && python3 summarize_all.py   # 전임자 실행: jones.py --batch batchA1.json|batchA2.json|batchB.json|batchC.json, jones2.py --batch batchD.json|batchE.json|batchF.json",
+ "report_path": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E2-jones-at-scale/REPORT.md"
+}

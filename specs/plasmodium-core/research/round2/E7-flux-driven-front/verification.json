@@ -1,0 +1,241 @@
+{
+ "claim_refuted": false,
+ "corrected_verdict": "partial",
+ "branched_network_seen": true,
+ "hierarchy_seen": true,
+ "fan_front_seen": true,
+ "emergent_not_handplaced": true,
+ "lattice_artifact_suspected": true,
+ "reproduced": "partially",
+ "realism_score_0_10": 3.5,
+ "independent_metrics": {
+  "eval_f1_s2_render4x_by_vein_rel": {
+   "0.2": {
+    "branch_points": 177,
+    "loops": 65,
+    "vein_area_frac": 0.464,
+    "vein_largest_frac": 0.988,
+    "width_ratio_p90_p10": 4.12,
+    "strength_ratio_p90_p10": 2.77,
+    "all_three": true
+   },
+   "0.35": {
+    "branch_points": 137,
+    "loops": 41,
+    "vein_area_frac": 0.3581,
+    "vein_largest_frac": 0.989,
+    "width_ratio_p90_p10": 2.24,
+    "strength_ratio_p90_p10": 2.27,
+    "all_three": true
+   },
+   "0.5": {
+    "branch_points": 53,
+    "loops": 8,
+    "vein_area_frac": 0.2106,
+    "vein_largest_frac": 0.969,
+    "width_ratio_p90_p10": 2.12,
+    "strength_ratio_p90_p10": 1.75,
+    "all_three": true
+   },
+   "note": "담당자 보고값(0.35)과 정확히 일치"
+  },
+  "eval_f1_s2_native_by_vein_rel": {
+   "0.2": {
+    "branch_points": 1,
+    "vein_area_frac": 0.0152,
+    "all_three": false
+   },
+   "0.35": {
+    "branch_points": 1,
+    "vein_area_frac": 0.0112,
+    "all_three": false
+   },
+   "0.5": {
+    "branch_points": 1,
+    "vein_area_frac": 0.0068,
+    "all_three": false
+   }
+  },
+  "new_seed_reruns_no_gradient_T400": {
+   "seed4": {
+    "centroid_disp_cells": 28.72,
+    "front_patches_ge10pct_of_recent_growth": 4,
+    "vol_frac_top2_components": [
+     0.749,
+     0.204
+    ],
+    "wet_cells": 3007,
+    "eval_0.35": {
+     "branch_points": 99,
+     "loops": 22,
+     "vein_largest_frac": 0.488,
+     "all_three": false
+    },
+    "eval_all_three_at_0.2_0.35_0.5": [
+     true,
+     false,
+     false
+    ],
+    "mass_err_max": 3.4e-16,
+    "runtime_s": 71.3
+   },
+   "seed5": {
+    "centroid_disp_cells": 24.29,
+    "front_patches_ge10pct_of_recent_growth": 4,
+    "vol_frac_largest_component": 0.962,
+    "wet_cells": 2970,
+    "eval_0.35": {
+     "branch_points": 173,
+     "loops": 52,
+     "vein_largest_frac": 0.986,
+     "all_three": true
+    },
+    "eval_all_three_at_0.2_0.35_0.5": [
+     true,
+     true,
+     true
+    ],
+    "mass_err_max": 5.1e-16,
+    "runtime_s": 70.2
+   }
+  },
+  "single_fan_migration_frequency_no_gradient": {
+   "count": "1/5",
+   "per_seed": {
+    "seed1": "전진면 2개, 이동 21.6셀, 최근 성장의 최선 120도 구간 비율 0.59",
+    "seed2": "단일 방향, 이동 64.5셀, 비율 1.00",
+    "seed3": "몸 분리(부피 50%/46%), 이동 6.6셀, 비율 0.52",
+    "seed4_new": "전진면 3~4개, 부피 75%/20% 분리, 이동 28.7셀, 비율 0.78",
+    "seed5_new": "전진면 4개(연결 유지), 이동 24.3셀, 비율 0.74"
+   }
+  },
+  "gradient_runs_from_stored_arrays_not_rerun": {
+   "f4_grad_s1": {
+    "front_patches": 1,
+    "disp": 75.24,
+    "leading_edge_x_std_central60pct_rows": 1.13,
+    "trail_y_extent_from_x88_to_x160": [
+     38,
+     94
+    ]
+   },
+   "h1_grad_s3": {
+    "front_patches": 1,
+    "disp": 75.06,
+    "leading_edge_x_std_central60pct_rows": 0.47,
+    "rows_sharing_same_front_column": 0.71,
+    "trail_y_extent_from_x88_to_x172": [
+     41,
+     92
+    ]
+   }
+  },
+  "mass_conservation": {
+   "logged_max_rel_err_7_runs": 5.1e-16,
+   "final_state_sum_rel_err_float32_max": 1.4e-09,
+   "per_step_max_rel_err_exact_2000_steps": 3.4e-16,
+   "per_step_max_rel_err_jacobi40_800_steps": 3.4e-16,
+   "negative_thickness_cells": 0,
+   "volume_on_dry_cells": 0
+  },
+  "body_vs_slime_in_snapshots": {
+   "wet_fraction_of_coloured_region": "0.385~0.417 (7개 실행)",
+   "f1_s2": {
+    "wet_cells": 2955,
+    "dry_trail_cells": 4255,
+    "sheet_cells_h_gt_0.5": 1107,
+    "thin_cells_h_lt_0.3": 1312,
+    "components": 187,
+    "vol_frac_largest": 0.951
+   }
+  },
+  "vein_caliber_profile_Cmax_by_cells_behind_front": {
+   "f1_s2": {
+    "0-5": 62.7,
+    "5-10": 347.3,
+    "10-15": 370.4,
+    "15-20": 435.5,
+    "20-30": 775.2,
+    "30-40": 511.4,
+    "40-60": 297.5,
+    "60+": 34.1
+   },
+   "f4_grad_s1": {
+    "0-5": 59.3,
+    "5-10": 261.8,
+    "10-15": 499.3,
+    "15-20": 536.3,
+    "20-30": 552.5,
+    "30-40": 269.8,
+    "40-60": 90,
+    "60+": 11.7
+   },
+   "radius_ratio_tail_over_peak_C_pow_quarter": {
+    "40-60_cells_behind": "0.60~0.79",
+    "60plus_cells_behind": "0.38~0.46"
+   }
+  },
+  "lattice_checks": {
+   "vein_orientation_frac_within_7.5deg_of_lattice_dirs": {
+    "isotropic_expectation": 0.333,
+    "h3_base_s1": 0.326,
+    "f1_s2": 0.555,
+    "f2_s3": 0.382,
+    "seed4": 0.514,
+    "seed5": 0.241,
+    "f4_grad_s1": 0.298,
+    "h1_grad_s3": 0.428,
+    "mean": 0.392
+   },
+   "early_spread_diag_over_axis_reach": {
+    "t_le_40_mean_5_seeds": 1.13,
+    "t_le_80_mean_5_seeds": 1.12,
+    "values_above_1": "9/10"
+   }
+  },
+  "ablation_no_age_contraction_tau_a_1e9_seed2_T200": {
+   "centroid_disp_cells": 5.74,
+   "baseline_seed2_disp_at_t200": 26.4,
+   "area_end": 1682,
+   "body_components": 1,
+   "sheet_area_frac": 0.997,
+   "dry_trail": "없음",
+   "Cmax": 1688,
+   "Q_p50": 0.0002,
+   "common_eval_all_three": true,
+   "branch_points": 10
+  },
+  "jacobi40_vs_exact_same_state_seed2_T80": {
+   "rel_flux_err_L2_t30_to_t80": "0.34~0.52",
+   "rel_flux_err_L2_t20": 0.89,
+   "rel_flux_err_top1pct_edges": "0.23~0.45",
+   "rel_pressure_err_L2": "0.018~0.051",
+   "W_max": 4211
+  },
+  "compute_used": {
+   "full_reruns": 2,
+   "short_diagnostic_runs": 2,
+   "total_sim_seconds": 194,
+   "images_viewed": 4
+  },
+  "verify_dir": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E7-flux-driven-front/verify",
+  "notes": "REPORT.md 는 쓰지 않았다(이 세션의 상위 지침이 보고용 .md 파일 작성을 금지). 원자료는 verify/ 의 out_eval_f1.txt, out_eval_more.txt, out_indep_all.txt, out_front_flatness.txt, log_v_*.txt, runs/ 에 있다."
+ },
+ "issues": [
+  "단일 부채 이주는 무구배 5개 시드 중 1개(시드 2)뿐이다. 새로 돌린 시드 4는 전진면 3~4개에 몸이 부피 75%/20%로 갈라졌고(이동 28.7셀), 시드 5는 전진면 4개(이동 24.3셀)였다. t=160에서 400까지 엽 수가 줄지 않아 단일 부채로 수렴한다는 근거가 없다.",
+  "유일한 단일 전진면 실행(f1_s2)도 넓어지는 부채가 아니라 띠 모양이다(앞/뒤 폭비 1.02, 엽 2개). 젖은 면적은 무구배 5개 실행에서 2955~3007셀로 거의 같아, 전진면 총 길이는 부피 예산이 정하고 그것이 몇 조각으로 나뉘는지만 시드에 달려 있다.",
+  "구배 실행 2회는 다시 돌리지 않고 저장 배열로만 판정했다. 방향은 구배가 정하고, 흔적 폭이 38셀에서 94셀로 계속 넓어지는 쐐기라 정상 이주 상태가 아니다. 전진면 선단은 가운데 60% 행에서 x 표준편차 0.47~1.13셀의 격자 축 정렬 직선이다(h1_grad_s3 은 71% 행이 같은 열).",
+  "격자 인공물이 있다. 초기 퍼짐의 대각/축 도달 거리비가 평균 1.12(10개 값 중 9개가 1 초과)이고 f1_s2 의 t=80 은 대각 4엽 X자다. 정맥 방향이 격자 방향 ±7.5도 안에 드는 비율은 실행별 0.24~0.56(등방 기대 0.33, 평균 0.39)으로 f1_s2 와 시드 4에서 뚜렷하다. 정맥은 폭 1셀의 계단 모양이다.",
+  "굵기 구배 역전을 확인했다. 정맥 최대 전도도는 전진면 10~30셀 뒤에서 정점(f1_s2 775, 구배 실행 553~641)이고, 40~60셀 뒤는 반지름 환산 0.60~0.79배, 60셀 이상 뒤는 0.38~0.46배다. 전진면에서 몸 중간까지 가늘고 촘촘 → 굵고 성김은 실제와 같은 방향이지만 꼬리 쪽 굵은 간선이 없다. 다엽 실행(시드 5)에서는 엽 사이를 잇는 중앙 간선이 굵었다(그림으로만 확인).",
+  "나이에 따른 수축 규칙(tau_a)은 33회 전 실행에 처음부터 켜져 있었고 끈 대조가 없었다. 따라서 '가설 원문만으로는 실패했다(배치 b, c)'는 서술은 부정확하다(b, c 에도 이 규칙이 들어 있다). 직접 꺼 보니(tau_a=1e9, 시드 2, t=200) 이동 5.7셀(기준 26.4셀), 마름과 흔적 없음, 성분 1개의 원반에 손가락 하나였다. 이주와 후방 소스는 이 규칙이 만든다(대조 1회).",
+  "자동 정규화 Q0 는 평균 목표 전도도를 0.2^-1.5 = 11.2 로 고정하므로 유량 크기와 무관하게 정맥이 생긴다. 무노화 대조에서 유량 중앙값이 0.0002 인데도 Cmax 1688, 공통 평가 세 기준 통과(분기점 10)였다. 기계 판정 통과는 변별력이 약하다.",
+  "두께 기준 항복과 관 부피항(β√C, 상한 0.5)의 조합은 정맥 셀의 쉬는 두께를 최대 1.5까지 올려 항복 문턱 1.05를 넘기 쉽게 한다. 무노화 대조에서 최대 두께 1.22~1.27 에 굵은 정맥이 끄는 손가락이 계속 자랐다. 정맥 끝이 전진하는 경로가 규칙에 들어 있다는 해석이며 대조 1회에 근거한다.",
+  "기계 판정 통과는 4배 관 렌더에 의존한다. 네이티브 격자는 세 임계값 모두 분기점 1로 불통과다(담당자도 밝힘). 폭 위계는 렌더 규칙(폭 ∝ C^(1/4))을 거친 값이고 세기비는 1.75~2.77 로 기준 3 미만이다.",
+  "스냅샷의 갈색 영역은 몸이 아니라 마른 점액 흔적이다. 젖은 셀은 색칠된 영역의 39~42% 이고, 흔적 위에 1셀짜리 젖은 방울과 끊긴 정맥이 흩어져 있다(성분 149~187개, 최대 성분 밖 부피 약 4~5%).",
+  "GPU 실현성은 입증되지 않았다. Jacobi 40회의 유량은 같은 상태의 직접 풀이와 L2 기준 34~52%(상위 1% 간선 23~45%) 달랐다. 저반복 대조가 없어 전역 풀이가 필요한지도 검증되지 않았다. 스텝당 49패스 추정은 코드 구성과 맞지만 N=192 기준이고 프레임 예산 60의 대부분을 쓴다. 정맥 폭 1셀에 전도도 대비 C/D0 최대 약 700 은 배경 점검에서 멀티그리드가 발산한 조건에 해당하며 시험되지 않았다.",
+  "코드상 모든 셀의 쉬는 두께가 나이와 함께 0으로 가므로 몸은 계속 새 땅으로 나가야 하고 점액은 사라지지 않는다(slime_tau=1e9). 막혔을 때나 토러스에서 장시간 돌렸을 때의 거동은 담당자도 나도 확인하지 못했다.",
+  "맥동(균일 위상 1회에서 편극 소실), 먹이 점원, 먹이 사이 관 연결, 750² 이상 스케일은 시험되지 않았다. 재현 목표 (3), (5) 는 미충족이다.",
+  "담당자의 REPORT.md 가 없어 results.tsv, e7.py 머리말, result.json 으로만 검증했다. 보고된 식과 코드는 일치했고 h3_base_s1 과 e2 가 수치상 같다는 서술도 표에서 확인했다."
+ ],
+ "summary": "담당자의 partial 판정은 유지된다. 저장 배열 재채점은 보고와 일치했다(f1_s2 4배 렌더, vein-rel 0.2/0.35/0.5 에서 분기점 177/137/53, 고리 65/41/8, 모두 통과. 네이티브 격자는 분기점 1로 불통과). 질량 오차는 매 스텝 기준 최대 3.4e-16, 음수 두께 없음.\n\n무구배 조건을 새 시드 4·5로 돌리니 둘 다 전진면 3~4개로 갈라졌다(이동 28.7, 24.3셀). 단일 부채 이주는 5개 시드 중 1개뿐이고, 그것도 앞/뒤 폭비 1.02의 띠 모양이다. 구배 실행(재실행 안 함)의 전진면은 ±1셀로 곧은 격자 정렬 직선이다. 스냅샷의 갈색은 마른 점액 흔적이고 젖은 몸은 색칠 영역의 39~42%다.\n\n정맥 전도도는 전진면 10~30셀 뒤에서 최대이고 꼬리는 반지름 환산 0.4~0.8배다. 나이 수축 규칙은 33회 전 실행에 켜져 있었고 대조가 없었다. 꺼 보니(t=200) 이동 5.7셀(기준 26.4셀)에 마름·흔적이 없어, 이주는 이 규칙이 만든다. Jacobi 40회의 유량은 직접 풀이와 34~52% 달랐고, 750² 실현성과 전역 풀이 필요성은 입증되지 않았다."
+}

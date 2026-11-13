@@ -1,0 +1,42 @@
+[
+[
+"g_r010_f100_prot_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 12,
+"r": 0.1,
+"seed": 1
+}
+],
+[
+"g_r030_f100_prot_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 12,
+"r": 0.3,
+"seed": 1
+}
+],
+[
+"g_r030_f050_prot_s1",
+{
+"f_ac": 0.5,
+"ac": "plane",
+"rot_turns": 12,
+"r": 0.3,
+"seed": 1
+}
+],
+[
+"g_r100_f100_prot_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 12,
+"r": 1.0,
+"seed": 1
+}
+]
+]

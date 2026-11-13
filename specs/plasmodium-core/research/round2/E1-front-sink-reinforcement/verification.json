@@ -1,0 +1,317 @@
+{
+ "claim_refuted": false,
+ "corrected_verdict": "partial",
+ "branched_network_seen": true,
+ "hierarchy_seen": true,
+ "fan_front_seen": false,
+ "emergent_not_handplaced": true,
+ "lattice_artifact_suspected": false,
+ "reproduced": "yes",
+ "realism_score_0_10": 4,
+ "independent_metrics": {
+  "eval_morph_recheck_f_N384_s1_render": {
+   "rel_0.2": {
+    "branch_points": 457,
+    "loops": 19,
+    "vein_area_frac": 0.1465,
+    "width_ratio_p90_p10": 2.83,
+    "strength_ratio_p90_p10": 3.3,
+    "all_three": true
+   },
+   "rel_0.35": {
+    "branch_points": 326,
+    "loops": 17,
+    "vein_area_frac": 0.1205,
+    "width_ratio_p90_p10": 2.12,
+    "strength_ratio_p90_p10": 2.45,
+    "all_three": true
+   },
+   "rel_0.5": {
+    "branch_points": 260,
+    "loops": 15,
+    "vein_area_frac": 0.0848,
+    "width_ratio_p90_p10": 2.24,
+    "strength_ratio_p90_p10": 1.86,
+    "all_three": true
+   },
+   "body_circularity": 0.599,
+   "body_solidity": 0.984
+  },
+  "eval_morph_f_N384_s1_native_fields": {
+   "conductance_node_field_rel_0.35": {
+    "branch_points": 0,
+    "vein_area_frac": 0.0008,
+    "all_three": false
+   },
+   "flux_node_field_rel_0.35": {
+    "branch_points": 0,
+    "vein_area_frac": 0.0011,
+    "all_three": false
+   },
+   "note": "C가 4자릿수 이상에 걸쳐 있어 p99 상대 임계값이 줄기 몇 개만 남긴다"
+  },
+  "independent_graph_f_N384_s1": {
+   "kirchhoff_rel_resid": 1.7e-07,
+   "resolve_flux_rel_L2_diff_on_veins": 0.0031,
+   "steady_log10_C_over_Qgamma_p5_p50_p95": [
+    -0.165,
+    -0.013,
+    0.087
+   ],
+   "thr2": {
+    "branch_nodes": 286,
+    "tips": 329,
+    "loops": 4,
+    "strahler_max": 7,
+    "horton_RB": 2.6,
+    "Q_ratio_p90_p10": 39.8,
+    "r_ratio_p90_p10": 4.03,
+    "deg3_frac": 0.958
+   },
+   "thr8": {
+    "branch_nodes": 90,
+    "tips": 97,
+    "loops": 0,
+    "strahler_max": 5,
+    "horton_RB": 3.11,
+    "Q_ratio_p90_p10": 12.2,
+    "r_ratio_p90_p10": 2.57
+   },
+   "thr16": {
+    "branch_nodes": 44,
+    "loops": 0,
+    "r_ratio_p90_p10": 2.12
+   },
+   "n80_at_0.1_0.3_0.5_0.7_0.9_0.97R": [
+    5,
+    8,
+    10,
+    16,
+    47,
+    224
+   ],
+   "matches_analyze_py": true
+  },
+  "rerun_v_N384_s7": {
+   "seed": 7,
+   "runtime_s": 254.7,
+   "eval_render": {
+    "rel_0.2": {
+     "branch_points": 482,
+     "loops": 25,
+     "width_ratio_p90_p10": 2.83,
+     "all_three": true
+    },
+    "rel_0.35": {
+     "branch_points": 336,
+     "loops": 18,
+     "width_ratio_p90_p10": 2.13,
+     "all_three": true
+    },
+    "rel_0.5": {
+     "branch_points": 272,
+     "loops": 18,
+     "width_ratio_p90_p10": 1.94,
+     "strength_ratio_p90_p10": 1.85,
+     "all_three": false
+    }
+   },
+   "graph_thr2": {
+    "branch_nodes": 273,
+    "tips": 301,
+    "loops": 3,
+    "strahler_max": 6,
+    "horton_RB": 2.7,
+    "r_ratio_p90_p10": 3.79
+   },
+   "graph_thr8": {
+    "branch_nodes": 85,
+    "loops": 0,
+    "strahler_max": 5,
+    "r_ratio_p90_p10": 2.68
+   },
+   "n80_at_0.1_0.3_0.5_0.7_0.9R": [
+    5,
+    6,
+    11,
+    18,
+    53
+   ],
+   "kirchhoff_rel_resid_in_run": 1e-11
+  },
+  "rerun_v_td_tail_s5_moving_teardrop": {
+   "seed": 5,
+   "runtime_s": 33.6,
+   "graph_thr2": {
+    "branch_nodes": 17,
+    "tips": 20,
+    "loops": 0,
+    "strahler_max": 3
+   },
+   "graph_thr8": {
+    "branch_nodes": 4,
+    "strahler_max": 2
+   },
+   "eval_render_rel_0.2_0.35_0.5_all_three": [
+    true,
+    true,
+    false
+   ],
+   "lab_frame_vein_jaccard_consecutive_snapshots": [
+    0.53,
+    0.38,
+    0.5,
+    0.43,
+    0.38,
+    0.47,
+    0.55
+   ]
+  },
+  "other_runs_graph_branch_nodes_thr2_thr8": {
+   "e_base_s1": [
+    98,
+    30
+   ],
+   "e_base_s2": [
+    90,
+    27
+   ],
+   "e_base_s3": [
+    87,
+    25
+   ],
+   "e_base_s4": [
+    100,
+    27
+   ],
+   "e_hex_n5": [
+    84,
+    22
+   ],
+   "e_sq4_n5": [
+    70,
+    15
+   ],
+   "e_sq8j_n5": [
+    97,
+    26
+   ],
+   "e_g100_loops_thr2": 46,
+   "e_g110_loops_thr2": 6,
+   "e_g120_loops_thr2": 3,
+   "e_src_body": {
+    "branch": [
+     45,
+     0
+    ],
+    "largest_component_frac": 0.08,
+    "strahler_max": 3
+   },
+   "e_src_ring": {
+    "branch": [
+     125,
+     10
+    ],
+    "largest_component_frac": 0.1,
+    "strahler_max": 3
+   },
+   "g_tr_rear_s1": {
+    "branch": [
+     15,
+     0
+    ],
+    "strahler_max": 2
+   },
+   "g_td_rear_s1": {
+    "branch": [
+     17,
+     2
+    ],
+    "strahler_max": 3
+   },
+   "g_td_tail_s1": {
+    "branch": [
+     20,
+     5
+    ],
+    "strahler_max": 5
+   },
+   "base_seeds_r_ratio_thr8": [
+    1.86,
+    1.99,
+    1.86,
+    2.01
+   ]
+  },
+  "lattice_locking_frac_of_vein_chord_length_within_7.5deg_of_lattice_dirs": {
+   "isotropic_expectation": 0.333,
+   "f_N384_s1_sigma0.5": [
+    0.4,
+    0.46
+   ],
+   "v_N384_s7_sigma0.5": [
+    0.27,
+    0.3
+   ],
+   "N128_base_seeds_sigma0.5": [
+    0.24,
+    0.37
+   ],
+   "e_sig000_no_edge_noise": 0.61,
+   "e_sym_no_noise": 0.84
+  },
+  "persistence": {
+   "f_N384_s1_n80_at_fixed_radius_30_over_snapshots": [
+    17,
+    8,
+    6,
+    6
+   ],
+   "f_N384_s1_inner_veins_kept_frac_snap1_2_3_to_4": [
+    0.45,
+    0.58,
+    0.74
+   ],
+   "h_hold_jaccard_t103.6_to_129.5": 0.976,
+   "h_hold_jaccard_t129.5_to_155.5": 1
+  },
+  "jacobi_cold_start_on_saved_final_state_flux_rel_L2_err": {
+   "N128_e_base_s1": {
+    "60_sweeps": 0.823,
+    "600_sweeps": 0.386,
+    "3000_sweeps": 0.037,
+    "edge_weight_max_over_min": 54000000
+   },
+   "N384_f_N384_s1": {
+    "60_sweeps": 0.934,
+    "600_sweeps": 0.814,
+    "3000_sweeps": 0.561,
+    "edge_weight_max_over_min": 430000000
+   },
+   "runs_with_iterative_solver_in_experiment": 0,
+   "warm_start_per_frame": "측정하지 않음"
+  },
+  "images_viewed": 5,
+  "files": {
+   "checkpoint_log": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/verify/REPORT.md",
+   "independent_graph_script": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/verify/vgraph.py",
+   "simulator_copy": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/verify/e1_verify.py",
+   "rerun_growth": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/verify/runs/v_N384_s7",
+   "rerun_moving": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E1-front-sink-reinforcement/verify/runs/v_td_tail_s5"
+  }
+ },
+ "issues": [
+  "점 소스 조건이 결론을 크게 좁힌다. 나무는 소스가 중심 2셀 원판이나 꼬리 점일 때만 생긴다. 몸 전체 소스(e_src_body)는 최대 연결 성분 8%, Strahler 3, thr 8 분기 0개이고, 고리 소스(e_src_ring)는 최대 성분 10%, 뒤쪽 경계 소스 이동 원반(g_tr_rear_s1)은 thr 8 분기 0개의 평행 수로다.",
+  "이동 몸에서 부피 보존에 맞는 소스는 물러나는 뒤쪽 경계인데, 그 경우 나무가 나오지 않는다. 꼬리 점 소스는 뒤쪽이 빠지는 부피를 계산에 넣지 않고 한 점에서 부피를 만들어 내므로 가설의 '몸 뒤쪽이 소스'와 요구 특징 (4)에 맞지 않는다. 확인된 결과는 사실상 '고정된 한 점에서 바깥으로 자라는 군체'에 한정된다.",
+  "몸 윤곽, 전진 속도, 전진면 거칠기는 모두 미리 준 것이다. 싱크 유량은 전진 속도에 결합되어 있지 않다. 부채꼴 전진면은 없고, 전진면 근처에는 유량이 퍼져 있는 약 5셀 띠만 있다(0.97R에서 유량 80%를 224개 간선이 나름).",
+  "고리가 없다. 그래프 기준 thr 4 이상에서 고리 0개다. 렌더 채점의 loops 15~25는 굵게 그린 선이 서로 붙어 생긴 것이다.",
+  "공통 채점은 렌더에 의존한다. 렌더 분기점 수는 그래프 분기 노드의 약 3배(326 대 90~146)이고, native 노드장으로 채점하면 분기점 0이다. 모델 안의 정맥은 전부 1셀 폭이며 굵기는 r=C^(1/4)라는 해석으로만 생긴다. 다만 유량 위계 자체(Strahler 5~7, Horton 2.6~3.1, 유량 p90/p10 12~40)는 렌더와 무관하게 있다.",
+  "굵기 위계 기준은 경계선이다. 새 시드 재실행은 rel 0.5에서 폭 비 1.94로 기준 미달이고, N=128 기본 시드 4개는 thr 8 그래프 반지름 비가 1.86~2.01이다.",
+  "등방성은 정적 간선 잡음(σ≥0.25)이 만든다. 잡음이 없으면 격자 8방향에 잠긴 눈꽃이 된다(정맥 현 길이 중 격자 방향 ±7.5° 안의 비율 0.61~0.84, 등방 기대값 0.333). σ=0.5에서는 0.27~0.46으로 약하고 시드마다 부호가 달라 잠김으로 보기 어렵다.",
+  "GPU 실현성은 검증되지 않았다. 희소 직접 풀이만 썼고 반복 풀이로 돌린 실행은 0건이다. '풀스크린 12패스'는 측정 없는 추정이다. 최종 상태의 간선 가중치 대비는 5e7(N=128)~4e8(N=384)이고 정맥 폭이 1셀이라 문헌 노트의 멀티그리드 발산 조건에 해당한다. 저장 상태에서 잰 Jacobi 콜드 스타트 유량 오차는 N=128에서 60회 82%, 3000회 3.7%, N=384에서 3000회 56%다. 프레임당 웜스타트 성능은 담당자도 나도 재지 않았다.",
+  "이동 몸의 나무는 작다. 몸 폭 50셀에서 thr 2 분기 17~21개, thr 8 분기 4~5개다. 정맥이 기질에 고정되어 있어 연속 스냅샷 사이 정맥 Jaccard가 0.38~0.55다.",
+  "성장이 멈추면 나무가 완전히 얼어붙는다(h_hold Jaccard 1.000). 맥동이나 지속적인 재편은 없다. C는 몸 크기와 함께 계속 커진다(N=384에서 Cmax 7e3~1.4e4).",
+  "확인하지 못한 것: γ, rate, D0, 누설, 측방 확산 스윕 전체(일부 실행만 그래프로 확인), v/(rate·R)≤0.07 조건, 멀티그리드 동작. 담당자가 보고한 실행 75개를 모두 점검하지는 않았다."
+ ],
+ "summary": "담당자의 partial 판정은 지지된다. 저장 파일 재채점은 보고치와 일치했다(f_N384_s1 렌더, rel 0.2/0.35/0.5: 분기점 457/326/260, 폭 비 2.83/2.12/2.24). analyze.py와 따로 짠 그래프 지표도 일치했고(thr 2: 분기 286, 고리 4, Strahler 7, Horton 2.6), 간선 잡음을 재생성해 압력을 다시 풀면 유량 차이는 0.3%다. 새 시드 7로 N=384를 다시 돌려 같은 나무를 얻었다(분기 273, 고리 3, Strahler 6). 다만 rel 0.5에서는 폭 비 1.94로 위계 기준에 못 미쳤다. 위계는 렌더가 부풀린 것이 아니다. 유량 p90/p10은 12~40, r=C^(1/4) 비는 2.1~4.0이다. 렌더가 부풀린 것은 분기점 수(약 3배)와 고리(17개, 그래프로는 0~4개)다. 결론의 범위는 좁다. 나무는 소스가 점일 때만 생긴다. 부피 보존에 맞는 뒤쪽 경계 소스나 몸 전체 소스에서는 평행 수로나 줄기 없는 조각이 된다. 이동 몸의 나무는 작고(분기 17~21) 꼬리 점 소스에 의존한다. 몸 윤곽은 미리 준 것이라 부채꼴 전진면은 없고 고리도 없다. 등방성은 정적 간선 잡음이 만든다(잡음이 없으면 8방향 눈꽃). GPU 12패스는 측정 없는 추정이고 반복 풀이 실행은 없다. 최종 상태의 가중치 대비는 5e7~4e8이며, Jacobi 콜드 스타트는 N=384에서 3000회 뒤에도 유량 오차가 56%다."
+}

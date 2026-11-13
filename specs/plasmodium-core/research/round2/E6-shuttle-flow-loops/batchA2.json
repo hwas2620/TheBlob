@@ -1,0 +1,61 @@
+[
+[
+"a_plane_wob20_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"wobble_deg": 20,
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"a_plane_wob45_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"wobble_deg": 45,
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"a_plane_wob90_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"wobble_deg": 90,
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"a_radial_orbit12_s1",
+{
+"f_ac": 1.0,
+"ac": "radial",
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"a_radial_wob45_s1",
+{
+"f_ac": 1.0,
+"ac": "radial",
+"wobble_deg": 45,
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"a_radial_wob90_s1",
+{
+"f_ac": 1.0,
+"ac": "radial",
+"wobble_deg": 90,
+"rot_turns": 12,
+"seed": 1
+}
+]
+]

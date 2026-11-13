@@ -1,0 +1,524 @@
+{
+ "rep_s1": {
+  "holes": [
+   {
+    "q": 0.001,
+    "n_edges": 1900,
+    "frac_edges": 0.0472,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 12,
+    "holes_ge9": 12,
+    "holes_ge25": 12,
+    "holes_ge100": 10,
+    "hole_area_med_rear_half": 1014.1,
+    "hole_area_med_front_half": 208.9
+   },
+   {
+    "q": 0.01,
+    "n_edges": 981,
+    "frac_edges": 0.0244,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 7,
+    "holes_ge9": 7,
+    "holes_ge25": 7,
+    "holes_ge100": 6,
+    "hole_area_med_rear_half": 1085.3,
+    "hole_area_med_front_half": 606.3
+   },
+   {
+    "q": 0.03,
+    "n_edges": 759,
+    "frac_edges": 0.0188,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 6,
+    "holes_ge9": 6,
+    "holes_ge25": 6,
+    "holes_ge100": 5,
+    "hole_area_med_rear_half": 992.7,
+    "hole_area_med_front_half": 740.3
+   },
+   {
+    "q": 0.1,
+    "n_edges": 387,
+    "frac_edges": 0.0096,
+    "largest_comp_frac": 0.918,
+    "cyclomatic_2core": 1,
+    "holes_ge9": 1,
+    "holes_ge25": 1,
+    "holes_ge100": 0
+   }
+  ],
+  "taper": {
+   "q": 0.01,
+   "spearman_width_vs_dist": -0.417,
+   "medw_rear_mid_front": [
+    2.09,
+    1.82,
+    1.59
+   ],
+   "p90w_rear_mid_front": [
+    4.09,
+    2.8,
+    2.23
+   ],
+   "Cmax": 304.0,
+   "C_p999": 147.4,
+   "C_p50": 0.000277563463896513
+  },
+  "lattice": {
+   "q": 0.03,
+   "strong_len": 909.4,
+   "len_share_in_runs_ge6": 0.044,
+   "len_share_in_runs_ge10": 0.0,
+   "max_run_edges": 8,
+   "axis_len_share": 0.435,
+   "orient_within7p5deg_of_lattice": 0.418,
+   "uniform_expect": 0.333,
+   "n_px": 5358
+  }
+ },
+ "rep_s2": {
+  "holes": [
+   {
+    "q": 0.001,
+    "n_edges": 1937,
+    "frac_edges": 0.048,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 11,
+    "holes_ge9": 11,
+    "holes_ge25": 10,
+    "holes_ge100": 10,
+    "hole_area_med_rear_half": 877.8,
+    "hole_area_med_front_half": 198.3
+   },
+   {
+    "q": 0.01,
+    "n_edges": 970,
+    "frac_edges": 0.0241,
+    "largest_comp_frac": 0.995,
+    "cyclomatic_2core": 3,
+    "holes_ge9": 3,
+    "holes_ge25": 3,
+    "holes_ge100": 3
+   },
+   {
+    "q": 0.03,
+    "n_edges": 724,
+    "frac_edges": 0.018,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 2,
+    "holes_ge9": 2,
+    "holes_ge25": 2,
+    "holes_ge100": 2
+   },
+   {
+    "q": 0.1,
+    "n_edges": 448,
+    "frac_edges": 0.0111,
+    "largest_comp_frac": 0.738,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   }
+  ],
+  "taper": {
+   "q": 0.01,
+   "spearman_width_vs_dist": -0.519,
+   "medw_rear_mid_front": [
+    2.33,
+    1.89,
+    1.52
+   ],
+   "p90w_rear_mid_front": [
+    3.51,
+    2.97,
+    2.01
+   ],
+   "Cmax": 274.8,
+   "C_p999": 141.4,
+   "C_p50": 0.00027042836882174015
+  },
+  "lattice": {
+   "q": 0.03,
+   "strong_len": 864.4,
+   "len_share_in_runs_ge6": 0.06,
+   "len_share_in_runs_ge10": 0.0,
+   "max_run_edges": 7,
+   "axis_len_share": 0.445,
+   "orient_within7p5deg_of_lattice": 0.444,
+   "uniform_expect": 0.333,
+   "n_px": 5626
+  }
+ },
+ "my_s3": {
+  "holes": [
+   {
+    "q": 0.001,
+    "n_edges": 1793,
+    "frac_edges": 0.0445,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 9,
+    "holes_ge9": 9,
+    "holes_ge25": 9,
+    "holes_ge100": 9,
+    "hole_area_med_rear_half": 416.2,
+    "hole_area_med_front_half": 694.5
+   },
+   {
+    "q": 0.01,
+    "n_edges": 874,
+    "frac_edges": 0.0217,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 1,
+    "holes_ge9": 1,
+    "holes_ge25": 1,
+    "holes_ge100": 1
+   },
+   {
+    "q": 0.03,
+    "n_edges": 620,
+    "frac_edges": 0.0154,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 1,
+    "holes_ge9": 1,
+    "holes_ge25": 1,
+    "holes_ge100": 1
+   },
+   {
+    "q": 0.1,
+    "n_edges": 379,
+    "frac_edges": 0.0094,
+    "largest_comp_frac": 0.961,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   }
+  ],
+  "taper": {
+   "q": 0.01,
+   "spearman_width_vs_dist": -0.405,
+   "medw_rear_mid_front": [
+    2.34,
+    2.06,
+    1.71
+   ],
+   "p90w_rear_mid_front": [
+    3.75,
+    3.19,
+    2.27
+   ],
+   "Cmax": 355.6,
+   "C_p999": 197.9,
+   "C_p50": 0.00027494299865793437
+  },
+  "lattice": {
+   "q": 0.03,
+   "strong_len": 741.8,
+   "len_share_in_runs_ge6": 0.05,
+   "len_share_in_runs_ge10": 0.0,
+   "max_run_edges": 9,
+   "axis_len_share": 0.439,
+   "orient_within7p5deg_of_lattice": 0.352,
+   "uniform_expect": 0.333,
+   "n_px": 4428
+  }
+ },
+ "my_s3_sig0": {
+  "holes": [
+   {
+    "q": 0.001,
+    "n_edges": 1728,
+    "frac_edges": 0.0429,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 7,
+    "holes_ge9": 7,
+    "holes_ge25": 7,
+    "holes_ge100": 7,
+    "hole_area_med_rear_half": 1288.7,
+    "hole_area_med_front_half": 234.9
+   },
+   {
+    "q": 0.01,
+    "n_edges": 853,
+    "frac_edges": 0.0212,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 1,
+    "holes_ge9": 1,
+    "holes_ge25": 1,
+    "holes_ge100": 1
+   },
+   {
+    "q": 0.03,
+    "n_edges": 658,
+    "frac_edges": 0.0163,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   },
+   {
+    "q": 0.1,
+    "n_edges": 382,
+    "frac_edges": 0.0095,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   }
+  ],
+  "taper": {
+   "q": 0.01,
+   "spearman_width_vs_dist": -0.586,
+   "medw_rear_mid_front": [
+    2.48,
+    2.02,
+    1.67
+   ],
+   "p90w_rear_mid_front": [
+    3.63,
+    2.45,
+    2.04
+   ],
+   "Cmax": 174.0,
+   "C_p999": 173.3,
+   "C_p50": 0.00041787399095483124
+  },
+  "lattice": {
+   "q": 0.03,
+   "strong_len": 756.6,
+   "len_share_in_runs_ge6": 0.559,
+   "len_share_in_runs_ge10": 0.397,
+   "max_run_edges": 54,
+   "axis_len_share": 0.555,
+   "orient_within7p5deg_of_lattice": 0.377,
+   "uniform_expect": 0.333,
+   "n_px": 5612
+  }
+ },
+ "dc_fan": {
+  "holes": [
+   {
+    "q": 0.001,
+    "n_edges": 1026,
+    "frac_edges": 0.0255,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   },
+   {
+    "q": 0.01,
+    "n_edges": 865,
+    "frac_edges": 0.0215,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   },
+   {
+    "q": 0.03,
+    "n_edges": 731,
+    "frac_edges": 0.0182,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   },
+   {
+    "q": 0.1,
+    "n_edges": 529,
+    "frac_edges": 0.0131,
+    "largest_comp_frac": 0.595,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   }
+  ],
+  "taper": {
+   "q": 0.01,
+   "spearman_width_vs_dist": -0.832,
+   "medw_rear_mid_front": [
+    3.45,
+    2.57,
+    1.71
+   ],
+   "p90w_rear_mid_front": [
+    3.94,
+    3.48,
+    2.35
+   ],
+   "Cmax": 350.6,
+   "C_p999": 239.9,
+   "C_p50": 8.886611794878263e-06
+  },
+  "lattice": {
+   "q": 0.03,
+   "strong_len": 873.1,
+   "len_share_in_runs_ge6": 0.066,
+   "len_share_in_runs_ge10": 0.0,
+   "max_run_edges": 9,
+   "axis_len_share": 0.444,
+   "orient_within7p5deg_of_lattice": 0.318,
+   "uniform_expect": 0.333,
+   "n_px": 5660
+  }
+ },
+ "ac_fan_f097": {
+  "holes": [
+   {
+    "q": 0.001,
+    "n_edges": 2332,
+    "frac_edges": 0.0579,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 14,
+    "holes_ge9": 14,
+    "holes_ge25": 14,
+    "holes_ge100": 13,
+    "hole_area_med_rear_half": 554.4,
+    "hole_area_med_front_half": 434.6
+   },
+   {
+    "q": 0.01,
+    "n_edges": 1086,
+    "frac_edges": 0.027,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 6,
+    "holes_ge9": 6,
+    "holes_ge25": 6,
+    "holes_ge100": 6,
+    "hole_area_med_rear_half": 554.4,
+    "hole_area_med_front_half": 678.3
+   },
+   {
+    "q": 0.03,
+    "n_edges": 755,
+    "frac_edges": 0.0187,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 4,
+    "holes_ge9": 4,
+    "holes_ge25": 4,
+    "holes_ge100": 4,
+    "hole_area_med_rear_half": 357.4,
+    "hole_area_med_front_half": 786.2
+   },
+   {
+    "q": 0.1,
+    "n_edges": 442,
+    "frac_edges": 0.011,
+    "largest_comp_frac": 1.0,
+    "cyclomatic_2core": 2,
+    "holes_ge9": 2,
+    "holes_ge25": 2,
+    "holes_ge100": 2
+   }
+  ],
+  "taper": {
+   "q": 0.01,
+   "spearman_width_vs_dist": -0.173,
+   "medw_rear_mid_front": [
+    1.8,
+    1.85,
+    1.5
+   ],
+   "p90w_rear_mid_front": [
+    2.98,
+    3.3,
+    2.58
+   ],
+   "Cmax": 168.3,
+   "C_p999": 135.5,
+   "C_p50": 0.0002603986067697406
+  },
+  "lattice": {
+   "q": 0.03,
+   "strong_len": 905.8,
+   "len_share_in_runs_ge6": 0.019,
+   "len_share_in_runs_ge10": 0.012,
+   "max_run_edges": 11,
+   "axis_len_share": 0.432,
+   "orient_within7p5deg_of_lattice": 0.334,
+   "uniform_expect": 0.333,
+   "n_px": 3841
+  }
+ },
+ "ac_fan_radial_fixed": {
+  "holes": [
+   {
+    "q": 0.001,
+    "n_edges": 3641,
+    "frac_edges": 0.0904,
+    "largest_comp_frac": 0.194,
+    "cyclomatic_2core": 2,
+    "holes_ge9": 2,
+    "holes_ge25": 2,
+    "holes_ge100": 1
+   },
+   {
+    "q": 0.01,
+    "n_edges": 1538,
+    "frac_edges": 0.0382,
+    "largest_comp_frac": 0.196,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   },
+   {
+    "q": 0.03,
+    "n_edges": 1065,
+    "frac_edges": 0.0264,
+    "largest_comp_frac": 0.206,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   },
+   {
+    "q": 0.1,
+    "n_edges": 793,
+    "frac_edges": 0.0197,
+    "largest_comp_frac": 0.182,
+    "cyclomatic_2core": 0,
+    "holes_ge9": 0,
+    "holes_ge25": 0,
+    "holes_ge100": 0
+   }
+  ],
+  "taper": {
+   "q": 0.01,
+   "spearman_width_vs_dist": -0.114,
+   "medw_rear_mid_front": [
+    1.44,
+    2.0,
+    1.25
+   ],
+   "p90w_rear_mid_front": [
+    2.27,
+    2.43,
+    2.07
+   ],
+   "Cmax": 57.7,
+   "C_p999": 40.2,
+   "C_p50": 0.00024269991263281554
+  },
+  "lattice": {
+   "q": 0.03,
+   "strong_len": 1278.3,
+   "len_share_in_runs_ge6": 0.037,
+   "len_share_in_runs_ge10": 0.0,
+   "max_run_edges": 8,
+   "axis_len_share": 0.43,
+   "orient_within7p5deg_of_lattice": 0.419,
+   "uniform_expect": 0.333,
+   "n_px": 8871
+  }
+ }
+}

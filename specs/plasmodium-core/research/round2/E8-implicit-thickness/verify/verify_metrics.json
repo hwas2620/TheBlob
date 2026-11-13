@@ -1,0 +1,217 @@
+{
+ "rescored_stored_D3_rendered": {
+  "rel0.2": {
+   "BP": 142,
+   "loops": 65,
+   "vein_area": 0.6405,
+   "largest": 0.993,
+   "all3": false
+  },
+  "rel0.35": {
+   "BP": 111,
+   "loops": 47,
+   "vein_area": 0.4869,
+   "largest": 0.953,
+   "width_ratio": 4.47,
+   "strength_ratio": 2.31,
+   "all3": true
+  },
+  "rel0.5": {
+   "BP": 92,
+   "loops": 39,
+   "vein_area": 0.4157,
+   "largest": 0.964,
+   "all3": true
+  }
+ },
+ "rerun_V1_seed3_LU_rendered": {
+  "rel0.2": {
+   "BP": 147,
+   "loops": 49,
+   "vein_area": 0.654,
+   "largest": 0.992,
+   "all3": false
+  },
+  "rel0.35": {
+   "BP": 104,
+   "loops": 34,
+   "vein_area": 0.4842,
+   "largest": 0.965,
+   "width_ratio": 4.47,
+   "strength_ratio": 2.2,
+   "all3": true
+  },
+  "rel0.5": {
+   "BP": 91,
+   "loops": 33,
+   "vein_area": 0.4213,
+   "largest": 0.959,
+   "all3": true
+  }
+ },
+ "rerun_V1_time_resolved_all3_at_rel0.35": {
+  "80p": true,
+  "160p": true,
+  "240p": true,
+  "320p": true,
+  "400p": true
+ },
+ "rerun_V1_other": {
+  "max_mass_err": 1.09e-15,
+  "body_mass_frac_end": 0.937,
+  "centroid_x_t0_end": [
+   42.2,
+   98.96
+  ],
+  "food_x": 102.4,
+  "h_amp": 0.145,
+  "wave_len_measured_cells": 407,
+  "wave_len_prescribed": 72,
+  "hmax_run_over_hstar": 11.7,
+  "runtime_s": 74.1
+ },
+ "native_cell_scoring_D3 (Ccell^0.25, no rendering)": {
+  "rel0.35": {
+   "BP": 5,
+   "loops": 0,
+   "largest": 0.193,
+   "width_ratio": 1.0,
+   "all3": false
+  }
+ },
+ "edge_graph_torus_aware_C>15": {
+  "D3": {
+   "edges": 650,
+   "largest_edge_frac": 0.892,
+   "cycles": 20,
+   "deg>=3": 102
+  },
+  "V1_seed3": {
+   "edges": 618,
+   "largest_edge_frac": 0.911,
+   "cycles": 17,
+   "deg>=3": 87
+  },
+  "F3": {
+   "edges": 607,
+   "largest_edge_frac": 0.898,
+   "cycles": 15,
+   "deg>=3": 86
+  },
+  "D1_nofood": {
+   "largest_edge_frac": 0.871,
+   "wrap_edges": 19
+  },
+  "D2_nofood": {
+   "largest_edge_frac": 0.93,
+   "wrap_edges": 11
+  }
+ },
+ "conductance_hierarchy_C>15": {
+  "terminal_twig_median_C": [
+   26,
+   30,
+   32
+  ],
+  "non_terminal_median_C": [
+   540,
+   531,
+   578
+  ],
+  "non_terminal_frac_clipped_at_Cmax": [
+   0.39,
+   0.37,
+   0.39
+  ],
+  "spearman_logC_vs_depth_in_body": [
+   0.44,
+   0.51,
+   0.5
+  ],
+  "order": "D3,V1,F3"
+ },
+ "jacobi30_stage2_V2 (same seed as V1, 320 periods)": {
+  "h_min": 0.0,
+  "neg_cellsteps": 0,
+  "hmax_run": 11.9,
+  "Ccell_p99": 76,
+  "Ccell_p99_LU": 1320,
+  "C>100_edges": 69,
+  "C>100_edges_LU": 402,
+  "C>100_axis_frac": 0.0,
+  "C>15_largest_edge_frac": 0.157,
+  "C>15_cycles": 1,
+  "rendered_all3_rel_0.2_0.35_0.5": [
+   false,
+   false,
+   false
+  ],
+  "runtime_s": 105.7
+ },
+ "jacobi_stage1_stored": {
+  "neg_cells": {
+   "jac30_d0400": 59,
+   "jac30_d1600": 67,
+   "jac8_d1600": 100
+  },
+  "neg_cells_that_are_vein_cells": "all",
+  "limiter_in_stage1_code": false
+ },
+ "delta_scaling_test_V3": {
+  "setup": "delta0/R=0.1, C_init=256, Cmin=5.12, Cmax=256000, Q0=0.21702510/256^(2/3)",
+  "compare": "A_d1600 stored C vs V3 C/256",
+  "max_abs_diff_dex": 0.0,
+  "corr": 1.0,
+  "runtime_s": 31.9
+ },
+ "A_d0100_native": {
+  "frac_edges_at_Cmin": ">0.5",
+  "edges_C>15_frac": 0.23,
+  "cycles": 405
+ },
+ "stage2_p_h_consistency": {
+  "D3": {
+   "wet_cells_violating_gt_0.3hstar": 0.124,
+   "mass_share": 0.28,
+   "vein_cells_violating": 0.558
+  },
+  "V1": {
+   "wet_cells_violating_gt_0.3hstar": 0.124,
+   "mass_share": 0.286,
+   "vein_cells_violating": 0.597
+  }
+ },
+ "seam": {
+  "D3_act_cells_col_x0_x127": [
+   0,
+   5
+  ],
+  "V1": [
+   0,
+   3
+  ],
+  "F3": [
+   0,
+   11
+  ],
+  "food_c_at_x127_vs_x0": [
+   0.39,
+   0.0
+  ]
+ },
+ "lattice_orientation_axis_frac_C>15": {
+  "isotropic_expectation": 0.56,
+  "stage1_rot_LU": [
+   0.378,
+   0.388
+  ],
+  "D3": 0.44,
+  "V2_jacobi": 0.22,
+  "het0": 0.7
+ },
+ "compute": {
+  "runs": 3,
+  "total_s": 211.7,
+  "images_viewed": 4
+ }
+}

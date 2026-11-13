@@ -1,0 +1,22 @@
+[
+[
+"g_r001_f100_prot_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 12,
+"r": 0.01,
+"seed": 1
+}
+],
+[
+"g_r003_f100_prot_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 12,
+"r": 0.03,
+"seed": 1
+}
+]
+]

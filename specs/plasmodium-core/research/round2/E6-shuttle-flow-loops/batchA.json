@@ -1,0 +1,116 @@
+[
+[
+"a_radial_s1",
+{
+"f_ac": 1.0,
+"ac": "radial",
+"seed": 1
+}
+],
+[
+"a_plane_fix_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"seed": 1
+}
+],
+[
+"a_plane_rot3_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 3,
+"seed": 1
+}
+],
+[
+"a_plane_rot12_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"a_plane_rot60_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 60,
+"seed": 1
+}
+],
+[
+"a_radial_s2",
+{
+"f_ac": 1.0,
+"ac": "radial",
+"seed": 2
+}
+],
+[
+"a_plane_fix_s2",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"seed": 2
+}
+],
+[
+"a_plane_rot12_s2",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 2
+}
+],
+[
+"a_radial_center_s1",
+{
+"f_ac": 1.0,
+"ac": "radial",
+"ac_origin": "center",
+"seed": 1
+}
+],
+[
+"a_standing_s1",
+{
+"f_ac": 1.0,
+"ac": "standing",
+"seed": 1
+}
+],
+[
+"a_radial_lam05_s1",
+{
+"f_ac": 1.0,
+"ac": "radial",
+"lam_frac": 0.5,
+"seed": 1
+}
+],
+[
+"a_radial_lam2_s1",
+{
+"f_ac": 1.0,
+"ac": "radial",
+"lam_frac": 2.0,
+"seed": 1
+}
+],
+[
+"a_radial_ema_s1",
+{
+"f_ac": 1.0,
+"ac": "radial",
+"seed": 1,
+"avg": "ema",
+"steps": 300,
+"nsnap": 2
+}
+]
+]
