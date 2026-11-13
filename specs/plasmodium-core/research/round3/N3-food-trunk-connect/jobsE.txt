@@ -1,0 +1,5 @@
+F2_hres4_s2	{"seed": 2, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "h_res": 4.0, "food_r": 5.0}
+F2_hres4_s3	{"seed": 3, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "h_res": 4.0, "food_r": 5.0}
+F2_hres4_bk_s1	{"seed": 1, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "h_res": 4.0, "food_r": 5.0, "bridge_keep": 1}
+F2_hres4_bk_s2	{"seed": 2, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "h_res": 4.0, "food_r": 5.0, "bridge_keep": 1}
+F2_hres4_bk_s3	{"seed": 3, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "h_res": 4.0, "food_r": 5.0, "bridge_keep": 1}

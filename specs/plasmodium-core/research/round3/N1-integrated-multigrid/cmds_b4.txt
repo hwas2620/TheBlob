@@ -1,0 +1,10 @@
+python3 n1.py h_s4_exact '{"seed":4}' > log_h_s4_exact.txt 2>&1
+python3 n1.py h_s5_exact '{"seed":5}' > log_h_s5_exact.txt 2>&1
+python3 n1.py h_s4_mg2 '{"seed":4,"solver":"mg","ncyc":2}' > log_h_s4_mg2.txt 2>&1
+python3 n1.py h_s5_mg2 '{"seed":5,"solver":"mg","ncyc":2}' > log_h_s5_mg2.txt 2>&1
+python3 n1.py h_s4_mg2_b '{"seed":4,"solver":"mg","ncyc":2,"extrap":0.5}' > log_h_s4_mg2_b.txt 2>&1
+python3 n1.py h_s5_mg2_b '{"seed":5,"solver":"mg","ncyc":2,"extrap":0.5}' > log_h_s5_mg2_b.txt 2>&1
+python3 n1.py h_s1_exact_pert '{"seed":1,"perturb":1e-9}' > log_h_s1_exact_pert.txt 2>&1
+python3 n1.py h_s3_exact_pert '{"seed":3,"perturb":1e-9}' > log_h_s3_exact_pert.txt 2>&1
+python3 n1.py g_512_s1_mg2b_f4 '{"seed":1,"N":512,"R_init":32,"T":300,"solver":"mg","ncyc":2,"extrap":0.5,"dtype":"f4","check_every":20}' > log_g_512_s1_mg2b_f4.txt 2>&1
+python3 modes.py runs/d_s1_exact 3500 > log_modes.txt 2>&1; python3 modes.py runs/d_s1_exact 1000 >> log_modes.txt 2>&1; python3 modes.py runs/e_s1_mg1_ck 3500 >> log_modes.txt 2>&1

@@ -1,0 +1,4 @@
+A_osc_pt1_s1	{"seed":1,"T":320,"foods":[[0,60]],"phase_mode":"osc","pulse_tube":1}
+A_osc_pt0_s1	{"seed":1,"T":320,"foods":[[0,60]],"phase_mode":"osc","pulse_tube":0}
+A_uni_pt1_s1	{"seed":1,"T":320,"foods":[[0,60]],"phase_mode":"uniform","pulse_tube":1}
+A_none_s1	{"seed":1,"T":320,"foods":[[0,60]],"phase_mode":"none"}

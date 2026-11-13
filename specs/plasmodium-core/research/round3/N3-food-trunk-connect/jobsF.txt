@@ -1,0 +1,2 @@
+F2_hres4_bk_s1_T720	{"seed": 1, "T": 720, "foods": [[27, 40], [117, 40]], "reservoir": 1, "h_res": 4.0, "food_r": 5.0, "bridge_keep": 1, "nsnap": 6}
+F2_hres4_bk_none_s1	{"seed": 1, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "h_res": 4.0, "food_r": 5.0, "bridge_keep": 1, "phase_mode": "none"}

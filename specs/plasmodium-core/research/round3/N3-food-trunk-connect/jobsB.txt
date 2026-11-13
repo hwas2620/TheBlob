@@ -1,0 +1,9 @@
+B_res_a0_s1	{"seed": 1, "T": 320, "foods": [[0, 45]], "reservoir": 1}
+B_res_a0_s2	{"seed": 2, "T": 320, "foods": [[0, 45]], "reservoir": 1}
+B_res_a0_s3	{"seed": 3, "T": 320, "foods": [[0, 45]], "reservoir": 1}
+B_res_a27_s1	{"seed": 1, "T": 320, "foods": [[27, 45]], "reservoir": 1}
+B_res_a27_s2	{"seed": 2, "T": 320, "foods": [[27, 45]], "reservoir": 1}
+B_res_a27_s3	{"seed": 3, "T": 320, "foods": [[27, 45]], "reservoir": 1}
+B_res_a45_s1	{"seed": 1, "T": 320, "foods": [[45, 45]], "reservoir": 1}
+B_res_a45_s2	{"seed": 2, "T": 320, "foods": [[45, 45]], "reservoir": 1}
+B_res_a45_s3	{"seed": 3, "T": 320, "foods": [[45, 45]], "reservoir": 1}

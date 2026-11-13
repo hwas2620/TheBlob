@@ -1,0 +1,14 @@
+python3 n1.py g_384_s1_exact '{"seed":1,"N":384,"R_init":24}' > log_g_384_s1_exact.txt 2>&1
+FS_EIGS=1.5 FS_TAG=own_ FS_CONFS='[[1.5,1,2,0,1],[1.5,2,2,0,1]]' python3 fsweep.py runs/e_s1_mg1_ck 1000 2000 3000 3500 > log_fsweep_mg1own.txt 2>&1
+python3 n1.py e_s1_exact_limpre '{"seed":1,"limit":1,"limit_reinforce":"pre"}' > log_e_s1_exact_limpre.txt 2>&1
+python3 n1.py f_s1_mg2_b '{"seed":1,"solver":"mg","ncyc":2,"extrap":0.5}' > log_f_s1_mg2_b.txt 2>&1
+python3 n1.py f_s2_mg2_b '{"seed":2,"solver":"mg","ncyc":2,"extrap":0.5}' > log_f_s2_mg2_b.txt 2>&1
+python3 n1.py f_s3_mg2_b '{"seed":3,"solver":"mg","ncyc":2,"extrap":0.5}' > log_f_s3_mg2_b.txt 2>&1
+python3 n1.py g_384_s1_mg2 '{"seed":1,"N":384,"R_init":24,"solver":"mg","ncyc":2,"check_every":20}' > log_g_384_s1_mg2.txt 2>&1
+python3 n1.py f_s1_mg1_c133b '{"seed":1,"solver":"mg","ncyc":1,"mg_scale":1.33,"extrap":0.5}' > log_f_s1_mg1_c133b.txt 2>&1
+python3 n1.py f_s2_mg1_c133b '{"seed":2,"solver":"mg","ncyc":1,"mg_scale":1.33,"extrap":0.5}' > log_f_s2_mg1_c133b.txt 2>&1
+python3 n1.py f_s3_mg1_c133b '{"seed":3,"solver":"mg","ncyc":1,"mg_scale":1.33,"extrap":0.5}' > log_f_s3_mg1_c133b.txt 2>&1
+python3 n1.py g_256_s1_exact '{"seed":1,"N":256,"R_init":16}' > log_g_256_s1_exact.txt 2>&1
+python3 n1.py g_512_s1_mg2 '{"seed":1,"N":512,"R_init":32,"T":300,"solver":"mg","ncyc":2,"check_every":20}' > log_g_512_s1_mg2.txt 2>&1
+python3 n1.py g_256_s1_mg2 '{"seed":1,"N":256,"R_init":16,"solver":"mg","ncyc":2}' > log_g_256_s1_mg2.txt 2>&1
+python3 n1.py g_256_s1_mg1 '{"seed":1,"N":256,"R_init":16,"solver":"mg","ncyc":1}' > log_g_256_s1_mg1.txt 2>&1
