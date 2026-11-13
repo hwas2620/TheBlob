@@ -1,0 +1,153 @@
+{
+ "verdict": "partial",
+ "headline": "E1 정맥 나무는 멀티그리드 V(2,2) 웜스타트(프레임당 풀스크린 8~16회 분량)로 256²·512² 에서 시드 2개씩 유지되지만, 순수 Jacobi 와 저해상도 압력은 실패했다. 예산이 모자라면 형태가 나빠지는 것이 아니라 전도도가 폭주하며, 문헌 노트의 MG 구성(과보정 2)은 실제 나무에서 발산해 과보정 1.5 로 바꿔야 했다.",
+ "model_rules": "모델은 E1 e1.py 의 grow 모드를 그대로 옮김(직접 풀이로 E1 f_N256_s1 을 동일 수치로 재현: 분기점 159, 고리별 정맥 수 6/13/15/42).\n격자 N×N(256, 512), 셀=노드, 간선 4채널 k∈{E(1,0), N(0,1), NE(1,1), SE(1,−1)}, 길이 L=1 또는 √2.\n몸: T(x)=(|x−c|−6+η(x))/v ≤ t 인 셀이 젖음(η=σ 2셀 가우시안 평활 백색잡음, 표준편차 1, v=1). 소스와 연결된 성분만 젖은 것으로 침.\nS: 전진면 셀(마른 8-이웃이 있는 젖은 셀)마다 −1, 중심 반지름 2셀 원판에 균등 +, 합 0.\nw_e=G_e(C_e+r)/L_e, G_e=exp(0.5·N(0,1)) 정적 간선 잡음, r=1e-3. A p=S (A=그래프 라플라시안, D=대각). Q_e=w_e(p_i−p_j).\n적응: C_e←C_e+a(|Q_e|^1.5−C_e), a=rate·dt (0.2 / 0.05 / 0.02), 선택적으로 C≤Ccap. 새 간선 C=1+0.3·U(−1,1). 초기: 반지름 6셀 원반, 정맥을 심지 않음.\n근사 풀이(전 스텝 p 에서 웜스타트, 새 셀은 젖은 이웃 평균):\n- jac: p←p+0.8·D⁻¹(S−Ap), 스텝당 k회.\n- hb(heavy-ball): p⁺=p+ω·D⁻¹(S−Ap)+β(p−p⁻), (β,ω)=(0.97,0.886), k회, 운동량을 스텝 사이에 유지.\n- vpipe: Q_e←Q_e+a(w_eΔp−Q_e); p_i←p_i+b(S_i−div Q)_i/D_i; (a,b)=(0.03,29.5); 적응은 상태 Q 로.\n- gs4: 4색 Gauss–Seidel.\n- mg: 2×2 셀 집합 조대화, 제한=잔차 2×2 합, 보간=nearest 가산, 조대 연산자 W_c=PᵀAP/s. 집합의 왼쪽 아래 셀을 (j,i) 라 하면\n  E_c=(E[j,i+1]+E[j+1,i+1]+NE[j,i+1]+SE[j+1,i+1])/s, N_c=(N[j+1,i]+N[j+1,i+1]+NE[j+1,i]+SE[j+2,i])/s, NE_c=NE[j+1,i+1]/s, SE_c=SE[j,i+1]/s.\n  s=1.5 를 씀(s=2 는 발산, s=1 은 너무 느림). V(ν1,ν2)=V(2,2), 평활=감쇠 Jacobi ω=0.8, 최조 4² 격자에서 Jacobi 20회, 스텝당 ncyc 사이클.\n- pcg: 위 MG(s=1) 전처리 CG, 참고용.\n옵션: solve_every(압력을 m 스텝마다), adapt_every(적응을 m 스텝마다, a_m=1−(1−a)^m), 1/2·1/4 해상도 압력(nearest/bilinear 로 올린 뒤 미세 Jacobi post 회), Dm(같은 방향 간선끼리 측방 확산), float32.\n측정: 순간 유량 오차 ‖Q−Q*‖₂/‖Q*‖₂ (Q*=같은 w,S 의 scipy 희소 직접 풀이), 공통 eval_morph(간선을 지름 0.7·C^¼ 셀 관으로 그린 래스터), 반경 0.25/0.5/0.75/0.9R 고리를 지나는 정맥 수.",
+ "runs_summary": "총 84건(실행 시간 합 44.3분, 프로세스 2개). 시드 1·2.\n정적 시험(256² 실제 나무, 대비 약 1e7, 콜드 스타트): Jacobi 3,000패스 오차 0.33 / 10,000패스 0.038. heavy-ball β=0.97 은 300패스 0.026. MG 과보정 2 발산, 1.5 는 10사이클 0.087, 1.0 은 0.55.\n256²(R=107), E1 스케줄(rate·dt=0.2, 0.2셀/스텝): MG1.5 V(2,2) 1사이클/스텝 유지(시드 2개, 유량 오차 0.19~0.28, 분기점 168/195 대 기준 159/191), float32 동일. heavy-ball β=0.97 60패스 유지(시드 2개, 오차 0.06~0.09). virtual pipe 60패스 유지(시드 2개). 폭주: Jacobi 5/20/60/200패스, 4색 GS, heavy-ball 20패스, β=0.99, MG V(1,1), MG 과보정 1.0·2.0, 1사이클/4스텝.\n느린 적응: Jacobi 60패스는 rate·dt=0.05 에서 폭주, 0.02 에서 유지(오차 0.075). MG 1사이클/4스텝은 적응도 4스텝마다 하면 유지(시드 2개).\n512²(R=215): MG 1사이클/스텝은 끝에서 폭주(Cmax 5e6). 2사이클/스텝 유지(시드 2개, 오차 0.15~0.18). 1사이클 + rate·dt=0.05 유지(시드 2개, 오차 0.05~0.08). 1사이클 + Ccap=3000 유지(시드 2개, 시드2 는 오차 0.35). heavy-ball 60패스는 시드1 유지, 시드2 는 R=201 에서 폭주.\n저해상도 압력 5종: 전부 폭주하거나 망이 조각남(연결 0.19).\n대책: Ccap 은 폭주하던 구성 5건을 모두 살림. 측방 확산 Dm=0.05 와 r=0.03 은 폭주를 막지 못함(안정한 구성의 오차는 줄임: 0.21→0.06, 0.21→0.12).\n도중에 발견한 인공물: 미리 정한 전진면이 소스 없는 젖은 섬을 만들어 반복 풀이를 폭주시킴 → 소스와 연결된 성분만 쓰도록 고치고 영향받은 실행을 다시 돌림.\n운영 메모: 첫 배치는 스레드 과점유로 느려 중단했다. 패턴 pkill 은 권한에서 막혔고(다른 에이전트 프로세스와 겹칠 수 있었음), 내 프로세스만 PID 로 지정해 중단했다.",
+ "best_run_dir": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/runs/e_mg15_c1_dt05_N512_s1",
+ "best_metrics": {
+  "run": "e_mg15_c1_dt05_N512_s1 (512², MG 과보정 1.5 V(2,2) 1사이클/스텝, rate·dt=0.05)",
+  "eval_primary": {
+   "branch_points": 182,
+   "loops": 0,
+   "endpoints": 212,
+   "vein_area_frac": 0.0922,
+   "vein_largest_frac": 1,
+   "width_ratio_p90_p10": 2.12,
+   "strength_ratio_p90_p10": 2.48,
+   "body_circularity": 0.663,
+   "body_solidity": 0.988,
+   "all_three": true
+  },
+  "flux_rel_error_vs_exact": {
+   "mean": 0.076,
+   "late": 0.058,
+   "max": 0.144
+  },
+  "veins_crossing_ring_0.25_0.5_0.75_0.9R": [
+   5,
+   8,
+   18,
+   50
+  ],
+  "Cmax": 14042,
+  "gpu_cost_per_step": {
+   "fine_pass_equivalents": 8.33,
+   "draw_calls": 69,
+   "levels": 8
+  },
+  "seed2_same_config": {
+   "branch_points": 197,
+   "width_ratio_p90_p10": 2.24,
+   "strength_ratio_p90_p10": 2.56,
+   "vein_largest_frac": 1,
+   "flux_err_mean": 0.061,
+   "veins": [
+    5,
+    8,
+    19,
+    47
+   ]
+  },
+  "baseline_exact_256": {
+   "seed1": {
+    "branch_points": 159,
+    "loops": 3,
+    "width_ratio": 2.13,
+    "strength_ratio": 2.26,
+    "veins": [
+     6,
+     13,
+     15,
+     42
+    ]
+   },
+   "seed2": {
+    "branch_points": 191,
+    "loops": 9,
+    "width_ratio": 2.03,
+    "strength_ratio": 2.4,
+    "veins": [
+     6,
+     10,
+     21,
+     39
+    ]
+   }
+  },
+  "mg_1cycle_256_E1_schedule": {
+   "seed1": {
+    "branch_points": 168,
+    "flux_err_mean": 0.21,
+    "veins": [
+     6,
+     7,
+     18,
+     43
+    ],
+    "IoU_vs_exact": 0.38
+   },
+   "seed2": {
+    "branch_points": 195,
+    "flux_err_mean": 0.19,
+    "veins": [
+     5,
+     8,
+     19,
+     40
+    ],
+    "IoU_vs_exact": 0.33
+   }
+  },
+  "note": "512² 는 같은 시드 직접 풀이 기준선이 없어 분기점 수를 256² 과 직접 비교할 수 없다(렌더 배율 2배)."
+ },
+ "images": [
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/montage/m1_256.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/montage/m2_512.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/montage/m4_512_confirm.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/montage/m3_variants.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/runs/e_mg15_c1_dt05_N512_s1/snapshot_3_t0209.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/runs/b0_exact_s1/snapshot_3_t0101.png"
+ ],
+ "structure_is_emergent": true,
+ "gpu_feasibility": {
+  "global_solve_needed": true,
+  "est_fullscreen_passes_per_step": 10,
+  "notes": "직접 풀이는 필요 없고 프래그먼트 패스만으로 되지만, 압력이 전역 문제의 근사해(순간 유량 오차 약 0.3 이하)여야 한다. 권장 A: 기하 멀티그리드 V(2,2), 조대 연산자 PᵀAP/1.5, nearest 보간, 프레임당 1사이클 웜스타트. 768² 8레벨 기준 드로콜 62 + 조대 연산자 재구성 7 + 모델 패스 2 = 약 71, 채우기 비용은 풀스크린 약 10회 분량(풀이 8.3). 조건: 적응 rate·dt ≤ 0.05/프레임, Ccap 권장. 4프레임마다 사이클 1회 + 그때만 적응하면 프레임 평균 드로콜 약 18(256² 에서만 확인). 권장 B: heavy-ball 또는 virtual pipe 국소 갱신 20~60패스(드로콜 20~60, 풀스크린 20~60회 분량, 셰이더 1개). 256² 에서는 유지되나 512² 에서 시드 1개가 폭주해 Ccap 과 느린 적응이 전제다. 750² 는 돌리지 않았고 두 크기에서 외삽했다: 적응 시간상수당 V-사이클 15~40회가 필요할 것으로 추정. 저해상도 압력은 불가. 몸 경계 상자 scissor 는 채우기 비용만 줄인다(수치 시험 없음). float32 는 256²·512² 3건에서 문제없음. 실제 WebGL2 드로콜 비용은 측정하지 않았다."
+ },
+ "failure_modes": [
+  "전도도 폭주: 압력이 늦게 따라오면 Q=CΔp 가 총전류를 넘고 γ=1.5 강화가 양의 되먹임으로 발산한다. 평균 유량 오차가 약 0.4 를 넘는 구성은 대부분 이렇게 끝났다.",
+  "Jacobi: E1 스케줄에서 스텝당 5/20/60/200패스 모두 폭주(R=27/57/84/98). rate·dt=0.05 의 60패스도 폭주, 0.02 에서만 유지.",
+  "문헌 노트의 MG 구성(조대 전도도 산술평균 = PᵀAP/2): 정적 시험에서 발산, 되먹임에서 R=54 폭주. 순수 Galerkin(PᵀAP)은 R=64 폭주. V(1,1) 은 R=102 폭주.",
+  "MG 1사이클/스텝은 512²(R=215) E1 스케줄에서 끝에 폭주(Cmax 5e6, 줄기 하나가 지그재그 덩어리로 망가짐).",
+  "heavy-ball: β=0.99 는 R=9~54 에서 폭주, β=0.97 20패스는 R=48 폭주, 60패스도 512² 시드2 에서 R=201 폭주.",
+  "저해상도 압력(1/2, 1/4 해상도를 올려 쓰기, 미세 레벨 평활 0+0 / 0+1): R=8~65 에서 폭주하거나 망이 조각남(연결 0.19).",
+  "압력은 4~8스텝마다, 적응은 매 스텝: R=90~100 에서 폭주.",
+  "4색 Gauss–Seidel: 패스 기준 이득 없음, R=68 폭주.",
+  "MG 전처리 CG + 과보정 1.5: 전처리가 부정부호가 되어 200회 반복에서 멈춤.",
+  "측방 확산 Dm=0.05, 배경 전도도 r=0.03: 폭주를 막지 못함(각 2건 중 r=0.03 은 1건만 살림).",
+  "섬 인공물: 소스 없는 젖은 섬의 압력이 표류하다 본체에 붙는 순간 폭주(시험 설정의 인공물, 수정 후 재실행).",
+  "경계 근처 구성(유량 오차 0.25~0.35)은 채점은 통과해도 줄기에 지그재그 인공물과 Cmax 4~6배 초과가 남는다."
+ ],
+ "limitations": [
+  "750² 는 돌리지 않았다. 외삽은 256²·512² 두 크기뿐이라 필요 예산의 R 의존 지수(1~2)를 정하지 못했다.",
+  "512² 는 같은 시드 직접 풀이 기준선이 없다(5분 제한). 순간 유량 오차와 E1 의 스케일 불변 통계로만 판단했다.",
+  "몸은 미리 정한 속도로 자라는 원반이다. 이동하는 몸, 맥동(AC) 소스, 요동 싱크, 고리, 창발 전진면은 시험하지 않았다.",
+  "근사 풀이는 같은 시드에서도 직접 풀이와 다른 정맥을 만든다(정맥 마스크 IoU 0.3~0.46). 유지되는 것은 통계다.",
+  "공통 채점은 E1 의 렌더 규칙(지름 0.7·C^¼ 셀 관, 256² 4배·512² 2배 래스터)에 의존한다. 굵기 위계 기준(wr≥2)은 기준선도 2.0~2.1 로 경계선 통과다.",
+  "Ccap(1000, 3000)과 heavy-ball 계수는 1~3개 값만 시험했다. Ccap 은 줄기 굵기를 깎는다. 시드는 최대 2개.",
+  "Kirchhoff L1 잔차는 유량 L2 오차가 작아도 0.1~0.9 로 크다. 이 유량으로 두께장을 옮길 때의 영향은 보지 않았다.",
+  "numpy/numba float64 스텐실로 GPU 패스를 흉내 냈다(float32 는 3건). 실제 WebGL2 드로콜·FBO 전환 비용은 측정하지 않았다.",
+  "실행 시간 합 44.3분으로 예산 상한(30~40분)을 조금 넘겼다."
+ ],
+ "mass_conserved": "해당 없음 (두께장이 없는 모델. 참고: 근사 풀이의 Kirchhoff L1 잔차 ‖div Q − S‖₁/‖S‖₁ 는 0.1~0.9, 직접 풀이는 1e-11)",
+ "next_steps": [
+  "WebGL2 에서 V(2,2) 1사이클(드로콜 약 70)과 9탭 60패스의 실제 프레임 시간을 먼저 실측해 A/B 중 고른다.",
+  "750²(768²)와 rate·dt=0.01~0.05 에서 MG 1사이클/프레임을 직접 돌려 외삽을 확인한다(직접 풀이 기준선은 체크포인트 분할로).",
+  "이동하는 몸과 맥동 소스에서 MG·heavy-ball 의 추적 오차와 폭주 여부를 본다(E1 의 teardrop 모드 이식).",
+  "Ccap 을 고정값 대신 총전류 기준(예: (I_tot/Q0)^γ)이나 유량 제한으로 바꿔 줄기 굵기를 덜 깎는 안정화를 시험한다.",
+  "heavy-ball β 를 몸 크기에 맞춰 바꾸는 규칙과, 적응을 몇 프레임마다 하는 구성을 512² 이상에서 시드 여러 개로 확인한다.",
+  "S 를 질량 보존 두께 동역학에서 만들 때 성분별 합 0 이 지켜지는지, 안 지켜질 때 약한 누설 항(A+ε)으로 표류를 막을 수 있는지 시험한다."
+ ],
+ "reproduce_command": "cd /tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility && export NUMBA_NUM_THREADS=1 OMP_NUM_THREADS=1 && python3 e9.py e_mg15_c1_dt05_N512_s1 '{\"N\":512,\"seed\":1,\"dt\":0.05,\"solver\":\"mg\",\"mg_scale\":1.5,\"check_every\":696}'   # 약 220초. 256² 최소 예산: python3 e9.py d_mg15_c1_dt20_s1 '{\"N\":256,\"seed\":1,\"dt\":0.2,\"solver\":\"mg\",\"mg_scale\":1.5}' ; 기준선: python3 e9.py b0_exact_s1 '{\"N\":256,\"seed\":1,\"islands\":\"keep\",\"save_edges\":1}' ; 표: python3 summarize.py",
+ "report_path": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E9-solver-feasibility/REPORT.md"
+}
