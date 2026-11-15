@@ -43,12 +43,14 @@ DEF = dict(
     # --- N2 (front isotropy) ---
     wet_rho=0.0, curv='n8', curv_sigma=1.5, curv_ref=0.33, curv_gain=8.0, curv_cap=99.0, stop_touch=0,
     # --- F1 (mass on food) ---
+    dry_weight='equal',          # 'h': redistribute a drying cell's volume to staying neighbours in proportion to their thickness
     neg_diag=0, neg_dry=0,       # neg_dry=1: a cell whose thickness went negative dries at once (ignores grace and bridge_keep); its deficit is taken from the staying neighbours
     wave_lambda=0.0, wave_Trot=80.0,   # prescribed rotating body-scale phase ramp (0 = off)
     food_dw=None,                # per-food angular-frequency offset of the contraction phase on live-food cells (rad per unit time): masses drift in and out of phase
     food_phase=None,             # per-food phase offset of the contraction on live-food cells (diagnostic: forces the food masses out of phase)
     mech_beta=0.0,               # mechanical phase feedback: dtheta/dt += mech_beta * (h - mean rest thickness)/h0 * sin(theta); <0 favours anti-phase between volume-exchanging parts
     solver='exact', ncyc=2, nc=4, extrap=0.5, check_every=0,     # solver='mg': torus multigrid (mgt.py), warm start with time extrapolation
+    res_gate=0.0,                # >0: in ramp mode the factor H grows only where h >= res_gate * (current mean rest thickness)
     res_acc=0, res_tau=30.0,     # 1: rest thickness on food grows by what the cell has eaten (cap h_res); 2: ramps toward h_res with time constant res_tau; 0: jumps to h_res on contact
     limit_net=0,                 # positivity limiter on NET outflow: only cells that would go negative scale down their outgoing edge fluxes
     stiff_h=0.0, stiff_pow=2.0,  # thin cells are stiffer: kappa_i = kappa*max(1,(stiff_h/h_i)^stiff_pow); 0 = off
@@ -239,7 +241,8 @@ def run(name, over):
         # ---- rest thickness ----
         Cn = node_C()
         if P['res_acc'] == 2:      # ramp: on live food the stored-mass factor relaxes toward h_res with time constant res_tau (demand builds gradually, mass is drawn from the body)
-            Hres = Hres + dt * resmask * wet * (P['h_res'] - Hres) / P['res_tau']
+            gate_ = (h >= P['res_gate'] * hbar_prev) if P['res_gate'] > 0 else 1.0     # the stored-mass target grows only while the cell is filled to its current rest thickness (demand follows supply)
+            Hres = Hres + dt * resmask * wet * gate_ * (P['h_res'] - Hres) / P['res_tau']
         Hfac = Hres if P['res_acc'] else (1.0 + (P['h_res'] - 1.0) * resmask)
         hstar = P['h_old'] + (P['h0'] * Hfac - P['h_old']) * np.exp(-sage / P['tau_a'])   # h_res>1: thick reservoir on live food (N3 variant)
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))   # new cell inflates gradually
@@ -370,8 +373,16 @@ def run(name, over):
             Dm &= ns > 0
             stay = wet & ~Dm; ns[:] = 0
             for d in ALL: ns += nb(stay, d)
-            give = np.where(Dm, h / np.maximum(ns, 1), 0.0)
-            for d in ALL: h += np.where(stay, nb(give, d), 0.0)
+            if P['dry_weight'] == 'h':        # share the drying cell's volume (or deficit, if negative) among staying neighbours in proportion to their thickness
+                hpos = np.where(stay, np.maximum(h, 0.0), 0.0); sh = np.zeros((N, N))
+                for d in ALL: sh += nb(hpos, d)
+                gh = np.where(Dm & (sh > 0), h / np.maximum(sh, 1e-30), 0.0); ge = np.where(Dm & (sh <= 0), h / np.maximum(ns, 1), 0.0)
+                add = np.zeros((N, N))
+                for d in ALL: add += np.where(stay, nb(gh, d) * hpos + nb(ge, d), 0.0)
+                h += add
+            else:
+                give = np.where(Dm, h / np.maximum(ns, 1), 0.0)
+                for d in ALL: h += np.where(stay, nb(give, d), 0.0)
             h[Dm] = 0.0; wet = stay; slime[Dm] = 1.0; age[Dm] = 0.0; sage[Dm] = 0.0; p[Dm] = 0.0; pm[Dm] = 0.0; Hres[Dm] = 1.0
             ser_dry[step] = int(Dm.sum())
         # ---- wetting (thickness yield) ----

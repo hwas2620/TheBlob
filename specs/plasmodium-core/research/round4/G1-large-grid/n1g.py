@@ -46,7 +46,7 @@ DEF = dict(
     solver='exact', ncyc=1, nu1=2, nu2=2, nc=20, nmin=4, mg_omega=0.8, mg_scale=1.5, mg_mass='exact',
     k=40, omega=0.9,
     limit=0, limit_reinforce='pre', dtype='f8', check_every=10, ckpt_steps=[], crop_every=8, perturb=0.0, extrap=0.0,
-    wet_rho=0.0, curv='n8', curv_sigma=2.0, curv_ref=0.33, curv_gain=8.0, food_angle=0.0,
+    wet_rho=0.0, curv='n8', curv_sigma=2.0, curv_ref=0.33, curv_gain=8.0, food_angle=0.0, wave_lambda=0.0, wave_Trot=80.0,
 )
 BASE = dict(T=400, kappa=20, hy0=1.05, h_fill=0.2, Q0_auto=0.2, tau_a=50, r=0.05, D0=2, rate=0.05, lam=0.06, y_sigma=0.02)
 REP = dict(phase_mode='osc', eps=0.1, period=4, y_c=0.2, food_grad=1.0)      # E10 representative setting (gradient, coupled oscillators)
@@ -382,6 +382,7 @@ def run(name, over):
         return (float((F.h * X).sum() / m), float((F.h * Y).sum() / m)) if m > 0 else (c0, c0)
 
     cen0 = centroid(); path_len = 0.0; cen_prev = cen0; traj = []
+    cen_w = cen0
     y0 = y1 = x0 = x1 = 0; L = None; Gl = Cil = etal = foodl = intl = ezl = None; shp = None
     mrg = P['crop_every'] + 3
 
@@ -424,7 +425,12 @@ def run(name, over):
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))
         tube = np.minimum(P['beta'] * np.sqrt(Cn), P['cap'])
         if eps > 0:
-            mod = 1 + eps * np.cos(theta)
+            th_eff = theta
+            if P['wave_lambda'] > 0:           # prescribed rotating body-scale phase ramp (round4 F1)
+                if step % 10 == 0: cen_w = centroid()
+                al_ = 2 * np.pi * t / P['wave_Trot']
+                th_eff = theta + (2 * np.pi / P['wave_lambda']) * ((X[y0:y1, x0:x1] - cen_w[0]) * np.cos(al_) + (Y[y0:y1, x0:x1] - cen_w[1]) * np.sin(al_))
+            mod = 1 + eps * np.cos(th_eff)
             hstar = hstar * mod
             if P['pulse_tube']: tube = tube * mod
         hstar = hstar + tube
