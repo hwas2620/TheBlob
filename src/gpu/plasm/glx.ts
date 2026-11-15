@@ -71,6 +71,10 @@ export class Glx {
   private unitTex: (WebGLTexture | null)[] = [];
   private activeUnit = -1;
   private vaoBound = false;
+  // 만든 자원. reset() 이 한꺼번에 지운다
+  private texs: WebGLTexture[] = [];
+  private fbos: WebGLFramebuffer[] = [];
+  private progs: WebGLProgram[] = [];
 
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl;
@@ -116,6 +120,7 @@ export class Glx {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    this.texs.push(tex);
     return { tex, w, h, fmt };
   }
 
@@ -139,6 +144,7 @@ export class Glx {
     gl.drawBuffers(bufs);
     const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (status !== gl.FRAMEBUFFER_COMPLETE) throw new Error(`FBO 불완전: 0x${status.toString(16)}`);
+    this.fbos.push(fbo);
     return { fbo, w: texs[0].w, h: texs[0].h, n: texs.length };
   }
 
@@ -179,6 +185,7 @@ export class Glx {
       const loc = gl.getUniformLocation(prog, info.name);
       if (loc) uni.set(info.name, { loc, type: info.type });
     }
+    this.progs.push(prog);
     return { prog, name, uni };
   }
 
@@ -241,6 +248,20 @@ export class Glx {
     }
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     this.drawCalls++;
+  }
+
+  /** 지금까지 만든 텍스처·타깃·프로그램을 모두 지운다. 이것들을 쓰던 시뮬레이션은 더 쓸 수 없다 (격자를 바꿔 새로 만들 때) */
+  reset(): void {
+    const gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.useProgram(null);
+    for (const t of this.texs) gl.deleteTexture(t);
+    for (const f of this.fbos) gl.deleteFramebuffer(f);
+    for (const p of this.progs) gl.deleteProgram(p);
+    this.texs = [];
+    this.fbos = [];
+    this.progs = [];
+    this.invalidate();
   }
 
   /** 이 클래스 밖에서 GL 상태(뷰포트, 가위, 텍스처 유닛, VAO, 프로그램)를 건드렸을 때 그림자를 버린다 */

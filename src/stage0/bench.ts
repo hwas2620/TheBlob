@@ -39,9 +39,12 @@ export interface BenchResult {
 }
 
 const FRAME_BUDGET_MS = 4;
-const MAP_PX = 1500;
-const CELLS_PER_STEP = 0.02; // 전진 속도 (numpy 기준 실행의 값)
-const STEPS_PER_PULSE = 40;
+/** 게임 지도의 한 변(px) */
+export const MAP_PX = 1500;
+/** 전진면의 속도(셀/스텝). numpy 기준 실행의 값 (dt = 0.1) */
+export const CELLS_PER_STEP = 0.02;
+/** 맥동 한 주기의 스텝 수 (주기 4, dt = 0.1) */
+export const STEPS_PER_PULSE = 40;
 const WARMUP_STEPS = 400;
 const BLOCK = 16;
 const BLOCKS = 6;
@@ -67,6 +70,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
   for (const N of sizes) {
     log(`${N}² 준비 (${WARMUP_STEPS}스텝)…`);
     await yieldNow();
+    glx.reset(); // 앞 격자의 텍스처를 지운다 (768² 는 150MB 쯤 쓴다)
     const sim = new PlasmGPU(glx, defaultParams({ N, seed: 1 }));
     sweep2Error = sim.mg.sweep2Error;
     if (sweep2Error && N === sizes[0]) log(`  (두 번 스무딩 셰이더를 쓸 수 없습니다: ${sweep2Error.slice(0, 200)})`);
