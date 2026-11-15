@@ -6,6 +6,23 @@ import mgResidual from './shaders/mg_residual.frag.glsl?raw';
 import mgRestrict from './shaders/mg_restrict.frag.glsl?raw';
 import mgProlong from './shaders/mg_prolong.frag.glsl?raw';
 import mgCoarsen from './shaders/mg_coarsen.frag.glsl?raw';
+import edgeActivate from './shaders/edge_activate.frag.glsl?raw';
+import phase from './shaders/phase.frag.glsl?raw';
+import rest from './shaders/rest.frag.glsl?raw';
+import mgInit from './shaders/mg_init.frag.glsl?raw';
+import flux from './shaders/flux.frag.glsl?raw';
+import reduceQ0 from './shaders/reduce_q0.frag.glsl?raw';
+import reduceSum from './shaders/reduce_sum.frag.glsl?raw';
+import reduceStats from './shaders/reduce_stats.frag.glsl?raw';
+import reinforce from './shaders/reinforce.frag.glsl?raw';
+import dryMark from './shaders/dry_mark.frag.glsl?raw';
+import dryConfirm from './shaders/dry_confirm.frag.glsl?raw';
+import dryShare from './shaders/dry_share.frag.glsl?raw';
+import dryApply from './shaders/dry_apply.frag.glsl?raw';
+import blur13 from './shaders/blur13.frag.glsl?raw';
+import wetMark from './shaders/wet_mark.frag.glsl?raw';
+import wetApply from './shaders/wet_apply.frag.glsl?raw';
+import view from './shaders/view.frag.glsl?raw';
 
 /** 모든 프래그먼트 셰이더의 머리말. 이웃 접근은 texelFetch 와 정수 나머지로 한다(토러스) */
 const COMMON = `#version 300 es
@@ -39,5 +56,27 @@ export function multigridShaders(vars: ShaderVars) {
     restrict: make(mgRestrict, vars),
     prolong: make(mgProlong, vars),
     coarsen: make(mgCoarsen, vars),
+  };
+}
+
+export function plasmShaders(vars: ShaderVars) {
+  return {
+    edgeActivate: make(edgeActivate, vars),
+    phase: make(phase, vars),
+    rest: make(rest, vars),
+    mgInit: make(mgInit, vars),
+    flux: make(flux, vars),
+    reduceQ0: make(reduceQ0, vars),
+    reduceSum: make(reduceSum, vars),
+    reduceStats: make(reduceStats, vars),
+    reinforce: make(reinforce, vars),
+    dryMark: make(dryMark, vars),
+    dryConfirm: make(dryConfirm, vars),
+    dryShare: make(dryShare, vars),
+    dryApply: make(dryApply, vars),
+    blur: make(blur13, vars),
+    wetMark: make(wetMark, vars),
+    wetApply: make(wetApply, vars),
+    view: make(view, vars),
   };
 }

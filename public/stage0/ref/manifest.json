@@ -578,6 +578,66 @@
    ],
    "floats": 442368,
    "kind": "state"
+  },
+  {
+   "file": "solver_N384_s1_step02000.bin.gz",
+   "tag": "solver_N384_s1_step02000",
+   "N": 384,
+   "step": 2000,
+   "t": 200.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "W",
+     "ch": 4,
+     "offset": 0
+    },
+    {
+     "name": "M",
+     "ch": 1,
+     "offset": 589824
+    },
+    {
+     "name": "rhs",
+     "ch": 1,
+     "offset": 737280
+    },
+    {
+     "name": "p0",
+     "ch": 1,
+     "offset": 884736
+    },
+    {
+     "name": "p1",
+     "ch": 1,
+     "offset": 1032192
+    },
+    {
+     "name": "p2",
+     "ch": 1,
+     "offset": 1179648
+    },
+    {
+     "name": "p3",
+     "ch": 1,
+     "offset": 1327104
+    },
+    {
+     "name": "pe",
+     "ch": 1,
+     "offset": 1474560
+    }
+   ],
+   "floats": 1622016,
+   "kind": "solver",
+   "wet": 2999,
+   "flux_err": [
+    0.048006382435006836,
+    0.034030645488551246,
+    0.025986830639487958
+   ],
+   "flux_err_p0": 0.07750960752220787,
+   "nc": 4
   }
  ]
 }

@@ -2,10 +2,11 @@
 
 import { Glx } from '../gpu/plasm/glx';
 import { MultigridGPU } from '../gpu/plasm/MultigridGPU';
+import { PlasmGPU, type PlainState } from '../gpu/plasm/PlasmGPU';
 import { hashNormal, hashU01 } from '../gpu/plasm/hashNoise';
 import { defaultParams, shaderVars } from '../gpu/plasm/params';
 import { fluxError, relDiff, solveCG } from './cpuSolver';
-import { interleave, loadManifest, loadRef } from './refData';
+import { interleave, loadManifest, loadRef, type RefArrays, type RefFile } from './refData';
 
 export type Log = (line: string) => void;
 
@@ -113,4 +114,311 @@ export async function testA0(glx: Glx, log: Log): Promise<A0Result> {
   const pass = cases.length > 0 && cases.every((c) => c.pass);
   log(`A0 재생 시험: ${cases.length}개 상태 → ${pass ? '통과' : '실패'}`);
   return { pass, cases };
+}
+
+// ───────────────────────── 스텝 일치 시험 ─────────────────────────
+
+
+function toState(ref: RefArrays): PlainState {
+  const g = (k: string): Float32Array => ref.get(k)![0];
+  return { h: g('h'), wet: g('wet'), age: g('age'), sage: g('sage'), theta: g('theta'), slime: g('slime'), C: ref.get('C')!, p: g('p'), pm: g('pm') };
+}
+
+export interface StateDiff {
+  step: number;
+  bodyCells: number;
+  wetMismatch: number;
+  hMaxDiff: number;
+  thetaMedDiff: number;
+  thetaMaxDiff: number;
+  cMedRelDiff: number;
+  cMaxRelDiff: number;
+  edgeMismatch: number;
+  pRelDiff: number;
+  slimeMismatch: number;
+  volumeGpu: number;
+  volumeRef: number;
+}
+
+function median(v: number[]): number {
+  if (v.length === 0) return 0;
+  const s = v.slice().sort((a, b) => a - b);
+  return s[Math.floor(s.length / 2)];
+}
+
+/** GPU 의 지금 상태와 numpy 상태의 차이 */
+export function diffState(sim: PlasmGPU, ref: PlainState): StateDiff {
+  const a = sim.readA();
+  const b = sim.readB();
+  const c = sim.readC();
+  const n = sim.N * sim.N;
+  const twoPi = 2 * Math.PI;
+  let body = 0, wetMismatch = 0, hMaxDiff = 0, slimeMismatch = 0, volumeGpu = 0, volumeRef = 0, pNum = 0, pDen = 0, edgeMismatch = 0;
+  const dTheta: number[] = [];
+  const dC: number[] = [];
+  for (let i = 0; i < n; i++) {
+    const wg = a[i * 4 + 1] > 0.5;
+    const wr = ref.wet[i] > 0.5;
+    if (wr) body++;
+    if (wg !== wr) wetMismatch++;
+    hMaxDiff = Math.max(hMaxDiff, Math.abs(a[i * 4] - ref.h[i]));
+    volumeGpu += a[i * 4];
+    volumeRef += ref.h[i];
+    if (Math.abs(b[i * 4 + 1] - ref.slime[i]) > 1e-6) slimeMismatch++;
+    pNum += (b[i * 4 + 2] - ref.p[i]) ** 2;
+    pDen += ref.p[i] ** 2;
+    if (wg && wr) {
+      let d = (b[i * 4] - ref.theta[i]) % twoPi;
+      if (d > Math.PI) d -= twoPi;
+      if (d < -Math.PI) d += twoPi;
+      dTheta.push(Math.abs(d));
+    }
+    for (let k = 0; k < 4; k++) {
+      const cg = c[i * 4 + k];
+      const cr = ref.C[k][i];
+      if (cg > 0 && cr > 0) dC.push(Math.abs(cg - cr) / cr);
+      else if (cg > 0 !== cr > 0) edgeMismatch++;
+    }
+  }
+  return {
+    step: sim.step,
+    bodyCells: body,
+    wetMismatch,
+    hMaxDiff,
+    thetaMedDiff: median(dTheta),
+    thetaMaxDiff: dTheta.reduce((m, v) => Math.max(m, v), 0),
+    cMedRelDiff: median(dC),
+    cMaxRelDiff: dC.reduce((m, v) => Math.max(m, v), 0),
+    edgeMismatch,
+    pRelDiff: Math.sqrt(pNum / Math.max(pDen, 1e-300)),
+    slimeMismatch,
+    volumeGpu,
+    volumeRef,
+  };
+}
+
+export interface ParityResult {
+  pass: boolean;
+  drawCallsPerStep: number;
+  mature: StateDiff[];
+  initial: StateDiff[];
+  initialVolumeRelErr: number;
+}
+
+function fmtDiff(d: StateDiff): string {
+  return `젖은 마스크 불일치 ${d.wetMismatch}/${d.bodyCells}, h 최대 차이 ${d.hMaxDiff.toExponential(2)}, θ 차이 중앙 ${d.thetaMedDiff.toExponential(2)} 최대 ${d.thetaMaxDiff.toExponential(2)}, `
+    + `C 상대 차이 중앙 ${d.cMedRelDiff.toExponential(2)} 최대 ${d.cMaxRelDiff.toExponential(2)}, 간선 불일치 ${d.edgeMismatch}, p 상대 차이 ${d.pRelDiff.toExponential(2)}, 점액 불일치 ${d.slimeMismatch}`;
+}
+
+/** 스텝 일치 시험: numpy 상태에서 출발해 GPU 로 돌린 결과를 numpy 의 다음 상태와 견준다 */
+export async function testParity(glx: Glx, log: Log): Promise<ParityResult> {
+  const man = await loadManifest();
+  const states = new Map<number, RefFile>();
+  for (const f of man.files) if (f.kind === 'state' && f.N === 192) states.set(f.step, f);
+  const get = async (step: number): Promise<PlainState> => {
+    const f = states.get(step);
+    if (!f) throw new Error(`기준 상태가 없다: 스텝 ${step}`);
+    return toState(await loadRef(f));
+  };
+  const sim = new PlasmGPU(glx, defaultParams({ N: 192, seed: 1 }));
+
+  // 성숙한 몸 (t = 200): 마름과 젖음이 모두 일어나는 시점
+  log('성숙한 상태(스텝 2000)에서 출발');
+  sim.loadState(await get(2000), 2000);
+  const d0 = glx.drawCalls;
+  sim.stepOnce();
+  const drawCallsPerStep = glx.drawCalls - d0;
+  const m1 = diffState(sim, await get(2001));
+  log(`  1스텝 뒤: ${fmtDiff(m1)}`);
+  for (let i = 0; i < 9; i++) sim.stepOnce();
+  const m10 = diffState(sim, await get(2010));
+  log(`  10스텝 뒤: ${fmtDiff(m10)}`);
+
+  // 초기 원반에서 출발
+  log('초기 상태에서 출발');
+  sim.reset();
+  const i0 = diffState(sim, await get(0));
+  log(`  0스텝: ${fmtDiff(i0)}`);
+  const initial: StateDiff[] = [i0];
+  let done = 0;
+  for (const target of [1, 10, 50]) {
+    for (; done < target; done++) sim.stepOnce();
+    const d = diffState(sim, await get(target));
+    initial.push(d);
+    log(`  ${target}스텝 뒤: ${fmtDiff(d)}`);
+  }
+  const last = initial[initial.length - 1];
+  const initialVolumeRelErr = Math.abs(last.volumeGpu - i0.volumeGpu) / i0.volumeGpu;
+  log(`  50스텝 뒤 총 부피의 상대 오차 ${initialVolumeRelErr.toExponential(2)} · 스텝당 드로콜 ${drawCallsPerStep}`);
+
+  const pass =
+    m1.wetMismatch === 0 && m1.hMaxDiff <= 1e-3 && m1.thetaMedDiff <= 1e-4 && m1.cMedRelDiff <= 1e-4 &&
+    m10.wetMismatch <= 0.005 * m10.bodyCells &&
+    i0.wetMismatch === 0 && initialVolumeRelErr <= 1e-5;
+  log(`스텝 일치 시험 → ${pass ? '통과' : '실패'}`);
+  return { pass, drawCallsPerStep, mature: [m1, m10], initial, initialVolumeRelErr };
+}
+
+// ───────────────────────── A1·A2: 긴 실행 ─────────────────────────
+
+export interface A12Options {
+  N: number;
+  seed: number;
+  cycles: number;
+  steps: number;
+  /** 위상 무늬 (나) 삼각 격자를 켠다 */
+  tri: boolean;
+  /** 이 스텝마다 CPU 기준 풀이로 유량 오차를 잰다 */
+  checkEvery: number;
+}
+
+export interface A12Result extends A12Options {
+  drawCallsPerStep: number;
+  seconds: number;
+  stepsDone: number;
+  nan: boolean;
+  /** 스텝 끝에 음수 두께인 젖은 셀이 있던 스텝 수 */
+  negEndSteps: number;
+  hMinEnd: number;
+  hMinInStep: number;
+  cMaxRun: number;
+  volumeRelErr: number;
+  fluxErr: { n: number; median: number; p90: number; p99: number; max: number };
+  fluxErrSeries: number[];
+  /** [t, 무게중심 x, y, 넓이] (50스텝마다) */
+  traj: number[][];
+  disp_0_400: number | null;
+  disp_100_300: number | null;
+  tTouch: number | null;
+  areaEnd: number;
+}
+
+function quantile(sorted: number[], q: number): number {
+  if (sorted.length === 0) return NaN;
+  const pos = (sorted.length - 1) * q;
+  const lo = Math.floor(pos);
+  const hi = Math.min(sorted.length - 1, lo + 1);
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (pos - lo);
+}
+
+/** A1·A2: 통합 모델을 길게 돌리며 안정성(NaN, 음수 두께, 최대 전도도)과 정확도(유량 오차, 이동)를 잰다 */
+export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (sim: PlasmGPU) => void): Promise<A12Result> {
+  const params = defaultParams({ N: opts.N, seed: opts.seed, mgCycles: opts.cycles, triK: opts.tri ? (2 * Math.PI) / 100 : 0 });
+  const sim = new PlasmGPU(glx, params);
+  const N = opts.N;
+  const n = N * N;
+  const dt = params.dt;
+  const t0 = performance.now();
+  const d0 = glx.drawCalls;
+  sim.stepOnce();
+  const drawCallsPerStep = glx.drawCalls - d0;
+  sim.reset();
+
+  const v0 = sim.readEndStats().volume;
+  const c0 = N / 2 - 0.5;
+  const cen = [c0, c0];
+  const att = params.attractant;
+  const fx = att ? c0 + att.dist * Math.cos((att.angleDeg * Math.PI) / 180) : 0;
+  const fy = att ? c0 + att.dist * Math.sin((att.angleDeg * Math.PI) / 180) : 0;
+  const mimg = (v: number): number => ((((v + N / 2) % N) + N) % N) - N / 2;
+  const fluxErrSeries: number[] = [];
+  const traj: number[][] = [];
+  let nan = false, negEndSteps = 0, hMinEnd = Infinity, hMinInStep = Infinity, cMaxRun = 0, tTouch: number | null = null, areaEnd = 0, volumeEnd = v0, stepsDone = 0;
+
+  /** 읽은 cellA 로 무게중심(토러스 최소 상)을 갱신하고 유인원에 닿았는지 본다 */
+  const track = (a: Float32Array, t: number, record: boolean): void => {
+    let m = 0, sx = 0, sy = 0, area = 0, touch = false;
+    for (let y = 0; y < N; y++) {
+      for (let x = 0; x < N; x++) {
+        const i = (y * N + x) * 4;
+        const h = a[i];
+        if (!Number.isFinite(h)) nan = true;
+        m += h;
+        sx += h * mimg(x - cen[0]);
+        sy += h * mimg(y - cen[1]);
+        if (a[i + 1] > 0.5) {
+          area++;
+          if (att && Math.hypot(mimg(x - fx), mimg(y - fy)) < 4.0) touch = true;
+        }
+      }
+    }
+    if (m > 0) {
+      cen[0] += sx / m;
+      cen[1] += sy / m;
+    }
+    if (touch && tTouch === null) tTouch = t;
+    areaEnd = area;
+    if (record) traj.push([t, cen[0], cen[1], area]);
+  };
+  track(sim.readA(), 0, true);
+
+  for (let step = 0; step < opts.steps && !nan; step++) {
+    const check = step > 0 && step % opts.checkEvery === 0;
+    sim.stepOnce(
+      check
+        ? () => {
+            const W4 = sim.readW();
+            const aux = sim.readAux();
+            const pg = channel(sim.readP(), 0);
+            const rhs = new Float32Array(n);
+            const M = new Float32Array(n);
+            for (let i = 0; i < n; i++) {
+              rhs[i] = aux[i * 4];
+              M[i] = aux[i * 4 + 1];
+            }
+            const cg = solveCG(N, W4, M, rhs);
+            fluxErrSeries.push(fluxError(N, W4, pg, cg.p));
+          }
+        : undefined,
+    );
+    stepsDone = step + 1;
+    const st = sim.readStepStats();
+    const es = sim.readEndStats();
+    if (![st.hMinInStep, st.cMax, es.volume, es.hMin].every(Number.isFinite) && es.area > 0) nan = true;
+    hMinInStep = Math.min(hMinInStep, st.hMinInStep);
+    cMaxRun = Math.max(cMaxRun, st.cMax);
+    hMinEnd = Math.min(hMinEnd, es.hMin);
+    if (es.anyNegative) negEndSteps++;
+    volumeEnd = es.volume;
+    if (stepsDone % 20 === 0) track(sim.readA(), stepsDone * dt, stepsDone % 50 === 0);
+    if (stepsDone % 100 === 0) {
+      if (onFrame) onFrame(sim);
+      if (stepsDone % 1000 === 0) {
+        const last = fluxErrSeries.slice(-20).sort((a, b) => a - b);
+        log(`  스텝 ${stepsDone}: 넓이 ${areaEnd}, 무게중심 (${cen[0].toFixed(1)}, ${cen[1].toFixed(1)}), 최대 전도도 ${cMaxRun.toFixed(0)}, 최근 유량 오차 중앙 ${quantile(last, 0.5).toFixed(3)}, ${((performance.now() - t0) / 1000).toFixed(0)}초`);
+      }
+      await new Promise((r) => setTimeout(r, 0));
+    }
+  }
+  const at = (t: number): number[] | null => traj.find((r) => Math.abs(r[0] - t) < 1e-6) ?? null;
+  const disp = (ta: number, tb: number): number | null => {
+    const a = at(ta);
+    const b = at(tb);
+    return a && b ? Math.hypot(b[1] - a[1], b[2] - a[2]) : null;
+  };
+  const sorted = fluxErrSeries.slice().sort((a, b) => a - b);
+  const res: A12Result = {
+    ...opts,
+    drawCallsPerStep,
+    seconds: (performance.now() - t0) / 1000,
+    stepsDone,
+    nan,
+    negEndSteps,
+    hMinEnd,
+    hMinInStep,
+    cMaxRun,
+    volumeRelErr: Math.abs(volumeEnd - v0) / v0,
+    fluxErr: { n: sorted.length, median: quantile(sorted, 0.5), p90: quantile(sorted, 0.9), p99: quantile(sorted, 0.99), max: sorted.length ? sorted[sorted.length - 1] : NaN },
+    fluxErrSeries,
+    traj,
+    disp_0_400: disp(0, 400),
+    disp_100_300: disp(100, 300),
+    tTouch,
+    areaEnd,
+  };
+  log(`${N}² 시드 ${opts.seed} ${opts.cycles}사이클${opts.tri ? ' 삼각 격자' : ''}: ${stepsDone}스텝, NaN ${nan ? '있음' : '없음'}, 스텝 끝 음수 두께 ${negEndSteps}스텝(최소 ${hMinEnd.toExponential(2)}), `
+    + `스텝 안 최소 두께 ${hMinInStep.toExponential(2)}, 최대 전도도 ${cMaxRun.toFixed(0)}, 부피 오차 ${res.volumeRelErr.toExponential(2)}`);
+  log(`  유량 오차 중앙 ${res.fluxErr.median.toFixed(3)} / 90백분위 ${res.fluxErr.p90.toFixed(3)} / 99백분위 ${res.fluxErr.p99.toFixed(3)} / 최대 ${res.fluxErr.max.toFixed(3)} (${sorted.length}회)`);
+  log(`  이동 t=0~400 ${res.disp_0_400?.toFixed(1) ?? '-'}셀, t=100~300 ${res.disp_100_300?.toFixed(1) ?? '-'}셀, 유인원에 닿은 시각 ${tTouch ?? '-'}, 스텝당 드로콜 ${drawCallsPerStep}, ${res.seconds.toFixed(0)}초`);
+  return res;
 }
