@@ -7,7 +7,7 @@
 import type { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU } from '../gpu/plasm/PlasmGPU';
 import { defaultParams } from '../gpu/plasm/params';
-import { VARIANTS, type Log } from './tests';
+import { applyVariant, VARIANTS, type Log } from './tests';
 
 export interface BenchRow {
   N: number;
@@ -22,6 +22,8 @@ export interface BenchRow {
   /** 그때 화면의 전진 속도(px/s, 지도 1500px 기준)와 맥동 주기(초) */
   pxPerSec: number;
   pulseSec: number;
+  /** 두 번 스무딩을 요청했지만 셰이더가 컴파일되지 않아 쓰지 못했으면 true */
+  sweep2Missing?: boolean;
 }
 
 export interface BenchResult {
@@ -31,6 +33,8 @@ export interface BenchResult {
   usPerTinyDraw: number;
   rows: BenchRow[];
   bodyArea: Record<string, number>;
+  /** 두 번 스무딩 셰이더가 컴파일되지 않았으면 그 오류 */
+  sweep2Error: string | null;
   seconds: number;
 }
 
@@ -59,10 +63,13 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
   const rows: BenchRow[] = [];
   const bodyArea: Record<string, number> = {};
   let usPerTinyDraw = 0;
+  let sweep2Error: string | null = null;
   for (const N of sizes) {
     log(`${N}² 준비 (${WARMUP_STEPS}스텝)…`);
     await yieldNow();
     const sim = new PlasmGPU(glx, defaultParams({ N, seed: 1 }));
+    sweep2Error = sim.mg.sweep2Error;
+    if (sweep2Error && N === sizes[0]) log(`  (두 번 스무딩 셰이더를 쓸 수 없습니다: ${sweep2Error.slice(0, 200)})`);
     sim.asyncBounds = false;
     sim.autoBounds = false;
     sim.mg.merged = true;
@@ -77,8 +84,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
     for (const cycles of [2, 3]) {
       for (const v of VARIANTS) {
         sim.cycles = cycles;
-        sim.mg.merged = v.merged;
-        sim.scissor = v.scissor;
+        applyVariant(sim, v);
         sim.refreshBounds();
         for (let s = 0; s < 4; s++) sim.stepOnce(); // 셰이더와 캐시를 데운다
         let ms = 0, draws = 0, frac = 0;
@@ -107,10 +113,11 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
           pxPerSec: CELLS_PER_STEP * stepsPerFrame * 60 * (MAP_PX / N),
           pulseSec: STEPS_PER_PULSE / (60 * stepsPerFrame),
         };
+        if (v.sweep2 && sweep2Error) row.sweep2Missing = true;
         rows.push(row);
-        log(`  ${N}² ${cycles}사이클 ${v.name}: ${row.drawCalls} 드로콜, ${msPerStep.toFixed(2)}ms/스텝 (영역 ${(row.activeFraction * 100).toFixed(0)}%) → 프레임당 ${stepsPerFrame.toFixed(2)}스텝, 전진 ${row.pxPerSec.toFixed(1)}px/s, 맥동 ${row.pulseSec.toFixed(2)}초`);
+        log(`  ${N}² ${cycles}사이클 ${v.name}: ${row.drawCalls} 드로콜, ${msPerStep.toFixed(2)}ms/스텝 (영역 ${(row.activeFraction * 100).toFixed(0)}%) → 4ms 예산이면 프레임당 ${stepsPerFrame.toFixed(1)}스텝, 전진 ${row.pxPerSec.toFixed(0)}px/s, 맥동 ${row.pulseSec.toFixed(2)}초`);
       }
     }
   }
-  return { renderer, userAgent: navigator.userAgent, usPerTinyDraw, rows, bodyArea, seconds: (performance.now() - tStart) / 1000 };
+  return { renderer, userAgent: navigator.userAgent, usPerTinyDraw, rows, bodyArea, sweep2Error, seconds: (performance.now() - tStart) / 1000 };
 }

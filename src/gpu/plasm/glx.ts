@@ -22,6 +22,8 @@ export interface Target {
 interface UniformInfo {
   loc: WebGLUniformLocation;
   type: number;
+  /** 샘플러 유니폼에 마지막으로 넣은 텍스처 유닛 */
+  unit?: number;
 }
 
 export interface Prog {
@@ -61,6 +63,14 @@ export class Glx {
   private vao: WebGLVertexArrayObject;
   private readFbo: WebGLFramebuffer;
   private current: WebGLProgram | null = null;
+  // GL 상태의 그림자. 같은 값을 다시 보내지 않으려고 둔다(드로콜이 스텝당 100개 안팎이라 호출 수가 곧 비용이다).
+  // 이 클래스 밖에서 같은 컨텍스트의 상태를 바꿨다면 invalidate() 를 불러야 한다.
+  private vpW = -1;
+  private vpH = -1;
+  private scissorOn: boolean | null = null;
+  private unitTex: (WebGLTexture | null)[] = [];
+  private activeUnit = -1;
+  private vaoBound = false;
 
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl;
@@ -99,6 +109,7 @@ export class Glx {
     const gl = this.gl;
     const tex = gl.createTexture()!;
     gl.bindTexture(gl.TEXTURE_2D, tex);
+    this.unitTex = []; // 지금 켜진 유닛의 묶음이 바뀌었다
     const [internal, format] = this.glFormat(fmt);
     gl.texImage2D(gl.TEXTURE_2D, 0, internal, w, h, 0, format, gl.FLOAT, data ?? new Float32Array(w * h * CHANNELS[fmt]));
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -111,6 +122,7 @@ export class Glx {
   upload(t: Tex, data: Float32Array): void {
     const gl = this.gl;
     gl.bindTexture(gl.TEXTURE_2D, t.tex);
+    this.unitTex = []; // 지금 켜진 유닛의 묶음이 바뀌었다
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, t.w, t.h, this.glFormat(t.fmt)[1], gl.FLOAT, data);
   }
 
@@ -174,12 +186,20 @@ export class Glx {
   draw(p: Prog, t: Target, u: Record<string, UVal>, rect?: Rect | null): void {
     const gl = this.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo);
-    gl.viewport(0, 0, t.w, t.h);
+    if (this.vpW !== t.w || this.vpH !== t.h) {
+      gl.viewport(0, 0, t.w, t.h);
+      this.vpW = t.w;
+      this.vpH = t.h;
+    }
     if (rect) {
-      gl.enable(gl.SCISSOR_TEST);
+      if (this.scissorOn !== true) {
+        gl.enable(gl.SCISSOR_TEST);
+        this.scissorOn = true;
+      }
       gl.scissor(rect[0], rect[1], rect[2], rect[3]);
-    } else {
+    } else if (this.scissorOn !== false) {
       gl.disable(gl.SCISSOR_TEST);
+      this.scissorOn = false;
     }
     if (this.current !== p.prog) {
       gl.useProgram(p.prog);
@@ -199,22 +219,49 @@ export class Glx {
         else if (info.type === gl.FLOAT_VEC4) gl.uniform4f(info.loc, v[0], v[1], v[2], v[3]);
         else throw new Error(`지원하지 않는 유니폼 형식: ${p.name}.${key}`);
       } else {
-        gl.activeTexture(gl.TEXTURE0 + unit);
-        gl.bindTexture(gl.TEXTURE_2D, (v as Tex).tex);
-        gl.uniform1i(info.loc, unit);
+        const tex = (v as Tex).tex;
+        if (this.unitTex[unit] !== tex) {
+          if (this.activeUnit !== unit) {
+            gl.activeTexture(gl.TEXTURE0 + unit);
+            this.activeUnit = unit;
+          }
+          gl.bindTexture(gl.TEXTURE_2D, tex);
+          this.unitTex[unit] = tex;
+        }
+        if (info.unit !== unit) {
+          gl.uniform1i(info.loc, unit);
+          info.unit = unit;
+        }
         unit++;
       }
     }
-    gl.bindVertexArray(this.vao);
+    if (!this.vaoBound) {
+      gl.bindVertexArray(this.vao);
+      this.vaoBound = true;
+    }
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     this.drawCalls++;
+  }
+
+  /** 이 클래스 밖에서 GL 상태(뷰포트, 가위, 텍스처 유닛, VAO, 프로그램)를 건드렸을 때 그림자를 버린다 */
+  invalidate(): void {
+    this.current = null;
+    this.vpW = -1;
+    this.vpH = -1;
+    this.scissorOn = null;
+    this.unitTex = [];
+    this.activeUnit = -1;
+    this.vaoBound = false;
   }
 
   /** 타깃의 모든 첨부를 한 값(또는 RGBA)으로 채운다 (드로콜이 아니다) */
   clear(t: Target, v: number | readonly number[] = 0): void {
     const gl = this.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo);
-    gl.disable(gl.SCISSOR_TEST);
+    if (this.scissorOn !== false) {
+      gl.disable(gl.SCISSOR_TEST);
+      this.scissorOn = false;
+    }
     const c = typeof v === 'number' ? new Float32Array([v, v, v, v]) : new Float32Array(v);
     for (let i = 0; i < t.n; i++) gl.clearBufferfv(gl.COLOR, i, c);
   }

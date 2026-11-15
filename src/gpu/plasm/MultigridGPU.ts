@@ -29,10 +29,20 @@ export class MultigridGPU {
   private pCoarsen: Prog;
   private pResRestrict: Prog;
   private pProlongJacobi: Prog;
+  private pJacobi2: Prog | null = null;
+  private pProlongJacobi2: Prog | null = null;
+  /** 두 번 스무딩 셰이더가 이 기기에서 컴파일되지 않았으면 그 이유 (그때는 sweep2 를 켜도 쓰지 않는다) */
+  sweep2Error: string | null = null;
   /** true 면 "잔차+제한", "보간+첫 뒤 스무딩"을 한 패스씩으로 합친다 (레벨당 7 → 5 드로콜. 산술은 같다) */
   merged = false;
   /** 레벨 0 에서 그릴 영역. null 이면 전체. 활성 셀이 모두 이 안에 있어야 한다 */
   rect: Rect | null = null;
+  /**
+   * true 면 그리는 영역이 sweep2MaxArea 텍셀 이하인 레벨에서 스무딩 두 번을 한 패스로 한다(산술은 같다).
+   * 그런 레벨에서는 채우기보다 드로콜 수가 비용이라 텍셀 읽기를 늘려 드로콜을 줄이는 쪽이 싸다.
+   */
+  sweep2 = false;
+  sweep2MaxArea = 4096;
 
   /** 2로 나눠지는 동안, 한 변이 nmin 보다 클 때까지 줄인다 (mgt.py 와 같은 규칙) */
   static levels(N: number, nmin = 4): number[] {
@@ -53,6 +63,15 @@ export class MultigridGPU {
     this.pCoarsen = glx.program('mg_coarsen', src.coarsen);
     this.pResRestrict = glx.program('mg_resrestrict', src.resRestrict);
     this.pProlongJacobi = glx.program('mg_prolong_jacobi', src.prolongJacobi);
+    try {
+      // 텍셀 읽기가 수백 번인 큰 셰이더라 드라이버에 따라 컴파일이 안 될 수 있다. 그때는 한 번씩 그리는 길로 돌아간다
+      this.pJacobi2 = glx.program('mg_jacobi2', src.jacobi2);
+      this.pProlongJacobi2 = glx.program('mg_prolong_jacobi2', src.prolongJacobi2);
+    } catch (e) {
+      this.pJacobi2 = null;
+      this.pProlongJacobi2 = null;
+      this.sweep2Error = e instanceof Error ? e.message : String(e);
+    }
     for (let l = 0; l < this.L; l++) {
       const n = this.sizes[l];
       const a = glx.tex(n, n, 'r32f');
@@ -105,6 +124,14 @@ export class MultigridGPU {
     return [x0, y0, x1 - x0, y1 - y0];
   }
 
+  /** 이 레벨에서 스무딩 두 번을 한 패스로 할지 */
+  private dbl(l: number): boolean {
+    if (!this.sweep2 || !this.pJacobi2 || !this.pProlongJacobi2) return false;
+    const r = this.lr(l);
+    const area = r ? r[2] * r[3] : this.sizes[l] * this.sizes[l];
+    return area <= this.sweep2MaxArea;
+  }
+
   /** 작업 텍스처를 모두 0 으로 (상태를 새로 넣을 때) */
   clearAll(): void {
     for (let l = 0; l < this.L; l++) {
@@ -137,10 +164,10 @@ export class MultigridGPU {
 
   private vcycle(l: number, nc: number): void {
     if (l === this.L - 1) {
-      this.jacobi(l, nc);
+      this.smooth(l, nc);
       return;
     }
-    this.jacobi(l, 2);
+    this.smooth(l, 2);
     const fine = { uP: this.P[l][this.cur[l]], uW: this.W[l], uS: this.S[l], uM: this.M[l] };
     if (this.merged) {
       this.glx.draw(this.pResRestrict, this.tS[l + 1], fine, this.lr(l + 1));
@@ -152,14 +179,29 @@ export class MultigridGPU {
     this.vcycle(l + 1, nc);
     const dst = 1 - this.cur[l];
     if (this.merged) {
-      this.glx.draw(this.pProlongJacobi, this.tP[l][dst], { ...fine, uE: this.P[l + 1][this.cur[l + 1]] }, this.lr(l));
+      const two = this.dbl(l);
+      this.glx.draw(two ? this.pProlongJacobi2! : this.pProlongJacobi, this.tP[l][dst], { ...fine, uE: this.P[l + 1][this.cur[l + 1]] }, this.lr(l));
       this.cur[l] = dst;
-      this.jacobi(l, 1);
+      if (!two) this.jacobi(l, 1);
     } else {
       this.glx.draw(this.pProlong, this.tP[l][dst], { uP: this.P[l][this.cur[l]], uE: this.P[l + 1][this.cur[l + 1]], uM: this.M[l] }, this.lr(l));
       this.cur[l] = dst;
-      this.jacobi(l, 2);
+      this.smooth(l, 2);
     }
+  }
+
+  /** 스무딩 k 번. 두 번씩 묶을 수 있는 레벨에서는 묶는다 */
+  private smooth(l: number, k: number): void {
+    if (!this.dbl(l)) {
+      this.jacobi(l, k);
+      return;
+    }
+    for (let i = 0; i + 1 < k; i += 2) {
+      const dst = 1 - this.cur[l];
+      this.glx.draw(this.pJacobi2!, this.tP[l][dst], { uP: this.P[l][this.cur[l]], uW: this.W[l], uS: this.S[l], uM: this.M[l] }, this.lr(l));
+      this.cur[l] = dst;
+    }
+    if (k % 2 === 1) this.jacobi(l, 1);
   }
 
   private jacobi(l: number, k: number): void {

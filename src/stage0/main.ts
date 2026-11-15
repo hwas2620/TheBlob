@@ -3,9 +3,9 @@
 //   stage0.html              보기
 //   stage0.html?test=a0      A0 재생 시험 (멀티그리드를 numpy 와 대조)
 //   stage0.html?test=parity  스텝 일치 시험 (규칙 1~7 을 numpy 와 대조)
-//   stage0.html?test=a12&N=192&seed=1&cyc=2&steps=10000[&tri=1&variant=2]   A1·A2 긴 실행 (variant: 0 기준형, 1 합친 패스, 2 합친 패스 + 몸 주변만)
+//   stage0.html?test=a12&N=192&seed=1&cyc=2&steps=10000[&tri=1&variant=2]   A1·A2 긴 실행 (variant: tests.ts 의 VARIANTS 번호. 0 기준형)
 //   stage0.html?run=1&N=384[&spf=2&tri=1]   그냥 돌려 보기 (spf = 프레임당 스텝 수)
-//   stage0.html?bench=1[&N=384,512,768]     A3 벤치마크 (스텝당 시간과 드로콜 수)
+//   stage0.html?bench=1[&N=256,384,512,768] A3 벤치마크 (스텝당 시간과 드로콜 수)
 //
 // 시험 결과는 window.__stage0 에도 남긴다(헤드리스 러너가 읽는다).
 
@@ -81,12 +81,22 @@ async function main(): Promise<void> {
     return;
   }
   if (q.get('bench') === '1') {
-    const sizes = (q.get('N') ?? '384,512,768').split(',').map(Number);
+    const sizes = (q.get('N') ?? '256,384,512,768').split(',').map(Number);
     log('벤치마크를 돌립니다. 끝날 때까지 이 탭을 앞에 두세요.');
     const bench = await runBench(glx, caps.renderer, sizes, log);
     log(`드로콜 하나의 고정 비용 약 ${bench.usPerTinyDraw.toFixed(1)}µs · 전체 ${bench.seconds.toFixed(0)}초`);
-    log('\n아래 JSON 을 그대로 복사해 붙여 주세요.\n');
-    log(JSON.stringify(bench));
+    const json = JSON.stringify(bench);
+    const copy = document.createElement('button');
+    copy.textContent = '결과 복사';
+    copy.onclick = (): void => {
+      navigator.clipboard.writeText(json).then(
+        () => (copy.textContent = '복사했습니다'),
+        () => (copy.textContent = '복사 실패 — 아래 글자를 직접 골라 복사해 주세요'),
+      );
+    };
+    nav.after(copy);
+    log('\n끝났습니다. 위의 "결과 복사" 단추를 누르거나 아래 JSON 을 그대로 복사해 붙여 주세요.\n');
+    log(json);
     window.__stage0 = { done: true, ok: true, result: { caps, bench } };
     return;
   }

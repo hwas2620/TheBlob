@@ -39,8 +39,11 @@ export function testNoise(log: Log): NoiseResult {
 }
 
 export interface A0Cycle {
+  /** 풀이 구성의 이름 (A0_CONFIGS) */
+  config: string;
   merged: boolean;
   cycles: number;
+  drawCallsPerCycle: number;
   relDiffVsNumpy: number;
   fluxErrGpu: number;
   fluxErrNumpy: number;
@@ -65,6 +68,13 @@ export interface A0Result {
 }
 
 /** A0 재생 시험: numpy 가 저장한 풀이 입력을 넣고 1·2·3사이클의 결과를 numpy 멀티그리드, 직접 풀이와 견준다 */
+/** A0 에서 견주는 풀이 구성. 셋 다 numpy 와 같은 답을 내야 한다 */
+const A0_CONFIGS = [
+  { name: '기준형', merged: false, sweep2: false },
+  { name: '합친 패스', merged: true, sweep2: false },
+  { name: '합친 패스 + 두 번 스무딩', merged: true, sweep2: true },
+];
+
 export async function testA0(glx: Glx, log: Log): Promise<A0Result> {
   const man = await loadManifest();
   const files = man.files.filter((f) => f.kind === 'solver').sort((a, b) => a.N - b.N || a.step - b.step);
@@ -88,8 +98,10 @@ export async function testA0(glx: Glx, log: Log): Promise<A0Result> {
     mg.setLevel0(texW, texSM, texSM);
     const cycle: A0Cycle[] = [];
     let drawCallsPerCycle = 0;
-    for (const merged of [false, true]) {
+    for (const cfg of A0_CONFIGS) {
+      const merged = cfg.merged;
       mg.merged = merged;
+      mg.sweep2 = cfg.sweep2;
       for (let k = 1; k <= 3; k++) {
         mg.clearAll();
         glx.upload(mg.pTex(), ref.get('p0')![0]);
@@ -99,17 +111,18 @@ export async function testA0(glx: Glx, log: Log): Promise<A0Result> {
         mg.solve(k, f.nc ?? 4);
         const perCycle = (glx.drawCalls - d1) / k;
         if (!merged) drawCallsPerCycle = perCycle;
-        if (k === 1) log(`  ${f.tag}${merged ? ' (합친 패스)' : ''}: 레벨 ${mg.L}단 (${mg.sizes.join(', ')}), 조대 연산자 ${d1 - d0} 드로콜, 사이클당 ${perCycle} 드로콜`);
+        if (k === 1) log(`  ${f.tag} [${cfg.name}]: 레벨 ${mg.L}단 (${mg.sizes.join(', ')}), 조대 연산자 ${d1 - d0} 드로콜, 사이클당 ${perCycle} 드로콜`);
         const pg = channel(glx.read(mg.pTex()), 0);
         const rd = relDiff(pg, ref.get(`p${k}`)![0]);
         const eg = fluxError(f.N, W4, pg, pe);
         const en = f.flux_err![k - 1];
         const pass = rd <= 1e-3 && Math.abs(eg - en) <= 0.01;
-        cycle.push({ merged, cycles: k, relDiffVsNumpy: rd, fluxErrGpu: eg, fluxErrNumpy: en, pass });
+        cycle.push({ config: cfg.name, merged, cycles: k, drawCallsPerCycle: perCycle, relDiffVsNumpy: rd, fluxErrGpu: eg, fluxErrNumpy: en, pass });
         log(`  ${f.tag} ${k}사이클: p 상대 차이 ${rd.toExponential(2)}, 유량 오차 GPU ${eg.toFixed(4)} / numpy ${en.toFixed(4)} → ${pass ? '통과' : '실패'}`);
       }
     }
     mg.merged = false;
+    mg.sweep2 = false;
     const t0 = performance.now();
     const cg = solveCG(f.N, W4, M, rhs);
     const cgMs = performance.now() - t0;
@@ -209,13 +222,24 @@ export interface Variant {
   name: string;
   merged: boolean;
   scissor: boolean;
+  /** 그리는 영역이 작은 레벨에서 스무딩 두 번을 한 패스로 */
+  sweep2: boolean;
 }
 
 export const VARIANTS: Variant[] = [
-  { name: '기준형', merged: false, scissor: false },
-  { name: '합친 패스', merged: true, scissor: false },
-  { name: '합친 패스 + 몸 주변만', merged: true, scissor: true },
+  { name: '기준형', merged: false, scissor: false, sweep2: false },
+  { name: '합친 패스', merged: true, scissor: false, sweep2: false },
+  { name: '합친 패스 + 몸 주변만', merged: true, scissor: true, sweep2: false },
+  { name: '합친 패스 + 몸 주변만 + 두 번 스무딩', merged: true, scissor: true, sweep2: true },
+  { name: '합친 패스 + 두 번 스무딩', merged: true, scissor: false, sweep2: true },
 ];
+
+/** 변형을 시뮬레이션에 건다 */
+export function applyVariant(sim: PlasmGPU, v: Variant): void {
+  sim.mg.merged = v.merged;
+  sim.mg.sweep2 = v.sweep2;
+  sim.scissor = v.scissor;
+}
 
 export interface ParityResult {
   variant: string;
@@ -242,8 +266,7 @@ export async function testParity(glx: Glx, log: Log, variant: Variant): Promise<
     return toState(await loadRef(f));
   };
   const sim = new PlasmGPU(glx, defaultParams({ N: 192, seed: 1 }));
-  sim.mg.merged = variant.merged;
-  sim.scissor = variant.scissor;
+  applyVariant(sim, variant);
   sim.asyncBounds = false; // 시험에서는 경계 상자를 그 자리에서 읽어 결정적으로 만든다
   log(`[${variant.name}]`);
 
@@ -337,8 +360,7 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
   const params = defaultParams({ N: opts.N, seed: opts.seed, mgCycles: opts.cycles, triK: opts.tri ? (2 * Math.PI) / 100 : 0 });
   const sim = new PlasmGPU(glx, params);
   const variant = VARIANTS[opts.variant] ?? VARIANTS[0];
-  sim.mg.merged = variant.merged;
-  sim.scissor = variant.scissor;
+  applyVariant(sim, variant);
   const N = opts.N;
   const n = N * N;
   const dt = params.dt;
