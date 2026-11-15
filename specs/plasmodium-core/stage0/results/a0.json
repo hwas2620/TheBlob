@@ -1,7 +1,7 @@
 {
  "name": "a0",
  "query": "test=a0",
- "seconds": 0.68,
+ "seconds": 4.484,
  "done": true,
  "ok": true,
  "result": {
@@ -25,21 +25,90 @@
      "wet": 2875,
      "cycle": [
       {
+       "config": "기준형",
+       "merged": false,
        "cycles": 1,
+       "drawCallsPerCycle": 46,
        "relDiffVsNumpy": 0.0000013233319791080767,
        "fluxErrGpu": 0.05703954438053934,
        "fluxErrNumpy": 0.05703619431281331,
        "pass": true
       },
       {
+       "config": "기준형",
+       "merged": false,
        "cycles": 2,
+       "drawCallsPerCycle": 46,
        "relDiffVsNumpy": 0.0000013444574573486713,
        "fluxErrGpu": 0.04115596231614087,
        "fluxErrNumpy": 0.04115494885993187,
        "pass": true
       },
       {
+       "config": "기준형",
+       "merged": false,
        "cycles": 3,
+       "drawCallsPerCycle": 46,
+       "relDiffVsNumpy": 8.879759877262134e-7,
+       "fluxErrGpu": 0.03439954557334456,
+       "fluxErrNumpy": 0.03439327294110274,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 1,
+       "drawCallsPerCycle": 34,
+       "relDiffVsNumpy": 0.0000013233319791080767,
+       "fluxErrGpu": 0.05703954438053934,
+       "fluxErrNumpy": 0.05703619431281331,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 2,
+       "drawCallsPerCycle": 34,
+       "relDiffVsNumpy": 0.0000013444574573486713,
+       "fluxErrGpu": 0.04115596231614087,
+       "fluxErrNumpy": 0.04115494885993187,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 3,
+       "drawCallsPerCycle": 34,
+       "relDiffVsNumpy": 8.879759877262134e-7,
+       "fluxErrGpu": 0.03439954557334456,
+       "fluxErrNumpy": 0.03439327294110274,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 1,
+       "drawCallsPerCycle": 24,
+       "relDiffVsNumpy": 0.0000013233319791080767,
+       "fluxErrGpu": 0.05703954438053934,
+       "fluxErrNumpy": 0.05703619431281331,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 2,
+       "drawCallsPerCycle": 24,
+       "relDiffVsNumpy": 0.0000013444574573486713,
+       "fluxErrGpu": 0.04115596231614087,
+       "fluxErrNumpy": 0.04115494885993187,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 3,
+       "drawCallsPerCycle": 24,
        "relDiffVsNumpy": 8.879759877262134e-7,
        "fluxErrGpu": 0.03439954557334456,
        "fluxErrNumpy": 0.03439327294110274,
@@ -48,7 +117,7 @@
      ],
      "cgRelDiff": 2.4920103608733744e-8,
      "cgIters": 264,
-     "cgMs": 33.09999999997672,
+     "cgMs": 34.299999999813735,
      "drawCallsPerCycle": 46,
      "pass": true
     },
@@ -58,21 +127,90 @@
      "wet": 2840,
      "cycle": [
       {
+       "config": "기준형",
+       "merged": false,
        "cycles": 1,
+       "drawCallsPerCycle": 46,
        "relDiffVsNumpy": 0.0000011471119834283553,
        "fluxErrGpu": 0.10272196499202296,
        "fluxErrNumpy": 0.10271932680436355,
        "pass": true
       },
       {
+       "config": "기준형",
+       "merged": false,
        "cycles": 2,
+       "drawCallsPerCycle": 46,
        "relDiffVsNumpy": 5.518727821047191e-7,
        "fluxErrGpu": 0.08316511425633807,
        "fluxErrNumpy": 0.08316458373793997,
        "pass": true
       },
       {
+       "config": "기준형",
+       "merged": false,
        "cycles": 3,
+       "drawCallsPerCycle": 46,
+       "relDiffVsNumpy": 6.440976654923399e-7,
+       "fluxErrGpu": 0.06809569032451637,
+       "fluxErrNumpy": 0.06809656596014714,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 1,
+       "drawCallsPerCycle": 34,
+       "relDiffVsNumpy": 0.0000011471119834283553,
+       "fluxErrGpu": 0.10272196499202296,
+       "fluxErrNumpy": 0.10271932680436355,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 2,
+       "drawCallsPerCycle": 34,
+       "relDiffVsNumpy": 5.518727821047191e-7,
+       "fluxErrGpu": 0.08316511425633807,
+       "fluxErrNumpy": 0.08316458373793997,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 3,
+       "drawCallsPerCycle": 34,
+       "relDiffVsNumpy": 6.440976654923399e-7,
+       "fluxErrGpu": 0.06809569032451637,
+       "fluxErrNumpy": 0.06809656596014714,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 1,
+       "drawCallsPerCycle": 24,
+       "relDiffVsNumpy": 0.0000011471119834283553,
+       "fluxErrGpu": 0.10272196499202296,
+       "fluxErrNumpy": 0.10271932680436355,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 2,
+       "drawCallsPerCycle": 24,
+       "relDiffVsNumpy": 5.518727821047191e-7,
+       "fluxErrGpu": 0.08316511425633807,
+       "fluxErrNumpy": 0.08316458373793997,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 3,
+       "drawCallsPerCycle": 24,
        "relDiffVsNumpy": 6.440976654923399e-7,
        "fluxErrGpu": 0.06809569032451637,
        "fluxErrNumpy": 0.06809656596014714,
@@ -81,7 +219,7 @@
      ],
      "cgRelDiff": 2.5854464097451597e-8,
      "cgIters": 308,
-     "cgMs": 38.70000000006985,
+     "cgMs": 33.299999999813735,
      "drawCallsPerCycle": 46,
      "pass": true
     },
@@ -91,21 +229,90 @@
      "wet": 2995,
      "cycle": [
       {
+       "config": "기준형",
+       "merged": false,
        "cycles": 1,
+       "drawCallsPerCycle": 46,
        "relDiffVsNumpy": 2.3979367540136666e-7,
        "fluxErrGpu": 0.07473479423568347,
        "fluxErrNumpy": 0.07473481124846208,
        "pass": true
       },
       {
+       "config": "기준형",
+       "merged": false,
        "cycles": 2,
+       "drawCallsPerCycle": 46,
        "relDiffVsNumpy": 4.974699208343654e-7,
        "fluxErrGpu": 0.05647547684029414,
        "fluxErrNumpy": 0.05647519402712132,
        "pass": true
       },
       {
+       "config": "기준형",
+       "merged": false,
        "cycles": 3,
+       "drawCallsPerCycle": 46,
+       "relDiffVsNumpy": 3.655531137718736e-7,
+       "fluxErrGpu": 0.04362478490518735,
+       "fluxErrNumpy": 0.04362460498415701,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 1,
+       "drawCallsPerCycle": 34,
+       "relDiffVsNumpy": 2.3979367540136666e-7,
+       "fluxErrGpu": 0.07473479423568347,
+       "fluxErrNumpy": 0.07473481124846208,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 2,
+       "drawCallsPerCycle": 34,
+       "relDiffVsNumpy": 4.974699208343654e-7,
+       "fluxErrGpu": 0.05647547684029414,
+       "fluxErrNumpy": 0.05647519402712132,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 3,
+       "drawCallsPerCycle": 34,
+       "relDiffVsNumpy": 3.655531137718736e-7,
+       "fluxErrGpu": 0.04362478490518735,
+       "fluxErrNumpy": 0.04362460498415701,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 1,
+       "drawCallsPerCycle": 24,
+       "relDiffVsNumpy": 2.3979367540136666e-7,
+       "fluxErrGpu": 0.07473479423568347,
+       "fluxErrNumpy": 0.07473481124846208,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 2,
+       "drawCallsPerCycle": 24,
+       "relDiffVsNumpy": 4.974699208343654e-7,
+       "fluxErrGpu": 0.05647547684029414,
+       "fluxErrNumpy": 0.05647519402712132,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 3,
+       "drawCallsPerCycle": 24,
        "relDiffVsNumpy": 3.655531137718736e-7,
        "fluxErrGpu": 0.04362478490518735,
        "fluxErrNumpy": 0.04362460498415701,
@@ -114,8 +321,110 @@
      ],
      "cgRelDiff": 2.7165666975369287e-8,
      "cgIters": 352,
-     "cgMs": 49.90000000002328,
+     "cgMs": 30.09999999962747,
      "drawCallsPerCycle": 46,
+     "pass": true
+    },
+    {
+     "tag": "solver_N384_s1_step02000",
+     "N": 384,
+     "wet": 2999,
+     "cycle": [
+      {
+       "config": "기준형",
+       "merged": false,
+       "cycles": 1,
+       "drawCallsPerCycle": 53,
+       "relDiffVsNumpy": 4.2196840696187743e-7,
+       "fluxErrGpu": 0.048006219977905044,
+       "fluxErrNumpy": 0.048006382435006836,
+       "pass": true
+      },
+      {
+       "config": "기준형",
+       "merged": false,
+       "cycles": 2,
+       "drawCallsPerCycle": 53,
+       "relDiffVsNumpy": 8.490275055571792e-7,
+       "fluxErrGpu": 0.03403104976431517,
+       "fluxErrNumpy": 0.034030645488551246,
+       "pass": true
+      },
+      {
+       "config": "기준형",
+       "merged": false,
+       "cycles": 3,
+       "drawCallsPerCycle": 53,
+       "relDiffVsNumpy": 8.644097005147923e-7,
+       "fluxErrGpu": 0.02598664720293595,
+       "fluxErrNumpy": 0.025986830639487958,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 1,
+       "drawCallsPerCycle": 39,
+       "relDiffVsNumpy": 4.2196840696187743e-7,
+       "fluxErrGpu": 0.048006219977905044,
+       "fluxErrNumpy": 0.048006382435006836,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 2,
+       "drawCallsPerCycle": 39,
+       "relDiffVsNumpy": 8.490275055571792e-7,
+       "fluxErrGpu": 0.03403104976431517,
+       "fluxErrNumpy": 0.034030645488551246,
+       "pass": true
+      },
+      {
+       "config": "합친 패스",
+       "merged": true,
+       "cycles": 3,
+       "drawCallsPerCycle": 39,
+       "relDiffVsNumpy": 8.644097005147923e-7,
+       "fluxErrGpu": 0.02598664720293595,
+       "fluxErrNumpy": 0.025986830639487958,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 1,
+       "drawCallsPerCycle": 29,
+       "relDiffVsNumpy": 4.2196840696187743e-7,
+       "fluxErrGpu": 0.048006219977905044,
+       "fluxErrNumpy": 0.048006382435006836,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 2,
+       "drawCallsPerCycle": 29,
+       "relDiffVsNumpy": 8.490275055571792e-7,
+       "fluxErrGpu": 0.03403104976431517,
+       "fluxErrNumpy": 0.034030645488551246,
+       "pass": true
+      },
+      {
+       "config": "합친 패스 + 두 번 스무딩",
+       "merged": true,
+       "cycles": 3,
+       "drawCallsPerCycle": 29,
+       "relDiffVsNumpy": 8.644097005147923e-7,
+       "fluxErrGpu": 0.02598664720293595,
+       "fluxErrNumpy": 0.025986830639487958,
+       "pass": true
+      }
+     ],
+     "cgRelDiff": 2.4795620420203983e-8,
+     "cgIters": 342,
+     "cgMs": 38.19999999925494,
+     "drawCallsPerCycle": 53,
      "pass": true
     }
    ]

@@ -318,8 +318,13 @@ export interface A12Options {
   tri: boolean;
   /** 이 스텝마다 CPU 기준 풀이로 유량 오차를 잰다 */
   checkEvery: number;
-  /** VARIANTS 의 번호 (0 기준형, 1 합친 패스, 2 합친 패스 + 몸 주변만) */
+  /** VARIANTS 의 번호 (0 기준형) */
   variant: number;
+  /**
+   * 몸의 경계 상자를 그 자리에서 읽는다(8스텝마다). 끄면 게임처럼 멈춤 없이 읽는데, 그 결과는 이벤트 루프로 돌아가야 도착한다.
+   * 이 시험은 100스텝마다만 돌아가므로 끄면 여유 폭이 100셀 넘게 커져 가위 사각형이 격자를 거의 다 덮는다(결과는 같고 느려질 뿐이다).
+   */
+  syncBounds: boolean;
 }
 
 export interface A12Result extends A12Options {
@@ -336,6 +341,8 @@ export interface A12Result extends A12Options {
   fluxErr: { n: number; median: number; p90: number; p99: number; max: number };
   fluxErrSeries: number[];
   variantName: string;
+  /** 그린 영역이 격자에서 차지한 비율의 평균 (가위를 쓰지 않으면 1) */
+  activeFractionMean: number;
   /** [t, 무게중심 x, y, 넓이, 무게중심에서 가장 먼 젖은 셀까지의 거리(축별 최대)] (50스텝마다) */
   traj: number[][];
   /** 몸이 무게중심에서 격자 절반 가까이(N/2 − 4)까지 퍼진 첫 시각. 그 뒤로는 토러스에서 무게중심을 믿을 수 없다 */
@@ -361,6 +368,7 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
   const sim = new PlasmGPU(glx, params);
   const variant = VARIANTS[opts.variant] ?? VARIANTS[0];
   applyVariant(sim, variant);
+  sim.asyncBounds = !opts.syncBounds;
   const N = opts.N;
   const n = N * N;
   const dt = params.dt;
@@ -379,6 +387,7 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
   const mimg = (v: number): number => ((((v + N / 2) % N) + N) % N) - N / 2;
   const fluxErrSeries: number[] = [];
   const traj: number[][] = [];
+  let fracSum = 0;
   let nan = false, negEndSteps = 0, hMinEnd = Infinity, hMinInStep = Infinity, cMaxRun = 0, tTouch: number | null = null, tWrap: number | null = null, areaEnd = 0, volumeEnd = v0, stepsDone = 0;
 
   /** 읽은 cellA 로 무게중심(토러스 최소 상)을 갱신하고 유인원에 닿았는지 본다 */
@@ -432,6 +441,7 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
         : undefined,
     );
     stepsDone = step + 1;
+    fracSum += sim.activeFraction();
     const st = sim.readStepStats();
     const es = sim.readEndStats();
     if (![st.hMinInStep, st.cMax, es.volume, es.hMin].every(Number.isFinite) && es.area > 0) nan = true;
@@ -471,6 +481,7 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
     fluxErr: { n: sorted.length, median: quantile(sorted, 0.5), p90: quantile(sorted, 0.9), p99: quantile(sorted, 0.99), max: sorted.length ? sorted[sorted.length - 1] : NaN },
     fluxErrSeries,
     variantName: variant.name,
+    activeFractionMean: stepsDone > 0 ? fracSum / stepsDone : 1,
     traj,
     tWrap,
     disp_0_300: disp(0, 300),
@@ -479,10 +490,10 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
     tTouch,
     areaEnd,
   };
-  log(`${N}² 시드 ${opts.seed} ${opts.cycles}사이클${opts.tri ? ' 삼각 격자' : ''} [${variant.name}]: ${stepsDone}스텝, NaN ${nan ? '있음' : '없음'}, 스텝 끝 음수 두께 ${negEndSteps}스텝(최소 ${hMinEnd.toExponential(2)}), `
+  log(`${N}² 시드 ${opts.seed} ${opts.cycles}사이클${opts.tri ? ' 삼각 격자' : ''} [${variant.name}${variant.scissor ? (opts.syncBounds ? ', 경계 상자 즉시 읽기' : ', 경계 상자 비동기') : ''}]: ${stepsDone}스텝, NaN ${nan ? '있음' : '없음'}, 스텝 끝 음수 두께 ${negEndSteps}스텝(최소 ${hMinEnd.toExponential(2)}), `
     + `스텝 안 최소 두께 ${hMinInStep.toExponential(2)}, 최대 전도도 ${cMaxRun.toFixed(0)}, 부피 오차 ${res.volumeRelErr.toExponential(2)}`);
   log(`  유량 오차 중앙 ${res.fluxErr.median.toFixed(3)} / 90백분위 ${res.fluxErr.p90.toFixed(3)} / 99백분위 ${res.fluxErr.p99.toFixed(3)} / 최대 ${res.fluxErr.max.toFixed(3)} (${sorted.length}회)`);
   log(`  이동 t=0~300 ${res.disp_0_300?.toFixed(1) ?? '-'}셀, t=0~400 ${res.disp_0_400?.toFixed(1) ?? '-'}셀, t=100~300 ${res.disp_100_300?.toFixed(1) ?? '-'}셀, 유인원에 닿은 시각 ${tTouch ?? '-'}, `
-    + `몸이 격자 절반까지 퍼진 시각 ${tWrap ?? '-'}, 스텝당 드로콜 ${drawCallsPerStep}, ${res.seconds.toFixed(0)}초`);
+    + `몸이 격자 절반까지 퍼진 시각 ${tWrap ?? '-'}, 스텝당 드로콜 ${drawCallsPerStep}, 그린 영역 평균 ${(res.activeFractionMean * 100).toFixed(0)}%, ${res.seconds.toFixed(0)}초`);
   return res;
 }

@@ -2,6 +2,8 @@
 //
 // 재는 법: 블록(16스텝)마다 앞에서 GPU 를 비우고(1×1 읽기), 스텝을 연달아 돌린 뒤 다시 1×1 을 읽어 끝나기를 기다린다.
 // 벽시계로 재므로 드라이버의 CPU 시간까지 들어간다. 드로콜 수가 많은 이 작업에서는 그쪽이 실제 비용에 가깝다.
+// (타이머 질의는 쓰지 않는다. GPU 쪽 시간만 재고, 브라우저에 따라 꺼져 있거나 거칠다.)
+// 몸은 굶은 이주의 400스텝째 것(약 2700셀)이다. "몸 주변만" 변형은 작은 몸의 비용을, 나머지는 몸이 격자를 다 덮었을 때의 비용을 보여 준다.
 // 소프트웨어 렌더러에서는 시간 수치가 뜻이 없다(드로콜 수와 상대 비중만 본다).
 
 import type { Glx } from '../gpu/plasm/glx';
@@ -15,6 +17,8 @@ export interface BenchRow {
   cycles: number;
   drawCalls: number;
   msPerStep: number;
+  /** 그 가운데 압력 풀이(조대 연산자 재구성 + V 사이클)의 몫. 풀이만 따로 연달아 돌려 잰다 */
+  msSolve: number;
   /** 그리는 영역이 격자에서 차지하는 비율 */
   activeFraction: number;
   /** 프레임 4ms 로 돌릴 수 있는 프레임당 스텝 수 */
@@ -105,6 +109,16 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
           await yieldNow();
         }
         const msPerStep = ms / (BLOCK * BLOCKS);
+        // 풀이만: 같은 상태에서 조대 연산자 재구성과 V 사이클을 연달아 돌린다 (비용은 상태에 거의 기대지 않는다)
+        sim.readStepStats();
+        const ts = performance.now();
+        for (let s = 0; s < BLOCK * 2; s++) {
+          sim.mg.build();
+          sim.mg.solve(cycles, sim.params.mgCoarseSweeps);
+        }
+        sim.readStepStats();
+        const msSolve = (performance.now() - ts) / (BLOCK * 2);
+        for (let s = 0; s < 4; s++) sim.stepOnce(); // 풀이만 돌리며 흐트러진 압력을 다시 맞춘다
         const stepsPerFrame = FRAME_BUDGET_MS / msPerStep;
         const row: BenchRow = {
           N,
@@ -112,6 +126,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
           cycles,
           drawCalls: Math.round(draws / (BLOCK * BLOCKS)),
           msPerStep,
+          msSolve,
           activeFraction: frac / BLOCKS,
           stepsPerFrame,
           pxPerSec: CELLS_PER_STEP * stepsPerFrame * 60 * (MAP_PX / N),
@@ -119,7 +134,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
         };
         if (v.sweep2 && sweep2Error) row.sweep2Missing = true;
         rows.push(row);
-        log(`  ${N}² ${cycles}사이클 ${v.name}: ${row.drawCalls} 드로콜, ${msPerStep.toFixed(2)}ms/스텝 (영역 ${(row.activeFraction * 100).toFixed(0)}%) → 4ms 예산이면 프레임당 ${stepsPerFrame.toFixed(1)}스텝, 전진 ${row.pxPerSec.toFixed(0)}px/s, 맥동 ${row.pulseSec.toFixed(2)}초`);
+        log(`  ${N}² ${cycles}사이클 ${v.name}: ${row.drawCalls} 드로콜, ${msPerStep.toFixed(2)}ms/스텝 (그중 풀이 ${msSolve.toFixed(2)}ms, 영역 ${(row.activeFraction * 100).toFixed(0)}%) → 4ms 예산이면 프레임당 ${stepsPerFrame.toFixed(1)}스텝, 전진 ${row.pxPerSec.toFixed(0)}px/s, 맥동 ${row.pulseSec.toFixed(2)}초`);
       }
     }
   }

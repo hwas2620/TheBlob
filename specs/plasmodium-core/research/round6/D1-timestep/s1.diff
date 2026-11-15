@@ -1,0 +1,12 @@
+135c135
+<     p = np.zeros((N, N)); pm = np.zeros((N, N)); mgs = mgt.MGT(N) if P['solver'] == 'mg' else None; mg_err = []
+---
+>     p = np.zeros((N, N)); pm = np.zeros((N, N)); mgs = mgt.MGT(N) if P['solver'] in ('mg', 'pcg') else None; mg_err = []
+300c300
+<         if P['solver'] == 'mg':
+---
+>         if P['solver'] in ('mg', 'pcg'):   # [S1] 'pcg': V 사이클을 앞처리로 쓰는 켤레기울기, ncyc = 반복 수
+303c303
+<             p = mgs.solve(W, np.where(wet, 1.0 / (kap_f * dt), 0.0), np.where(wet, (h - hstar) / dt, 0.0), p0, ncyc=P['ncyc'], nc=P['nc'])
+---
+>             p = (mgs.solve_pcg if P['solver'] == 'pcg' else mgs.solve)(W, np.where(wet, 1.0 / (kap_f * dt), 0.0), np.where(wet, (h - hstar) / dt, 0.0), p0, P['ncyc'], P['nc'])
