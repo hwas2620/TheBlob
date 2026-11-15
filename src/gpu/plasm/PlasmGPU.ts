@@ -5,7 +5,7 @@
 // 한 스텝: 간선 켜기 → 위상(부분 스텝) → 쉬는 두께·우변·가중치 → 멀티그리드 → 유량·두께 → 전역 평균 → 강화 → 마름 → 젖음
 // numpy 기준 모델(specs/plasmodium-core/stage0/ref/ref_model.py)과 연산 순서를 맞췄다.
 
-import type { Glx, Prog, Target, Tex } from './glx';
+import type { AsyncRead, Glx, Prog, Rect, Target, Tex } from './glx';
 import { noiseFields } from './hashNoise';
 import { MultigridGPU } from './MultigridGPU';
 import { shaderVars, type PlasmParams } from './params';
@@ -43,6 +43,11 @@ export interface PlainState {
   pm: Float32Array;
 }
 
+/** 경계 상자를 다시 재는 주기(스텝) */
+const BOUNDS_EVERY = 8;
+/** 경계 상자 밖으로 두는 여유(셀). 젖은 마스크 흐림의 반경 6 보다 커야 한다 */
+const BOUNDS_MARGIN = 10;
+
 export class PlasmGPU {
   readonly params: PlasmParams;
   readonly N: number;
@@ -77,6 +82,19 @@ export class PlasmGPU {
   private stat: Tex[] = [];
   private tStat: Target[] = [];
   private prog: Record<string, Prog> = {};
+  /**
+   * 몸 주변만 계산한다. 모든 패스에 "젖은 셀의 경계 상자 + 여유"만 그리는 가위 사각형을 건다.
+   * 젖은 영역은 한 스텝에 한 칸씩만 넓어지므로, 상자를 잰 뒤 지난 스텝 수만큼 여유를 키우면 상자 밖은 늘 변하지 않는 마른 땅이다.
+   * 상자가 격자 가장자리를 넘으면 전체를 그린다.
+   */
+  scissor = false;
+  /** 경계 상자를 멈춤 없이 읽는다(게임 루프용). false 면 그 자리에서 읽는다(시험용. 파이프라인이 멈춘다) */
+  asyncBounds = true;
+  private bounds: [number, number, number, number] | null = null; // 젖은 셀의 x0, y0, x1, y1
+  private boundsStep = 0;
+  private pending: { read: AsyncRead; step: number } | null = null;
+  private box: Tex[] = [];
+  private tBox: Target[] = [];
 
   constructor(glx: Glx, params: PlasmParams) {
     const N = params.N;
@@ -124,6 +142,7 @@ export class PlasmGPU {
     for (;;) {
       this.red.push(glx.tex(n, n, 'rgba32f'));
       this.stat.push(glx.tex(n, n, 'rgba32f'));
+      this.box.push(glx.tex(n, n, 'rgba32f'));
       if (n === 1) break;
       const b = n <= 16 ? n : 8;
       this.redBlock.push(b);
@@ -131,7 +150,87 @@ export class PlasmGPU {
     }
     this.tRed = this.red.map((t) => glx.target(t));
     this.tStat = this.stat.map((t) => glx.target(t));
+    this.tBox = this.box.map((t) => glx.target(t));
     this.reset();
+  }
+
+  /**
+   * 상태를 통째로 바꾼다. 핑퐁 두 장 모두에 올린다 — "몸 주변만 계산"은 가위 밖을 다시 쓰지 않으므로
+   * 다른 한 장에 이전 몸이 남아 있으면 안 된다. 작업 텍스처도 비우고 경계 상자를 CPU 에서 다시 잰다
+   */
+  private setState(a: Float32Array, b: Float32Array, c: Float32Array, step: number): void {
+    const { glx, N } = this;
+    this.curA = this.curB = this.curC = 0;
+    for (let i = 0; i < 2; i++) {
+      glx.upload(this.A[i], a);
+      glx.upload(this.B[i], b);
+      glx.upload(this.C[i], c);
+    }
+    this.step = step;
+    glx.clear(this.tAuxW, 0);
+    for (const t of this.tDry) glx.clear(t, 0);
+    for (const t of this.tBlur) glx.clear(t, 0);
+    glx.clear(this.tPlan, 0);
+    for (const t of this.tRed) glx.clear(t, [0, 0, 1e30, 0]);
+    for (const t of this.tBox) glx.clear(t, 1e9);
+    this.mg.clearAll();
+    let x0 = N, y0 = N, x1 = -1, y1 = -1;
+    for (let y = 0; y < N; y++) {
+      for (let x = 0; x < N; x++) {
+        if (a[(y * N + x) * 4 + 1] > 0.5) {
+          if (x < x0) x0 = x;
+          if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
+        }
+      }
+    }
+    this.bounds = x1 >= 0 ? [x0, y0, x1, y1] : null;
+    this.boundsStep = this.step;
+    this.pending = null;
+  }
+
+  /** 이번 스텝에 그릴 영역. null 이면 전체 */
+  private activeRect(): Rect | null {
+    if (!this.scissor || !this.bounds) return null;
+    const m = BOUNDS_MARGIN + (this.step - this.boundsStep);
+    const x0 = this.bounds[0] - m;
+    const y0 = this.bounds[1] - m;
+    const x1 = this.bounds[2] + m;
+    const y1 = this.bounds[3] + m;
+    if (x0 < 0 || y0 < 0 || x1 >= this.N || y1 >= this.N) return null;
+    return [x0, y0, x1 - x0 + 1, y1 - y0 + 1];
+  }
+
+  /** 8×8 블록 축소의 첫 단에 쓸 영역 */
+  private static blockRect(r: Rect | null): Rect | null {
+    if (!r) return null;
+    const x0 = Math.floor(r[0] / 8);
+    const y0 = Math.floor(r[1] / 8);
+    return [x0, y0, Math.ceil((r[0] + r[2]) / 8) - x0, Math.ceil((r[1] + r[3]) / 8) - y0];
+  }
+
+  /** 경계 상자를 다시 잰다 (축소 패스 뒤 1×1 텍셀을 읽는다) */
+  private updateBounds(rect: Rect | null): void {
+    const { glx, prog } = this;
+    if (this.pending) {
+      const v = glx.poll(this.pending.read);
+      if (v) {
+        this.applyBounds(v, this.pending.step);
+        this.pending = null;
+      }
+    }
+    if (this.step % BOUNDS_EVERY !== 0 || this.pending) return;
+    glx.draw(prog.bbox0, this.tBox[0], { uA: this.A[this.curA] }, PlasmGPU.blockRect(rect));
+    for (let i = 1; i < this.box.length; i++) glx.draw(prog.reduceMin, this.tBox[i], { uSrc: this.box[i - 1], uBlock: this.redBlock[i - 1] });
+    const last = this.box[this.box.length - 1];
+    if (this.asyncBounds) this.pending = { read: glx.readAsync(last), step: this.step };
+    else this.applyBounds(glx.read(last), this.step);
+  }
+
+  private applyBounds(v: Float32Array, step: number): void {
+    this.bounds = v[0] > 1e8 ? null : [v[0], v[1], -v[2], -v[3]];
+    this.boundsStep = step;
   }
 
   /** 유인장 c = amp·Σ(주기 상) exp(−r²/2σ²). numpy 기준과 같은 식 */
@@ -173,11 +272,7 @@ export class PlasmGPU {
       }
     }
     const zero = new Float32Array(N * N * 4);
-    this.curA = this.curB = this.curC = 0;
-    this.glx.upload(this.A[0], a);
-    this.glx.upload(this.B[0], zero);
-    this.glx.upload(this.C[0], zero);
-    this.step = 0;
+    this.setState(a, zero, zero, 0);
   }
 
   /** numpy 가 내보낸 "스텝 시작 시점의 상태"를 넣는다 */
@@ -197,17 +292,15 @@ export class PlasmGPU {
       b[i * 4 + 3] = s.pm[i];
       for (let k = 0; k < 4; k++) c[i * 4 + k] = s.C[k][i];
     }
-    this.curA = this.curB = this.curC = 0;
-    this.glx.upload(this.A[0], a);
-    this.glx.upload(this.B[0], b);
-    this.glx.upload(this.C[0], c);
-    this.step = step;
+    this.setState(a, b, c, step);
   }
 
   /** 한 스텝. afterSolve 는 압력을 푼 직후(유량 갱신 전)에 불린다 — 시험이 풀이의 입력과 해를 읽는 자리 */
   stepOnce(afterSolve?: () => void): void {
     const { glx, prog, params: p } = this;
     const t = this.step * p.dt;
+    const r = this.activeRect();
+    this.mg.rect = r;
     const flipAB = (): Target => {
       this.curA = 1 - this.curA;
       this.curB = 1 - this.curB;
@@ -215,20 +308,20 @@ export class PlasmGPU {
     };
 
     // 1. 간선 켜기
-    glx.draw(prog.edgeActivate, this.tC[1 - this.curC], { uA: this.A[this.curA], uC: this.C[this.curC], uCinit: this.texCinit });
+    glx.draw(prog.edgeActivate, this.tC[1 - this.curC], { uA: this.A[this.curA], uC: this.C[this.curC], uCinit: this.texCinit }, r);
     this.curC = 1 - this.curC;
 
     // 2. 위상
     for (let s = 0; s < p.substeps; s++) {
-      glx.draw(prog.phase, this.tB[1 - this.curB], { uA: this.A[this.curA], uB: this.B[this.curB] });
+      glx.draw(prog.phase, this.tB[1 - this.curB], { uA: this.A[this.curA], uB: this.B[this.curB] }, r);
       this.curB = 1 - this.curB;
     }
 
     // 3. 쉬는 두께, 우변, 간선 가중치
-    glx.draw(prog.rest, this.tAuxW, { uA: this.A[this.curA], uB: this.B[this.curB], uC: this.C[this.curC], uG: this.texG, uT: t });
+    glx.draw(prog.rest, this.tAuxW, { uA: this.A[this.curA], uB: this.B[this.curB], uC: this.C[this.curC], uG: this.texG, uT: t }, r);
 
     // 4~6. 압력
-    glx.draw(prog.mgInit, this.mg.p0Target(), { uA: this.A[this.curA], uB: this.B[this.curB] });
+    glx.draw(prog.mgInit, this.mg.p0Target(), { uA: this.A[this.curA], uB: this.B[this.curB] }, r);
     this.mg.build();
     this.mg.solve(p.mgCycles, p.mgCoarseSweeps);
     if (afterSolve) afterSolve();
@@ -238,39 +331,40 @@ export class PlasmGPU {
     {
       const srcA = this.A[this.curA];
       const srcB = this.B[this.curB];
-      glx.draw(prog.flux, flipAB(), { uA: srcA, uB: srcB, uW: this.W, uP: P });
+      glx.draw(prog.flux, flipAB(), { uA: srcA, uB: srcB, uW: this.W, uP: P }, r);
     }
 
     // 8. 전역 평균 (Q0)
-    glx.draw(prog.reduceQ0, this.tRed[0], { uW: this.W, uP: P, uA: this.A[this.curA], uC: this.C[this.curC] });
+    glx.draw(prog.reduceQ0, this.tRed[0], { uW: this.W, uP: P, uA: this.A[this.curA], uC: this.C[this.curC] }, PlasmGPU.blockRect(r));
     for (let i = 1; i < this.red.length; i++) glx.draw(prog.reduceSum, this.tRed[i], { uSrc: this.red[i - 1], uBlock: this.redBlock[i - 1] });
 
     // 9. 강화
-    glx.draw(prog.reinforce, this.tC[1 - this.curC], { uC: this.C[this.curC], uW: this.W, uP: P, uRed: this.red[this.red.length - 1] });
+    glx.draw(prog.reinforce, this.tC[1 - this.curC], { uC: this.C[this.curC], uW: this.W, uP: P, uRed: this.red[this.red.length - 1] }, r);
     this.curC = 1 - this.curC;
 
     // 10. 마름
-    glx.draw(prog.dryMark, this.tDry[0], { uA: this.A[this.curA], uAux: this.aux, uStep: this.step });
-    glx.draw(prog.dryConfirm, this.tDry[1], { uA: this.A[this.curA], uD: this.dry[0] });
-    glx.draw(prog.dryShare, this.tDry[2], { uA: this.A[this.curA], uD: this.dry[1] });
+    glx.draw(prog.dryMark, this.tDry[0], { uA: this.A[this.curA], uAux: this.aux, uStep: this.step }, r);
+    glx.draw(prog.dryConfirm, this.tDry[1], { uA: this.A[this.curA], uD: this.dry[0] }, r);
+    glx.draw(prog.dryShare, this.tDry[2], { uA: this.A[this.curA], uD: this.dry[1] }, r);
     {
       const srcA = this.A[this.curA];
       const srcB = this.B[this.curB];
-      glx.draw(prog.dryApply, flipAB(), { uA: srcA, uB: srcB, uD: this.dry[2] });
+      glx.draw(prog.dryApply, flipAB(), { uA: srcA, uB: srcB, uD: this.dry[2] }, r);
     }
 
     // 11. 젖은 마스크의 흐림
-    glx.draw(prog.blur, this.tBlur[0], { uSrc: this.A[this.curA], uDir: [1, 0], uCh: 1 });
-    glx.draw(prog.blur, this.tBlur[1], { uSrc: this.blur[0], uDir: [0, 1], uCh: 0 });
+    glx.draw(prog.blur, this.tBlur[0], { uSrc: this.A[this.curA], uDir: [1, 0], uCh: 1 }, r);
+    glx.draw(prog.blur, this.tBlur[1], { uSrc: this.blur[0], uDir: [0, 1], uCh: 0 }, r);
 
     // 12. 젖음
-    glx.draw(prog.wetMark, this.tPlan, { uA: this.A[this.curA], uB: this.B[this.curB], uF: this.blur[1], uField: this.texField });
+    glx.draw(prog.wetMark, this.tPlan, { uA: this.A[this.curA], uB: this.B[this.curB], uF: this.blur[1], uField: this.texField }, r);
     {
       const srcA = this.A[this.curA];
       const srcB = this.B[this.curB];
-      glx.draw(prog.wetApply, flipAB(), { uA: srcA, uB: srcB, uPlan: this.plan });
+      glx.draw(prog.wetApply, flipAB(), { uA: srcA, uB: srcB, uPlan: this.plan }, r);
     }
     this.step++;
+    if (this.scissor) this.updateBounds(r);
   }
 
   /** 방금 돈 스텝의 통계 (1×1 텍셀 읽기 — 파이프라인을 멈춘다) */

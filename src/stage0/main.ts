@@ -11,7 +11,7 @@
 import { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU } from '../gpu/plasm/PlasmGPU';
 import { defaultParams } from '../gpu/plasm/params';
-import { testA0, testA12, testNoise, testParity } from './tests';
+import { testA0, testA12, testNoise, testParity, VARIANTS } from './tests';
 
 interface Stage0State {
   done: boolean;
@@ -62,8 +62,9 @@ async function main(): Promise<void> {
     return;
   }
   if (test === 'parity') {
-    const parity = await testParity(glx, log);
-    window.__stage0 = { done: true, ok: parity.pass, result: { caps, parity } };
+    const parity = [];
+    for (const v of VARIANTS) parity.push(await testParity(glx, log, v));
+    window.__stage0 = { done: true, ok: parity.every((p) => p.pass), result: { caps, parity } };
     return;
   }
   const num = (k: string, d: number): number => (q.has(k) ? Number(q.get(k)) : d);

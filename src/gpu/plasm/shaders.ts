@@ -6,6 +6,8 @@ import mgResidual from './shaders/mg_residual.frag.glsl?raw';
 import mgRestrict from './shaders/mg_restrict.frag.glsl?raw';
 import mgProlong from './shaders/mg_prolong.frag.glsl?raw';
 import mgCoarsen from './shaders/mg_coarsen.frag.glsl?raw';
+import mgResRestrict from './shaders/mg_resrestrict.frag.glsl?raw';
+import mgProlongJacobi from './shaders/mg_prolong_jacobi.frag.glsl?raw';
 import edgeActivate from './shaders/edge_activate.frag.glsl?raw';
 import phase from './shaders/phase.frag.glsl?raw';
 import rest from './shaders/rest.frag.glsl?raw';
@@ -23,6 +25,8 @@ import blur13 from './shaders/blur13.frag.glsl?raw';
 import wetMark from './shaders/wet_mark.frag.glsl?raw';
 import wetApply from './shaders/wet_apply.frag.glsl?raw';
 import view from './shaders/view.frag.glsl?raw';
+import bbox0 from './shaders/bbox0.frag.glsl?raw';
+import reduceMin from './shaders/reduce_min.frag.glsl?raw';
 
 /** 모든 프래그먼트 셰이더의 머리말. 이웃 접근은 texelFetch 와 정수 나머지로 한다(토러스) */
 const COMMON = `#version 300 es
@@ -56,6 +60,8 @@ export function multigridShaders(vars: ShaderVars) {
     restrict: make(mgRestrict, vars),
     prolong: make(mgProlong, vars),
     coarsen: make(mgCoarsen, vars),
+    resRestrict: make(mgResRestrict, vars),
+    prolongJacobi: make(mgProlongJacobi, vars),
   };
 }
 
@@ -78,5 +84,7 @@ export function plasmShaders(vars: ShaderVars) {
     wetMark: make(wetMark, vars),
     wetApply: make(wetApply, vars),
     view: make(view, vars),
+    bbox0: make(bbox0, vars),
+    reduceMin: make(reduceMin, vars),
   };
 }

@@ -35,6 +35,14 @@ export type UVal = number | readonly number[] | Tex;
 /** [x, y, w, h] — 그릴 영역 (타깃 픽셀 좌표) */
 export type Rect = readonly [number, number, number, number];
 
+/** 멈춤 없는 읽기의 손잡이 (readAsync 가 만들고 poll 이 거둔다) */
+export interface AsyncRead {
+  buf: WebGLBuffer;
+  sync: WebGLSync;
+  w: number;
+  h: number;
+}
+
 export interface GlCaps {
   renderer: string;
   colorBufferFloat: boolean;
@@ -202,12 +210,12 @@ export class Glx {
     this.drawCalls++;
   }
 
-  /** 타깃의 모든 첨부를 한 값으로 채운다 (드로콜이 아니다) */
-  clear(t: Target, v = 0): void {
+  /** 타깃의 모든 첨부를 한 값(또는 RGBA)으로 채운다 (드로콜이 아니다) */
+  clear(t: Target, v: number | readonly number[] = 0): void {
     const gl = this.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo);
     gl.disable(gl.SCISSOR_TEST);
-    const c = new Float32Array([v, v, v, v]);
+    const c = typeof v === 'number' ? new Float32Array([v, v, v, v]) : new Float32Array(v);
     for (let i = 0; i < t.n; i++) gl.clearBufferfv(gl.COLOR, i, c);
   }
 
@@ -219,6 +227,37 @@ export class Glx {
     const out = new Float32Array(t.w * t.h * 4);
     gl.readPixels(0, 0, t.w, t.h, gl.RGBA, gl.FLOAT, out);
     return out;
+  }
+
+  /** 텍스처를 파이프라인을 멈추지 않고 읽기 시작한다. 결과는 poll 로 거둔다 */
+  readAsync(t: Tex): AsyncRead {
+    const gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.readFbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t.tex, 0);
+    const buf = gl.createBuffer()!;
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buf);
+    gl.bufferData(gl.PIXEL_PACK_BUFFER, t.w * t.h * 16, gl.STREAM_READ);
+    gl.readPixels(0, 0, t.w, t.h, gl.RGBA, gl.FLOAT, 0);
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0)!;
+    gl.flush();
+    return { buf, sync, w: t.w, h: t.h };
+  }
+
+  /** 읽기가 끝났으면 값을, 아니면 null */
+  poll(a: AsyncRead): Float32Array | null {
+    const gl = this.gl;
+    const s = gl.clientWaitSync(a.sync, 0, 0);
+    if (s === gl.TIMEOUT_EXPIRED) return null;
+    gl.deleteSync(a.sync);
+    const out = new Float32Array(a.w * a.h * 4);
+    if (s !== gl.WAIT_FAILED) {
+      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, a.buf);
+      gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, 0, out);
+      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    }
+    gl.deleteBuffer(a.buf);
+    return s === gl.WAIT_FAILED ? null : out;
   }
 
   /** 대기 중인 명령을 모두 끝낸다 (벽시계 측정용) */

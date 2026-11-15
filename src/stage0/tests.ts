@@ -39,6 +39,7 @@ export function testNoise(log: Log): NoiseResult {
 }
 
 export interface A0Cycle {
+  merged: boolean;
   cycles: number;
   relDiffVsNumpy: number;
   fluxErrGpu: number;
@@ -87,22 +88,28 @@ export async function testA0(glx: Glx, log: Log): Promise<A0Result> {
     mg.setLevel0(texW, texSM, texSM);
     const cycle: A0Cycle[] = [];
     let drawCallsPerCycle = 0;
-    for (let k = 1; k <= 3; k++) {
-      glx.upload(mg.pTex(), ref.get('p0')![0]);
-      const d0 = glx.drawCalls;
-      mg.build();
-      const d1 = glx.drawCalls;
-      mg.solve(k, f.nc ?? 4);
-      drawCallsPerCycle = (glx.drawCalls - d1) / k;
-      if (k === 1) log(`  ${f.tag}: 레벨 ${mg.L}단 (${mg.sizes.join(', ')}), 조대 연산자 ${d1 - d0} 드로콜, 사이클당 ${drawCallsPerCycle} 드로콜`);
-      const pg = channel(glx.read(mg.pTex()), 0);
-      const rd = relDiff(pg, ref.get(`p${k}`)![0]);
-      const eg = fluxError(f.N, W4, pg, pe);
-      const en = f.flux_err![k - 1];
-      const pass = rd <= 1e-3 && Math.abs(eg - en) <= 0.01;
-      cycle.push({ cycles: k, relDiffVsNumpy: rd, fluxErrGpu: eg, fluxErrNumpy: en, pass });
-      log(`  ${f.tag} ${k}사이클: p 상대 차이 ${rd.toExponential(2)}, 유량 오차 GPU ${eg.toFixed(4)} / numpy ${en.toFixed(4)} → ${pass ? '통과' : '실패'}`);
+    for (const merged of [false, true]) {
+      mg.merged = merged;
+      for (let k = 1; k <= 3; k++) {
+        mg.clearAll();
+        glx.upload(mg.pTex(), ref.get('p0')![0]);
+        const d0 = glx.drawCalls;
+        mg.build();
+        const d1 = glx.drawCalls;
+        mg.solve(k, f.nc ?? 4);
+        const perCycle = (glx.drawCalls - d1) / k;
+        if (!merged) drawCallsPerCycle = perCycle;
+        if (k === 1) log(`  ${f.tag}${merged ? ' (합친 패스)' : ''}: 레벨 ${mg.L}단 (${mg.sizes.join(', ')}), 조대 연산자 ${d1 - d0} 드로콜, 사이클당 ${perCycle} 드로콜`);
+        const pg = channel(glx.read(mg.pTex()), 0);
+        const rd = relDiff(pg, ref.get(`p${k}`)![0]);
+        const eg = fluxError(f.N, W4, pg, pe);
+        const en = f.flux_err![k - 1];
+        const pass = rd <= 1e-3 && Math.abs(eg - en) <= 0.01;
+        cycle.push({ merged, cycles: k, relDiffVsNumpy: rd, fluxErrGpu: eg, fluxErrNumpy: en, pass });
+        log(`  ${f.tag} ${k}사이클: p 상대 차이 ${rd.toExponential(2)}, 유량 오차 GPU ${eg.toFixed(4)} / numpy ${en.toFixed(4)} → ${pass ? '통과' : '실패'}`);
+      }
     }
+    mg.merged = false;
     const t0 = performance.now();
     const cg = solveCG(f.N, W4, M, rhs);
     const cgMs = performance.now() - t0;
@@ -197,7 +204,21 @@ export function diffState(sim: PlasmGPU, ref: PlainState): StateDiff {
   };
 }
 
+/** 스텝을 싸게 만드는 수단 (결과는 같아야 한다) */
+export interface Variant {
+  name: string;
+  merged: boolean;
+  scissor: boolean;
+}
+
+export const VARIANTS: Variant[] = [
+  { name: '기준형', merged: false, scissor: false },
+  { name: '합친 패스', merged: true, scissor: false },
+  { name: '합친 패스 + 몸 주변만', merged: true, scissor: true },
+];
+
 export interface ParityResult {
+  variant: string;
   pass: boolean;
   drawCallsPerStep: number;
   mature: StateDiff[];
@@ -211,7 +232,7 @@ function fmtDiff(d: StateDiff): string {
 }
 
 /** 스텝 일치 시험: numpy 상태에서 출발해 GPU 로 돌린 결과를 numpy 의 다음 상태와 견준다 */
-export async function testParity(glx: Glx, log: Log): Promise<ParityResult> {
+export async function testParity(glx: Glx, log: Log, variant: Variant): Promise<ParityResult> {
   const man = await loadManifest();
   const states = new Map<number, RefFile>();
   for (const f of man.files) if (f.kind === 'state' && f.N === 192) states.set(f.step, f);
@@ -221,6 +242,10 @@ export async function testParity(glx: Glx, log: Log): Promise<ParityResult> {
     return toState(await loadRef(f));
   };
   const sim = new PlasmGPU(glx, defaultParams({ N: 192, seed: 1 }));
+  sim.mg.merged = variant.merged;
+  sim.scissor = variant.scissor;
+  sim.asyncBounds = false; // 시험에서는 경계 상자를 그 자리에서 읽어 결정적으로 만든다
+  log(`[${variant.name}]`);
 
   // 성숙한 몸 (t = 200): 마름과 젖음이 모두 일어나는 시점
   log('성숙한 상태(스텝 2000)에서 출발');
@@ -255,8 +280,8 @@ export async function testParity(glx: Glx, log: Log): Promise<ParityResult> {
     m1.wetMismatch === 0 && m1.hMaxDiff <= 1e-3 && m1.thetaMedDiff <= 1e-4 && m1.cMedRelDiff <= 1e-4 &&
     m10.wetMismatch <= 0.005 * m10.bodyCells &&
     i0.wetMismatch === 0 && initialVolumeRelErr <= 1e-5;
-  log(`스텝 일치 시험 → ${pass ? '통과' : '실패'}`);
-  return { pass, drawCallsPerStep, mature: [m1, m10], initial, initialVolumeRelErr };
+  log(`스텝 일치 시험 [${variant.name}] → ${pass ? '통과' : '실패'}`);
+  return { variant: variant.name, pass, drawCallsPerStep, mature: [m1, m10], initial, initialVolumeRelErr };
 }
 
 // ───────────────────────── A1·A2: 긴 실행 ─────────────────────────

@@ -15,7 +15,8 @@ const path = require('path');
 const { chromium } = require('playwright');
 
 const ROOT = path.resolve(__dirname, '..', '..', '..');
-const DIST = path.join(ROOT, 'dist');
+// STAGE0_DIST 로 다른 빌드 폴더를 가리킬 수 있다 (긴 실행이 dist/ 를 쓰는 동안 개발용 빌드를 따로 시험할 때)
+const DIST = process.env.STAGE0_DIST ? path.resolve(process.env.STAGE0_DIST) : path.join(ROOT, 'dist');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.gz': 'application/octet-stream', '.svg': 'image/svg+xml' };
 
 function serve() {
