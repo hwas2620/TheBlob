@@ -1,0 +1,1 @@
+D0_thick_inj05_diag_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1, "food_r": 5.0, "h_res": 4.0, "eat": 0.05, "gain": 1.0, "food_M": 1200, "seed": 1, "neg_diag": 1}

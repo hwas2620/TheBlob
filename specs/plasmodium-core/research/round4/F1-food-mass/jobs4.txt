@@ -1,0 +1,4 @@
+K_ramp30_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "food_r": 5.0, "h_res": 4.0, "gain": 1.0, "neg_diag": 1, "seed": 1, "bridge_keep": 1, "eat": 0.05, "food_M": 1200, "res_acc": 2, "res_tau": 30.0}
+L_ramp60_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "food_r": 5.0, "h_res": 4.0, "gain": 1.0, "neg_diag": 1, "seed": 1, "bridge_keep": 1, "eat": 0.05, "food_M": 1200, "res_acc": 2, "res_tau": 60.0}
+M_ramp30_stiff_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "food_r": 5.0, "h_res": 4.0, "gain": 1.0, "neg_diag": 1, "seed": 1, "bridge_keep": 1, "eat": 0.05, "food_M": 1200, "res_acc": 2, "res_tau": 30.0, "stiff_h": 0.3}
+N_ramp10_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "food_r": 5.0, "h_res": 4.0, "gain": 1.0, "neg_diag": 1, "seed": 1, "bridge_keep": 1, "eat": 0.05, "food_M": 1200, "res_acc": 2, "res_tau": 10.0}
