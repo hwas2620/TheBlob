@@ -24,6 +24,7 @@ run a12_N384_s1_c2_v3 "test=a12&N=384&seed=1&cyc=2&steps=10000&variant=3&sync=1"
 
 # 384² 시드 2 와 큰 격자는 "몸 주변만" 변형으로 (기준형은 여기서 너무 느리다. 큰 격자의 기준형은 300스텝만)
 run a12_N384_s2_c2_v2 "test=a12&N=384&seed=2&cyc=2&steps=10000&variant=2&sync=1"
+run a12_N192_s3_c2_v2 "test=a12&N=192&seed=3&cyc=2&steps=10000&variant=2&sync=1"   # 판정 뒤에 더한 새 시드
 run a12_N512_s1_c2_v2 "test=a12&N=512&seed=1&cyc=2&steps=10000&variant=2&sync=1&check=100"
 run a12_N768_s1_c2_v2 "test=a12&N=768&seed=1&cyc=2&steps=10000&variant=2&sync=1&check=200"
 run a12_N768_s1_c2_v3 "test=a12&N=768&seed=1&cyc=2&steps=10000&variant=3&sync=1&check=200"

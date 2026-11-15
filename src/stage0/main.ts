@@ -244,13 +244,15 @@ async function main(): Promise<void> {
     void startBench([256, 384, 512, 768]).catch(fail);
   };
 
-  // 시험 모드 링크는 numpy 기준 자료가 함께 올라가 있을 때만 보인다
-  fetch(`${REF_BASE}manifest.json`).then(
-    (r) => {
-      if (r.ok) nav.innerHTML = '개발용 시험: ' + ['?test=a0', '?test=parity', '?test=a12&N=192&steps=2000'].map((s) => `<a href="stage0.html${s}">${s}</a>`).join(' · ');
-    },
-    () => undefined,
-  );
+  // 시험 모드 링크는 numpy 기준 자료가 함께 올라가 있을 때만 보인다 (파일로 연 페이지에는 없다)
+  if (location.protocol.startsWith('http')) {
+    fetch(`${REF_BASE}manifest.json`).then(
+      (r) => {
+        if (r.ok) nav.innerHTML = '개발용 시험: ' + ['?test=a0', '?test=parity', '?test=a12&N=192&steps=2000'].map((s) => `<a href="stage0.html${s}">${s}</a>`).join(' · ');
+      },
+      () => undefined,
+    );
+  }
 
   if (q.get('bench') === '1' || location.hash === '#bench') {
     await startBench((q.get('N') ?? '256,384,512,768').split(',').map(Number));
