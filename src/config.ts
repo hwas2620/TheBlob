@@ -291,3 +291,61 @@ export const UI = {
   DENSITY_CHECK_RADIUS: 25,      // 파티클 밀도 체크 반경
   SPORANGIUM_RENDER_MARGIN: 30,  // 포자낭 렌더링 마진
 } as const;
+
+// ── 원형질체 코어 (0단계 프로토타입) ─────────────────────────
+// specs/plasmodium-core/spec.md "목표 모델"의 값. 단위는 모델 단위(셀, 모델 시간)다.
+// 디버그 페이지(stage0.html)의 기본값이고 셰이더 플레이스홀더로 치환된다.
+export const PLASM = {
+  GRID: 384,             // 격자 한 변 (토러스)
+  DT: 0.1,               // 한 스텝의 모델 시간
+  KAPPA: 20,             // 압축성. 차폐 항은 1/(κ·dt)
+  H0: 1.0,               // 새 시트의 쉬는 두께
+  TAU_A: 50,             // 나이 수축 시간
+  TAU_F: 2.0,            // 새 셀이 차오르는 시간
+  H_FILL: 0.2,           // 새 셀이 처음 받는 두께
+  H_MIN: 0.15,           // 이보다 얇으면 마른다
+  GRACE: 2.0,            // 젖은 뒤 마르지 않는 시간
+  BETA: 0.05,            // 관이 더하는 두께 min(β·√C, CAP)
+  CAP: 0.5,
+  HY0: 1.05,             // 항복 문턱
+  Y_SIGMA: 0.02,         // 항복 잡음
+  LAMBDA_C: 0.06,        // 곡률 항 세기
+  CURV_GAIN: 8,
+  CURV_REF: 0.33,
+  CURV_SIGMA: 2.0,       // 젖은 마스크 가우스 흐림의 σ(셀)
+  WET_RHO: 0.92,         // 대각 방향 표본 거리
+  Y_C: 0.2,              // 유인장이 문턱을 낮추는 정도
+  GAMMA: 1.5,            // 강화 지수
+  RATE: 0.05,            // 강화 속도
+  Q0_AUTO: 0.2,          // 유량 정규화 계수
+  Q0_FLOOR: 1e-4,
+  C_MAX: 1e4,
+  D0: 2.0,               // 새 간선의 전도도
+  D0_NOISE: 0.3,
+  R: 0.05,               // 바탕 전도도
+  EDGE_SIGMA: 0.5,       // 정적 간선 잡음 G = exp(σ·N(0,1))
+  BRIDGE_BREAK: 1.0,     // 이어 주는 셀이 버티는 전도도
+  R_INIT: 12,            // 초기 원반 반지름(셀)
+  H_INIT: 3.0,           // 초기 두께
+  MG_CYCLES: 2,          // 스텝당 V 사이클 수
+  MG_COARSE_SWEEPS: 4,   // 최조 격자 Jacobi 횟수
+  MG_OMEGA: 0.8,         // Jacobi 감쇠
+  MG_COARSE_SCALE: 1.5,  // 조대 간선 가중치를 나누는 값
+  MG_EXTRAP: 0.5,        // 웜스타트 외삽 계수
+} as const;
+
+export const OSCILLATOR = {
+  PERIOD: 4.0,           // 맥동 주기 (40스텝)
+  EPS: 0.1,              // 쉬는 두께의 맥동 진폭
+  D_OMEGA: 0.1,          // 늙은 셀이 빨라지는 비율
+  D_THETA: 8.8,          // 위상 결합
+  SUBSTEPS: 4,           // 위상 갱신의 부분 스텝 수
+  TRI_K: 0,              // 위상 무늬 (나) 삼각 격자의 기울기 (0 = 끔. 켤 때는 2π/100)
+  TRI_P: 96,             // 삼각 격자의 주기(셀). 격자 한 변의 약수여야 한다
+  TRI_T: 80,             // 기울기 방향이 한 바퀴 도는 시간
+  TRI_V: 0.24,           // 무늬가 흘러가는 속도(셀/시간)
+} as const;
+
+export const SLIME = {
+  Y_S: 0.5,              // 점액 흔적이 항복 문턱을 올리는 정도
+} as const;

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TheBlob — 0단계 디버그</title>
+    <style>
+      body { margin: 0; background: #0b1210; color: #d8e0d8; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+      #wrap { display: flex; gap: 16px; padding: 12px; flex-wrap: wrap; align-items: flex-start; }
+      canvas { width: min(92vw, 640px); height: auto; image-rendering: pixelated; background: #000; }
+      #side { flex: 1; min-width: 280px; }
+      pre { white-space: pre-wrap; word-break: break-all; margin: 8px 0 0; }
+      a { color: #9fd; }
+      button { font: inherit; padding: 4px 10px; margin: 0 6px 6px 0; }
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <canvas id="view" width="640" height="640"></canvas>
+      <div id="side">
+        <div id="nav"></div>
+        <pre id="out"></pre>
+      </div>
+    </div>
+    <script type="module" src="/src/stage0/main.ts"></script>
+  </body>
+</html>
