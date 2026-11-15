@@ -43,7 +43,8 @@ DEF = dict(
     # --- N2 (front isotropy) ---
     wet_rho=0.0, curv='n8', curv_sigma=1.5, curv_ref=0.33, curv_gain=8.0, curv_cap=99.0, stop_touch=0,
     # --- F1 (mass on food) ---
-    neg_diag=0,
+    neg_diag=0, neg_dry=0,       # neg_dry=1: a cell whose thickness went negative dries at once (ignores grace and bridge_keep); its deficit is taken from the staying neighbours
+    wave_lambda=0.0, wave_Trot=80.0,   # prescribed rotating body-scale phase ramp (0 = off)
     food_dw=None,                # per-food angular-frequency offset of the contraction phase on live-food cells (rad per unit time): masses drift in and out of phase
     food_phase=None,             # per-food phase offset of the contraction on live-food cells (diagnostic: forces the food masses out of phase)
     mech_beta=0.0,               # mechanical phase feedback: dtheta/dt += mech_beta * (h - mean rest thickness)/h0 * sin(theta); <0 favours anti-phase between volume-exchanging parts
@@ -129,6 +130,7 @@ def run(name, over):
     gm_n = max(1, int(round(P['gm_every'] / dt))); gseries = []; newdir = np.zeros(3, np.int64); newdir_series = []
     colour = (X.astype(int) % 2) + 2 * (Y.astype(int) % 2)
     negrec = []
+    hmin_end = 0.0; neg_end_cellsteps = 0
     hfood_ser = []
     nbridge_kept = 0; ntube_kept = 0; nlim_steps = 0; nlim_cells = 0; lim_cut_max = 0.0; hpre_min = 0.0; neg_cellsteps = 0; S_sat = 0.0
 
@@ -245,9 +247,12 @@ def run(name, over):
         hbar_prev = hstar + tube          # unmodulated mean rest thickness (stretch reference for the mechanical phase feedback)
         if eps > 0:
             th_eff = theta
+            if P['wave_lambda'] > 0:           # prescribed body-scale contraction wave: linear phase ramp of wavelength wave_lambda, direction rotating once per wave_Trot
+                al_ = 2 * np.pi * t / P['wave_Trot'] if P['wave_Trot'] > 0 else 0.0
+                th_eff = theta + (2 * np.pi / P['wave_lambda']) * (mimg(X - cen_u[0]) * np.cos(al_) + mimg(Y - cen_u[1]) * np.sin(al_))
             if (P['food_phase'] or P['food_dw']) and nf:
                 if not P['food_phase']: P['food_phase'] = [0.0] * nf
-                th_eff = theta.copy()
+                th_eff = th_eff.copy()
                 for k_ in range(nf):
                     if fM[k_] > 0: th_eff[fdisc[k_]] += P['food_phase'][k_] + (P['food_dw'][k_] * (t - t_touch[k_]) if (P['food_dw'] and not np.isnan(t_touch[k_])) else 0.0)
             mod = 1 + eps * np.cos(th_eff)
@@ -358,6 +363,7 @@ def run(name, over):
                 for q in (0, 2, 4, 6): Nc += xb[q].astype(np.int8) - (xb[q] & xb[q + 1] & xb[(q + 2) % 8]).astype(np.int8)
                 ok = ((Nc <= 1) | (Cn < P['bridge_break'])) & (colour == step % 4)
                 nbridge_kept += int((Dm & (Nc > 1) & (Cn >= P['bridge_break'])).sum()); Dm &= ok
+        if P['neg_dry']: Dm = Dm | (wet & (h < 0))
         if Dm.any():
             stay = wet & ~Dm; ns = np.zeros((N, N))
             for d in ALL: ns += nb(stay, d)
@@ -414,6 +420,9 @@ def run(name, over):
                     gx = mimg(fpos[k_][0] - cen_u[0]); gy = mimg(fpos[k_][1] - cen_u[1]); gn = max(np.hypot(gx, gy), 1e-9)
                     best = np.maximum(best, (vx * gx + vy * gy) / (vn * gn))
                 newdir += np.array([(best > 0.5).sum(), ((best <= 0.5) & (best >= -0.5)).sum(), (best < -0.5).sum()])
+        if wet.any():
+            hm_end = float(h[wet].min()); hmin_end = min(hmin_end, hm_end)
+            if hm_end < 0: neg_end_cellsteps += int((wet & (h < 0)).sum())
         ser_area[step] = int(wet.sum()); ser_vol[step] = h.sum()
         if nf: hfood_ser.append([float(h[fdisc[k_]].sum() / max(int(fdisc[k_].sum()), 1)) for k_ in range(nf)] + [float(np.angle(np.exp(1j * theta[fdisc[k_] & wet]).sum())) if (fdisc[k_] & wet).any() else np.nan for k_ in range(nf)])
         mass_err_max = max(mass_err_max, abs(float((h.sum() - V0 - Vinj) / V0)))
@@ -461,7 +470,7 @@ def run(name, over):
                t_exh=[None if np.isnan(v) else round(float(v), 1) for v in t_exh], fM_end=[None if np.isinf(v) else round(float(v), 2) for v in fM],
                bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), traj=traj,
                mg_err=([float(np.median([e[1] for e in mg_err])), float(np.percentile([e[1] for e in mg_err], 90)), float(max(e[1] for e in mg_err)), float(np.median([e[2] for e in mg_err]))] if mg_err else None), mg_err_n=len(mg_err),
-               lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
+               h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
     wm = hmean_last > 0
     if wm.any():
         ha = hamp_last[wm]; hm = hmean_last[wm]; sh = hm > 0.5 * P['h0']
