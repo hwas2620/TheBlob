@@ -230,13 +230,14 @@ async function main(): Promise<void> {
       benchTable(bench);
       benchCopy.hidden = false;
       benchCopy.textContent = '결과 복사';
+      if (bench.errors.length > 0) log(`끝까지 재지 못한 격자: ${bench.errors.join(' / ')} — 나머지 결과는 아래에 있습니다.`);
       log('\n끝났습니다. "결과 복사" 단추를 누르거나 아래 JSON 을 그대로 복사해 대화창에 붙여 주세요.\n');
       log(benchJson);
       window.__stage0 = { done: true, ok: true, result: { caps, bench } };
     } finally {
       benchStart.disabled = false;
       benchStart.textContent = '다시 재기';
-      startRun();
+      if (!glx.lost()) startRun();
     }
   };
   benchStart.onclick = (): void => {

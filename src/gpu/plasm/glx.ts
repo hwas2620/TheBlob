@@ -74,7 +74,8 @@ export class Glx {
   // 만든 자원. reset() 이 한꺼번에 지운다
   private texs: WebGLTexture[] = [];
   private fbos: WebGLFramebuffer[] = [];
-  private progs: WebGLProgram[] = [];
+  /** 컴파일한 프로그램. 소스가 같으면 다시 컴파일하지 않는다(reset 뒤에도 남긴다) */
+  private progCache = new Map<string, Prog>();
 
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl;
@@ -154,6 +155,8 @@ export class Glx {
   }
 
   program(name: string, fragSrc: string): Prog {
+    const cached = this.progCache.get(fragSrc);
+    if (cached) return cached;
     const gl = this.gl;
     const compile = (type: number, src: string): WebGLShader => {
       const sh = gl.createShader(type)!;
@@ -185,8 +188,9 @@ export class Glx {
       const loc = gl.getUniformLocation(prog, info.name);
       if (loc) uni.set(info.name, { loc, type: info.type });
     }
-    this.progs.push(prog);
-    return { prog, name, uni };
+    const made: Prog = { prog, name, uni };
+    this.progCache.set(fragSrc, made);
+    return made;
   }
 
   /** 풀스크린 쿼드 한 번. 텍스처 유니폼은 넘긴 순서대로 유닛에 묶는다 */
@@ -250,18 +254,20 @@ export class Glx {
     this.drawCalls++;
   }
 
-  /** 지금까지 만든 텍스처·타깃·프로그램을 모두 지운다. 이것들을 쓰던 시뮬레이션은 더 쓸 수 없다 (격자를 바꿔 새로 만들 때) */
+  /** 지금까지 만든 텍스처와 타깃을 모두 지운다. 이것들을 쓰던 시뮬레이션은 더 쓸 수 없다 (격자를 바꿔 새로 만들 때). 프로그램은 남겨 다시 쓴다 */
   reset(): void {
     const gl = this.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.useProgram(null);
     for (const t of this.texs) gl.deleteTexture(t);
     for (const f of this.fbos) gl.deleteFramebuffer(f);
-    for (const p of this.progs) gl.deleteProgram(p);
     this.texs = [];
     this.fbos = [];
-    this.progs = [];
     this.invalidate();
+  }
+
+  /** GPU 컨텍스트를 잃었는가 (메모리 부족 등) */
+  lost(): boolean {
+    return this.gl.isContextLost();
   }
 
   /** 이 클래스 밖에서 GL 상태(뷰포트, 가위, 텍스처 유닛, VAO, 프로그램)를 건드렸을 때 그림자를 버린다 */

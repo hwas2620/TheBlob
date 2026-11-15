@@ -39,6 +39,8 @@ export interface BenchResult {
   bodyArea: Record<string, number>;
   /** 두 번 스무딩 셰이더가 컴파일되지 않았으면 그 오류 */
   sweep2Error: string | null;
+  /** 끝까지 재지 못한 격자와 그 이유 (메모리 부족으로 컨텍스트를 잃은 경우 등) */
+  errors: string[];
   seconds: number;
 }
 
@@ -71,7 +73,8 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
   const bodyArea: Record<string, number> = {};
   let usPerTinyDraw = 0;
   let sweep2Error: string | null = null;
-  for (const N of sizes) {
+  const errors: string[] = [];
+  const measure = async (N: number): Promise<void> => {
     log(`${N}² 준비 (${WARMUP_STEPS}스텝)…`);
     await yieldNow();
     glx.reset(); // 앞 격자의 텍스처를 지운다 (768² 는 150MB 쯤 쓴다)
@@ -118,7 +121,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
         }
         sim.readStepStats();
         const msSolve = (performance.now() - ts) / (BLOCK * 2);
-        for (let s = 0; s < 4; s++) sim.stepOnce(); // 풀이만 돌리며 흐트러진 압력을 다시 맞춘다
+        if (glx.lost() || !Number.isFinite(sim.readEndStats().volume)) throw new Error('GPU 컨텍스트를 잃었거나 값이 깨졌습니다');
         const stepsPerFrame = FRAME_BUDGET_MS / msPerStep;
         const row: BenchRow = {
           N,
@@ -137,6 +140,18 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
         log(`  ${N}² ${cycles}사이클 ${v.name}: ${row.drawCalls} 드로콜, ${msPerStep.toFixed(2)}ms/스텝 (그중 풀이 ${msSolve.toFixed(2)}ms, 영역 ${(row.activeFraction * 100).toFixed(0)}%) → 4ms 예산이면 프레임당 ${stepsPerFrame.toFixed(1)}스텝, 전진 ${row.pxPerSec.toFixed(0)}px/s, 맥동 ${row.pulseSec.toFixed(2)}초`);
       }
     }
+  };
+  for (const N of sizes) {
+    // 큰 격자에서 메모리가 모자라도 앞에서 잰 결과는 남긴다
+    try {
+      await measure(N);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      errors.push(`${N}²: ${msg}`);
+      log(`  ${N}² 는 끝까지 재지 못했습니다: ${msg}`);
+      if (glx.lost()) break;
+    }
   }
-  return { renderer, userAgent: navigator.userAgent, usPerTinyDraw, rows, bodyArea, sweep2Error, seconds: (performance.now() - tStart) / 1000 };
+  if (!glx.lost()) glx.reset();
+  return { renderer, userAgent: navigator.userAgent, usPerTinyDraw, rows, bodyArea, sweep2Error, errors, seconds: (performance.now() - tStart) / 1000 };
 }
