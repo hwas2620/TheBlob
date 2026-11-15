@@ -85,6 +85,12 @@ Y3_p2T80_s11
 Y3_p2T80_s12
 Y3_p2T80_s13
 Y3_p3T80_s11
+Y3_tri192d_s41
+Y3_tri192d_s42
+Y3_tri192d_s43
+Y3_tri192d_s44
+Y3_tri192d_s45
+Y3_tri192d_s46
 Y3_tri48T80_s21
 Y3_tri48T80_s22
 Y3_tri48T80_s23
@@ -186,6 +192,12 @@ Ym_p2T80_s11
 Ym_p2T80_s12
 Ym_p2T80_s13
 Ym_p3T80_s11
+Ym_tri192d_s41
+Ym_tri192d_s42
+Ym_tri192d_s43
+Ym_tri192d_s44
+Ym_tri192d_s45
+Ym_tri192d_s46
 Ym_tri48T80_s21
 Ym_tri48T80_s22
 Ym_tri48T80_s23
