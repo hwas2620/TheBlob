@@ -295,6 +295,8 @@ export interface A12Options {
   tri: boolean;
   /** 이 스텝마다 CPU 기준 풀이로 유량 오차를 잰다 */
   checkEvery: number;
+  /** VARIANTS 의 번호 (0 기준형, 1 합친 패스, 2 합친 패스 + 몸 주변만) */
+  variant: number;
 }
 
 export interface A12Result extends A12Options {
@@ -310,8 +312,12 @@ export interface A12Result extends A12Options {
   volumeRelErr: number;
   fluxErr: { n: number; median: number; p90: number; p99: number; max: number };
   fluxErrSeries: number[];
-  /** [t, 무게중심 x, y, 넓이] (50스텝마다) */
+  variantName: string;
+  /** [t, 무게중심 x, y, 넓이, 무게중심에서 가장 먼 젖은 셀까지의 거리(축별 최대)] (50스텝마다) */
   traj: number[][];
+  /** 몸이 무게중심에서 격자 절반 가까이(N/2 − 4)까지 퍼진 첫 시각. 그 뒤로는 토러스에서 무게중심을 믿을 수 없다 */
+  tWrap: number | null;
+  disp_0_300: number | null;
   disp_0_400: number | null;
   disp_100_300: number | null;
   tTouch: number | null;
@@ -330,6 +336,9 @@ function quantile(sorted: number[], q: number): number {
 export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (sim: PlasmGPU) => void): Promise<A12Result> {
   const params = defaultParams({ N: opts.N, seed: opts.seed, mgCycles: opts.cycles, triK: opts.tri ? (2 * Math.PI) / 100 : 0 });
   const sim = new PlasmGPU(glx, params);
+  const variant = VARIANTS[opts.variant] ?? VARIANTS[0];
+  sim.mg.merged = variant.merged;
+  sim.scissor = variant.scissor;
   const N = opts.N;
   const n = N * N;
   const dt = params.dt;
@@ -348,21 +357,24 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
   const mimg = (v: number): number => ((((v + N / 2) % N) + N) % N) - N / 2;
   const fluxErrSeries: number[] = [];
   const traj: number[][] = [];
-  let nan = false, negEndSteps = 0, hMinEnd = Infinity, hMinInStep = Infinity, cMaxRun = 0, tTouch: number | null = null, areaEnd = 0, volumeEnd = v0, stepsDone = 0;
+  let nan = false, negEndSteps = 0, hMinEnd = Infinity, hMinInStep = Infinity, cMaxRun = 0, tTouch: number | null = null, tWrap: number | null = null, areaEnd = 0, volumeEnd = v0, stepsDone = 0;
 
   /** 읽은 cellA 로 무게중심(토러스 최소 상)을 갱신하고 유인원에 닿았는지 본다 */
   const track = (a: Float32Array, t: number, record: boolean): void => {
-    let m = 0, sx = 0, sy = 0, area = 0, touch = false;
+    let m = 0, sx = 0, sy = 0, area = 0, touch = false, extent = 0;
     for (let y = 0; y < N; y++) {
       for (let x = 0; x < N; x++) {
         const i = (y * N + x) * 4;
         const h = a[i];
         if (!Number.isFinite(h)) nan = true;
+        const dx = mimg(x - cen[0]);
+        const dy = mimg(y - cen[1]);
         m += h;
-        sx += h * mimg(x - cen[0]);
-        sy += h * mimg(y - cen[1]);
+        sx += h * dx;
+        sy += h * dy;
         if (a[i + 1] > 0.5) {
           area++;
+          extent = Math.max(extent, Math.abs(dx), Math.abs(dy));
           if (att && Math.hypot(mimg(x - fx), mimg(y - fy)) < 4.0) touch = true;
         }
       }
@@ -372,8 +384,9 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
       cen[1] += sy / m;
     }
     if (touch && tTouch === null) tTouch = t;
+    if (extent >= N / 2 - 4 && tWrap === null) tWrap = t;
     areaEnd = area;
-    if (record) traj.push([t, cen[0], cen[1], area]);
+    if (record) traj.push([t, cen[0], cen[1], area, extent]);
   };
   track(sim.readA(), 0, true);
 
@@ -435,15 +448,19 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
     volumeRelErr: Math.abs(volumeEnd - v0) / v0,
     fluxErr: { n: sorted.length, median: quantile(sorted, 0.5), p90: quantile(sorted, 0.9), p99: quantile(sorted, 0.99), max: sorted.length ? sorted[sorted.length - 1] : NaN },
     fluxErrSeries,
+    variantName: variant.name,
     traj,
+    tWrap,
+    disp_0_300: disp(0, 300),
     disp_0_400: disp(0, 400),
     disp_100_300: disp(100, 300),
     tTouch,
     areaEnd,
   };
-  log(`${N}² 시드 ${opts.seed} ${opts.cycles}사이클${opts.tri ? ' 삼각 격자' : ''}: ${stepsDone}스텝, NaN ${nan ? '있음' : '없음'}, 스텝 끝 음수 두께 ${negEndSteps}스텝(최소 ${hMinEnd.toExponential(2)}), `
+  log(`${N}² 시드 ${opts.seed} ${opts.cycles}사이클${opts.tri ? ' 삼각 격자' : ''} [${variant.name}]: ${stepsDone}스텝, NaN ${nan ? '있음' : '없음'}, 스텝 끝 음수 두께 ${negEndSteps}스텝(최소 ${hMinEnd.toExponential(2)}), `
     + `스텝 안 최소 두께 ${hMinInStep.toExponential(2)}, 최대 전도도 ${cMaxRun.toFixed(0)}, 부피 오차 ${res.volumeRelErr.toExponential(2)}`);
   log(`  유량 오차 중앙 ${res.fluxErr.median.toFixed(3)} / 90백분위 ${res.fluxErr.p90.toFixed(3)} / 99백분위 ${res.fluxErr.p99.toFixed(3)} / 최대 ${res.fluxErr.max.toFixed(3)} (${sorted.length}회)`);
-  log(`  이동 t=0~400 ${res.disp_0_400?.toFixed(1) ?? '-'}셀, t=100~300 ${res.disp_100_300?.toFixed(1) ?? '-'}셀, 유인원에 닿은 시각 ${tTouch ?? '-'}, 스텝당 드로콜 ${drawCallsPerStep}, ${res.seconds.toFixed(0)}초`);
+  log(`  이동 t=0~300 ${res.disp_0_300?.toFixed(1) ?? '-'}셀, t=0~400 ${res.disp_0_400?.toFixed(1) ?? '-'}셀, t=100~300 ${res.disp_100_300?.toFixed(1) ?? '-'}셀, 유인원에 닿은 시각 ${tTouch ?? '-'}, `
+    + `몸이 격자 절반까지 퍼진 시각 ${tWrap ?? '-'}, 스텝당 드로콜 ${drawCallsPerStep}, ${res.seconds.toFixed(0)}초`);
   return res;
 }

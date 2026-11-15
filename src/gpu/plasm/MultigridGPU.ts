@@ -125,6 +125,11 @@ export class MultigridGPU {
     }
   }
 
+  /** 벤치마크용: 가장 작은 레벨에 Jacobi 를 n 번 그린다 (드로콜 하나의 고정 비용을 재는 데 쓴다) */
+  benchTinyDraws(n: number): void {
+    this.jacobi(this.L - 1, n);
+  }
+
   /** V(2,2) 사이클을 ncyc 번. 최조 격자에서는 Jacobi 를 nc 번 */
   solve(ncyc: number, nc: number): void {
     for (let i = 0; i < ncyc; i++) this.vcycle(0, nc);

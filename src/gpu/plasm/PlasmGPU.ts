@@ -90,6 +90,10 @@ export class PlasmGPU {
   scissor = false;
   /** 경계 상자를 멈춤 없이 읽는다(게임 루프용). false 면 그 자리에서 읽는다(시험용. 파이프라인이 멈춘다) */
   asyncBounds = true;
+  /** false 면 경계 상자를 스스로 다시 재지 않는다 (벤치마크가 refreshBounds 로 직접 잰다) */
+  autoBounds = true;
+  /** 스텝당 V 사이클 수 (params.mgCycles 에서 시작. 돌리는 중에 바꿀 수 있다) */
+  cycles: number;
   private bounds: [number, number, number, number] | null = null; // 젖은 셀의 x0, y0, x1, y1
   private boundsStep = 0;
   private pending: { read: AsyncRead; step: number } | null = null;
@@ -102,6 +106,7 @@ export class PlasmGPU {
     this.glx = glx;
     this.params = params;
     this.N = N;
+    this.cycles = params.mgCycles;
     const vars = shaderVars(params);
     const src = plasmShaders(vars);
     for (const [name, s] of Object.entries(src)) this.prog[name] = glx.program(name, s);
@@ -228,6 +233,21 @@ export class PlasmGPU {
     else this.applyBounds(glx.read(last), this.step);
   }
 
+  /** 경계 상자를 지금 재서 바로 적용한다 (파이프라인이 멈춘다) */
+  refreshBounds(): void {
+    const { glx, prog } = this;
+    glx.draw(prog.bbox0, this.tBox[0], { uA: this.A[this.curA] });
+    for (let i = 1; i < this.box.length; i++) glx.draw(prog.reduceMin, this.tBox[i], { uSrc: this.box[i - 1], uBlock: this.redBlock[i - 1] });
+    this.applyBounds(glx.read(this.box[this.box.length - 1]), this.step);
+    this.pending = null;
+  }
+
+  /** 지금 그리는 영역의 넓이가 격자에서 차지하는 비율 (가위를 쓰지 않으면 1) */
+  activeFraction(): number {
+    const r = this.activeRect();
+    return r ? (r[2] * r[3]) / (this.N * this.N) : 1;
+  }
+
   private applyBounds(v: Float32Array, step: number): void {
     this.bounds = v[0] > 1e8 ? null : [v[0], v[1], -v[2], -v[3]];
     this.boundsStep = step;
@@ -323,7 +343,7 @@ export class PlasmGPU {
     // 4~6. 압력
     glx.draw(prog.mgInit, this.mg.p0Target(), { uA: this.A[this.curA], uB: this.B[this.curB] }, r);
     this.mg.build();
-    this.mg.solve(p.mgCycles, p.mgCoarseSweeps);
+    this.mg.solve(this.cycles, p.mgCoarseSweeps);
     if (afterSolve) afterSolve();
     const P = this.mg.pTex();
 
@@ -364,7 +384,7 @@ export class PlasmGPU {
       glx.draw(prog.wetApply, flipAB(), { uA: srcA, uB: srcB, uPlan: this.plan }, r);
     }
     this.step++;
-    if (this.scissor) this.updateBounds(r);
+    if (this.scissor && this.autoBounds) this.updateBounds(r);
   }
 
   /** 방금 돈 스텝의 통계 (1×1 텍셀 읽기 — 파이프라인을 멈춘다) */
