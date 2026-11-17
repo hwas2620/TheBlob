@@ -325,6 +325,10 @@ export interface A12Options {
    * 이 시험은 100스텝마다만 돌아가므로 끄면 여유 폭이 100셀 넘게 커져 가위 사각형이 격자를 거의 다 덮는다(결과는 같고 느려질 뿐이다).
    */
   syncBounds: boolean;
+  /** 기본 설정을 덮어쓴다 (dt, 맥동 주기, 진폭, 위상 부분 스텝 수). numpy 기준 실행도 같은 설정으로 만든 것과 견준다 */
+  over?: { dt?: number; period?: number; eps?: number; substeps?: number };
+  /** 덮어쓴 설정의 이름. 판정 스크립트가 ref/a12_N…_<tag>.json 을 찾는다 */
+  tag?: string;
 }
 
 export interface A12Result extends A12Options {
@@ -364,7 +368,7 @@ function quantile(sorted: number[], q: number): number {
 
 /** A1·A2: 통합 모델을 길게 돌리며 안정성(NaN, 음수 두께, 최대 전도도)과 정확도(유량 오차, 이동)를 잰다 */
 export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (sim: PlasmGPU) => void): Promise<A12Result> {
-  const params = defaultParams({ N: opts.N, seed: opts.seed, mgCycles: opts.cycles, triK: opts.tri ? (2 * Math.PI) / 100 : 0 });
+  const params = defaultParams({ N: opts.N, seed: opts.seed, mgCycles: opts.cycles, triK: opts.tri ? (2 * Math.PI) / 100 : 0, ...(opts.over ?? {}) });
   const sim = new PlasmGPU(glx, params);
   const variant = VARIANTS[opts.variant] ?? VARIANTS[0];
   applyVariant(sim, variant);

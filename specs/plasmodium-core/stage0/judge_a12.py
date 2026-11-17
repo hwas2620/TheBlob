@@ -34,8 +34,8 @@ def disp(traj, t0, t1):
     return math.hypot(b[1] - a[1], b[2] - a[2]) if a and b else None
 
 
-def ref(N, seed, solver):
-    return load(os.path.join(HERE, 'ref', f'a12_N{N}_s{seed}_{solver}.json'))
+def ref(N, seed, solver, tag=None):
+    return load(os.path.join(HERE, 'ref', f'a12_N{N}_s{seed}_{solver}' + (f'_{tag}' if tag else '') + '.json'))
 
 
 def pct(a, b):
@@ -51,9 +51,10 @@ def judge(path):
     a = j['result']['a12']
     N, seed = a['N'], a['seed']
     full = a['stepsDone'] == a['steps']
-    mg, ex = ref(N, seed, 'mg'), ref(N, seed, 'exact')
+    dt = (a.get('over') or {}).get('dt', 0.1)
+    mg, ex = ref(N, seed, 'mg', a.get('tag')), ref(N, seed, 'exact', a.get('tag'))
     tw = 300 if N <= 192 else 400
-    rows = dict(name=j['name'], N=N, seed=seed, cycles=a['cycles'], tri=a['tri'], variant=a.get('variantName', '기준형'), steps=a['stepsDone'], draws=a['drawCallsPerStep'])
+    rows = dict(name=j['name'], N=N, seed=seed, cycles=a['cycles'], tri=a['tri'], tag=a.get('tag'), variant=a.get('variantName', '기준형'), steps=a['stepsDone'], draws=a['drawCallsPerStep'])
     # A1
     cref = mg['Cmax_run'] if mg else None
     a1 = full and not a['nan'] and a['negEndSteps'] == 0 and (cref is None or a['cMaxRun'] <= 3 * cref)
@@ -65,7 +66,7 @@ def judge(path):
     # A2: 이동 (삼각 격자를 켠 실행은 견줄 기준이 없다)
     dw, d400 = disp(a['traj'], 0, tw), disp(a['traj'], 0, 400)
     rows.update(tw=tw, dw=dw, d400=d400, touch=a['tTouch'], tWrap=a.get('tWrap'))
-    if not a['tri'] and a['steps'] >= tw * 10:
+    if not a['tri'] and a['steps'] * dt >= tw:
         for tag, r in (('Ex', ex), ('Mg', mg)):
             if r:
                 rows['dw' + tag] = disp(r['traj'], 0, tw)
@@ -87,9 +88,10 @@ def main():
         j = load(os.path.join(HERE, 'results', sys.argv[2] + '.json'))
         a = j['result']['a12']
         c0 = a['N'] / 2 - 0.5
-        mg, ex = ref(a['N'], a['seed'], 'mg'), ref(a['N'], a['seed'], 'exact')
+        mg, ex = ref(a['N'], a['seed'], 'mg', a.get('tag')), ref(a['N'], a['seed'], 'exact', a.get('tag'))
+        dt = (a.get('over') or {}).get('dt', 0.1)
         print('t      GPU      numpy 멀티그리드   numpy 직접 풀이   (출발점에서의 거리, 셀)   GPU 몸의 범위')
-        for t in range(0, int(a['stepsDone'] * 0.1) + 1, 20):
+        for t in range(0, int(round(a['stepsDone'] * dt)) + 1, 20):
             g = at(a['traj'], t)
             d = lambda r: fmt(math.hypot(at(r['traj'], t)[1] - c0, at(r['traj'], t)[2] - c0), '%6.1f') if r and at(r['traj'], t) else '     -'
             print('%4d  %6.1f   %s            %s            %s' % (t, math.hypot(g[1] - c0, g[2] - c0), d(mg), d(ex), fmt(g[4], '%.0f') if len(g) > 4 else '-'))
@@ -112,9 +114,9 @@ def main():
                                                                                 fmt(r['e_d400'], '%+.1f'), mark(r['A2move']), mark(r['A2move400'])))
     # 변형끼리 궤적이 같은지 (같은 격자·시드·사이클)
     print('\n변형 사이의 궤적 차이 (같은 격자·시드·사이클의 기준형 대비, 무게중심 좌표의 최대 차이)')
-    base = {(r['N'], r['seed'], r['cycles'], r['tri']): r['name'] for r in rows if r['variant'] == '기준형'}
+    base = {(r['N'], r['seed'], r['cycles'], r['tri'], r['tag']): r['name'] for r in rows if r['variant'] == '기준형'}
     for r in rows:
-        k = (r['N'], r['seed'], r['cycles'], r['tri'])
+        k = (r['N'], r['seed'], r['cycles'], r['tri'], r['tag'])
         if r['variant'] == '기준형' or k not in base:
             continue
         a = load(os.path.join(HERE, 'results', r['name'] + '.json'))['result']['a12']['traj']

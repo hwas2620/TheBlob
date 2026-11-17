@@ -7,13 +7,13 @@ usage: tabspeed.py                    v1_runs.json 으로 표를 찍는다
 import json, os, sys
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
-SEEDS = [21, 22, 23]
+SEEDS = [21, 22, 23, 24, 25, 26]   # 탐색 실행은 대부분 21~23 (또는 21·22)만 있다. 표의 '시드' 열이 실제 개수다
 # (표시 이름, 폴더 열쇠, 이름 틀에 넣을 꼬리표)
 ROWS = [('기준: dt 0.1, 진폭 0.1, 주기 4', 'R5', 'tri96d'),
         ('진폭 0.2 · 직접 풀이', 'V1', 'tri_E2x'), ('진폭 0.2', 'V1', 'tri_E2'),
         ('주기 2 · 직접 풀이', 'V1', 'tri_P2x'), ('주기 2', 'V1', 'tri_P2'),
         ('진폭 0.05', 'V1', 'tri_e05'),
-        ('dt 0.2, 진폭 0.05', 'V1', 'tri_dt2e05'), ('dt 0.2, 주기 8', 'V1', 'tri_dt2p8'),
+        ('dt 0.2, 진폭 0.05', 'V1', 'tri_dt2e05'), ('dt 0.2, 진폭 0.05, 3사이클', 'V1', 'tri_dt2e05c3'), ('dt 0.2, 주기 8', 'V1', 'tri_dt2p8'),
         ('dt 0.4, 진폭 0.025', 'V1', 'tri_dt4e025'), ('dt 0.4, 주기 16', 'V1', 'tri_dt4p16')]
 
 
@@ -57,12 +57,14 @@ def main():
         print('  %-30s %3d  %-10s %-8s %-8s %-9s %-10s %-13s %-10s %s' % (lab, len(rs), rng([r['vein4'] for r in rs]), rng([r['d200'] for r in rs], '%.0f'), rng([r['d300'] for r in rs], '%.0f'), rng([r['t_touch'] for r in rs], '%.0f'),
                                                                    rng([r['body'] for r in rs]), rng([r['h_min_in_step'] for r in rs], '%.3f'), rng([r['neg_end_cellsteps'] for r in rs], '%d'), rng(fe, '%.3f')))
     print('\n대칭 먹이 셋 (T=480). 굵은 쌍 = 두 먹이 사이 경로의 최소 전도도가 정맥 중앙값의 5배 이상인 쌍')
-    print('  %-30s %3s  %-7s %-12s %-10s %-15s %-15s %s' % ('설정', '시드', '굵은 쌍', '경로 최소 C', '몸', '스텝 안 최소', '스텝 끝 최소', '유량 오차 중앙'))
+    print('  %-30s %3s  %-7s %-12s %-10s %-15s %-15s %-13s %s' % ('설정', '시드', '굵은 쌍', '경로 최소 C', '몸', '스텝 안 최소', '스텝 끝 최소', '유량 오차 중앙', '실행 수'))
     for lab, _, tag in ROWS:
         rs = [R[f'Y3_{tag}_s{s}'] for s in SEEDS if f'Y3_{tag}_s{s}' in R]
         if not rs: continue
         pc = [x for r in rs for x in r['pathminC'].values()]; thick = sum(x >= 5 * r['vein_medC'] for r in rs for x in r['pathminC'].values()); fe = [r['flux_err'][0] for r in rs if r['flux_err']]
-        print('  %-30s %3d  %2d/%-4d %-12s %-10s %-15s %-15s %s' % (lab, len(rs), thick, len(pc), rng(pc, '%.0f'), rng([r['body'] for r in rs]), rng([r['h_min_in_step'] for r in rs], '%.3f'), rng([r['h_min_end'] for r in rs], '%.3f'), rng(fe, '%.3f')))
+        nbad = sum(r['h_min_in_step'] < -0.1 for r in rs); nsplit = sum(r['body'] < 0.9 for r in rs)
+        print('  %-30s %3d  %2d/%-4d %-12s %-10s %-15s %-15s %-13s 갈라짐 %d, 스텝 안 −0.1 아래 %d' % (lab, len(rs), thick, len(pc), rng(pc, '%.0f'), rng([r['body'] for r in rs]), rng([r['h_min_in_step'] for r in rs], '%.3f'),
+                                                                                       rng([r['h_min_end'] for r in rs], '%.3f'), rng(fe, '%.3f'), nsplit, nbad))
 
 
 if __name__ == '__main__':

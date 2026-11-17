@@ -7,6 +7,7 @@
 //   stage0.html?test=a0               A0 재생 시험 (멀티그리드를 numpy 와 대조)
 //   stage0.html?test=parity           스텝 일치 시험 (규칙 1~7 을 numpy 와 대조)
 //   stage0.html?test=a12&N=192&seed=1&cyc=2&steps=10000[&tri=1&variant=2&sync=1]   A1·A2 긴 실행 (variant: tests.ts 의 VARIANTS 번호. 0 기준형)
+//                                     (&dt=0.2&period=8&sub=8&tag=dt2p8 처럼 설정을 덮어쓸 수 있다)
 //
 // 시험 결과는 window.__stage0 에도 남긴다(헤드리스 러너가 읽는다).
 
@@ -137,9 +138,15 @@ async function main(): Promise<void> {
     return;
   }
   if (test === 'a12') {
+    // dt, period, eps, sub 를 주면 기본 설정을 덮어쓴다 (tag 는 그 설정의 이름)
+    const over: { dt?: number; period?: number; eps?: number; substeps?: number } = {};
+    if (q.has('dt')) over.dt = num('dt', 0.1);
+    if (q.has('period')) over.period = num('period', 4);
+    if (q.has('eps')) over.eps = num('eps', 0.1);
+    if (q.has('sub')) over.substeps = num('sub', 4);
     const a12 = await testA12(
       glx,
-      { N: num('N', 192), seed: num('seed', 1), cycles: num('cyc', 2), steps: num('steps', 10000), tri: q.get('tri') === '1', checkEvery: num('check', 50), variant: num('variant', 0), syncBounds: q.get('sync') === '1' },
+      { N: num('N', 192), seed: num('seed', 1), cycles: num('cyc', 2), steps: num('steps', 10000), tri: q.get('tri') === '1', checkEvery: num('check', 50), variant: num('variant', 0), syncBounds: q.get('sync') === '1', over, tag: q.get('tag') ?? undefined },
       log,
       (sim) => sim.view(canvas.width, canvas.height),
     );
