@@ -152,9 +152,16 @@ export class MultigridGPU {
     }
   }
 
-  /** 벤치마크용: 가장 작은 레벨에 Jacobi 를 n 번 그린다 (드로콜 하나의 고정 비용을 재는 데 쓴다) */
+  /** 벤치마크용: 가장 작은 레벨에 Jacobi 를 n 번 그리고 끝나기를 기다린다 (드로콜 하나의 고정 비용을 재는 데 쓴다) */
   benchTinyDraws(n: number): void {
-    this.jacobi(this.L - 1, n);
+    const l = this.L - 1;
+    this.jacobi(l, n);
+    this.glx.readPixel(this.P[l][this.cur[l]]);
+  }
+
+  /** 방금 푼 해에서 텍셀 하나를 읽어 풀이의 명령이 모두 끝나기를 기다린다 (벽시계 측정용) */
+  sync(): void {
+    this.glx.readPixel(this.P[0][this.cur[0]]);
   }
 
   /** V(2,2) 사이클을 ncyc 번. 최조 격자에서는 Jacobi 를 nc 번 */

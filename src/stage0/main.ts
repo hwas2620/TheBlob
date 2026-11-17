@@ -43,8 +43,8 @@ const FAST = VARIANTS[3];
 const GRIDS = [256, 384, 512];
 const SPFS = [1, 2, 4, 8, 16];
 
-/** 고르는 단추 한 줄. 누르면 pick 을 부르고 눌린 단추를 표시한다 */
-function choices<T>(rowId: string, items: T[], label: (v: T) => string, initial: T, pick: (v: T) => void): void {
+/** 고르는 단추 한 줄. 누르면 pick 을 부르고 눌린 단추를 표시한다. 만든 단추들을 돌려준다 */
+function choices<T>(rowId: string, items: T[], label: (v: T) => string, initial: T, pick: (v: T) => void): HTMLButtonElement[] {
   const row = el<HTMLDivElement>(rowId);
   const buttons = items.map((v) => {
     const b = document.createElement('button');
@@ -52,11 +52,16 @@ function choices<T>(rowId: string, items: T[], label: (v: T) => string, initial:
     b.setAttribute('aria-pressed', String(v === initial));
     b.onclick = (): void => {
       buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      pick(v);
+      try {
+        pick(v);
+      } catch (e) {
+        fail(e); // 큰 격자에서 메모리가 모자라면 여기로 온다
+      }
     };
     row.append(b);
     return b;
   });
+  return buttons;
 }
 
 function tile(label: string, unit: string): (text: string) => void {
@@ -79,7 +84,7 @@ function benchTable(bench: BenchResult): void {
   for (const r of rows) best.set(r.N, Math.min(best.get(r.N) ?? Infinity, r.msPerStep));
   const table = document.createElement('table');
   const head = table.insertRow();
-  for (const h of ['격자', '계산 방식', '드로콜', 'ms/스텝', '그중 풀이', '프레임당 스텝', '전진 px/s']) {
+  for (const h of ['격자', '계산 방식', '드로콜', 'ms/스텝', '풀이 한 번', '프레임당 스텝', '전진 px/s']) {
     const th = document.createElement('th');
     th.textContent = h;
     head.append(th);
@@ -115,12 +120,16 @@ async function main(): Promise<void> {
     window.__stage0 = { done: true, ok: false, result: { caps }, error: 'no float targets' };
     return;
   }
-  canvas.addEventListener('webglcontextlost', (e) => {
-    e.preventDefault();
-    log('GPU 컨텍스트를 잃었습니다(메모리 부족일 수 있습니다). 페이지를 새로 열고 더 작은 격자로 해 보세요.');
+  const glx = new Glx(gl);
+  let raf = 0;
+  // 복원을 요청하지 않는다(preventDefault 를 부르지 않는다). 복원되면 이전 텍스처와 프로그램이 모두 죽은 객체라
+  // 오류 없이 빈 값만 나온다. 잃으면 멈추고 새로 열게 한다
+  canvas.addEventListener('webglcontextlost', () => {
+    glx.markLost();
+    cancelAnimationFrame(raf);
+    log('GPU 컨텍스트를 잃었습니다(메모리 부족, 드라이버 재시작, 탭이 오래 뒤에 있었을 때 생깁니다). 페이지를 새로 열어 주세요. 되풀이되면 더 작은 격자로 해 보세요.');
     window.__stage0 = { done: true, ok: false, result: { caps }, error: 'context lost' };
   });
-  const glx = new Glx(gl);
   const num = (k: string, d: number): number => (q.has(k) ? Number(q.get(k)) : d);
 
   // ── 시험 모드 (numpy 기준 자료가 필요하다) ──
@@ -160,7 +169,6 @@ async function main(): Promise<void> {
   let spf = SPFS.includes(num('spf', 2)) ? num('spf', 2) : 2;
   let tri = q.get('tri') === '1';
   let sim: PlasmGPU | null = null;
-  let raf = 0;
 
   el('controls').hidden = false;
   el('tiles').hidden = false;
@@ -180,7 +188,7 @@ async function main(): Promise<void> {
     sim = s;
     let frames = 0, steps = 0, draws0 = glx.drawCalls, t0 = performance.now();
     const frame = (): void => {
-      if (sim !== s) return;
+      if (sim !== s || glx.lost()) return;
       for (let i = 0; i < spf; i++) s.stepOnce();
       s.view(canvas.width, canvas.height);
       frames++;
@@ -205,16 +213,19 @@ async function main(): Promise<void> {
     raf = requestAnimationFrame(frame);
   };
 
-  choices('gridRow', GRIDS, (n) => `${n}²`, gridN, (n) => {
-    gridN = n;
-    startRun();
-  });
+  // 격자와 무늬 단추는 시뮬레이션을 새로 만든다(앞의 GL 자원을 지운다). 속도를 재는 동안에는 잠근다
+  const rebuilders = [
+    ...choices('gridRow', GRIDS, (n) => `${n}²`, gridN, (n) => {
+      gridN = n;
+      startRun();
+    }),
+    ...choices('triRow', [false, true], (on) => (on ? '삼각 격자' : '끔'), tri, (on) => {
+      tri = on;
+      startRun();
+    }),
+  ];
   choices('spfRow', SPFS, String, spf, (n) => {
     spf = n;
-  });
-  choices('triRow', [false, true], (on) => (on ? '삼각 격자' : '끔'), tri, (on) => {
-    tri = on;
-    startRun();
   });
 
   const benchStart = el<HTMLButtonElement>('benchStart');
@@ -229,10 +240,12 @@ async function main(): Promise<void> {
   const startBench = async (sizes: number[]): Promise<void> => {
     benchStart.disabled = true;
     benchStart.textContent = '재는 중…';
+    rebuilders.forEach((b) => (b.disabled = true));
     cancelAnimationFrame(raf);
     sim = null;
     try {
-      const bench = await runBench(glx, caps.renderer, sizes, log, { block: q.has('block') ? num('block', 16) : undefined, blocks: q.has('blocks') ? num('blocks', 6) : undefined });
+      const opt = (k: string): number | undefined => (q.has(k) && Number.isFinite(num(k, NaN)) ? num(k, NaN) : undefined);
+      const bench = await runBench(glx, caps.renderer, sizes, log, { block: opt('block'), blocks: opt('blocks') });
       log(`드로콜 하나의 고정 비용 약 ${bench.usPerTinyDraw.toFixed(1)}µs · 전체 ${bench.seconds.toFixed(0)}초`);
       benchJson = JSON.stringify(bench);
       benchTable(bench);
@@ -245,7 +258,14 @@ async function main(): Promise<void> {
     } finally {
       benchStart.disabled = false;
       benchStart.textContent = '다시 재기';
-      if (!glx.lost()) startRun();
+      rebuilders.forEach((b) => (b.disabled = false));
+      if (!glx.lost()) {
+        try {
+          startRun();
+        } catch (e) {
+          fail(e);
+        }
+      }
     }
   };
   benchStart.onclick = (): void => {

@@ -76,6 +76,10 @@ export class Glx {
   private fbos: WebGLFramebuffer[] = [];
   /** 컴파일한 프로그램. 소스가 같으면 다시 컴파일하지 않는다(reset 뒤에도 남긴다) */
   private progCache = new Map<string, Prog>();
+  /** 컴파일이나 링크에 실패한 소스와 그 오류. 같은 실패를 되풀이하지 않는다 */
+  private progFail = new Map<string, string>();
+  /** 컨텍스트를 한 번이라도 잃었는가. 복원되더라도 이전 객체는 모두 죽었으므로 다시 쓰지 않는다 */
+  private dead = false;
 
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl;
@@ -157,30 +161,45 @@ export class Glx {
   program(name: string, fragSrc: string): Prog {
     const cached = this.progCache.get(fragSrc);
     if (cached) return cached;
+    const failed = this.progFail.get(fragSrc);
+    if (failed !== undefined) throw new Error(failed);
     const gl = this.gl;
+    const fail = (msg: string): never => {
+      this.progFail.set(fragSrc, msg);
+      throw new Error(msg);
+    };
     const compile = (type: number, src: string): WebGLShader => {
-      const sh = gl.createShader(type)!;
+      const sh = gl.createShader(type);
+      if (!sh) return fail(`셰이더를 만들 수 없다 (${name}): 컨텍스트를 잃었을 수 있다`);
       gl.shaderSource(sh, src);
       gl.compileShader(sh);
       if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
         const log = gl.getShaderInfoLog(sh);
         gl.deleteShader(sh);
-        throw new Error(`셰이더 컴파일 오류 (${name}): ${log}`);
+        return fail(`셰이더 컴파일 오류 (${name}): ${log}`);
       }
       return sh;
     };
     const vs = compile(gl.VERTEX_SHADER, FULLSCREEN_QUAD_VERT);
-    const fs = compile(gl.FRAGMENT_SHADER, fragSrc);
+    let fs: WebGLShader;
+    try {
+      fs = compile(gl.FRAGMENT_SHADER, fragSrc);
+    } catch (e) {
+      gl.deleteShader(vs);
+      throw e;
+    }
     const prog = gl.createProgram()!;
     gl.attachShader(prog, vs);
     gl.attachShader(prog, fs);
     gl.bindAttribLocation(prog, 0, 'a_position');
     gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-      throw new Error(`프로그램 링크 오류 (${name}): ${gl.getProgramInfoLog(prog)}`);
-    }
     gl.deleteShader(vs);
     gl.deleteShader(fs);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      const log = gl.getProgramInfoLog(prog);
+      gl.deleteProgram(prog);
+      return fail(`프로그램 링크 오류 (${name}): ${log}`);
+    }
     const uni = new Map<string, UniformInfo>();
     const count = gl.getProgramParameter(prog, gl.ACTIVE_UNIFORMS) as number;
     for (let i = 0; i < count; i++) {
@@ -265,9 +284,23 @@ export class Glx {
     this.invalidate();
   }
 
-  /** GPU 컨텍스트를 잃었는가 (메모리 부족 등) */
+  /** GPU 컨텍스트를 잃었는가 (메모리 부족, 드라이버 재시작 등). 한 번 잃으면 복원되더라도 계속 true 다 */
   lost(): boolean {
-    return this.gl.isContextLost();
+    if (this.gl.isContextLost()) this.dead = true;
+    return this.dead;
+  }
+
+  /** 컨텍스트 손실 이벤트를 받았을 때 부른다 */
+  markLost(): void {
+    this.dead = true;
+  }
+
+  /** 쌓인 GL 오류가 있으면 던진다 (왕복이 있어 느리다. 만들 때만 쓴다) */
+  checkError(what: string): void {
+    const gl = this.gl;
+    const e = gl.getError();
+    if (e === gl.NO_ERROR || e === gl.CONTEXT_LOST_WEBGL) return;
+    throw new Error(`${what}: GL 오류 0x${e.toString(16)}${e === gl.OUT_OF_MEMORY ? ' (메모리 부족)' : ''}`);
   }
 
   /** 이 클래스 밖에서 GL 상태(뷰포트, 가위, 텍스처 유닛, VAO, 프로그램)를 건드렸을 때 그림자를 버린다 */
@@ -303,9 +336,23 @@ export class Glx {
     return out;
   }
 
-  /** 텍스처를 파이프라인을 멈추지 않고 읽기 시작한다. 결과는 poll 로 거둔다 */
-  readAsync(t: Tex): AsyncRead {
+  /**
+   * 텍스처의 (0,0) 텍셀 하나를 읽는다. 이 텍스처에 그린 것과 그것이 기대는 앞의 명령이 모두 끝나기를 기다리게 된다
+   * (벽시계 측정의 끝을 맞추는 데 쓴다. 측정한 드로콜의 마지막 출력을 읽어야 한다)
+   */
+  readPixel(t: Tex): Float32Array {
     const gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.readFbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t.tex, 0);
+    const out = new Float32Array(4);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.FLOAT, out);
+    return out;
+  }
+
+  /** 텍스처를 파이프라인을 멈추지 않고 읽기 시작한다. 결과는 poll 로 거둔다. 컨텍스트를 잃었으면 null */
+  readAsync(t: Tex): AsyncRead | null {
+    const gl = this.gl;
+    if (this.lost()) return null;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.readFbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t.tex, 0);
     const buf = gl.createBuffer()!;
@@ -313,25 +360,39 @@ export class Glx {
     gl.bufferData(gl.PIXEL_PACK_BUFFER, t.w * t.h * 16, gl.STREAM_READ);
     gl.readPixels(0, 0, t.w, t.h, gl.RGBA, gl.FLOAT, 0);
     gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
-    const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0)!;
+    const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+    if (!sync) {
+      gl.deleteBuffer(buf);
+      return null;
+    }
     gl.flush();
     return { buf, sync, w: t.w, h: t.h };
   }
 
-  /** 읽기가 끝났으면 값을, 아니면 null */
-  poll(a: AsyncRead): Float32Array | null {
+  /**
+   * 읽기의 상태. 'pending' 이면 아직이고, 'failed' 면 실패해서 손잡이를 버렸다(다시 재야 한다). 끝났으면 값을 돌려준다.
+   * 끝났거나 실패한 손잡이는 다시 쓰지 않는다
+   */
+  poll(a: AsyncRead): Float32Array | 'pending' | 'failed' {
     const gl = this.gl;
     const s = gl.clientWaitSync(a.sync, 0, 0);
-    if (s === gl.TIMEOUT_EXPIRED) return null;
-    gl.deleteSync(a.sync);
-    const out = new Float32Array(a.w * a.h * 4);
-    if (s !== gl.WAIT_FAILED) {
-      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, a.buf);
-      gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, 0, out);
-      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    if (s === gl.TIMEOUT_EXPIRED) return 'pending';
+    if (s === gl.WAIT_FAILED) {
+      this.cancel(a);
+      return 'failed';
     }
-    gl.deleteBuffer(a.buf);
-    return s === gl.WAIT_FAILED ? null : out;
+    const out = new Float32Array(a.w * a.h * 4);
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, a.buf);
+    gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, 0, out);
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    this.cancel(a);
+    return out;
+  }
+
+  /** 거두지 않을 읽기의 손잡이를 지운다 */
+  cancel(a: AsyncRead): void {
+    this.gl.deleteSync(a.sync);
+    this.gl.deleteBuffer(a.buf);
   }
 
   /** 대기 중인 명령을 모두 끝낸다 (벽시계 측정용) */

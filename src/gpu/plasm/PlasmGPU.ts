@@ -43,6 +43,14 @@ export interface PlainState {
   pm: Float32Array;
 }
 
+/** snapshot() 이 읽어 둔 상태 (세 상태 텍스처의 RGBA 와 스텝 수) */
+export interface Snapshot {
+  a: Float32Array;
+  b: Float32Array;
+  c: Float32Array;
+  step: number;
+}
+
 /** 경계 상자를 다시 재는 주기(스텝) */
 const BOUNDS_EVERY = 8;
 /** 경계 상자 밖으로 두는 여유(셀). 젖은 마스크 흐림의 반경 6 보다 커야 한다 */
@@ -92,6 +100,11 @@ export class PlasmGPU {
   asyncBounds = true;
   /** false 면 경계 상자를 스스로 다시 재지 않는다 (벤치마크가 refreshBounds 로 직접 잰다) */
   autoBounds = true;
+  /**
+   * 가위 사각형의 여유에 더하는 셀 수. 게임 루프에서는 경계 상자가 한두 프레임 늦게 도착해 여유가 그만큼 크다.
+   * 그 자리에서 읽는 측정(벤치마크)이 그 크기를 흉내 낼 때 쓴다. 키우는 쪽은 언제나 안전하다
+   */
+  marginExtra = 0;
   /** 스텝당 V 사이클 수 (params.mgCycles 에서 시작. 돌리는 중에 바꿀 수 있다) */
   cycles: number;
   private bounds: [number, number, number, number] | null = null; // 젖은 셀의 x0, y0, x1, y1
@@ -107,6 +120,9 @@ export class PlasmGPU {
     this.params = params;
     this.N = N;
     this.cycles = params.mgCycles;
+    // 가위 사각형 밖이 "변하지 않는 마른 땅"이려면 가장 멀리 읽는 패스(젖은 마스크의 흐림)의 반경이 여유보다 작아야 한다
+    const blurRadius = Math.floor(3.0 * params.curvSigma + 0.5);
+    if (blurRadius >= BOUNDS_MARGIN) throw new Error(`흐림 반경(${blurRadius})이 가위 사각형의 여유(${BOUNDS_MARGIN})보다 작아야 한다`);
     const vars = shaderVars(params);
     const src = plasmShaders(vars);
     for (const [name, s] of Object.entries(src)) this.prog[name] = glx.program(name, s);
@@ -134,6 +150,8 @@ export class PlasmGPU {
       field[i * 2 + 1] = food[i];
     }
     this.texField = glx.tex(N, N, 'rg32f', field);
+    // 타깃에 붙지 않는 텍스처는 할당에 실패해도 타깃의 완전성 검사에 걸리지 않는다
+    glx.checkError(`${N}² 격자의 텍스처 만들기`);
 
     this.dry = [glx.tex(N, N, 'r32f'), glx.tex(N, N, 'r32f'), rgba()];
     this.tDry = [glx.target(this.dry[0]), glx.target(this.dry[1]), glx.target(this.dry[2])];
@@ -192,13 +210,34 @@ export class PlasmGPU {
     }
     this.bounds = x1 >= 0 ? [x0, y0, x1, y1] : null;
     this.boundsStep = this.step;
+    this.dropPending();
+  }
+
+  /** 거두지 않은 경계 상자 읽기를 버린다 */
+  private dropPending(): void {
+    if (this.pending) this.glx.cancel(this.pending.read);
     this.pending = null;
+  }
+
+  /** 지금 상태를 통째로 읽어 둔다 (벤치마크가 변형마다 같은 몸에서 출발하게 하는 데 쓴다. 파이프라인이 멈춘다) */
+  snapshot(): Snapshot {
+    return { a: this.readA(), b: this.readB(), c: this.readC(), step: this.step };
+  }
+
+  /** snapshot 으로 읽어 둔 상태로 되돌린다 */
+  restore(s: Snapshot): void {
+    this.setState(s.a, s.b, s.c, s.step);
+  }
+
+  /** 방금 끝난 스텝의 마지막 출력에서 텍셀 하나를 읽어, 그 스텝까지의 명령이 모두 끝나기를 기다린다 (벽시계 측정용) */
+  sync(): void {
+    this.glx.readPixel(this.A[this.curA]);
   }
 
   /** 이번 스텝에 그릴 영역. null 이면 전체 */
   private activeRect(): Rect | null {
     if (!this.scissor || !this.bounds) return null;
-    const m = BOUNDS_MARGIN + (this.step - this.boundsStep);
+    const m = BOUNDS_MARGIN + (this.step - this.boundsStep) + this.marginExtra;
     const x0 = this.bounds[0] - m;
     const y0 = this.bounds[1] - m;
     const x1 = this.bounds[2] + m;
@@ -220,8 +259,9 @@ export class PlasmGPU {
     const { glx, prog } = this;
     if (this.pending) {
       const v = glx.poll(this.pending.read);
-      if (v) {
-        this.applyBounds(v, this.pending.step);
+      if (v !== 'pending') {
+        // 실패했으면 버리고 아래에서 다시 잰다 (여유는 그동안 스텝마다 커져 있으므로 안전하다)
+        if (v !== 'failed') this.applyBounds(v, this.pending.step);
         this.pending = null;
       }
     }
@@ -229,8 +269,12 @@ export class PlasmGPU {
     glx.draw(prog.bbox0, this.tBox[0], { uA: this.A[this.curA] }, PlasmGPU.blockRect(rect));
     for (let i = 1; i < this.box.length; i++) glx.draw(prog.reduceMin, this.tBox[i], { uSrc: this.box[i - 1], uBlock: this.redBlock[i - 1] });
     const last = this.box[this.box.length - 1];
-    if (this.asyncBounds) this.pending = { read: glx.readAsync(last), step: this.step };
-    else this.applyBounds(glx.read(last), this.step);
+    if (this.asyncBounds) {
+      const read = glx.readAsync(last);
+      if (read) this.pending = { read, step: this.step };
+    } else {
+      this.applyBounds(glx.read(last), this.step);
+    }
   }
 
   /** 경계 상자를 지금 재서 바로 적용한다 (파이프라인이 멈춘다) */
@@ -239,7 +283,7 @@ export class PlasmGPU {
     glx.draw(prog.bbox0, this.tBox[0], { uA: this.A[this.curA] });
     for (let i = 1; i < this.box.length; i++) glx.draw(prog.reduceMin, this.tBox[i], { uSrc: this.box[i - 1], uBlock: this.redBlock[i - 1] });
     this.applyBounds(glx.read(this.box[this.box.length - 1]), this.step);
-    this.pending = null;
+    this.dropPending();
   }
 
   /** 지금 그리는 영역의 넓이가 격자에서 차지하는 비율 (가위를 쓰지 않으면 1) */
