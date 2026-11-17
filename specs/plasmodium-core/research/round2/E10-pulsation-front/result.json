@@ -1,0 +1,174 @@
+{
+ "verdict": "partial",
+ "headline": "E7 모델에 맥동을 넣자 두께 맥동·왕복 유량·계단식 전진은 뚜렷이 나왔고, 결합 진동자 위상에서는 정맥 굵기 구배가 뒤가 굵은 쪽으로 바로잡혔다(구배 실행 시드 3/3). 그러나 먹이 구배가 없으면 균일·나이 비례·결합 진동자 어느 위상에서도 단일 부채 이주가 사라졌고(맥동 실행 8회 중 0회), 교정된 정맥은 서로 이어지지 않은 나무 2~4그루라 공통 채점의 연결 기준을 6/6 통과하지 못했다.",
+ "model_rules": "E7 모델(sq8 간선 격자 N=192, dt=0.1; 셀 wet/h/age/slime, 간선 C_e; 정적 백색 잡음 G_e=exp(0.5·N(0,1)), 항복 η_j~N(0,1), 새 간선 D0·(1+0.3·U(−1,1)))에 맥동과 강화 입력 필터를 더했다. 파라미터는 E7 \"시트 전진면\" 그대로: κ=20, h0=1, τ_a=50, τ_f=2, β=0.05, cap=0.5, hy0=1.05, σ_y=0.02, λ=0.06, y_s=0.5, h_fill=0.2, h_min=0.15, grace=2, γ=1.5, Q0_auto=0.2, rate=0.05(적응 시간 20), D0=2, r=0.05. 구배 실행: food=(x−중심)/N, y_c=0.2. 초기 조건: 반지름 12 원반, h=3 균일, age=0, θ=0, 정맥·방향 없음.\n\nE7 규칙(변경 없음):\n1) tube_i=min(β·sqrt(Cn_i), cap), Cn_i=인접 간선 C 최댓값. h*_i = h0·exp(−age_i/τ_a)·[1−(1−h_fill/h0)·exp(−age_i/τ_f)] + tube_i.\n2) p_i/(κ·dt) + Σ_e W_e(p_i−p_j) = (h_i−h*_i)/dt, W_e=G_e·(C_e+r)/L_e. 희소 직접 풀이.\n3) Q_e=W_e(p_i−p_j), h_i ← h_i − dt·Σ_e Q_e.\n4) dC_e/dt = rate·((F_e/Q0)^γ − C_e), Q0 = Q0_auto·(활성 간선 평균 F_e^γ)^(1/γ).\n5) h_i<h_min 이고 age_i>grace 면 마름. 부피는 젖은 8이웃에 균등 분배, slime=1.\n6) 마른 셀 j 는 젖은 8이웃의 최대 h 가 hy0·(1+σ_y·η_j)+λ·(3−n_wet8)+y_s·slime_j−y_c·food_j 를 넘으면 젖고, 그 이웃에서 min(h_fill, 0.5·h/후보수)를 받는다. age=0.\n\nE10 추가:\nA) 맥동: h*_i ← h*_i·(1+ε·cos θ_i). 관 부피항까지 전체에 곱한다. ω=2π/주기(주기 4, 1회는 2), ε 0.05/0.1/0.2.\n (a) 균일: θ_i=ω·t.\n (b) 나이 비례: θ_i=ω·t+2π·age_i/age_ref, age_ref=젖은 셀 나이의 95 백분위.\n (c) 결합 진동자: dθ_i/dt = ω·(1+0.1·(1−exp(−age_i/τ_a))) + D_θ·Σ_{j∈젖은 8이웃} w_j·sin(θ_j−θ_i), w=4/6(축)·1/6(대각), D_θ=8.8, dt 당 부분 스텝 4회. 새로 젖은 셀은 부피를 준 이웃의 θ 를 물려받는다.\nB) 강화 입력 F_e: 순간 |Q_e|(E7) 또는 1차 저역 통과 Qf_e ← Qf_e + (dt/τ_Q)·(|Q_e|−Qf_e), τ_Q=주기. 대조로 부호 있는 Q_e 를 같은 필터로 거른 뒤 절댓값(순유량만).\nC) 절단: t=200 에 무게중심 변위 방향으로 몸 길이의 뒤 50% 에 있는 젖은 셀을 제거(h=0, slime=1).\n\n측정: 마지막 완결 주기의 (h_max−h_min)/2 지도; 마지막 5주기 창의 간선별 평균 |Q| 와 |평균 Q|; 젖음 사건의 공여 셀 위상 분포(원형 평균 길이 R); 스텝별 새로 젖은 셀 수; 정맥 셀(Cn>4)의 C 90 백분위를 이동 방향 6띠와 나이 6구간(0/10/25/50/100/200)으로 나눈 프로파일. 꼬리비 = 나이 200 이상 구간의 C_p90 / 더 젊은 구간 C_p90 의 최댓값.\n정맥 표시와 vein.npy 는 E7 과 같다(C_e>4 인 간선을 폭 0.45·C^(1/4) 셀의 관으로 4배 해상도에 그림).",
+ "runs_summary": "본 실행 20회 + 스모크 2회(T=30·40, 삭제). 전부 N=192, dt=0.1, T≤400, 직접 풀이. 계산 시간 합 2027초(33.8분).\n\nB0 기준선 2회(맥동 없음): 시드 2 무구배 이동 64.5셀(분기점 137, 고리 41), 시드 1 구배 이동 75.2셀(187/70). E7 보고 수치와 전 항목 동일.\n\nB1 위상 방식 5회(ε 0.1, 주기 4, 순간 |Q|): 무구배 시드 2 에서 균일/나이/결합 진동자 이동 12.7/10.7/2.8셀, 전진면 4~6조각으로 사방 팽창. 구배 시드 1 에서 나이/결합 진동자 이동 75.5/72.3셀로 부채 이주 유지.\n\nB2 6회(저역 |Q|, τ_Q=4): 결합 진동자 구배에서 꼬리비 1.16 → 2.56, 나이 위상 구배에서 0.35 → 0.37. 순유량만으로 강화하면 꼬리비 1.15 에 전진면 뒤 촘촘한 그물(고리 124)로 돌아감. 무구배 시드 2: 결합 진동자 ε 0.1 이동 5.3, ε 0.05 이동 6.4, 나이 위상 ε 0.05 이동 19.0.\n\nB3 4회(결합 진동자 + 저역 시드 반복): 구배 시드 2·3 이동 70.8/64.7, 무구배 시드 1·3 이동 1.1/5.1.\n\nB4 3회(결합 진동자 + 저역, 구배 시드 1): ε 0.2 는 줄기 3개만 남고 편극 약화, 이동 57.7. 주기 2 는 주기 4 와 비슷(이동 69.3). 절단(t=200, 부피 19% 제거)은 25주기 동안 시트 끝이 14.6셀 전진하고 멈추지 않음.\n\n결합 진동자 + 저역 6회 종합: 부채 이주 구배 3/3, 무구배 0/3(기준선 무구배 1/3). 구배 실행의 뒤→앞 log10 C_p90 기울기 −0.18/−0.11/−0.32(기준선 +0.17), 꼬리비 0.91~6.3(기준선 0.10~0.28). 정맥 총유량/순유량 3.6~7.1(기준선 1.1~1.2), 젖음 위상 잠금 R 0.85~0.90(기준선 0.02~0.03), 시트 두께 진폭 0.042~0.053. 공통 채점은 분기점 65~178, 폭비 2.24~2.83 으로 통과, 정맥 연결 0.24~0.55 로 6/6 불통과.",
+ "best_run_dir": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E10-pulsation-front/runs/b3_osc_lp_g3",
+ "best_metrics": {
+  "run": "b3_osc_lp_g3 (시드 3, 먹이 구배, 결합 진동자 위상, eps 0.1, 주기 4, 저역 |Q|; t=379.7 에 경계 도달)",
+  "eval_primary_4x_tube_render": {
+   "body_solidity": 0.396,
+   "body_components": 62,
+   "body_largest_frac": 0.965,
+   "branch_points": 65,
+   "loops": 9,
+   "endpoints": 97,
+   "vein_area_frac": 0.2106,
+   "vein_components": 24,
+   "vein_largest_frac": 0.549,
+   "width_p10": 2,
+   "width_p50": 4,
+   "width_p90": 4.47,
+   "width_ratio_p90_p10": 2.24,
+   "strength_ratio_p90_p10": 2.5,
+   "verdict": {
+    "network_like": false,
+    "branched": true,
+    "hierarchical": true,
+    "all_three": false
+   }
+  },
+  "eval_native_grid": {
+   "branch_points": 0,
+   "note": "네이티브 격자에서는 1셀 폭 정맥이 채점기의 작은 객체 필터에 지워진다(E7 과 같은 한계)"
+  },
+  "own_metrics": {
+   "centroid_displacement_cells": 64.67,
+   "late_speed_cells_per_time": 0.1518,
+   "growth_polarisation": 0.369,
+   "active_front_patches": 1,
+   "front_rear_extent_ratio": 0.78,
+   "sheet_area_frac": 0.365,
+   "vol_frac_largest_component": 0.984,
+   "mass_err_max_rel": 3.4e-16,
+   "h_min_seen": 0,
+   "thickness_amplitude_sheet": 0.0472,
+   "thickness_amplitude_thin": 0.0195,
+   "thickness_amplitude_relative_mean": 0.0654,
+   "vein_gross_over_net_flux": 3.596,
+   "vein_shuttle_over_net_flux": 2.596,
+   "frac_vein_edges_reversing": 0.976,
+   "wetting_phase_lock_R": 0.847,
+   "wetting_phase_deg": 5.4,
+   "wetting_fraction_in_busiest_quarter_cycle": 0.83
+  },
+  "vein_profile_rear_to_front_6_bands": {
+   "vein_crossings": [
+    4,
+    8,
+    8,
+    13,
+    19,
+    7
+   ],
+   "C_p90": [
+    770.4,
+    927.3,
+    216.9,
+    173.2,
+    56.5,
+    25.6
+   ],
+   "C_max": [
+    844.9,
+    931.9,
+    899.8,
+    412.1,
+    414.4,
+    63.8
+   ],
+   "slope_log10_Cp90_rear_to_front": -0.318,
+   "rear_over_front_Cp90": 13.6,
+   "tail_ratio": 6.32,
+   "gross_flux_p90": [
+    4.753,
+    5.271,
+    2.144,
+    1.336,
+    0.786,
+    0.259
+   ]
+  },
+  "phase_structure_largest_component": {
+   "rear_band_lead_over_front_band_turns": [
+    0.962,
+    0.56,
+    0.395,
+    0.196,
+    0.072,
+    0
+   ],
+   "position_phase_corr": -0.831,
+   "age_phase_corr": 0.867
+  },
+  "seed_reproducibility_osc_lowpass": {
+   "gradient_seed1_b2_osc_lp_g1": "이동 66.9, 조각 3, 분기점 100, 고리 10, 연결 0.39, 폭비 2.83, 기울기 -0.18, 뒤/앞 3.66, 꼬리비 2.56",
+   "gradient_seed2_b3_osc_lp_g2": "이동 70.8, 조각 1, 분기점 178, 고리 44, 연결 0.53, 폭비 2.83, 기울기 -0.11, 뒤/앞 2.18, 꼬리비 0.91",
+   "gradient_seed3_b3_osc_lp_g3": "이동 64.7, 조각 1, 분기점 65, 고리 9, 연결 0.55, 폭비 2.24, 기울기 -0.32, 뒤/앞 13.6, 꼬리비 6.32",
+   "no_gradient_seed1_2_3": "이동 1.1 / 5.3 / 5.1, 전진면 조각 6 / 8 / 5, 꼬리비 1.72 / 3.84 / 3.74, 연결 0.24 / 0.33 / 0.47"
+  },
+  "baseline_no_pulsation": {
+   "gradient_seed1": "이동 75.2, 분기점 187, 고리 70, 연결 0.98, 기울기 +0.17, 뒤/앞 0.25, 꼬리비 0.17, 총/순 유량 1.12, 잠금 R 0.03",
+   "gradient_seed3_E7_copy": "이동 75.1, 기울기 +0.17, 뒤/앞 0.19, 꼬리비 0.16",
+   "no_gradient_seed2": "이동 64.5, 기울기 +0.31, 뒤/앞 0.20, 꼬리비 0.10, 총/순 유량 1.24, 잠금 R 0.02"
+  },
+  "cut_test_b4_cut_osc_lp_g1": {
+   "cut_time": 200,
+   "volume_removed_frac": 0.19,
+   "area_removed_frac": 0.23,
+   "new_wet_rate_ratio_periods_0_5": "0.56~0.78",
+   "new_wet_rate_ratio_periods_6_24_mean": 0.86,
+   "tip_advance_cells_in_25_periods": 14.6,
+   "stopped": false
+  }
+ },
+ "images": [
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E10-pulsation-front/m_b3_final.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E10-pulsation-front/m_b01_time_s2.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E10-pulsation-front/m_b2_final.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E10-pulsation-front/p_step_b1.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E10-pulsation-front/p_hamp_b1.png",
+  "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E10-pulsation-front/m_b4_time.png"
+ ],
+ "structure_is_emergent": true,
+ "mass_conserved": "보존됨. 총 부피 상대 오차 최대 6.8e-16 (20회 전부), 음수 두께 없음(h_min_seen=0). 절단 실행은 절단 시점에 기준 부피를 다시 잡았다. 다만 최대 연결 성분 밖의 고립 조각에 부피의 0.4~10% 가 남고, eps 0.2 에서는 17% 였다.",
+ "gpu_feasibility": {
+  "global_solve_needed": true,
+  "est_fullscreen_passes_per_step": 53,
+  "notes": "전부 추정이고 GPU 구현이나 근사 풀이 실측은 하지 않았다. 이 실험 20회는 모두 희소 직접 풀이다. 전역 풀이는 E7 과 같은 반암시 스크린드 푸아송이며, 맥동을 켠 상태에서 Jacobi·멀티그리드는 시험하지 않았다. 우변이 40스텝 주기로 진동하므로 웜스타트 추적 오차가 맥동 없는 경우보다 클 수 있다(미확인). 패스 추정 53 = E7 추정 49(Jacobi 40 + 나머지 9) + 위상 확산 결합 부분 스텝 4회. 위상은 셀 상태 텍스처의 채널 1개, 9점 스텐실 sin 결합이라 2π 로 접어 저장해도 된다. D_theta 와 d_omega 를 함께 1/3 로 줄이면 위상 패스 1회로 줄 수 있으나 시험하지 않았다. 저역 |Q| 는 간선 4방향 RGBA32F 텍스처 1장이 늘고 C 갱신 패스에서 함께 쓰면 패스 추가는 없다. 나이 비례 위상은 나이의 95 백분위(전역 통계)가 필요하고 결과도 나빠 쓸 이유가 없다. CPU 리드백은 필요 없다(Q0 정규화의 전역 평균은 밉 축소). 750² 이상 격자는 미시험."
+ },
+ "failure_modes": [
+  "균일 위상(대조군, b1_uni_s2): 무구배 시드 2 에서 이동 12.7셀, 전진면 4조각. E7 의 편극 소실이 eps 0.1·주기 4 에서도 재현됐다.",
+  "나이 비례 위상: 무구배에서 편극 소실(이동 10.7, eps 0.05 에서도 19.0). 구배에서는 부채 이주는 되지만 정맥이 평행한 빗살이고 후방이 가늘다(꼬리비 0.35, 저역 통과를 해도 0.37).",
+  "결합 진동자 위상: 무구배 5회(시드 1·2·3, eps 0.05·0.1, 순간·저역) 모두 전진면 5~8조각의 사방 팽창, 이동 1~6셀. 기준선에서 유일하게 단일 부채였던 시드 2 도 편극을 잃었다.",
+  "순유량만으로 강화(b2_osc_net_g1): 전진면 바로 뒤의 촘촘한 그물(고리 124)로 돌아가고 전진면이 격자 방향 수직 직선이 됐다. 꼬리비 1.15.",
+  "eps 0.2(b4_osc_lp_e20_g1): 굵은 줄기 3개만 남고 전진면이 위·아래로도 퍼져 편극 약화(속도 0.118, 기준 0.160). 부피의 17% 가 최대 성분에서 떨어져 나갔다.",
+  "정맥 연결 기준 불통과: 결합 진동자 + 저역 6회 모두 vein_largest_frac 0.24~0.55 (기준 0.6). 정맥이 마른 흔적에서 끝나는 따로 떨어진 나무 2~4그루이고 시트를 통해서만 이어진다. 고리도 6~44개로 기준선(41~70)보다 적다.",
+  "절단 시험: 뒤 절반(길이 기준, 부피 19%)을 지워도 25주기 안에 멈추지 않았다. 젖음 속도가 0~5주기에 56~78% 로 떨어졌다가 평균 86% 로 회복. 관찰값(5~10주기 뒤 정지)은 재현되지 않았다.",
+  "계획한 굵기 대책(관 부피항 확대, 먹이 위 저장소)은 예산이 차서 시험하지 못했다."
+ ],
+ "limitations": [
+  "N=192 한 크기, T≤400(주기 100회), 본 실행 20회. 구배 실행 대부분은 t=325~383 에 경계에 닿아 멈췄고 정상 이주 상태는 확인하지 못했다.",
+  "시드 3개 반복은 결합 진동자 + 저역 조합뿐이다. 나이 위상, eps 0.2, 주기 2, 절단은 1회씩이고 균일 위상 + 구배는 돌리지 않았다. 따라서 구배가 있을 때 진행파가 균일 위상보다 나은지는 모른다.",
+  "주기는 적응 시간의 1/5 와 1/10 만 시험했다. 1/20~1/50 은 dt 를 줄여야 해서 못 했다.",
+  "저역 통과 유무의 직접 비교는 결합 진동자 2쌍(구배 시드 1, 무구배 시드 2)과 나이 위상 1쌍뿐이다. 순간 |Q| 로도 구배 시드 1 은 이미 뒤가 굵었으므로(뒤/앞 2.41) 교정의 주된 원인은 저역 통과가 아니라 결합 진동자 맥동 자체다.",
+  "후방 정맥이 굵어지는 기전은 확정하지 못했다. 확인한 것은 후방 3띠 정맥의 총유량이 맨 앞 띠의 1.6~20배라는 것과 위상 구배가 후방 가는 정맥에 몰린다는 것까지다. 후방 관을 따라 짧은 파장의 연동파가 관 부피를 주고받는다는 설명은 추정이다.",
+  "결합 진동자의 뒤→앞 진행파는 손으로 방향을 주지 않았지만 '늙을수록 빠르다'는 규칙이 방향을 정한다. 위상차(전진면 대비 0.9~1.6바퀴, 주기 2 에서 2.8바퀴)는 몸에 고르게 퍼지지 않고 나이 100 미만 부분은 0.06바퀴 안에서 거의 동시에 뛴다.",
+  "구배 실행의 이동 방향은 넣어 준 먹이 구배에서 온다. 구배 없이 스스로 편극해 이주하는 경우는 맥동 아래에서 한 번도 얻지 못했다.",
+  "굵기 지표는 노드 전도도 C>4 인 셀의 C_p90 기준이다. 렌더 폭은 0.45·C^(1/4) 이라 C 10배가 폭 1.8배다. 공통 채점 폭비는 4배 관 렌더 기준이고 네이티브 격자 채점은 분기점 0 이다.",
+  "절단은 길이의 뒤 절반만 지워 부피의 19% 만 제거했다. 시트 가장자리만 남기는 실제 실험 조건과 맥동 없는 대조 절단은 하지 못했다.",
+  "근사 풀이와 큰 격자는 시험하지 않았다. GPU 수치는 전부 추정이다.",
+  "계산 시간이 33.8분으로 예산(30분 안팎)을 조금 넘었다.",
+  "무구배 기준선 시드 1·3 과 구배 기준선 시드 3 은 다시 돌리지 않고 E7 산출물을 썼다(같은 코드로 시드 2 무구배와 시드 1 구배가 수치까지 재현됨을 확인한 뒤). 구배 시드 2 의 기준선은 없다."
+ ],
+ "next_steps": [
+  "맥동을 켠 채 Jacobi 40회와 멀티그리드 1사이클 웜스타트로 256²·512² 재검증. GPU 판단에 가장 급하고 이번에 못 했다.",
+  "무구배 편극: 전진면 시트를 수동으로 두기(맥동 진폭을 나이로 게이트), 또는 전도도를 위상으로 변조해 순 수송이 생기는 연동 펌핑을 넣는 안을 시험.",
+  "나무끼리 잇기: 먹이 위 셀은 늙지 않는 저장소로 두고(규칙은 코드에 있음) 저장소–전진면 간선이 왕복 유량으로 유지되는지, 먹이 2개 사이에 굵은 관이 생기는지 시험.",
+  "D_theta, d_omega, 관 부피항 맥동 유무를 바꿔 '후방 위상 구배 → 후방 왕복 유량 → 굵은 줄기' 인과를 확인.",
+  "균일 위상 + 구배 대조군, 나이 위상 시드 반복, eps 0.15~0.2 와 주기 1/20~1/50 범위 보강.",
+  "시트 가장자리만 남기는 절단과 맥동 없는 대조 절단."
+ ],
+ "reproduce_command": "cd /tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E10-pulsation-front && OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMBA_NUM_THREADS=2 python3 e10.py b3_osc_lp_g3 '{\"seed\":3,\"phase_mode\":\"osc\",\"eps\":0.1,\"period\":4,\"tauQ\":4,\"y_c\":0.2,\"food_grad\":1.0}'   # E7 시트 전진면 파라미터는 e10.py 의 BASE 에 들어 있다. 무구배: y_c·food_grad 제거 / 기준선: '{\"seed\":2}' / 나이 위상: \"phase_mode\":\"age\" / 순간 |Q|: tauQ 제거 / 절단: \"cut_t\":200,\"T\":300 추가 / 표: python3 analyze.py --tsv results.tsv / 위상·유량 프로파일: python3 phasestat.py b3_osc_lp_g3; python3 fluxprof.py b3_osc_lp_g3 / 그림: python3 montage.py out.png --time b3_osc_lp_g3; python3 plots.py out2.png step b3_osc_lp_g3",
+ "report_path": "/tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E10-pulsation-front/REPORT.md"
+}

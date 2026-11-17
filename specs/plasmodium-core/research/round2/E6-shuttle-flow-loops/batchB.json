@@ -1,0 +1,185 @@
+[
+[
+"b_f000_s1",
+{
+"f_ac": 0.0,
+"ac": "radial",
+"seed": 1
+}
+],
+[
+"b_f050_rad_s1",
+{
+"f_ac": 0.5,
+"ac": "radial",
+"seed": 1
+}
+],
+[
+"b_f075_rad_s1",
+{
+"f_ac": 0.75,
+"ac": "radial",
+"seed": 1
+}
+],
+[
+"b_f090_rad_s1",
+{
+"f_ac": 0.9,
+"ac": "radial",
+"seed": 1
+}
+],
+[
+"b_f097_rad_s1",
+{
+"f_ac": 0.97,
+"ac": "radial",
+"seed": 1
+}
+],
+[
+"b_f075_prot_s1",
+{
+"f_ac": 0.75,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"b_f090_prot_s1",
+{
+"f_ac": 0.9,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"b_f097_prot_s1",
+{
+"f_ac": 0.97,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"b_f000_s2",
+{
+"f_ac": 0.0,
+"seed": 2
+}
+],
+[
+"b_f090_rad_s2",
+{
+"f_ac": 0.9,
+"ac": "radial",
+"seed": 2
+}
+],
+[
+"b_f097_rad_s2",
+{
+"f_ac": 0.97,
+"ac": "radial",
+"seed": 2
+}
+],
+[
+"b_fan_f000_s1",
+{
+"body": "fan",
+"f_ac": 0.0,
+"seed": 1
+}
+],
+[
+"b_fan_f090_rad_s1",
+{
+"body": "fan",
+"f_ac": 0.9,
+"ac": "radial",
+"seed": 1
+}
+],
+[
+"b_fan_f100_rad_s1",
+{
+"body": "fan",
+"f_ac": 1.0,
+"ac": "radial",
+"seed": 1
+}
+],
+[
+"b_f050_prot_s1",
+{
+"f_ac": 0.5,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"b_f090_prot_s2",
+{
+"f_ac": 0.9,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 2
+}
+],
+[
+"b_f097_prot_s2",
+{
+"f_ac": 0.97,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 2
+}
+],
+[
+"b_f090_pwob45_s1",
+{
+"f_ac": 0.9,
+"ac": "plane",
+"wobble_deg": 45,
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"b_f097_pwob45_s1",
+{
+"f_ac": 0.97,
+"ac": "plane",
+"wobble_deg": 45,
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"b_fan_f090_prot_s1",
+{
+"body": "fan",
+"f_ac": 0.9,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"b_fan_f097_prot_s1",
+{
+"body": "fan",
+"f_ac": 0.97,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+]
+]

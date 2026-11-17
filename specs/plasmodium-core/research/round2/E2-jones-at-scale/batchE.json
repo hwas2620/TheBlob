@@ -1,0 +1,96 @@
+[
+ {
+  "N": 512,
+  "SO": 4,
+  "cap": 1,
+  "SA": 22.5,
+  "RA": 45,
+  "n_eval": 14,
+  "n_snap": 5,
+  "seed": 1,
+  "geom": "disk",
+  "R": 220,
+  "dens": 0.1,
+  "SO_rear": 16,
+  "steps": 8000,
+  "name": "E01_disk_SOgrad4to16_s1"
+ },
+ {
+  "N": 512,
+  "SO": 7,
+  "cap": 1,
+  "SA": 22.5,
+  "RA": 45,
+  "n_eval": 14,
+  "n_snap": 5,
+  "seed": 1,
+  "geom": "disk",
+  "R": 220,
+  "dens": 0.1,
+  "so_mix": [
+   [
+    4,
+    0.5
+   ],
+   [
+    14,
+    0.5
+   ]
+  ],
+  "steps": 8000,
+  "name": "E02_disk_SOmix4_14_s1"
+ },
+ {
+  "N": 512,
+  "SO": 4,
+  "cap": 1,
+  "SA": 22.5,
+  "RA": 45,
+  "n_eval": 14,
+  "n_snap": 5,
+  "seed": 1,
+  "geom": "movedisk",
+  "R": 120,
+  "v": 0.05,
+  "dens": 0.1,
+  "exit_mode": "relocate",
+  "SO_rear": 16,
+  "steps": 8000,
+  "name": "E03_move_relocate_SOgrad_s1"
+ },
+ {
+  "N": 512,
+  "SO": 4,
+  "cap": 1,
+  "SA": 22.5,
+  "RA": 45,
+  "n_eval": 14,
+  "n_snap": 5,
+  "seed": 2,
+  "geom": "movedisk",
+  "R": 120,
+  "v": 0.05,
+  "dens": 0.1,
+  "exit_mode": "relocate",
+  "SO_rear": 16,
+  "steps": 8000,
+  "name": "E04_move_relocate_SOgrad_s2"
+ },
+ {
+  "N": 512,
+  "SO": 4,
+  "cap": 1,
+  "SA": 22.5,
+  "RA": 45,
+  "n_eval": 14,
+  "n_snap": 5,
+  "seed": 1,
+  "geom": "fan",
+  "fan_R": 430,
+  "fan_half": 35,
+  "dens": 0.1,
+  "SO_rear": 16,
+  "steps": 8000,
+  "name": "E05_fan_SOgrad4to16_s1"
+ }
+]

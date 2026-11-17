@@ -34,6 +34,12 @@ npm run preview  # Production preview
 - `AGENT.*`, `ATTRACTION.*`, `CONNECTIVITY.*`, `MAP.*`, `ZOOM.*`, `UI.*`
 - 셰이더 플레이스홀더에 자동 치환됨
 
+## 원형질체 코어 (0단계 시험 페이지)
+
+게임과 분리된 새 시뮬레이션 코어. 아직 게임에 연결되지 않았다.
+- `src/gpu/plasm/` — 코어(WebGL2), `src/stage0/` + `stage0.html` — 시험 페이지 (`npm run dev` 뒤 `/stage0.html`)
+- 시험과 결과: `specs/plasmodium-core/stage0/RESULT-A.md` (다시 돌리는 법 포함)
+
 ## Playwright MCP Screenshots
 
 스크린샷은 항상 `screenshots/` 폴더에 저장 (gitignore 등록됨).

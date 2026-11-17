@@ -1,0 +1,249 @@
+{
+ "claim_refuted": false,
+ "corrected_verdict": "partial",
+ "branched_network_seen": true,
+ "hierarchy_seen": true,
+ "fan_front_seen": false,
+ "emergent_not_handplaced": true,
+ "lattice_artifact_suspected": true,
+ "reproduced": "yes",
+ "realism_score_0_10": 3,
+ "independent_metrics": {
+  "rescored_stored_D3_rendered": {
+   "rel0.2": {
+    "BP": 142,
+    "loops": 65,
+    "vein_area": 0.6405,
+    "largest": 0.993,
+    "all3": false
+   },
+   "rel0.35": {
+    "BP": 111,
+    "loops": 47,
+    "vein_area": 0.4869,
+    "largest": 0.953,
+    "width_ratio": 4.47,
+    "strength_ratio": 2.31,
+    "all3": true
+   },
+   "rel0.5": {
+    "BP": 92,
+    "loops": 39,
+    "vein_area": 0.4157,
+    "largest": 0.964,
+    "all3": true
+   }
+  },
+  "rerun_V1_seed3_LU_rendered": {
+   "rel0.2": {
+    "BP": 147,
+    "loops": 49,
+    "vein_area": 0.654,
+    "largest": 0.992,
+    "all3": false
+   },
+   "rel0.35": {
+    "BP": 104,
+    "loops": 34,
+    "vein_area": 0.4842,
+    "largest": 0.965,
+    "width_ratio": 4.47,
+    "strength_ratio": 2.2,
+    "all3": true
+   },
+   "rel0.5": {
+    "BP": 91,
+    "loops": 33,
+    "vein_area": 0.4213,
+    "largest": 0.959,
+    "all3": true
+   }
+  },
+  "rerun_V1_all3_at_rel0.35_by_time": {
+   "80p": true,
+   "160p": true,
+   "240p": true,
+   "320p": true,
+   "400p": true
+  },
+  "rerun_V1_other": {
+   "max_mass_err": 1.09e-15,
+   "body_mass_frac_end": 0.937,
+   "centroid_x_t0_to_end": [
+    42.2,
+    98.96
+   ],
+   "food_x": 102.4,
+   "h_amp_over_hstar": 0.145,
+   "wave_len_measured_cells": 407,
+   "wave_len_prescribed_cells": 72,
+   "hmax_during_run_over_hstar": 11.7,
+   "runtime_s": 74.1
+  },
+  "native_cell_scoring_D3_no_rendering_rel0.35": {
+   "BP": 5,
+   "loops": 0,
+   "largest": 0.193,
+   "width_ratio": 1,
+   "all3": false
+  },
+  "edge_graph_torus_aware_C_gt_15": {
+   "D3": {
+    "edges": 650,
+    "largest_edge_frac": 0.892,
+    "cycles": 20,
+    "nodes_deg_ge_3": 102
+   },
+   "V1_seed3": {
+    "edges": 618,
+    "largest_edge_frac": 0.911,
+    "cycles": 17,
+    "nodes_deg_ge_3": 87
+   },
+   "F3": {
+    "edges": 607,
+    "largest_edge_frac": 0.898,
+    "cycles": 15,
+    "nodes_deg_ge_3": 86
+   },
+   "D1_nofood": {
+    "largest_edge_frac": 0.871,
+    "wrap_edges": 19,
+    "shared_eval_largest": 0.341
+   },
+   "D2_nofood": {
+    "largest_edge_frac": 0.93,
+    "wrap_edges": 11,
+    "shared_eval_largest": 0.588
+   }
+  },
+  "conductance_hierarchy_C_gt_15_order_D3_V1_F3": {
+   "terminal_twig_median_C": [
+    26,
+    30,
+    32
+   ],
+   "non_terminal_median_C": [
+    540,
+    531,
+    578
+   ],
+   "non_terminal_frac_clipped_at_Cmax": [
+    0.39,
+    0.37,
+    0.39
+   ],
+   "spearman_logC_vs_depth_in_body": [
+    0.44,
+    0.51,
+    0.5
+   ]
+  },
+  "jacobi30_stage2_V2_same_seed_320_periods": {
+   "h_min": 0,
+   "negative_cell_steps": 0,
+   "hmax_during_run_over_hstar": 11.9,
+   "Ccell_p99": 76,
+   "Ccell_p99_with_LU": 1320,
+   "edges_C_gt_100": 69,
+   "edges_C_gt_100_with_LU": 402,
+   "axis_frac_of_edges_C_gt_100": 0,
+   "largest_edge_frac_C_gt_15": 0.157,
+   "cycles_C_gt_15": 1,
+   "rendered_all3_rel_0.2_0.35_0.5": [
+    false,
+    false,
+    false
+   ],
+   "runtime_s": 105.7
+  },
+  "jacobi_stage1_stored_states": {
+   "negative_cells_of_5024": {
+    "jac30_d0400": 59,
+    "jac30_d1600": 67,
+    "jac8_d1600": 100
+   },
+   "negative_cells_outside_vein_cells": 0,
+   "outflow_limiter_present_in_stage1_code": false
+  },
+  "delta_scaling_test_V3": {
+   "setup": "delta0/R=0.1, C_init=256, Cmin=5.12, Cmax=256000, Q0=0.2170251/256^(2/3), 300 periods, seed 1",
+   "compared_with": "stored A_d1600 (delta0/R=1.6), V3 conductances divided by 256",
+   "max_abs_diff_log10C": 0,
+   "corr_logC": 1,
+   "graph_stats_identical": true,
+   "runtime_s": 31.9
+  },
+  "A_d0100_native": {
+   "frac_edges_at_Cmin": "over 0.5",
+   "frac_edges_C_gt_15": 0.23,
+   "cycles_C_gt_15": 405
+  },
+  "stage2_pressure_thickness_consistency": {
+   "D3": {
+    "wet_cells_off_by_gt_0.3hstar": 0.124,
+    "share_of_wet_mass": 0.28,
+    "vein_cells_off": 0.558
+   },
+   "V1": {
+    "wet_cells_off_by_gt_0.3hstar": 0.124,
+    "share_of_wet_mass": 0.286,
+    "vein_cells_off": 0.597
+   }
+  },
+  "torus_seam": {
+   "wet_cells_in_columns_x0_and_x127": {
+    "D3": [
+     0,
+     5
+    ],
+    "V1": [
+     0,
+     3
+    ],
+    "F3": [
+     0,
+     11
+    ]
+   },
+   "food_field_at_x127_vs_x0": [
+    0.39,
+    0
+   ]
+  },
+  "axis_edge_fraction_C_gt_15": {
+   "isotropic_expectation": 0.56,
+   "stage1_rotating_wave_LU_two_seeds": [
+    0.378,
+    0.388
+   ],
+   "D3": 0.44,
+   "V2_jacobi": 0.22,
+   "het0_control": 0.7
+  },
+  "compute": {
+   "runs": 3,
+   "total_runtime_s": 211.7,
+   "images_viewed": 4
+  }
+ },
+ "issues": [
+  "δ 문턱(δ0/R≈0.2~0.4) 주장은 성립하지 않는다. 1단계 식은 κ→κ/s, C→sC, Q0→Q0·s^(−1/γ) 변환에 정확히 불변이다. δ0/R=0.1에 C 초기값 256, Cmin 5.12, Cmax 256000, Q0=0.2170/256^(2/3)을 넣은 대조 실행(V3)의 전도도장은 256으로 나누면 저장된 δ0/R=1.6 실행(A_d1600)과 완전히 같았다(log10 C 최대 차 0). A/B 스윕이 실제로 바꾼 것은 침투 깊이가 아니라 Cmax 상한, C 초기값, Q0 정규화다.",
+  "\"δ0/R≤0.2는 전체가 참\"은 렌더 인공물이다. A_d0100은 격자에서 간선의 절반 이상이 Cmin이고 23%만 C>15인 촘촘한 그물(순환 405개)이다. 렌더가 Cmax 간선을 약 2.8셀 굵기로 그려 꽉 찬 것처럼 보였다.",
+  "Jacobi의 음수 두께는 구현 문제다. 유출 제한 코드가 2단계(`if st2:`)에만 있고 Jacobi 실행은 모두 1단계였다. 저장된 상태에서 음수 셀은 59~100개이고 전부 정맥 셀이다.",
+  "유출 제한이 있는 2단계에 Jacobi 30회를 넣은 재실행(V2)은 음수가 없지만 정맥망이 만들어지지 않는다. C>100 간선 69개(LU 402개)가 모두 대각선이고, 최대 연결 성분 0.16(LU 0.91), 순환 1개, 공통 채점은 세 임계값 모두 불통과다. 담당자의 \"정맥망은 비슷하게 생긴다\"는 1단계에만 해당한다.",
+  "GPU 실현성은 미확인이 아니라 현재 형태로는 부정적이다. 담당자 자신의 추정이 스텝당 80~400패스로 예산(약 60패스)을 넘고, 예산 안에 드는 Jacobi 30회는 2단계에서 실패했다. 멀티그리드 단독은 2단계 망에서 200사이클 넘게 걸린다고 담당자 측정(mg_test.json)에 나와 있다. 주기당 스텝 수를 늘리는 방안은 아무도 돌려 보지 않았다.",
+  "2단계에서 보고된 식과 실제 계산이 정맥에서 어긋난다. 최종 상태에서 젖은 셀의 12.4%(질량의 28%), 정맥 셀의 56~60%가 p=κ(h−h_eq)에서 0.3h* 넘게 벗어난다(잔차 −1.4~+5.7h*). 코드상 이 관계를 깨는 장치는 공여 셀 유출 제한뿐이다. 강화에 쓰는 q̄는 제한 전 유량으로 계산된다. 두께는 실행 중 최대 11.7h*까지 솟는다(h_eq 상한 약 2.9h*).",
+  "폭 위계(폭 비 4.5~5.0)는 렌더 인공물이다. 관은 격자에서 1셀 폭이고 렌더 굵기는 0.7·C^(1/4)로 정해져 있다. 렌더 없이 셀 값으로 채점하면 분기점 2~10, 폭 비 1.0, 불통과다. 세기 비(2.2~2.3)는 기준 3에 못 미친다.",
+  "전도도 위계는 실제로 있다(말단 가지 중앙값 C 26~32, 그 외 530~580, 몸 안쪽일수록 큼). 다만 말단이 아닌 정맥 간선의 37~39%가 Cmax=1000에 잘려 있어 간선 쪽 위계는 상한이 만든 것이다. 목표 두께의 v도 C_cell≈30에서 포화해 두께로는 굵기 차이가 드러나지 않는다.",
+  "맥동 진행파는 창발이 아니다. 실험실 좌표에 고정된 평면파를 12주기에 한 바퀴 돌려 넣었다. 측정 파장은 실행마다 59~407셀(처방 72셀)로 일관되지 않아 진행파 측정으로 쓸 수 없고, 확인된 것은 진폭 0.11~0.15h*뿐이다.",
+  "먹이장과 평면파 위상이 토러스 주기가 아니다. 먹이 값이 x=127에서 0.39, x=0에서 0으로 끊긴다. D3·F3·재실행 모두 몸이 오른쪽 이음매에 평평하게 눌려 멈췄고 넘어가지 않았다(x=0 열의 젖은 셀 0개). 먹이 실행의 채점은 토러스 감김으로 왜곡되지 않았지만 몸 모양은 이 인공 벽의 영향을 받았다.",
+  "먹이 없는 실행(D1/D2)은 몸이 토러스 전체(모든 행·열)에 걸쳐 감긴다. 공통 채점의 최대 성분 0.34/0.59는 감김을 몰라 낮게 나온 값이고, 토러스를 고려한 간선 그래프로는 0.87/0.93이다. \"먹이 없으면 불통과\"는 채점 인공물이다. 다만 그 몸은 1셀 선의 성긴 그물과 흩어진 작은 덩어리로, 한 덩어리의 원형질체로 보기 어렵다.",
+  "채점 시점(400주기)에는 전진면이 없다. 몸은 약 280주기 이후 먹이 위에 멈춰 있다(면적·질량중심 정체, 새로 젖은 셀 2%). 정맥과 이동이 같은 시점에 함께 있는 구간은 80~160주기이고, 재실행의 그 시점 채점도 통과했다. 그 시점의 맥동 진폭은 재지 않았다.",
+  "격자 의존이 남아 있다. 1단계 회전파 LU 실행의 C>15 간선 중 대각선이 62%(등방이면 약 44%)다. 간선 이질성을 빼면 격자 직선이 된다. 강화 신호 C·|Δp|/L에 스텐실 가중 w가 없어 같은 C의 대각 간선이 실제 유량은 1/4인데 강화는 1/√2만 덜 받는다. 먹이를 격자 축 위에 놓아 주 간선이 축을 따른 직선이다.",
+  "몸에 붙은 질량이 400주기에 0.937로 줄고 주기당 약 1e-4씩 계속 샌다(Σh 자체는 1.1e-15로 보존). 더 긴 실행은 없어 장기 지속성은 알 수 없다.",
+  "담당자의 질량중심 \"56→98\"은 20주기 시점부터 잰 값이다. 초기 중심은 x=42.2다.",
+  "검증 실행은 3회(74+106+32초, 합 212초)로, 지침의 1~2회보다 32초짜리 1단계 대조 1회가 많다. 이미지는 4장 열었다. 2단계 δ 스윕과 η·점액·이질성·파 회전을 하나씩 뺀 2단계 대조는 나도 돌리지 않았다."
+ ],
+ "summary": "대표 실행(D3)을 시드 3으로 다시 돌려 재현했다(rel 0.35: 분기점 104, 고리 34, 최대 성분 0.965 통과, 0.5 통과, 0.2는 면적 초과로 불통과). 렌더와 무관한 간선 전도도 그래프로 재도 연결된 분기망이다(C>15: 최대 성분 0.91, 순환 17~20). 80~400주기 내내 유지된다. 그래서 partial은 유지한다. 그러나 근거 둘은 지지되지 않는다. (1) δ 문턱: 모델은 κ→κ/s, C→sC, Q0→Q0·s^(−1/γ)에 정확히 불변이다. δ0/R=0.1에서 C 초기값·상하한·Q0만 256배 눈금으로 바꾸자 δ0/R=1.6 실행과 전도도장이 완전히 같았다. 스윕이 바꾼 것은 침투 깊이가 아니라 Cmax 상한과 Q0 정규화다. (2) Jacobi: 음수 두께는 1단계에 유출 제한이 없어 생긴 구현 문제다. 2단계에 Jacobi 30회를 넣으면 음수는 없지만 망이 대각선 조각으로 깨진다(최대 성분 0.16). 추가 문제: 2단계 정맥 셀의 56~60%에서 유출 제한 때문에 p=κ(h−h_eq)가 깨져 있다. 폭 위계는 렌더 인공물이고 관은 1셀 폭이다. 맥동파는 처방된 것이고 부채꼴 전진면은 없다. 검증 파일: /tmp/claude-0/-home-user-TheBlob/8793727d-910e-5228-bac9-9dbfa028fd5b/scratchpad/research/E8-implicit-thickness/verify/verify_metrics.json"
+}

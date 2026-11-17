@@ -1,0 +1,88 @@
+Ym: tri96d − wave, 시드 [21, 22, 23, 24, 25, 26, 31, 32, 33, 34, 35, 36]
+  vein4_largest_med        tri96d 중앙 0.871 / wave 중앙 0.874 | 차 평균 -0.008 | tri96d>wave: 5/12 | Wilcoxon p=0.350
+  vein4_largest_min        tri96d 중앙 0.804 / wave 중앙 0.792 | 차 평균 -0.004 | tri96d>wave: 7/12 | Wilcoxon p=0.970
+  vein10_largest_med       tri96d 중앙 0.895 / wave 중앙 0.914 | 차 평균 -0.012 | tri96d>wave: 4/12 | Wilcoxon p=0.226
+  vein30_largest_med       tri96d 중앙 0.913 / wave 중앙 0.927 | 차 평균 -0.019 | tri96d>wave: 6/12 | Wilcoxon p=0.520
+  cycles4_med              tri96d 중앙 25 / wave 중앙 26.5 | 차 평균 -1.417 | tri96d>wave: 4/12 | Wilcoxon p=0.581
+  disp_track               tri96d 중앙 70.7 / wave 중앙 75.3 | 차 평균 -4.667 | tri96d>wave: 0/12 | Wilcoxon p=0.000
+  vein4_E_med              tri96d 중앙 1.21e+03 / wave 중앙 1.18e+03 | 차 평균 +26.083 | tri96d>wave: 6/12 | Wilcoxon p=0.465
+  vein30_E_med             tri96d 중앙 459 / wave 중앙 460 | 차 평균 +7.500 | tri96d>wave: 6/12 | Wilcoxon p=0.910
+  area_end                 tri96d 중앙 3.07e+03 / wave 중앙 3.07e+03 | 차 평균 -13.500 | tri96d>wave: 4/12 | Wilcoxon p=0.330
+  t_touch                  tri96d 중앙 245 / wave 중앙 233 | 차 평균 +14.358 | tri96d>wave: 12/12 | Wilcoxon p=0.000
+Y3: tri96d − wave, 시드 [21, 22, 23, 24, 25, 26, 31, 32, 33, 34, 35, 36]
+  경로 최소 C (쌍별)             tri96d 중앙 390 / wave 중앙 656 | 차 평균 -0.606 비(기하평균) 0.55 | tri96d>wave: 8/36 | Wilcoxon p=0.000
+  경로 최소 C (실행 최소)          tri96d 중앙 356 / wave 중앙 581 | 차 평균 -0.648 비(기하평균) 0.52 | tri96d>wave: 3/12 | Wilcoxon p=0.007
+  병목 C 중앙 (쌍별)             tri96d 중앙 404 / wave 중앙 656 | 차 평균 -0.592 비(기하평균) 0.55 | tri96d>wave: 6/36 | Wilcoxon p=0.000
+  병목 C 창 최소 (쌍별)           tri96d 중앙 17.4 / wave 중앙 43.2 | 차 평균 -0.754 비(기하평균) 0.47 | tri96d>wave: 9/36 | Wilcoxon p=0.000
+  vein4_largest_med        tri96d 중앙 0.944 / wave 중앙 0.958 | 차 평균 -0.011 | tri96d>wave: 3/12 | Wilcoxon p=0.033
+  vein30_largest_med       tri96d 중앙 0.921 / wave 중앙 0.967 | 차 평균 -0.059 | tri96d>wave: 0/12 | Wilcoxon p=0.000
+  vein_medC_med            tri96d 중앙 24.1 / wave 중앙 27 | 차 평균 -3.200 | tri96d>wave: 3/12 | Wilcoxon p=0.077
+  body_largest_vol_min     tri96d 중앙 0.99 / wave 중앙 0.987 | 차 평균 +0.005 | tri96d>wave: 7/12 | Wilcoxon p=0.137
+  cycles4_med              tri96d 중앙 16 / wave 중앙 5 | 차 평균 +10.208 | tri96d>wave: 12/12 | Wilcoxon p=0.000
+  m_h_min_seen             tri96d 중앙 -0.0214 / wave 중앙 -0.0397 | 차 평균 +0.157 | tri96d>wave: 9/12 | Wilcoxon p=0.009
+Ym: tri96d − base, 시드 [21, 22, 23, 24, 25, 26, 31, 32, 33, 34, 35, 36]
+  vein4_largest_med        tri96d 중앙 0.871 / base 중앙 0.617 | 차 평균 +0.265 | tri96d>base: 12/12 | Wilcoxon p=0.000
+  vein4_largest_min        tri96d 중앙 0.804 / base 중앙 0.484 | 차 평균 +0.311 | tri96d>base: 12/12 | Wilcoxon p=0.000
+  vein10_largest_med       tri96d 중앙 0.895 / base 중앙 0.66 | 차 평균 +0.265 | tri96d>base: 12/12 | Wilcoxon p=0.000
+  vein30_largest_med       tri96d 중앙 0.913 / base 중앙 0.651 | 차 평균 +0.263 | tri96d>base: 12/12 | Wilcoxon p=0.000
+  cycles4_med              tri96d 중앙 25 / base 중앙 11 | 차 평균 +14.667 | tri96d>base: 12/12 | Wilcoxon p=0.000
+  disp_track               tri96d 중앙 70.7 / base 중앙 69.3 | 차 평균 +1.608 | tri96d>base: 6/12 | Wilcoxon p=0.412
+  vein4_E_med              tri96d 중앙 1.21e+03 / base 중앙 1.12e+03 | 차 평균 +112.417 | tri96d>base: 9/12 | Wilcoxon p=0.007
+  vein30_E_med             tri96d 중앙 459 / base 중앙 461 | 차 평균 +21.750 | tri96d>base: 8/12 | Wilcoxon p=0.424
+  area_end                 tri96d 중앙 3.07e+03 / base 중앙 3.03e+03 | 차 평균 +18.417 | tri96d>base: 7/12 | Wilcoxon p=0.196
+  t_touch                  tri96d 중앙 245 / base 중앙 227 | 차 평균 +18.583 | tri96d>base: 12/12 | Wilcoxon p=0.000
+Y3: tri96d − base, 시드 [21, 22, 23, 24, 25, 26, 31, 32, 33, 34, 35, 36]
+  경로 최소 C (쌍별)             tri96d 중앙 390 / base 중앙 3.7 | 차 평균 +4.482 비(기하평균) 88.40 | tri96d>base: 36/36 | Wilcoxon p=0.000
+  경로 최소 C (실행 최소)          tri96d 중앙 356 / base 중앙 1.75 | 차 평균 +5.204 비(기하평균) 181.97 | tri96d>base: 12/12 | Wilcoxon p=0.000
+  병목 C 중앙 (쌍별)             tri96d 중앙 404 / base 중앙 3.7 | 차 평균 +4.244 비(기하평균) 69.67 | tri96d>base: 36/36 | Wilcoxon p=0.000
+  병목 C 창 최소 (쌍별)           tri96d 중앙 17.4 / base 중앙 0.85 | 차 평균 +3.702 비(기하평균) 40.54 | tri96d>base: 35/36 | Wilcoxon p=0.000
+  vein4_largest_med        tri96d 중앙 0.944 / base 중앙 0.641 | 차 평균 +0.295 | tri96d>base: 12/12 | Wilcoxon p=0.000
+  vein30_largest_med       tri96d 중앙 0.921 / base 중앙 0.379 | 차 평균 +0.503 | tri96d>base: 12/12 | Wilcoxon p=0.000
+  vein_medC_med            tri96d 중앙 24.1 / base 중앙 21.6 | 차 평균 +2.117 | tri96d>base: 11/12 | Wilcoxon p=0.006
+  body_largest_vol_min     tri96d 중앙 0.99 / base 중앙 0.998 | 차 평균 +0.133 | tri96d>base: 5/12 | Wilcoxon p=0.423
+  cycles4_med              tri96d 중앙 16 / base 중앙 27 | 차 평균 -11.917 | tri96d>base: 0/12 | Wilcoxon p=0.000
+  m_h_min_seen             tri96d 중앙 -0.0214 / base 중앙 -0.019 | 차 평균 -0.003 | tri96d>base: 4/12 | Wilcoxon p=0.470
+Ym: wave − base, 시드 [21, 22, 23, 24, 25, 26, 31, 32, 33, 34, 35, 36]
+  vein4_largest_med        wave 중앙 0.874 / base 중앙 0.617 | 차 평균 +0.273 | wave>base: 12/12 | Wilcoxon p=0.000
+  vein4_largest_min        wave 중앙 0.792 / base 중앙 0.484 | 차 평균 +0.315 | wave>base: 12/12 | Wilcoxon p=0.000
+  vein10_largest_med       wave 중앙 0.914 / base 중앙 0.66 | 차 평균 +0.276 | wave>base: 12/12 | Wilcoxon p=0.000
+  vein30_largest_med       wave 중앙 0.927 / base 중앙 0.651 | 차 평균 +0.282 | wave>base: 12/12 | Wilcoxon p=0.000
+  cycles4_med              wave 중앙 26.5 / base 중앙 11 | 차 평균 +16.083 | wave>base: 12/12 | Wilcoxon p=0.000
+  disp_track               wave 중앙 75.3 / base 중앙 69.3 | 차 평균 +6.275 | wave>base: 11/12 | Wilcoxon p=0.001
+  vein4_E_med              wave 중앙 1.18e+03 / base 중앙 1.12e+03 | 차 평균 +86.333 | wave>base: 7/12 | Wilcoxon p=0.092
+  vein30_E_med             wave 중앙 460 / base 중앙 461 | 차 평균 +14.250 | wave>base: 7/12 | Wilcoxon p=0.791
+  area_end                 wave 중앙 3.07e+03 / base 중앙 3.03e+03 | 차 평균 +31.917 | wave>base: 10/12 | Wilcoxon p=0.042
+  t_touch                  wave 중앙 233 / base 중앙 227 | 차 평균 +4.225 | wave>base: 9/12 | Wilcoxon p=0.012
+Y3: wave − base, 시드 [21, 22, 23, 24, 25, 26, 31, 32, 33, 34, 35, 36]
+  경로 최소 C (쌍별)             wave 중앙 656 / base 중앙 3.7 | 차 평균 +5.088 비(기하평균) 162.06 | wave>base: 36/36 | Wilcoxon p=0.000
+  경로 최소 C (실행 최소)          wave 중앙 581 / base 중앙 1.75 | 차 평균 +5.852 비(기하평균) 347.93 | wave>base: 12/12 | Wilcoxon p=0.000
+  병목 C 중앙 (쌍별)             wave 중앙 656 / base 중앙 3.7 | 차 평균 +4.836 비(기하평균) 125.92 | wave>base: 36/36 | Wilcoxon p=0.000
+  병목 C 창 최소 (쌍별)           wave 중앙 43.2 / base 중앙 0.85 | 차 평균 +4.456 비(기하평균) 86.18 | wave>base: 34/36 | Wilcoxon p=0.000
+  vein4_largest_med        wave 중앙 0.958 / base 중앙 0.641 | 차 평균 +0.305 | wave>base: 12/12 | Wilcoxon p=0.000
+  vein30_largest_med       wave 중앙 0.967 / base 중앙 0.379 | 차 평균 +0.562 | wave>base: 12/12 | Wilcoxon p=0.000
+  vein_medC_med            wave 중앙 27 / base 중앙 21.6 | 차 평균 +5.317 | wave>base: 11/12 | Wilcoxon p=0.007
+  body_largest_vol_min     wave 중앙 0.987 / base 중앙 0.998 | 차 평균 +0.128 | wave>base: 5/12 | Wilcoxon p=0.424
+  cycles4_med              wave 중앙 5 / base 중앙 27 | 차 평균 -22.125 | wave>base: 0/12 | Wilcoxon p=0.000
+  m_h_min_seen             wave 중앙 -0.0397 / base 중앙 -0.019 | 차 평균 -0.160 | wave>base: 1/12 | Wilcoxon p=0.001
+Ym: n03T320 − base, 시드 [21, 22, 23, 24, 25, 26, 31, 32, 33, 34, 35, 36]
+  vein4_largest_med        n03T320 중앙 0.842 / base 중앙 0.617 | 차 평균 +0.198 | n03T320>base: 11/12 | Wilcoxon p=0.001
+  vein4_largest_min        n03T320 중앙 0.663 / base 중앙 0.484 | 차 평균 +0.158 | n03T320>base: 10/12 | Wilcoxon p=0.021
+  vein10_largest_med       n03T320 중앙 0.869 / base 중앙 0.66 | 차 평균 +0.195 | n03T320>base: 11/12 | Wilcoxon p=0.005
+  vein30_largest_med       n03T320 중앙 0.835 / base 중앙 0.651 | 차 평균 +0.176 | n03T320>base: 10/12 | Wilcoxon p=0.007
+  cycles4_med              n03T320 중앙 23.5 / base 중앙 11 | 차 평균 +12.333 | n03T320>base: 12/12 | Wilcoxon p=0.000
+  disp_track               n03T320 중앙 74.3 / base 중앙 69.3 | 차 평균 +5.158 | n03T320>base: 11/12 | Wilcoxon p=0.001
+  vein4_E_med              n03T320 중앙 1.13e+03 / base 중앙 1.12e+03 | 차 평균 +45.500 | n03T320>base: 8/12 | Wilcoxon p=0.339
+  vein30_E_med             n03T320 중앙 442 / base 중앙 461 | 차 평균 -3.333 | n03T320>base: 7/12 | Wilcoxon p=0.910
+  area_end                 n03T320 중앙 3.05e+03 / base 중앙 3.03e+03 | 차 평균 +3.083 | n03T320>base: 7/12 | Wilcoxon p=0.987
+  t_touch                  n03T320 중앙 233 / base 중앙 227 | 차 평균 +7.283 | n03T320>base: 11/12 | Wilcoxon p=0.017
+Y3: n03T320 − base, 시드 [21, 22, 23, 24, 25, 26, 31, 32, 33, 34, 35, 36]
+  경로 최소 C (쌍별)             n03T320 중앙 327 / base 중앙 3.7 | 차 평균 +4.254 비(기하평균) 70.41 | n03T320>base: 35/36 | Wilcoxon p=0.000
+  경로 최소 C (실행 최소)          n03T320 중앙 206 / base 중앙 1.75 | 차 평균 +4.809 비(기하평균) 122.60 | n03T320>base: 12/12 | Wilcoxon p=0.000
+  병목 C 중앙 (쌍별)             n03T320 중앙 358 / base 중앙 3.7 | 차 평균 +4.009 비(기하평균) 55.11 | n03T320>base: 35/36 | Wilcoxon p=0.000
+  병목 C 창 최소 (쌍별)           n03T320 중앙 13.5 / base 중앙 0.85 | 차 평균 +3.328 비(기하평균) 27.89 | n03T320>base: 33/36 | Wilcoxon p=0.000
+  vein4_largest_med        n03T320 중앙 0.927 / base 중앙 0.641 | 차 평균 +0.279 | n03T320>base: 12/12 | Wilcoxon p=0.000
+  vein30_largest_med       n03T320 중앙 0.897 / base 중앙 0.379 | 차 평균 +0.482 | n03T320>base: 12/12 | Wilcoxon p=0.000
+  vein_medC_med            n03T320 중앙 23.8 / base 중앙 21.6 | 차 평균 +2.575 | n03T320>base: 8/12 | Wilcoxon p=0.052
+  body_largest_vol_min     n03T320 중앙 0.992 / base 중앙 0.998 | 차 평균 +0.130 | n03T320>base: 5/12 | Wilcoxon p=0.424
+  cycles4_med              n03T320 중앙 11.8 / base 중앙 27 | 차 평균 -15.917 | n03T320>base: 0/12 | Wilcoxon p=0.000
+  m_h_min_seen             n03T320 중앙 -0.0328 / base 중앙 -0.019 | 차 평균 -0.009 | n03T320>base: 3/12 | Wilcoxon p=0.052

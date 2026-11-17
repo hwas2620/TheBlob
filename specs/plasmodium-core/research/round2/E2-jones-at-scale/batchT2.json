@@ -1,0 +1,6 @@
+[
+ {"name":"t3_dbg_grow_inject","N":512,"geom":"growdisk","R0":40,"R":240,"v":0.05,"dens":0.10,"front_inject":0.10,"steps":500,"n_eval":3,"n_snap":3},
+ {"name":"t4_dbg_move_delete_GS","N":512,"geom":"movedisk","R":120,"v":0.1,"dens":0.10,"exit_mode":"delete","grow":1,"shrink":1,"steps":500,"n_eval":3,"n_snap":3},
+ {"name":"t5_dbg_sync_mix","N":512,"geom":"disk","R":220,"dens":0.10,"sync":1,"so_mix":[[4,0.5],[14,0.5]],"diff_passes":2,"steps":300,"n_eval":3,"n_snap":3},
+ {"name":"t6_dbg_fan","N":512,"geom":"fan","fan_R":430,"fan_half":35,"dens":0.10,"SO":4,"SO_rear":16,"steps":300,"n_eval":3,"n_snap":3}
+]

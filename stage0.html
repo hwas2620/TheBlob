@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TheBlob 코어 시험장</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        /* 배치: 왼쪽에 배양 접시(시뮬레이션 화면), 오른쪽에 조작과 수치. 좁은 화면에서는 위아래로 쌓는다 */
+        --ink: #0d1513; /* 바탕 — 어두운 한천 */
+        --panel: #15221f;
+        --line: #26423b;
+        --text: #e8e3d4;
+        --muted: #8fa69d;
+        --vein: #f0863a; /* 강조 — 화면 속 정맥의 주황 */
+        --font-body: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+        --font-num: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; }
+      body { background: var(--ink); color: var(--text); font: 15px/1.6 var(--font-body); }
+      main { max-width: 1180px; margin: 0 auto; padding: 20px 16px 40px; display: flex; flex-direction: column; gap: 18px; }
+      h1 { font-size: 22px; font-weight: 600; margin: 0; text-wrap: balance; }
+      h2 { font-size: 15px; font-weight: 600; margin: 0; color: var(--muted); letter-spacing: 0.02em; }
+      p { margin: 0; max-width: 65ch; }
+      .lead { color: var(--muted); }
+      #stage { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+      canvas { width: min(100%, 640px); height: auto; aspect-ratio: 1; image-rendering: pixelated; background: #000; border: 1px solid var(--line); border-radius: 6px; }
+      #side { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+      .group { display: flex; flex-direction: column; gap: 8px; }
+      .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+      .row > span { color: var(--muted); min-width: 6.5em; }
+      button { font: 500 14px/1 var(--font-body); color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 5px; padding: 8px 12px; cursor: pointer; }
+      button:hover { border-color: var(--muted); }
+      button:focus-visible { outline: 2px solid var(--vein); outline-offset: 2px; }
+      button[aria-pressed='true'] { border-color: var(--vein); color: var(--vein); }
+      button.primary { background: var(--vein); border-color: var(--vein); color: #1a0f05; font-weight: 600; }
+      button:disabled { opacity: 0.5; cursor: default; }
+      #tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+      .tile { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+      .tile b { font: 500 20px/1.2 var(--font-num); font-variant-numeric: tabular-nums; }
+      .tile small { color: var(--muted); font-size: 12px; }
+      .scroll { overflow-x: auto; }
+      table { border-collapse: collapse; font: 13px/1.4 var(--font-num); font-variant-numeric: tabular-nums; }
+      th, td { padding: 4px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+      th { color: var(--muted); font-weight: 400; font-family: var(--font-body); }
+      td:nth-child(-n + 2), th:nth-child(-n + 2) { text-align: left; font-family: var(--font-body); }
+      tr.best td { color: var(--vein); }
+      #nav { color: var(--muted); font-size: 13px; }
+      a { color: var(--vein); }
+      pre { margin: 0; white-space: pre-wrap; word-break: break-all; font: 12px/1.5 var(--font-num); color: var(--muted); }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="group">
+        <h1>원형질체 코어 시험장</h1>
+        <p class="lead" id="lead">
+          점균의 새 시뮬레이션 코어(두께장 · 압력 풀이 · 정맥 강화)를 게임과 따로 돌려 보는 곳입니다. 화면 속 몸은 굶은 채로 오른쪽 위의 유인원을 향해 기어갑니다. 노란색이 몸의 두께, 주황색이 정맥입니다.
+        </p>
+      </header>
+      <section id="stage">
+        <canvas id="view" width="640" height="640"></canvas>
+        <div id="side">
+          <div class="group" id="controls" hidden>
+            <h2>돌려 보기</h2>
+            <div class="row" id="gridRow"><span>격자</span></div>
+            <div class="row" id="spfRow"><span>프레임당 스텝</span></div>
+            <div class="row" id="triRow"><span>위상 무늬</span></div>
+          </div>
+          <div id="tiles" hidden></div>
+          <div class="group" id="benchBox" hidden>
+            <h2>속도 측정</h2>
+            <p class="lead">이 기기의 GPU로 한 스텝에 걸리는 시간을 격자 크기와 계산 방식별로 잽니다. 1분 안팎 걸리고, 재는 동안 이 탭을 앞에 두어야 합니다.</p>
+            <div class="row">
+              <button class="primary" id="benchStart">속도 측정 시작</button>
+              <button id="benchCopy" hidden>결과 복사</button>
+            </div>
+            <div class="scroll" id="benchTable"></div>
+          </div>
+          <div id="nav"></div>
+          <pre id="out"></pre>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/src/stage0/main.ts"></script>
+  </body>
+</html>

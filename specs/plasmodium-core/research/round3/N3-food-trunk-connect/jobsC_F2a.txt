@@ -1,0 +1,9 @@
+F2_res_s1	{"seed": 1, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1}
+F2_res_s2	{"seed": 2, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1}
+F2_res_s3	{"seed": 3, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1}
+C_inj_a27_s1	{"seed": 1, "T": 320, "foods": [[27, 45]], "reservoir": 1, "eat": 0.1, "gain": 1.0, "food_M": 600}
+C_inj_a27_s2	{"seed": 2, "T": 320, "foods": [[27, 45]], "reservoir": 1, "eat": 0.1, "gain": 1.0, "food_M": 600}
+C_inj_a27_s3	{"seed": 3, "T": 320, "foods": [[27, 45]], "reservoir": 1, "eat": 0.1, "gain": 1.0, "food_M": 600}
+F2_res_bk_s1	{"seed": 1, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1}
+F2_res_bk_s2	{"seed": 2, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1}
+F2_res_bk_s3	{"seed": 3, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1}

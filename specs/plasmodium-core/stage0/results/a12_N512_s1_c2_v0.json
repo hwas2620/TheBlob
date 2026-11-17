@@ -1,0 +1,84 @@
+{
+ "name": "a12_N512_s1_c2_v0",
+ "query": "test=a12&N=512&seed=1&cyc=2&steps=300&check=100",
+ "seconds": 125.672,
+ "done": true,
+ "ok": true,
+ "result": {
+  "caps": {
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "colorBufferFloat": true,
+   "maxDrawBuffers": 8,
+   "maxTextureSize": 8192,
+   "timerQuery": true
+  },
+  "a12": {
+   "N": 512,
+   "seed": 1,
+   "cycles": 2,
+   "steps": 300,
+   "tri": false,
+   "checkEvery": 100,
+   "variant": 0,
+   "syncBounds": false,
+   "drawCallsPerStep": 133,
+   "seconds": 124.98670000000001,
+   "stepsDone": 300,
+   "nan": false,
+   "negEndSteps": 0,
+   "hMinEnd": 0.1480654627084732,
+   "hMinInStep": 0.1480654627084732,
+   "cMaxRun": 628.3787231445312,
+   "volumeRelErr": 0,
+   "fluxErr": {
+    "n": 2,
+    "median": 0.06900527308471174,
+    "p90": 0.08178809278036492,
+    "p99": 0.08466422721188688,
+    "max": 0.0849837977042782
+   },
+   "fluxErrSeries": [
+    0.0849837977042782,
+    0.05302674846514528
+   ],
+   "variantName": "기준형",
+   "activeFractionMean": 1,
+   "traj": [
+    [
+     0,
+     255.5,
+     255.5,
+     448,
+     11.5
+    ],
+    [
+     10,
+     256.15363461859425,
+     255.8162264755501,
+     1437,
+     21.74558345581727
+    ],
+    [
+     20,
+     257.35253591819617,
+     256.2168445850996,
+     1581,
+     23.129415093282887
+    ],
+    [
+     30,
+     258.8732828329711,
+     256.68663816505557,
+     1725,
+     24.702199907618137
+    ]
+   ],
+   "tWrap": null,
+   "disp_0_300": null,
+   "disp_0_400": null,
+   "disp_100_300": null,
+   "tTouch": null,
+   "areaEnd": 1725
+  }
+ }
+}

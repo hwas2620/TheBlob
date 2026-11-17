@@ -1,0 +1,2 @@
+[{"name":"t7_smoke_free","N":256,"geom":"free","init_R":60,"dens":0.1,"steps":400,"n_eval":3,"n_snap":3,"nodes":4,"node_sep":30},
+ {"name":"t8_smoke_lag","N":256,"geom":"disk","R":100,"dens":0.1,"sync":2,"steps":400,"n_eval":3,"n_snap":3}]

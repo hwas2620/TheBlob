@@ -1,0 +1,6 @@
+A_thick_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1, "food_r": 5.0, "h_res": 4.0, "seed": 1}
+B_thick_lim_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1, "food_r": 5.0, "h_res": 4.0, "limit_net": 1, "seed": 1}
+C_thick_lim_inj02_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1, "food_r": 5.0, "h_res": 4.0, "limit_net": 1, "eat": 0.02, "gain": 1.0, "food_M": 500, "seed": 1}
+D_thick_lim_inj05_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1, "food_r": 5.0, "h_res": 4.0, "limit_net": 1, "eat": 0.05, "gain": 1.0, "food_M": 1200, "seed": 1}
+E_plain_lim_inj02_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1, "food_r": 5.0, "h_res": 1.0, "limit_net": 1, "eat": 0.02, "gain": 1.0, "food_M": 500, "seed": 1}
+F_thick_stiff_s1	{"T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "bridge_keep": 1, "food_r": 5.0, "h_res": 4.0, "stiff_h": 0.3, "seed": 1}

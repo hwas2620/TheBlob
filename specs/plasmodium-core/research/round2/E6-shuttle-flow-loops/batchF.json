@@ -1,0 +1,51 @@
+[
+[
+"f_plane_2dir_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"ac_dirs": [
+0,
+90
+],
+"seed": 1
+}
+],
+[
+"f_plane_3dir_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"ac_dirs": [
+0,
+60,
+120
+],
+"seed": 1
+}
+],
+[
+"f_plane_2dir_s2",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"ac_dirs": [
+0,
+90
+],
+"seed": 2
+}
+],
+[
+"f_plane_2dir_f050_s1",
+{
+"f_ac": 0.5,
+"ac": "plane",
+"ac_dirs": [
+0,
+90
+],
+"seed": 1
+}
+]
+]

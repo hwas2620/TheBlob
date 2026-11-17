@@ -1,0 +1,1 @@
+[{"name":"G04_free_cap1_gameTrail_s1","N":1024,"SO":9,"cap":1,"SA":22.5,"RA":45,"n_eval":16,"n_snap":5,"seed":1,"geom":"free","init_R":220,"dens":0.1,"steps":12000,"sync":1,"damp":0.03,"diff_passes":4}]

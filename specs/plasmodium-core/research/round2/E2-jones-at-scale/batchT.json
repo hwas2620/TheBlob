@@ -1,0 +1,39 @@
+[
+ {
+  "N": 256,
+  "SO": 7,
+  "cap": 1,
+  "SA": 22.5,
+  "RA": 45,
+  "n_eval": 5,
+  "n_snap": 3,
+  "seed": 1,
+  "geom": "growdisk",
+  "R0": 30,
+  "R": 110,
+  "v": 0.1,
+  "dens": 0.1,
+  "grow": 1,
+  "shrink": 1,
+  "steps": 900,
+  "name": "t1_smoke_grow"
+ },
+ {
+  "N": 256,
+  "SO": 4,
+  "cap": 1,
+  "SA": 22.5,
+  "RA": 45,
+  "n_eval": 5,
+  "n_snap": 3,
+  "seed": 1,
+  "geom": "movedisk",
+  "R": 60,
+  "v": 0.1,
+  "dens": 0.1,
+  "SO_rear": 12,
+  "steps": 900,
+  "so_mix": null,
+  "name": "t2_smoke_move"
+ }
+]

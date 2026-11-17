@@ -1,0 +1,81 @@
+[
+[
+"d_food4_s1",
+{
+"n_food": 4,
+"f_food": 1.0,
+"seed": 1
+}
+],
+[
+"d_food4_s2",
+{
+"n_food": 4,
+"f_food": 1.0,
+"seed": 2
+}
+],
+[
+"d_food5_s1",
+{
+"n_food": 5,
+"f_food": 1.0,
+"seed": 1,
+"food_seed": 7
+}
+],
+[
+"d_food4_g110_s1",
+{
+"n_food": 4,
+"f_food": 1.0,
+"gamma": 1.1,
+"seed": 1
+}
+],
+[
+"d_food4_g100_s1",
+{
+"n_food": 4,
+"f_food": 1.0,
+"gamma": 1.0,
+"seed": 1
+}
+],
+[
+"d_food4_ac50_s1",
+{
+"n_food": 4,
+"f_food": 0.5,
+"f_ac": 0.5,
+"ac": "radial",
+"seed": 1
+}
+],
+[
+"d_food4_fromtree_s1",
+{
+"n_food": 4,
+"f_food": 1.0,
+"seed": 1,
+"init_from": "b_f000_s1/edges_4.npz"
+}
+],
+[
+"d_food4_fromac_s1",
+{
+"n_food": 4,
+"f_food": 1.0,
+"seed": 1,
+"init_from": "a_radial_s1/edges_4.npz"
+}
+],
+[
+"d_food4_dc50_s1",
+{
+"n_food": 4,
+"f_food": 0.5,
+"seed": 1
+}
+]
+]

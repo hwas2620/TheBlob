@@ -1,0 +1,8 @@
+F2_inj_s1	{"seed": 1, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "eat": 0.1, "gain": 1.0, "food_M": 400}
+F2_inj_s2	{"seed": 2, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "eat": 0.1, "gain": 1.0, "food_M": 400}
+F2_inj_s3	{"seed": 3, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "eat": 0.1, "gain": 1.0, "food_M": 400}
+F2_hres4_s1	{"seed": 1, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "h_res": 4.0, "food_r": 5.0}
+B_res_none_a27_s1	{"seed": 1, "T": 320, "foods": [[27, 45]], "reservoir": 1, "phase_mode": "none"}
+F2_res_tk_s1	{"seed": 1, "T": 480, "foods": [[27, 40], [117, 40]], "reservoir": 1, "tube_keep": 4.0}
+R60_res_a27_s1	{"seed": 1, "T": 200, "foods": [[27, 60]], "reservoir": 1}
+R60_res_a45_s1	{"seed": 1, "T": 200, "foods": [[45, 60]], "reservoir": 1}

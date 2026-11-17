@@ -1,0 +1,9 @@
+python3 n1.py e_s1_mg1_ck '{"seed":1,"solver":"mg","ncyc":1,"ckpt_steps":[1000,2000,3000,3500]}' > log_e_s1_mg1_ck.txt 2>&1
+python3 n1.py e_s1_mg1_limpre '{"seed":1,"solver":"mg","ncyc":1,"limit":1,"limit_reinforce":"pre"}' > log_e_s1_mg1_limpre.txt 2>&1
+python3 n1.py e_s1_mg1_limpost '{"seed":1,"solver":"mg","ncyc":1,"limit":1,"limit_reinforce":"post"}' > log_e_s1_mg1_limpost.txt 2>&1
+python3 n1.py e_s1_mg2_f4 '{"seed":1,"solver":"mg","ncyc":2,"dtype":"f4"}' > log_e_s1_mg2_f4.txt 2>&1
+python3 n1.py e_s1_mg3 '{"seed":1,"solver":"mg","ncyc":3}' > log_e_s1_mg3.txt 2>&1
+python3 n1.py e_s1_exact_q0fix '{"seed":1,"Q0_auto":0,"Q0":0.045}' > log_e_s1_exact_q0fix.txt 2>&1
+python3 n1.py e_s1_mg1_q0fix '{"seed":1,"solver":"mg","ncyc":1,"Q0_auto":0,"Q0":0.045}' > log_e_s1_mg1_q0fix.txt 2>&1
+python3 n1.py e_s1_jac40 '{"seed":1,"solver":"jac","k":40}' > log_e_s1_jac40.txt 2>&1
+python3 n1.py e_s1_mg1_dt05 '{"seed":1,"solver":"mg","ncyc":1,"dt":0.05,"check_every":20}' > log_e_s1_mg1_dt05.txt 2>&1

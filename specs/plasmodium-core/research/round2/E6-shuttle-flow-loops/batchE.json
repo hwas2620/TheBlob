@@ -1,0 +1,86 @@
+[
+[
+"e_long_f100_prot_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 36,
+"steps": 1800,
+"nsnap": 6,
+"seed": 1
+}
+],
+[
+"e_long_f050_prot_s1",
+{
+"f_ac": 0.5,
+"ac": "plane",
+"rot_turns": 36,
+"steps": 1800,
+"nsnap": 6,
+"seed": 1
+}
+],
+[
+"e_freeze_after_rot_s1",
+{
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 0,
+"seed": 1,
+"init_from": "a_plane_rot12_s1/edges_4.npz"
+}
+],
+[
+"e_fan_f050_pwob45_s1",
+{
+"body": "fan",
+"f_ac": 0.5,
+"ac": "plane",
+"wobble_deg": 45,
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"e_fan_f050_pwob45_s2",
+{
+"body": "fan",
+"f_ac": 0.5,
+"ac": "plane",
+"wobble_deg": 45,
+"rot_turns": 12,
+"seed": 2
+}
+],
+[
+"e_fan_f050_prot_s1",
+{
+"body": "fan",
+"f_ac": 0.5,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"e_N256_f050_prot_s1",
+{
+"N": 256,
+"f_ac": 0.5,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+],
+[
+"e_N256_f100_prot_s1",
+{
+"N": 256,
+"f_ac": 1.0,
+"ac": "plane",
+"rot_turns": 12,
+"seed": 1
+}
+]
+]

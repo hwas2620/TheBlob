@@ -1,0 +1,643 @@
+{
+ "files": [
+  {
+   "file": "state_N192_s1_step00000.bin.gz",
+   "tag": "state_N192_s1_step00000",
+   "N": 192,
+   "step": 0,
+   "t": 0.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    }
+   ],
+   "floats": 442368,
+   "kind": "state"
+  },
+  {
+   "file": "state_N192_s1_step00001.bin.gz",
+   "tag": "state_N192_s1_step00001",
+   "N": 192,
+   "step": 1,
+   "t": 0.1,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    }
+   ],
+   "floats": 442368,
+   "kind": "state"
+  },
+  {
+   "file": "state_N192_s1_step00010.bin.gz",
+   "tag": "state_N192_s1_step00010",
+   "N": 192,
+   "step": 10,
+   "t": 1.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    }
+   ],
+   "floats": 442368,
+   "kind": "state"
+  },
+  {
+   "file": "state_N192_s1_step00050.bin.gz",
+   "tag": "state_N192_s1_step00050",
+   "N": 192,
+   "step": 50,
+   "t": 5.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    }
+   ],
+   "floats": 442368,
+   "kind": "state"
+  },
+  {
+   "file": "solver_N192_s1_step01000.bin.gz",
+   "tag": "solver_N192_s1_step01000",
+   "N": 192,
+   "step": 1000,
+   "t": 100.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "W",
+     "ch": 4,
+     "offset": 0
+    },
+    {
+     "name": "M",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "rhs",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "p0",
+     "ch": 1,
+     "offset": 221184
+    },
+    {
+     "name": "p1",
+     "ch": 1,
+     "offset": 258048
+    },
+    {
+     "name": "p2",
+     "ch": 1,
+     "offset": 294912
+    },
+    {
+     "name": "p3",
+     "ch": 1,
+     "offset": 331776
+    },
+    {
+     "name": "pe",
+     "ch": 1,
+     "offset": 368640
+    }
+   ],
+   "floats": 405504,
+   "kind": "solver",
+   "wet": 2875,
+   "flux_err": [
+    0.05703619431281331,
+    0.04115494885993187,
+    0.03439327294110274
+   ],
+   "flux_err_p0": 0.11526057317421513,
+   "nc": 4
+  },
+  {
+   "file": "solver_N192_s1_step01500.bin.gz",
+   "tag": "solver_N192_s1_step01500",
+   "N": 192,
+   "step": 1500,
+   "t": 150.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "W",
+     "ch": 4,
+     "offset": 0
+    },
+    {
+     "name": "M",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "rhs",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "p0",
+     "ch": 1,
+     "offset": 221184
+    },
+    {
+     "name": "p1",
+     "ch": 1,
+     "offset": 258048
+    },
+    {
+     "name": "p2",
+     "ch": 1,
+     "offset": 294912
+    },
+    {
+     "name": "p3",
+     "ch": 1,
+     "offset": 331776
+    },
+    {
+     "name": "pe",
+     "ch": 1,
+     "offset": 368640
+    }
+   ],
+   "floats": 405504,
+   "kind": "solver",
+   "wet": 2840,
+   "flux_err": [
+    0.10271932680436355,
+    0.08316458373793997,
+    0.06809656596014714
+   ],
+   "flux_err_p0": 0.1332597455361395,
+   "nc": 4
+  },
+  {
+   "file": "state_N192_s1_step02000.bin.gz",
+   "tag": "state_N192_s1_step02000",
+   "N": 192,
+   "step": 2000,
+   "t": 200.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    }
+   ],
+   "floats": 442368,
+   "kind": "state"
+  },
+  {
+   "file": "solver_N192_s1_step02000.bin.gz",
+   "tag": "solver_N192_s1_step02000",
+   "N": 192,
+   "step": 2000,
+   "t": 200.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "W",
+     "ch": 4,
+     "offset": 0
+    },
+    {
+     "name": "M",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "rhs",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "p0",
+     "ch": 1,
+     "offset": 221184
+    },
+    {
+     "name": "p1",
+     "ch": 1,
+     "offset": 258048
+    },
+    {
+     "name": "p2",
+     "ch": 1,
+     "offset": 294912
+    },
+    {
+     "name": "p3",
+     "ch": 1,
+     "offset": 331776
+    },
+    {
+     "name": "pe",
+     "ch": 1,
+     "offset": 368640
+    }
+   ],
+   "floats": 405504,
+   "kind": "solver",
+   "wet": 2995,
+   "flux_err": [
+    0.07473481124846208,
+    0.05647519402712132,
+    0.04362460498415701
+   ],
+   "flux_err_p0": 0.10201409007729931,
+   "nc": 4
+  },
+  {
+   "file": "state_N192_s1_step02001.bin.gz",
+   "tag": "state_N192_s1_step02001",
+   "N": 192,
+   "step": 2001,
+   "t": 200.10000000000002,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    }
+   ],
+   "floats": 442368,
+   "kind": "state"
+  },
+  {
+   "file": "state_N192_s1_step02010.bin.gz",
+   "tag": "state_N192_s1_step02010",
+   "N": 192,
+   "step": 2010,
+   "t": 201.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    }
+   ],
+   "floats": 442368,
+   "kind": "state"
+  },
+  {
+   "file": "solver_N384_s1_step02000.bin.gz",
+   "tag": "solver_N384_s1_step02000",
+   "N": 384,
+   "step": 2000,
+   "t": 200.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "W",
+     "ch": 4,
+     "offset": 0
+    },
+    {
+     "name": "M",
+     "ch": 1,
+     "offset": 589824
+    },
+    {
+     "name": "rhs",
+     "ch": 1,
+     "offset": 737280
+    },
+    {
+     "name": "p0",
+     "ch": 1,
+     "offset": 884736
+    },
+    {
+     "name": "p1",
+     "ch": 1,
+     "offset": 1032192
+    },
+    {
+     "name": "p2",
+     "ch": 1,
+     "offset": 1179648
+    },
+    {
+     "name": "p3",
+     "ch": 1,
+     "offset": 1327104
+    },
+    {
+     "name": "pe",
+     "ch": 1,
+     "offset": 1474560
+    }
+   ],
+   "floats": 1622016,
+   "kind": "solver",
+   "wet": 2999,
+   "flux_err": [
+    0.048006382435006836,
+    0.034030645488551246,
+    0.025986830639487958
+   ],
+   "flux_err_p0": 0.07750960752220787,
+   "nc": 4
+  }
+ ]
+}
