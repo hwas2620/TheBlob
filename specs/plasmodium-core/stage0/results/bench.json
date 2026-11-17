@@ -1,7 +1,7 @@
 {
  "name": "bench",
  "query": "bench=1&N=256,384",
- "seconds": 382.657,
+ "seconds": 139.428,
  "done": true,
  "ok": true,
  "result": {
@@ -15,255 +15,423 @@
   "bench": {
    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
-   "usPerTinyDraw": 54.800000000046566,
+   "usPerTinyDraw": 49.375,
    "rows": [
     {
      "N": 256,
      "variant": "기준형",
      "cycles": 2,
      "drawCalls": 118,
-     "msPerStep": 118.67916666667831,
-     "msSolve": 49.75312499998836,
+     "msPerStep": 44.14375000000291,
+     "msBlocks": [
+      44.056,
+      45.788,
+      43.337,
+      43.512,
+      44.231,
+      45.363
+     ],
+     "msSolve": 18.38125000000582,
      "activeFraction": 1,
-     "stepsPerFrame": 0.03370431485447129,
-     "pxPerSec": 0.23698346382050128,
-     "pulseSec": 19.779861111113053
+     "stepsPerFrame": 0.0906130539430777,
+     "pxPerSec": 0.637123035537265,
+     "pulseSec": 7.357291666667152
     },
     {
      "N": 256,
      "variant": "합친 패스",
      "cycles": 2,
      "drawCalls": 94,
-     "msPerStep": 120.546875,
-     "msSolve": 55.44687499999418,
+     "msPerStep": 45.13125000000582,
+     "msBlocks": [
+      45.775,
+      42.544,
+      44.488,
+      49.131,
+      46.106,
+      44.387
+     ],
+     "msSolve": 17.88749999999709,
      "activeFraction": 1,
-     "stepsPerFrame": 0.03318211276733636,
-     "pxPerSec": 0.23331173039533382,
-     "pulseSec": 20.091145833333332
+     "stepsPerFrame": 0.0886303836033676,
+     "pxPerSec": 0.6231823847111785,
+     "pulseSec": 7.5218750000009695
     },
     {
      "N": 256,
      "variant": "합친 패스 + 몸 주변만",
      "cycles": 2,
      "drawCalls": 94,
-     "msPerStep": 21.785416666660847,
-     "msSolve": 11.07187499999418,
-     "activeFraction": 0.177703857421875,
-     "stepsPerFrame": 0.18360906569766786,
-     "pxPerSec": 1.291001243186727,
-     "pulseSec": 3.630902777776808
+     "msPerStep": 13.768749999995634,
+     "msBlocks": [
+      13.556,
+      13.631,
+      13.944,
+      13.906,
+      13.912,
+      13.25
+     ],
+     "msSolve": 8.087500000008731,
+     "activeFraction": 0.16633097330729166,
+     "stepsPerFrame": 0.2905129369043136,
+     "pxPerSec": 2.0426690876084552,
+     "pulseSec": 2.2947916666659394
     },
     {
      "N": 256,
      "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
      "cycles": 2,
      "drawCalls": 70,
-     "msPerStep": 29.56458333331587,
-     "msSolve": 29.5625,
-     "activeFraction": 0.1851959228515625,
-     "stepsPerFrame": 0.13529701923762485,
-     "pxPerSec": 0.9513071665145498,
-     "pulseSec": 4.927430555552644
+     "msPerStep": 16.67812499999127,
+     "msBlocks": [
+      16.563,
+      15.3,
+      15.463,
+      17.881,
+      17.962,
+      16.794
+     ],
+     "msSolve": 11.03750000000582,
+     "activeFraction": 0.16633097330729166,
+     "stepsPerFrame": 0.23983511335969085,
+     "pxPerSec": 1.6863406408103263,
+     "pulseSec": 2.779687499998545
     },
     {
      "N": 256,
      "variant": "합친 패스 + 두 번 스무딩",
      "cycles": 2,
      "drawCalls": 74,
-     "msPerStep": 133.30937499999223,
-     "msSolve": 51.125,
+     "msPerStep": 45.57187499999418,
+     "msBlocks": [
+      45.825,
+      46.681,
+      44.337,
+      45.156,
+      46.781,
+      45.319
+     ],
+     "msSolve": 19.1875,
      "activeFraction": 1,
-     "stepsPerFrame": 0.03000539159380376,
-     "pxPerSec": 0.21097540964393266,
-     "pulseSec": 22.218229166665374
+     "stepsPerFrame": 0.08777343482137856,
+     "pxPerSec": 0.617156963587818,
+     "pulseSec": 7.59531249999903
     },
     {
      "N": 256,
      "variant": "기준형",
      "cycles": 3,
      "drawCalls": 164,
-     "msPerStep": 132.46562500001164,
-     "msSolve": 55.01875000001746,
+     "msPerStep": 55.628124999995634,
+     "msBlocks": [
+      58.894,
+      55.075,
+      56.181,
+      58.944,
+      52.231,
+      52.338
+     ],
+     "msSolve": 28.15625,
      "activeFraction": 1,
-     "stepsPerFrame": 0.03019651324635843,
-     "pxPerSec": 0.2123192337634577,
-     "pulseSec": 22.077604166668607
+     "stepsPerFrame": 0.071906072692551,
+     "pxPerSec": 0.5055895736194992,
+     "pulseSec": 9.271354166665938
     },
     {
      "N": 256,
      "variant": "합친 패스",
      "cycles": 3,
      "drawCalls": 128,
-     "msPerStep": 138.7906250000136,
-     "msSolve": 55.56875000000582,
+     "msPerStep": 52.249999999992724,
+     "msBlocks": [
+      55.738,
+      57.781,
+      50.344,
+      53.969,
+      49,
+      50.531
+     ],
+     "msSolve": 26.50625000000582,
      "activeFraction": 1,
-     "stepsPerFrame": 0.028820390426223735,
-     "pxPerSec": 0.20264337018438566,
-     "pulseSec": 23.131770833335597
+     "stepsPerFrame": 0.07655502392345563,
+     "pxPerSec": 0.5382775119617974,
+     "pulseSec": 8.70833333333212
     },
     {
      "N": 256,
      "variant": "합친 패스 + 몸 주변만",
      "cycles": 3,
      "drawCalls": 128,
-     "msPerStep": 34.98854166667055,
-     "msSolve": 18.93124999999418,
-     "activeFraction": 0.2197265625,
-     "stepsPerFrame": 0.11432314150464658,
-     "pxPerSec": 0.8038345887045463,
-     "pulseSec": 5.8314236111117586
+     "msPerStep": 16.99062500000582,
+     "msBlocks": [
+      17.525,
+      16.781,
+      17.2,
+      16.656,
+      17.362,
+      16.069
+     ],
+     "msSolve": 11.01875000000291,
+     "activeFraction": 0.16633097330729166,
+     "stepsPerFrame": 0.23542394702953126,
+     "pxPerSec": 1.655324627551392,
+     "pulseSec": 2.8317708333343035
     },
     {
      "N": 256,
      "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
      "cycles": 3,
      "drawCalls": 92,
-     "msPerStep": 48.87708333333527,
-     "msSolve": 40.26874999998836,
-     "activeFraction": 0.22739410400390625,
-     "stepsPerFrame": 0.08183794382165824,
-     "pxPerSec": 0.5754230424960345,
-     "pulseSec": 8.14618055555588
+     "msPerStep": 21.124999999992724,
+     "msBlocks": [
+      22.381,
+      21.637,
+      20.613,
+      20.406,
+      19.356,
+      22.081
+     ],
+     "msSolve": 16.01874999998836,
+     "activeFraction": 0.16633097330729166,
+     "stepsPerFrame": 0.18934911242610072,
+     "pxPerSec": 1.3313609467460208,
+     "pulseSec": 3.5208333333321207
     },
     {
      "N": 256,
      "variant": "합친 패스 + 두 번 스무딩",
      "cycles": 3,
      "drawCalls": 98,
-     "msPerStep": 161.13958333332752,
-     "msSolve": 76.05625000002328,
+     "msPerStep": 55.50312499998836,
+     "msBlocks": [
+      57.056,
+      60.513,
+      52.606,
+      51.706,
+      55.481,
+      55.525
+     ],
+     "msSolve": 29.50625000000582,
      "activeFraction": 1,
-     "stepsPerFrame": 0.024823199348391913,
-     "pxPerSec": 0.17453812041838063,
-     "pulseSec": 26.85659722222125
+     "stepsPerFrame": 0.07206801418840542,
+     "pxPerSec": 0.5067282247622256,
+     "pulseSec": 9.250520833331391
     },
     {
      "N": 384,
      "variant": "기준형",
      "cycles": 2,
      "drawCalls": 133,
-     "msPerStep": 328.3250000000019,
-     "msSolve": 100.33125000001746,
+     "msPerStep": 94.74687500000437,
+     "msBlocks": [
+      99.656,
+      94.069,
+      91.387,
+      91.031,
+      95.425,
+      97.863
+     ],
+     "msSolve": 37.16250000000582,
      "activeFraction": 1,
-     "stepsPerFrame": 0.01218305033122661,
-     "pxPerSec": 0.057108048427624736,
-     "pulseSec": 54.72083333333365
+     "stepsPerFrame": 0.04221775124509189,
+     "pxPerSec": 0.19789570896136824,
+     "pulseSec": 15.791145833334062
     },
     {
      "N": 384,
      "variant": "합친 패스",
      "cycles": 2,
      "drawCalls": 105,
-     "msPerStep": 314.38749999999226,
-     "msSolve": 79.20937499997672,
+     "msPerStep": 92.53125000000728,
+     "msBlocks": [
+      89.988,
+      90.431,
+      88.25,
+      107.531,
+      94.631,
+      95.075
+     ],
+     "msSolve": 34.94374999999127,
      "activeFraction": 1,
-     "stepsPerFrame": 0.012723152160948189,
-     "pxPerSec": 0.05963977575444464,
-     "pulseSec": 52.397916666665374
+     "stepsPerFrame": 0.04322863897331643,
+     "pxPerSec": 0.20263424518742076,
+     "pulseSec": 15.421875000001211
     },
     {
      "N": 384,
      "variant": "합친 패스 + 몸 주변만",
      "cycles": 2,
      "drawCalls": 105,
-     "msPerStep": 23.413541666668607,
-     "msSolve": 17.19062499998836,
-     "activeFraction": 0.0802058467158565,
-     "stepsPerFrame": 0.17084130444452916,
-     "pxPerSec": 0.8008186145837305,
-     "pulseSec": 3.902256944444768
+     "msPerStep": 13.878124999995634,
+     "msBlocks": [
+      13.6,
+      14.831,
+      14.156,
+      16.744,
+      12.988,
+      12.85
+     ],
+     "msSolve": 7.800000000017462,
+     "activeFraction": 0.07451714409722222,
+     "stepsPerFrame": 0.28822337311425417,
+     "pxPerSec": 1.3510470614730663,
+     "pulseSec": 2.313020833332606
     },
     {
      "N": 384,
      "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
      "cycles": 2,
      "drawCalls": 77,
-     "msPerStep": 36.27187500000582,
-     "msSolve": 26.63125000000582,
-     "activeFraction": 0.08368598090277778,
-     "stepsPerFrame": 0.11027828034804812,
-     "pxPerSec": 0.5169294391314756,
-     "pulseSec": 6.04531250000097
+     "msPerStep": 16.240624999998545,
+     "msBlocks": [
+      15.913,
+      16.319,
+      17.238,
+      16.163,
+      17.631,
+      14.85
+     ],
+     "msSolve": 10.612499999988358,
+     "activeFraction": 0.07451714409722222,
+     "stepsPerFrame": 0.2462959399653867,
+     "pxPerSec": 1.1545122185877503,
+     "pulseSec": 2.7067708333330907
     },
     {
      "N": 384,
      "variant": "합친 패스 + 두 번 스무딩",
      "cycles": 2,
      "drawCalls": 85,
-     "msPerStep": 307.4187500000019,
-     "msSolve": 99.69687499999418,
+     "msPerStep": 90.96562499999709,
+     "msBlocks": [
+      90.869,
+      91.875,
+      87.306,
+      92.381,
+      91.063,
+      86.975
+     ],
+     "msSolve": 34.83749999999418,
      "activeFraction": 1,
-     "stepsPerFrame": 0.013011568097261391,
-     "pxPerSec": 0.060991725455912776,
-     "pulseSec": 51.23645833333365
+     "stepsPerFrame": 0.04397265450548081,
+     "pxPerSec": 0.20612181799444132,
+     "pulseSec": 15.160937499999516
     },
     {
      "N": 384,
      "variant": "기준형",
      "cycles": 3,
      "drawCalls": 186,
-     "msPerStep": 362.91145833334303,
-     "msSolve": 131.52499999999418,
+     "msPerStep": 107.64687499999854,
+     "msBlocks": [
+      108.019,
+      103.881,
+      107.15,
+      116.144,
+      107.275,
+      112.1
+     ],
+     "msSolve": 52.9375,
      "activeFraction": 1,
-     "stepsPerFrame": 0.011021972186741766,
-     "pxPerSec": 0.05166549462535203,
-     "pulseSec": 60.48524305555718
+     "stepsPerFrame": 0.037158533399135406,
+     "pxPerSec": 0.17418062530844722,
+     "pulseSec": 17.941145833333092
     },
     {
      "N": 384,
      "variant": "합친 패스",
      "cycles": 3,
      "drawCalls": 144,
-     "msPerStep": 327.4552083333256,
-     "msSolve": 128.39999999999418,
+     "msPerStep": 102.34687500000291,
+     "msBlocks": [
+      105.506,
+      101.444,
+      100.781,
+      103.25,
+      99.238,
+      105.688
+     ],
+     "msSolve": 47.14999999999418,
      "activeFraction": 1,
-     "stepsPerFrame": 0.012215411140836982,
-     "pxPerSec": 0.057259739722673356,
-     "pulseSec": 54.57586805555427
+     "stepsPerFrame": 0.03908277609843863,
+     "pxPerSec": 0.1832005129614311,
+     "pulseSec": 17.057812500000487
     },
     {
      "N": 384,
      "variant": "합친 패스 + 몸 주변만",
      "cycles": 3,
      "drawCalls": 144,
-     "msPerStep": 40.9302083333508,
-     "msSolve": 33.00937499999418,
-     "activeFraction": 0.09901032624421297,
-     "stepsPerFrame": 0.09772733056774391,
-     "pxPerSec": 0.4580968620362996,
-     "pulseSec": 6.8217013888918
+     "msPerStep": 17.73750000000291,
+     "msBlocks": [
+      17.213,
+      17.719,
+      18.369,
+      17.525,
+      19.55,
+      17.756
+     ],
+     "msSolve": 11.556250000008731,
+     "activeFraction": 0.07451714409722222,
+     "stepsPerFrame": 0.2255109231853048,
+     "pxPerSec": 1.0570824524311162,
+     "pulseSec": 2.956250000000485
     },
     {
      "N": 384,
      "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
      "cycles": 3,
      "drawCalls": 102,
-     "msPerStep": 43.86562500000582,
-     "msSolve": 44.93437499998254,
-     "activeFraction": 0.10357100875289353,
-     "stepsPerFrame": 0.09118757569279975,
-     "pxPerSec": 0.42744176105999887,
-     "pulseSec": 7.31093750000097
+     "msPerStep": 21.809375000004366,
+     "msBlocks": [
+      21.631,
+      22.119,
+      20.425,
+      21.644,
+      22.694,
+      21.975
+     ],
+     "msSolve": 15.256249999991269,
+     "activeFraction": 0.07451714409722222,
+     "stepsPerFrame": 0.18340736495196214,
+     "pxPerSec": 0.8597220232123225,
+     "pulseSec": 3.634895833334061
     },
     {
      "N": 384,
      "variant": "합친 패스 + 두 번 스무딩",
      "cycles": 3,
      "drawCalls": 114,
-     "msPerStep": 366.4843750000194,
-     "msSolve": 140.01249999998254,
+     "msPerStep": 106.92812499999854,
+     "msBlocks": [
+      106.875,
+      106.05,
+      106.138,
+      111.512,
+      106.981,
+      108.625
+     ],
+     "msSolve": 51.72499999999127,
      "activeFraction": 1,
-     "stepsPerFrame": 0.010914517160519568,
-     "pxPerSec": 0.05116179918993548,
-     "pulseSec": 61.08072916666989
+     "stepsPerFrame": 0.03740830581290053,
+     "pxPerSec": 0.17535143349797125,
+     "pulseSec": 17.821354166666428
     }
    ],
    "bodyArea": {
     "256": 1902,
     "384": 1921
    },
+   "blockSteps": {
+    "256": 16,
+    "384": 16
+   },
+   "blocks": 6,
+   "lagMargin": 8,
    "sweep2Error": null,
-   "seconds": 381.6072000000002
+   "errors": [],
+   "hiddenBlocks": 0,
+   "seconds": 138.8368999999999
   }
  }
 }

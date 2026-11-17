@@ -34,4 +34,12 @@ run a12_N768_s1_c2_v0 "test=a12&N=768&seed=1&cyc=2&steps=300&check=100"
 # 삼각 격자 무늬를 켠 실행 (견줄 numpy 기준이 없어 기록만)
 run a12_N192_s1_c2_tri_v2 "test=a12&N=192&seed=1&cyc=2&steps=10000&tri=1&variant=2&sync=1"
 run a12_N384_s1_c2_tri_v2 "test=a12&N=384&seed=1&cyc=2&steps=10000&tri=1&variant=2&sync=1"
+# 속도 후보 설정 (dt 0.2 + 맥동 주기 8). numpy 기준은 export_ref.py a12 <N> <시드> <mg|exact> 400 dt=0.2 period=8 osc_sub=8 tag=dt2p8
+run a12_N192_s1_c2_v2_dt2p8 "test=a12&N=192&seed=1&cyc=2&steps=2000&variant=2&sync=1&dt=0.2&period=8&sub=8&tag=dt2p8"
+run a12_N192_s2_c2_v2_dt2p8 "test=a12&N=192&seed=2&cyc=2&steps=2000&variant=2&sync=1&dt=0.2&period=8&sub=8&tag=dt2p8"
+run a12_N384_s1_c2_v2_dt2p8 "test=a12&N=384&seed=1&cyc=2&steps=2000&variant=2&sync=1&dt=0.2&period=8&sub=8&tag=dt2p8"
+run a12_N384_s1_c2_v3_dt2p8 "test=a12&N=384&seed=1&cyc=2&steps=2000&variant=3&sync=1&dt=0.2&period=8&sub=8&tag=dt2p8"
+
+# 코드 검토 뒤의 빌드로 다시 돌려 앞의 결과와 같은지 본 것
+run a12_N384_s1_c2_v3_final "test=a12&N=384&seed=1&cyc=2&steps=10000&variant=3&sync=1"
 echo ALL_DONE > $L/a12_done.txt
