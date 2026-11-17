@@ -52,8 +52,8 @@ export const CELLS_PER_STEP = 0.02;
 /** 맥동 한 주기의 스텝 수 (주기 4, dt = 0.1) */
 export const STEPS_PER_PULSE = 40;
 const WARMUP_STEPS = 400;
-const BLOCK = 16;
-const BLOCKS = 6;
+const DEFAULT_BLOCK = 16;
+const DEFAULT_BLOCKS = 6;
 
 const yieldNow = (): Promise<void> => new Promise((r) => setTimeout(r, 0));
 
@@ -67,7 +67,15 @@ function tinyDrawCost(sim: PlasmGPU): number {
   return ((performance.now() - t0) / n) * 1000;
 }
 
-export async function runBench(glx: Glx, renderer: string, sizes: number[], log: Log): Promise<BenchResult> {
+export interface BenchOptions {
+  /** 블록 하나의 스텝 수와 블록 수. 기본 16 × 6. 드로콜 수만 볼 때는 2 × 1 로 줄인다 */
+  block?: number;
+  blocks?: number;
+}
+
+export async function runBench(glx: Glx, renderer: string, sizes: number[], log: Log, opts: BenchOptions = {}): Promise<BenchResult> {
+  const BLOCK = opts.block ?? DEFAULT_BLOCK;
+  const BLOCKS = opts.blocks ?? DEFAULT_BLOCKS;
   const tStart = performance.now();
   const rows: BenchRow[] = [];
   const bodyArea: Record<string, number> = {};

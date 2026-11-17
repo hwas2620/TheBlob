@@ -3,6 +3,7 @@
 //   stage0.html                       돌려 보기 + 속도 측정 단추
 //   stage0.html?run=1&N=384&spf=2[&tri=1]   돌려 보기의 처음 설정 (spf = 프레임당 스텝 수)
 //   stage0.html?bench=1[&N=256,384,512,768] 열자마자 속도 측정(A3)을 시작한다. 주소 끝에 #bench 를 붙여도 같다
+//                                     (&block=2&blocks=1 을 붙이면 드로콜 수만 볼 만큼 짧게 잰다)
 //   stage0.html?test=a0               A0 재생 시험 (멀티그리드를 numpy 와 대조)
 //   stage0.html?test=parity           스텝 일치 시험 (규칙 1~7 을 numpy 와 대조)
 //   stage0.html?test=a12&N=192&seed=1&cyc=2&steps=10000[&tri=1&variant=2&sync=1]   A1·A2 긴 실행 (variant: tests.ts 의 VARIANTS 번호. 0 기준형)
@@ -224,7 +225,7 @@ async function main(): Promise<void> {
     cancelAnimationFrame(raf);
     sim = null;
     try {
-      const bench = await runBench(glx, caps.renderer, sizes, log);
+      const bench = await runBench(glx, caps.renderer, sizes, log, { block: q.has('block') ? num('block', 16) : undefined, blocks: q.has('blocks') ? num('blocks', 6) : undefined });
       log(`드로콜 하나의 고정 비용 약 ${bench.usPerTinyDraw.toFixed(1)}µs · 전체 ${bench.seconds.toFixed(0)}초`);
       benchJson = JSON.stringify(bench);
       benchTable(bench);

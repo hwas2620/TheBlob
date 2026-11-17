@@ -53,7 +53,9 @@ function serve() {
   });
   page.on('pageerror', (e) => console.log(`[브라우저 오류] ${e.message}`));
   const t0 = Date.now();
-  await page.goto(`http://127.0.0.1:${port}/stage0.html?${query}`);
+  // 'commit' 까지만 기다린다. 큰 격자의 기준형은 첫 100스텝이 30초를 넘어 load 이벤트가 늦게 온다
+  await page.goto(`http://127.0.0.1:${port}/stage0.html?${query}`, { waitUntil: 'commit' });
+  await page.waitForFunction(() => document.getElementById('out') !== null, null, { timeout: 0 });
   let state = null;
   let printed = 0;
   const deadline = t0 + Number(timeoutSec) * 1000;
@@ -75,7 +77,7 @@ function serve() {
   fs.mkdirSync(outDir, { recursive: true });
   fs.mkdirSync(path.join(ROOT, 'screenshots'), { recursive: true });
   fs.writeFileSync(path.join(outDir, `${name}.json`), JSON.stringify({ name, query, seconds: (Date.now() - t0) / 1000, ...state }, null, 1));
-  await page.screenshot({ path: path.join(ROOT, 'screenshots', `stage0-${name}.png`) });
+  await page.screenshot({ path: path.join(ROOT, 'screenshots', `stage0-${name}.png`), timeout: 120000 }).catch((e) => console.log(`(화면 갈무리 실패: ${e.message.split('\n')[0]})`));
   await browser.close();
   server.close();
   console.log(`\n${name}: ${state && state.done ? (state.ok ? '통과' : '실패') : '끝나지 않음'} (${((Date.now() - t0) / 1000).toFixed(1)}초)`);
