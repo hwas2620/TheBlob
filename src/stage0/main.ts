@@ -45,10 +45,11 @@ const GRIDS = [256, 384, 512];
 const SPFS = [1, 2, 4, 8, 16];
 /**
  * 한 스텝이 가는 모델 시간을 늘린 후보 설정: dt 와 맥동 주기를 함께 2배로 (6차 실험 V1).
- * 스텝당 전진이 기준의 약 FAST_DT_GAIN 배다(유인원에 닿는 시각으로 잰 값. 무게중심으로 재면 더 작다). 기본 설정은 아니다
+ * 스텝당 전진이 기준의 약 FAST_DT_GAIN 배다(독립 검증의 앞면 속도 기준 1.61. 재는 법에 따라 1.47~1.75). 기본 설정은 아니다:
+ * 192² 의 몸 크기에서는 검증됐지만 큰 몸에서는 확인되지 않았다 (research/round6/V1-speed/verify/REPORT.md)
  */
 const FAST_DT = { dt: 0.2, period: 8, substeps: 8 };
-const FAST_DT_GAIN = 1.7;
+const FAST_DT_GAIN = 1.6;
 
 /** 고르는 단추 한 줄. 누르면 pick 을 부르고 눌린 단추를 표시한다. 만든 단추들을 돌려준다 */
 function choices<T>(rowId: string, items: T[], label: (v: T) => string, initial: T, pick: (v: T) => void): HTMLButtonElement[] {

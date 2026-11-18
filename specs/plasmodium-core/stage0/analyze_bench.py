@@ -19,7 +19,7 @@ import json, os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 MAP_PX = 1500
 CELLS_PER_STEP = 0.02   # dt 0.1
-FAST_GAIN = 1.7         # dt 0.2 + 맥동 주기 8 (닿는 시각 기준. 6차 V1)
+FAST_GAIN = 1.6         # dt 0.2 + 맥동 주기 8 (독립 검증의 앞면 속도 기준 1.61. 재는 법에 따라 1.47~1.75)
 
 
 def load(path):

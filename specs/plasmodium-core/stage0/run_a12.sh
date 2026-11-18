@@ -39,6 +39,10 @@ run a12_N192_s1_c2_v2_dt2p8 "test=a12&N=192&seed=1&cyc=2&steps=2000&variant=2&sy
 run a12_N192_s2_c2_v2_dt2p8 "test=a12&N=192&seed=2&cyc=2&steps=2000&variant=2&sync=1&dt=0.2&period=8&sub=8&tag=dt2p8"
 run a12_N384_s1_c2_v2_dt2p8 "test=a12&N=384&seed=1&cyc=2&steps=2000&variant=2&sync=1&dt=0.2&period=8&sub=8&tag=dt2p8"
 run a12_N384_s1_c2_v3_dt2p8 "test=a12&N=384&seed=1&cyc=2&steps=2000&variant=3&sync=1&dt=0.2&period=8&sub=8&tag=dt2p8"
+# 같은 설정으로 1만 스텝 (모델 시간 2000). numpy 멀티그리드 기준은 … mg 2000 dt=0.2 period=8 osc_sub=8 tag=dt2p8L,
+# 직접 풀이 기준은 dt2p8 의 것(모델 시간 400)을 그대로 쓴다(ref/a12_N*_s1_exact_dt2p8L.json 은 그 파일의 사본이다)
+run a12_N192_s1_c2_v2_dt2p8L "test=a12&N=192&seed=1&cyc=2&steps=10000&variant=2&sync=1&dt=0.2&period=8&sub=8&tag=dt2p8L"
+run a12_N384_s1_c2_v3_dt2p8L "test=a12&N=384&seed=1&cyc=2&steps=10000&variant=3&sync=1&dt=0.2&period=8&sub=8&tag=dt2p8L"
 
 # 코드 검토 뒤의 빌드로 다시 돌려 앞의 결과와 같은지 본 것
 run a12_N384_s1_c2_v3_final "test=a12&N=384&seed=1&cyc=2&steps=10000&variant=3&sync=1"
