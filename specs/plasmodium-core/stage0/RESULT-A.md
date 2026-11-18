@@ -24,7 +24,8 @@
 
 - `src/gpu/plasm/` — 원형질체 코어. `PlasmGPU`(규칙 1~7), `MultigridGPU`(압력 풀이), `glx`(그리기 도우미), 셰이더 30개
 - `src/stage0/` — 시험 페이지의 코드. numpy 기준 자료 대조(`tests.ts`), CPU 기준 풀이(`cpuSolver.ts`), 속도 측정(`bench.ts`), GL 호출 세기(`glCount.ts`), WebGPU 탐침(`webgpuProbe.ts`)
-- `stage0.html` — 시험 페이지. 열면 384² 격자에서 굶은 이주가 돌고, 격자·프레임당 스텝을 단추로 바꾼다. "속도 측정" 단추가 A3의 측정이다
+- `stage0.html` — 시험 페이지. 열면 384² 격자에서 굶은 이주가 돌고, 격자·프레임당 스텝·스텝의 길이를 단추로 바꾼다. "속도 측정" 단추가 A3의 측정이다.
+  `main`에 올리면 GitHub Pages로 배포된다(2026-11-18부터): <https://hwas2620.github.io/TheBlob/stage0.html> (끝에 `?bench=1`을 붙이면 열자마자 잰다)
 - `specs/plasmodium-core/stage0/ref/` — numpy 기준 모델과 기준 실행 요약. 상태 덤프는 `public/stage0/ref/`
 - 게임(`index.html`)은 건드리지 않았다. `src/config.ts`에 상수 묶음 셋(`PLASM`, `OSCILLATOR`, `SLIME`)만 더했다
 
