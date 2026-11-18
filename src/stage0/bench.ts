@@ -104,6 +104,8 @@ export interface LoopWindow {
   t: number;
   stepsPerSec: number;
   late: number;
+  /** 그린 영역이 격자에서 차지한 비율의 평균 (몸이 퍼져 일이 늘어난 것인지, 기기가 느려진 것인지 가리려고 적는다) */
+  area: number;
 }
 
 export interface FrameLoop {
@@ -143,10 +145,12 @@ export interface BenchResult {
   profileN: number | null;
   groups: GroupCost[];
   probes: PassProbes | null;
-  /** 한 스텝의 GL 함수 호출 수를 이름별로 (profileN 격자, 가장 빠른 변형, 2사이클. count=1 로 열었을 때만) */
+  /** 한 스텝의 GL 함수 호출 수를 이름별로 (profileN 격자, 합친 패스 + 몸 주변만, 2사이클. count=1 로 열었을 때만) */
   glByName?: Record<string, number>;
-  /** 화면 갱신에 맞춘 프레임 루프 (profileN 격자, 가장 빠른 변형) */
+  /** 화면 갱신에 맞춘 프레임 루프 (profileN 격자, 합친 패스 + 몸 주변만) */
   frameLoop: FrameLoop | null;
+  /** 256² 격자의 프레임 루프 (오름 시험만). 256² 를 재지 않았으면 null */
+  frameLoopSmall: FrameLoop | null;
   /** 같은 기기에서 WebGPU 의 계산 디스패치 하나가 드는 고정 비용 */
   webgpu: WebGpuProbe;
   seconds: number;
@@ -176,15 +180,28 @@ export const STEPS_PER_PULSE = 40;
 /** 한 스텝이 가는 모델 시간을 늘린 후보 설정 (6차 실험 V1. 192² 의 몸 크기에서 독립 검증됨, 큰 몸에서는 미확인) */
 export const FAST_DT: Partial<PlasmParams> = { dt: 0.2, period: 8, substeps: 8 };
 export const FAST_DT_NAME = 'dt 0.2 + 주기 8';
+/** 같은 구성을 측정의 끝에 다시 잰 줄의 이름 */
+export const DRIFT_NAME = '끝에 다시';
 const WARMUP_STEPS = 400;
 const DEFAULT_SUSTAIN_MS = 1200;
-/** 프레임 루프 시험에서 해 보는 프레임당 스텝 수 */
+/**
+ * 프레임 루프와 돌려 보기가 쓰는 변형: 합친 패스 + 몸 주변만.
+ * "두 번 스무딩"은 Adreno 840 의 지속 측정에서 4~20% 느려서 뺐다(묶은 패스의 셰이더가 줄어든 패스보다 무겁다)
+ */
+export const LOOP_VARIANT = 2;
+/** 프레임 루프 시험에서 해 보는 프레임당 스텝 수. 작은 격자(스텝이 싸다)는 높은 쪽만 본다 */
 const LOOP_UP = [2, 4, 6, 8, 12, 16, 24, 32, 48];
+const LOOP_UP_SMALL = [8, 16, 24, 32, 48, 64];
 const LOOP_DOWN = [16, 12, 8, 6];
 /** 읽기 대조와 지속 시험에서 쓰는 프레임당 스텝 수 (첫 측정에서 프레임이 길어진 구간이자 게임이 쓸 구간). 기기가 거기까지 못 가면 낮춘다 */
 const LOOP_AB = [8, 12];
 const LOOP_SUSTAIN_SPF = 12;
 const LOOP_SUSTAIN_MS = 20000;
+/**
+ * 오름 시험에서 설정 하나를 재는 시간(ms). 짧으면 틀린다: 감당하지 못하는 부하에서도 브라우저가 밀린 명령을 1초쯤은 쌓아 두어
+ * 화면 갱신이 제때 오는 것처럼 보인다(1.2초씩 잰 측정 v3 가 그렇게 "프레임당 16스텝"을 지킨 것으로 냈다)
+ */
+const LOOP_STEP_MS = 3000;
 /** 읽기 대조에서 가위 사각형에 주는 고정 여유(셀) */
 const LOOP_FIXED_MARGIN = 64;
 /** 이 간격(ms) 안이면 60fps 를 지킨 것으로 본다 */
@@ -397,7 +414,7 @@ function nextFrame(timeoutMs = 2000): Promise<number | null> {
  * 화면 갱신마다 스텝을 spf 번 돌리고 화면을 그린다. settleMs 가 지난 뒤부터 ms 동안의 화면 갱신 시각을 모은다.
  * 탭이 가려져 갱신이 오지 않으면 null
  */
-async function loopRun(sim: PlasmGPU, view: (sim: PlasmGPU) => void, spf: number, ms: number, settleMs: number): Promise<number[] | null> {
+async function loopRun(sim: PlasmGPU, view: (sim: PlasmGPU) => void, spf: number, ms: number, settleMs: number, area?: number[]): Promise<number[] | null> {
   const ts: number[] = [];
   const start = performance.now();
   for (;;) {
@@ -406,7 +423,10 @@ async function loopRun(sim: PlasmGPU, view: (sim: PlasmGPU) => void, spf: number
     for (let i = 0; i < spf; i++) sim.stepOnce();
     view(sim);
     const el = performance.now() - start;
-    if (el >= settleMs) ts.push(t);
+    if (el >= settleMs) {
+      ts.push(t);
+      if (area) area.push(sim.activeFraction()); // 그 프레임에 그린 넓이 (ts 와 같은 번호)
+    }
     if ((el >= settleMs + ms && ts.length >= 12) || ts.length >= 4000) break;
   }
   return ts;
@@ -432,7 +452,7 @@ function loopStats(label: string, spf: number, ts: number[], baseMs: number): Lo
 
 /** 게임과 같은 설정: 경계 상자를 멈춤 없이 읽고, 여유는 잰 뒤 지난 스텝 수만큼 키운다 */
 function gameLike(sim: PlasmGPU, snap: Snapshot): void {
-  prepare(sim, snap, 3, 2);
+  prepare(sim, snap, LOOP_VARIANT, 2);
   sim.asyncBounds = true;
   sim.autoBounds = true;
   sim.marginExtra = 0;
@@ -442,7 +462,7 @@ function gameLike(sim: PlasmGPU, snap: Snapshot): void {
  * 프레임 루프 시험. 프레임 간격이 화면의 갱신 주기에 머무는 동안은 그 스텝 수를 감당하는 것이다.
  * 몸은 재는 동안 계속 자라고 움직인다(설정마다 처음 상태로 되돌린다). 지속 시험에서는 되돌리지 않는다
  */
-async function frameLoop(glx: Glx, sim: PlasmGPU, snap: Snapshot, view: (sim: PlasmGPU) => void, log: Log, capOverride?: number): Promise<FrameLoop> {
+async function frameLoop(glx: Glx, sim: PlasmGPU, snap: Snapshot, view: (sim: PlasmGPU) => void, log: Log, full: boolean, capOverride?: number): Promise<FrameLoop> {
   const out: FrameLoop = { N: sim.N, baseMs: 0, rows: [], down: [], readback: [], sustained: null };
   const hidden = '화면 갱신이 오지 않았습니다(탭이 가려짐)';
   const fmt = (r: LoopRow): string => `간격 평균 ${r.msMean.toFixed(1)}ms (95백분위 ${r.msP95.toFixed(1)}, 늦은 프레임 ${(r.late * 100).toFixed(0)}%) → 초당 ${r.stepsPerSec.toFixed(0)}스텝`;
@@ -453,9 +473,9 @@ async function frameLoop(glx: Glx, sim: PlasmGPU, snap: Snapshot, view: (sim: Pl
 
   // 올려 가며
   let top = LOOP_UP[0];
-  for (const spf of LOOP_UP) {
+  for (const spf of full ? LOOP_UP : LOOP_UP_SMALL) {
     gameLike(sim, snap);
-    const ts = await loopRun(sim, view, spf, 2000, 400);
+    const ts = await loopRun(sim, view, spf, LOOP_STEP_MS, 400);
     if (!ts) return { ...out, note: hidden };
     if (glx.lost()) throw new Error('GPU 컨텍스트를 잃었습니다');
     const r = loopStats('오름', spf, ts, out.baseMs);
@@ -464,11 +484,12 @@ async function frameLoop(glx: Glx, sim: PlasmGPU, snap: Snapshot, view: (sim: Pl
     log(`  프레임 루프 ${sim.N}² 프레임당 ${spf}스텝: ${fmt(r)}`);
     if (tooSlow(r)) break; // 초당 24프레임 아래로 떨어지면 더 늘려 볼 까닭이 없다
   }
+  if (!full) return out;
   // 내려 가며 (부하의 영향인지 순서의 영향인지)
   for (const spf of LOOP_DOWN) {
     if (spf > top) continue;
     gameLike(sim, snap);
-    const ts = await loopRun(sim, view, spf, 1500, 400);
+    const ts = await loopRun(sim, view, spf, 2000, 400);
     if (!ts) return { ...out, note: hidden };
     const r = loopStats('내림', spf, ts, out.baseMs);
     out.down.push(r);
@@ -482,7 +503,7 @@ async function frameLoop(glx: Glx, sim: PlasmGPU, snap: Snapshot, view: (sim: Pl
   // 경계 상자 읽기를 켠 것과 끈 것. 여유를 고정해 두 쪽의 그리는 넓이를 같게 한다
   for (const spf of abSpfs) {
     for (const on of [true, false]) {
-      prepare(sim, snap, 3, 2);
+      prepare(sim, snap, LOOP_VARIANT, 2);
       sim.fixedMargin = LOOP_FIXED_MARGIN;
       sim.asyncBounds = true;
       sim.autoBounds = on;
@@ -496,7 +517,8 @@ async function frameLoop(glx: Glx, sim: PlasmGPU, snap: Snapshot, view: (sim: Pl
   }
   // 한 설정으로 오래
   gameLike(sim, snap);
-  const ts = await loopRun(sim, view, longSpf, LOOP_SUSTAIN_MS, 400);
+  const area: number[] = [];
+  const ts = await loopRun(sim, view, longSpf, LOOP_SUSTAIN_MS, 400, area);
   if (!ts) return { ...out, note: hidden };
   if (glx.lost()) throw new Error('GPU 컨텍스트를 잃었습니다');
   const windows: LoopWindow[] = [];
@@ -505,10 +527,15 @@ async function frameLoop(glx: Glx, sim: PlasmGPU, snap: Snapshot, view: (sim: Pl
     const idx = ts.map((t, i) => (i > 0 && t > w0 && t <= w0 + 2000 ? i : -1)).filter((i) => i > 0);
     if (idx.length < 2) continue;
     const span = ts[idx[idx.length - 1]] - ts[idx[0] - 1];
-    windows.push({ t: (w0 - ts[0]) / 1000, stepsPerSec: (idx.length * longSpf * 1000) / span, late: idx.filter((i) => ts[i] - ts[i - 1] > limit).length / idx.length });
+    windows.push({
+      t: (w0 - ts[0]) / 1000,
+      stepsPerSec: (idx.length * longSpf * 1000) / span,
+      late: idx.filter((i) => ts[i] - ts[i - 1] > limit).length / idx.length,
+      area: idx.reduce((a, i) => a + area[i], 0) / idx.length,
+    });
   }
   out.sustained = { spf: longSpf, seconds: (ts[ts.length - 1] - ts[0]) / 1000, windows };
-  log(`  프레임 루프 (지속 ${out.sustained.seconds.toFixed(0)}초, 프레임당 ${longSpf}스텝) 2초마다 초당 스텝/늦은 프레임%: ` + windows.map((w) => `${w.stepsPerSec.toFixed(0)}/${(w.late * 100).toFixed(0)}`).join(', '));
+  log(`  프레임 루프 (지속 ${out.sustained.seconds.toFixed(0)}초, 프레임당 ${longSpf}스텝) 2초마다 초당 스텝/늦은 프레임%/그린 넓이%: ` + windows.map((w) => `${w.stepsPerSec.toFixed(0)}/${(w.late * 100).toFixed(0)}/${(w.area * 100).toFixed(0)}`).join(', '));
   return out;
 }
 
@@ -546,6 +573,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
   const glCounts = opts.glCounts;
   let glByName: Record<string, number> | undefined;
   let loop: FrameLoop | null = null;
+  let loopSmall: FrameLoop | null = null;
 
   /** 굶은 이주를 WARMUP_STEPS 스텝 돌려 몸을 만든다 */
   const grow = async (N: number, over: Partial<PlasmParams>): Promise<{ sim: PlasmGPU; snap: Snapshot }> => {
@@ -610,21 +638,30 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
     // 대표 격자에서는 기준형과 전체 격자 + 두 번 스무딩, 3사이클도
     const all = opts.allVariants || N === profileN;
     for (const vi of all ? [0, 1, 2, 3, 4] : [1, 2, 3]) await row(sim, snap, vi, 2);
-    if (N !== profileN) return;
-    await row(sim, snap, 3, 3);
+    const loopLine = (L: FrameLoop): void => {
+      const held = bestHeld(L);
+      log(`  프레임 루프 ${N}²: 화면 갱신 주기 ${L.baseMs.toFixed(1)}ms. ` + (held
+        ? `${heldLabel(L)}을 지키는 최대는 프레임당 ${held.spf}스텝(초당 ${held.stepsPerSec.toFixed(0)}스텝) → 전진 ${(CELLS_PER_STEP * held.stepsPerSec * (MAP_PX / N)).toFixed(0)}px/s`
+        : `${heldLabel(L)}을 지킨 설정이 없습니다`) + (L.note ? ` (${L.note})` : ''));
+    };
+    if (N !== profileN) {
+      if (N === 256 && opts.view && opts.loop !== false) {
+        loopSmall = await frameLoop(glx, sim, snap, opts.view, log, false);
+        loopLine(loopSmall);
+      }
+      return;
+    }
+    await row(sim, snap, LOOP_VARIANT, 3);
 
     if (opts.view && opts.loop !== false) {
-      loop = await frameLoop(glx, sim, snap, opts.view, log, opts.loopCap);
-      const held = bestHeld(loop);
-      log(`  프레임 루프: 화면 갱신 주기 ${loop.baseMs.toFixed(1)}ms. ` + (held
-        ? `${heldLabel(loop)}을 지키는 최대는 프레임당 ${held.spf}스텝(초당 ${held.stepsPerSec.toFixed(0)}스텝) → 전진 ${(CELLS_PER_STEP * held.stepsPerSec * (MAP_PX / N)).toFixed(0)}px/s`
-        : `${heldLabel(loop)}을 지킨 설정이 없습니다`) + (loop.note ? ` (${loop.note})` : ''));
+      loop = await frameLoop(glx, sim, snap, opts.view, log, true, opts.loopCap);
+      loopLine(loop);
     }
     groups = profileGroups(glx, sim, snap, glCounts);
     const sum = groups.reduce((a, g) => a + g.msPerStep, 0);
     if (glCounts) {
-      // 가장 빠른 변형의 한 스텝을 이름별로
-      prepare(sim, snap, 3, 2);
+      // 기본 변형의 한 스텝을 이름별로
+      prepare(sim, snap, LOOP_VARIANT, 2);
       const before = new Map(glCounts);
       const steps = 8;
       for (let s = 0; s < steps; s++) sim.stepOnce();
@@ -633,7 +670,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
         const d = (v - (before.get(k) ?? 0)) / steps;
         if (d > 0) glByName[k] = d;
       }
-      log(`  ${N}² GL 호출(합친 패스 + 몸 주변만 + 두 번 스무딩, 스텝당): ` + Object.entries(glByName).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(', '));
+      log(`  ${N}² GL 호출(${VARIANTS[LOOP_VARIANT].name}, 스텝당): ` + Object.entries(glByName).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(', '));
       log(`  ${N}² 묶음별 GL 호출(합친 패스 + 몸 주변만): ` + groups.map((g) => `${g.group} ${g.glCalls}`).join(', '));
     }
     log(`  ${N}² 묶음별(합친 패스 + 몸 주변만, 2사이클): ` + groups.map((g) => `${g.group} ${g.passesPerStep}×${g.usPerPass.toFixed(0)}µs`).join(', ') + ` → 합 ${sum.toFixed(2)}ms`);
@@ -644,10 +681,12 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
     if (glx.lost()) throw new Error('GPU 컨텍스트를 잃었습니다');
 
     // 한 스텝이 가는 모델 시간을 늘린 후보 설정 (위상 패스가 4개 는다)
+    // 처음에 잰 구성을 끝에 한 번 더: 그사이 기기가 뜨거워져 느려졌는지 본다
+    await row(sim, snap, LOOP_VARIANT, 2, DRIFT_NAME);
     log(`${N}² 준비 [${FAST_DT_NAME}] (${WARMUP_STEPS}스텝)…`);
     await yieldNow();
     const fast = await grow(N, FAST_DT);
-    await row(fast.sim, fast.snap, 3, 2, FAST_DT_NAME);
+    await row(fast.sim, fast.snap, LOOP_VARIANT, 2, FAST_DT_NAME);
   };
 
   for (const N of sizes) {
@@ -680,6 +719,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
     probes,
     ...(glByName ? { glByName } : {}),
     frameLoop: loop,
+    frameLoopSmall: loopSmall,
     webgpu,
     seconds: (performance.now() - tStart) / 1000,
   };
@@ -700,15 +740,15 @@ function webgpuLine(w: WebGpuProbe): string {
 export function benchSummary(b: BenchResult): string {
   const f = (x: number, d = 2): string => x.toFixed(d);
   const lines: string[] = ['[TheBlob 속도 측정 요약 v4]', `GPU: ${b.renderer}`, `브라우저: ${b.userAgent}`];
-  if (b.frameLoop) {
-    const L = b.frameLoop;
+  for (const L of [b.frameLoop, b.frameLoopSmall]) {
+    if (!L) continue;
     const held = bestHeld(L);
     const cell = (r: LoopRow): string => `${r.spf}: ${f(r.msMean, 1)}/${f(r.msP95, 1)}/${f(r.late * 100, 0)}%`;
     lines.push(`프레임 루프 (${L.N}², 화면 갱신 주기 ${f(L.baseMs, 1)}ms) — 프레임당 스텝: 간격 평균/95백분위 ms/늦은 프레임${L.note ? ` [${L.note}]` : ''}`);
     lines.push(`오름: ${L.rows.map(cell).join(' | ')}`);
     if (L.down.length > 0) lines.push(`내림: ${L.down.map(cell).join(' | ')}`);
     if (L.readback.length > 0) lines.push(`경계 상자 읽기 대조(여유 고정): ${L.readback.map((r) => `${r.label} ${cell(r)}`).join(' | ')}`);
-    if (L.sustained) lines.push(`지속 ${f(L.sustained.seconds, 0)}초 (프레임당 ${L.sustained.spf}스텝) 2초마다 초당 스텝/늦은 프레임%: ${L.sustained.windows.map((w) => `${f(w.stepsPerSec, 0)}/${f(w.late * 100, 0)}`).join(', ')}`);
+    if (L.sustained) lines.push(`지속 ${f(L.sustained.seconds, 0)}초 (프레임당 ${L.sustained.spf}스텝) 2초마다 초당 스텝/늦은 프레임%/그린 넓이%: ${L.sustained.windows.map((w) => `${f(w.stepsPerSec, 0)}/${f(w.late * 100, 0)}/${f(w.area * 100, 0)}`).join(', ')}`);
     lines.push(held
       ? `→ ${heldLabel(L)}을 지키는 최대: 프레임당 ${held.spf}스텝, 초당 ${f(held.stepsPerSec, 0)}스텝, 전진 ${f(CELLS_PER_STEP * held.stepsPerSec * (MAP_PX / L.N), 0)}px/s`
       : `→ ${heldLabel(L)}을 지킨 설정이 없음`);

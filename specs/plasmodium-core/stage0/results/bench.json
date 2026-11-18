@@ -1,7 +1,7 @@
 {
  "name": "bench",
  "query": "bench=1&N=256,384",
- "seconds": 73.156,
+ "seconds": 86.28,
  "done": true,
  "ok": true,
  "result": {
@@ -16,7 +16,7 @@
    "version": 4,
    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
-   "usPerTinyDraw": 47.79999999993015,
+   "usPerTinyDraw": 54.74999999994179,
    "rows": [
     {
      "N": 256,
@@ -24,13 +24,13 @@
      "cycles": 2,
      "drawCalls": 94,
      "passes": 94,
-     "msPerStep": 45.68437499999709,
+     "msPerStep": 53.078125,
      "steps": 32,
-     "seconds": 1.461899999999907,
-     "msSolve": 18.359375,
+     "seconds": 1.6985,
+     "msSolve": 20.42500000000291,
      "activeFraction": 1,
-     "stepsPerSec": 21.889322115057144,
-     "pxPerSec": 2.565154935358259
+     "stepsPerSec": 18.840153076243745,
+     "pxPerSec": 2.207830438622314
     },
     {
      "N": 256,
@@ -38,13 +38,13 @@
      "cycles": 2,
      "drawCalls": 94,
      "passes": 94,
-     "msPerStep": 16.364583333333332,
-     "steps": 96,
-     "seconds": 1.571,
-     "msSolve": 10.80937499999709,
-     "activeFraction": 0.22736612955729166,
-     "stepsPerSec": 61.1075747931254,
-     "pxPerSec": 7.161043921069384
+     "msPerStep": 21.37812500000109,
+     "steps": 64,
+     "seconds": 1.3682000000000698,
+     "msSolve": 12.912499999998545,
+     "activeFraction": 0.22675323486328125,
+     "stepsPerSec": 46.77678701943921,
+     "pxPerSec": 5.481654728840533
     },
     {
      "N": 256,
@@ -52,13 +52,13 @@
      "cycles": 2,
      "drawCalls": 72,
      "passes": 72,
-     "msPerStep": 18.512499999999516,
-     "steps": 96,
-     "seconds": 1.7771999999999535,
-     "msSolve": 11.856250000004366,
-     "activeFraction": 0.22736612955729166,
-     "stepsPerSec": 54.01755570560573,
-     "pxPerSec": 6.330182309250672
+     "msPerStep": 19.589062499999272,
+     "steps": 64,
+     "seconds": 1.2536999999999534,
+     "msSolve": 12.228125000001455,
+     "activeFraction": 0.22675323486328125,
+     "stepsPerSec": 51.048895270002696,
+     "pxPerSec": 5.982292414453441
     },
     {
      "N": 384,
@@ -66,13 +66,13 @@
      "cycles": 2,
      "drawCalls": 133,
      "passes": 147,
-     "msPerStep": 97.98749999999563,
+     "msPerStep": 101.52812499999709,
      "steps": 32,
-     "seconds": 3.1355999999998603,
-     "msSolve": 35.85000000000582,
+     "seconds": 3.248899999999907,
+     "msSolve": 39.387500000004366,
      "activeFraction": 1,
-     "stepsPerSec": 10.205383339712153,
-     "pxPerSec": 0.7972955734150119
+     "stepsPerSec": 9.849487518852817,
+     "pxPerSec": 0.7694912124103763
     },
     {
      "N": 384,
@@ -80,13 +80,13 @@
      "cycles": 2,
      "drawCalls": 105,
      "passes": 105,
-     "msPerStep": 99.79062500000146,
+     "msPerStep": 94.66249999999854,
      "steps": 32,
-     "seconds": 3.1933000000000464,
-     "msSolve": 35.9375,
+     "seconds": 3.0291999999999533,
+     "msSolve": 37.693749999998545,
      "activeFraction": 1,
-     "stepsPerSec": 10.020981429868641,
-     "pxPerSec": 0.7828891742084876
+     "stepsPerSec": 10.563845239667401,
+     "pxPerSec": 0.8253004093490158
     },
     {
      "N": 384,
@@ -94,13 +94,13 @@
      "cycles": 2,
      "drawCalls": 105,
      "passes": 105,
-     "msPerStep": 17.903124999999516,
+     "msPerStep": 17.170833333333576,
      "steps": 96,
-     "seconds": 1.7186999999999535,
-     "msSolve": 10.978125000001455,
+     "seconds": 1.6484000000000232,
+     "msSolve": 12.662499999998545,
      "activeFraction": 0.10160092954282406,
-     "stepsPerSec": 55.85617036132111,
-     "pxPerSec": 4.363763309478212
+     "stepsPerSec": 58.23829167677666,
+     "pxPerSec": 4.549866537248177
     },
     {
      "N": 384,
@@ -108,13 +108,13 @@
      "cycles": 2,
      "drawCalls": 79,
      "passes": 79,
-     "msPerStep": 18.270833333333332,
-     "steps": 96,
-     "seconds": 1.754,
-     "msSolve": 14.07499999999709,
-     "activeFraction": 0.10160092954282406,
-     "stepsPerSec": 54.73204104903079,
-     "pxPerSec": 4.27594070695553
+     "msPerStep": 20.143749999999272,
+     "steps": 64,
+     "seconds": 1.2891999999999535,
+     "msSolve": 12.037500000002183,
+     "activeFraction": 0.10118950737847224,
+     "stepsPerSec": 49.64318957493198,
+     "pxPerSec": 3.878374185541561
     },
     {
      "N": 384,
@@ -122,42 +122,57 @@
      "cycles": 2,
      "drawCalls": 85,
      "passes": 85,
-     "msPerStep": 99.81874999999854,
+     "msPerStep": 104.69062499999927,
      "steps": 32,
-     "seconds": 3.1941999999999533,
-     "msSolve": 35.82499999999709,
+     "seconds": 3.3500999999999768,
+     "msSolve": 39.131249999998545,
      "activeFraction": 1,
-     "stepsPerSec": 10.018157911214221,
-     "pxPerSec": 0.782668586813611
+     "stepsPerSec": 9.551953673024752,
+     "pxPerSec": 0.7462463807050588
     },
     {
      "N": 384,
-     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "variant": "합친 패스 + 몸 주변만",
      "cycles": 3,
+     "drawCalls": 144,
+     "passes": 144,
+     "msPerStep": 24.854687499999272,
+     "steps": 64,
+     "seconds": 1.5906999999999534,
+     "msSolve": 16.853125000001455,
+     "activeFraction": 0.10118950737847224,
+     "stepsPerSec": 40.233859307224414,
+     "pxPerSec": 3.143270258376907
+    },
+    {
+     "N": 384,
+     "variant": "합친 패스 + 몸 주변만",
+     "tag": "끝에 다시",
+     "cycles": 2,
      "drawCalls": 105,
      "passes": 105,
-     "msPerStep": 23.4140625,
-     "steps": 64,
-     "seconds": 1.4985,
-     "msSolve": 18.003124999995634,
-     "activeFraction": 0.10118950737847224,
-     "stepsPerSec": 42.70937604270937,
-     "pxPerSec": 3.33667000333667
+     "msPerStep": 17.417708333334303,
+     "steps": 96,
+     "seconds": 1.6721000000000932,
+     "msSolve": 10.556250000001455,
+     "activeFraction": 0.10160092954282406,
+     "stepsPerSec": 57.412834160633125,
+     "pxPerSec": 4.4853776687994635
     },
     {
      "N": 384,
-     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "variant": "합친 패스 + 몸 주변만",
      "tag": "dt 0.2 + 주기 8",
      "cycles": 2,
-     "drawCalls": 83,
-     "passes": 83,
-     "msPerStep": 23.557812499999272,
+     "drawCalls": 109,
+     "passes": 109,
+     "msPerStep": 22.956249999999272,
      "steps": 64,
-     "seconds": 1.5076999999999534,
+     "seconds": 1.4691999999999534,
      "msSolve": 13.365624999998545,
      "activeFraction": 0.1155870225694445,
-     "stepsPerSec": 42.44876301651653,
-     "pxPerSec": 3.3163096106653542
+     "stepsPerSec": 43.561121698885124,
+     "pxPerSec": 3.4032126327254004
     }
    ],
    "bodyArea": {
@@ -173,87 +188,87 @@
     {
      "group": "간선 켜기",
      "passesPerStep": 1,
-     "usPerPass": 234.375,
-     "msPerStep": 0.234375
+     "usPerPass": 226.56249999939368,
+     "msPerStep": 0.22656249999939368
     },
     {
      "group": "위상",
      "passesPerStep": 4,
-     "usPerPass": 239.0625000007276,
-     "msPerStep": 0.9562500000029104
+     "usPerPass": 307.29166666606034,
+     "msPerStep": 1.2291666666642413
     },
     {
      "group": "쉬는 두께·가중치",
      "passesPerStep": 1,
-     "usPerPass": 184.89583333454598,
-     "msPerStep": 0.18489583333454598
+     "usPerPass": 194.79166666739425,
+     "msPerStep": 0.19479166666739425
     },
     {
      "group": "웜스타트",
      "passesPerStep": 1,
-     "usPerPass": 60.41666666715173,
-     "msPerStep": 0.06041666666715173
+     "usPerPass": 55.208333333818395,
+     "msPerStep": 0.055208333333818395
     },
     {
      "group": "조대 연산자",
      "passesPerStep": 7,
-     "usPerPass": 58.16326530564728,
-     "msPerStep": 0.40714285713953097
+     "usPerPass": 80.10204081727686,
+     "msPerStep": 0.5607142857209381
     },
     {
      "group": "V 사이클",
      "passesPerStep": 78,
-     "usPerPass": 115.38461538461539,
-     "msPerStep": 9
+     "usPerPass": 100.42735042685293,
+     "msPerStep": 7.8333333332945285
     },
     {
      "group": "유량",
      "passesPerStep": 1,
-     "usPerPass": 377.6041666666667,
-     "msPerStep": 0.3776041666666667
+     "usPerPass": 423.9583333340609,
+     "msPerStep": 0.4239583333340609
     },
     {
      "group": "전역 평균",
      "passesPerStep": 3,
-     "usPerPass": 191.14583333430346,
-     "msPerStep": 0.5734375000029104
+     "usPerPass": 179.6875,
+     "msPerStep": 0.5390625
     },
     {
      "group": "강화",
      "passesPerStep": 1,
-     "usPerPass": 309.8958333333333,
-     "msPerStep": 0.3098958333333333
+     "usPerPass": 333.8541666659391,
+     "msPerStep": 0.3338541666659391
     },
     {
      "group": "마름",
      "passesPerStep": 4,
-     "usPerPass": 223.95833333454598,
-     "msPerStep": 0.8958333333381839
+     "usPerPass": 166.14583333406094,
+     "msPerStep": 0.6645833333362438
     },
     {
      "group": "흐림",
      "passesPerStep": 2,
-     "usPerPass": 635.9375000004851,
-     "msPerStep": 1.2718750000009702
+     "usPerPass": 672.9166666670304,
+     "msPerStep": 1.3458333333340609
     },
     {
      "group": "젖음",
      "passesPerStep": 2,
-     "usPerPass": 581.7708333318782,
-     "msPerStep": 1.1635416666637564
+     "usPerPass": 529.1666666665454,
+     "msPerStep": 1.0583333333330909
     }
    ],
    "probes": {
-    "tinyAlt": 52.5,
-    "tinySame": 25.45000000006985,
-    "tinyProg": 38.35000000009313,
-    "tinyClear": 0.9499999999534339,
-    "syncIdle": 175,
-    "glCall": 0.03000000000465661,
-    "bindTex": 0.06000000000349246,
-    "bigR32F": 55.04999999993015,
-    "bigRGBA": 50.0999999998603,
-    "bigMRT": 47.25
+    "tinyAlt": 55.99999999994179,
+    "tinySame": 29.29999999998836,
+    "tinyProg": 33.74999999994179,
+    "tinyClear": 0.9500000000116415,
+    "syncIdle": 205.0000000046566,
+    "glCall": 0.022500000000582075,
+    "bindTex": 0.05499999999592546,
+    "bigR32F": 57.75,
+    "bigRGBA": 55.75,
+    "bigMRT": 56.5999999998603
    },
    "frameLoop": {
     "N": 384,
@@ -262,12 +277,31 @@
      {
       "label": "오름",
       "spf": 2,
-      "frames": 33,
-      "msMean": 62.11818181818186,
-      "msMedian": 66.69999999999709,
-      "msP95": 100,
-      "late": 0.9393939393939394,
-      "stepsPerSec": 32.1966925215864
+      "frames": 42,
+      "msMean": 71.02619047619044,
+      "msMedian": 66.70000000000073,
+      "msP95": 116.69999999999709,
+      "late": 0.9761904761904762,
+      "stepsPerSec": 28.158626931715347
+     }
+    ],
+    "down": [],
+    "readback": [],
+    "sustained": null
+   },
+   "frameLoopSmall": {
+    "N": 256,
+    "baseMs": 16.69999999999891,
+    "rows": [
+     {
+      "label": "오름",
+      "spf": 8,
+      "frames": 11,
+      "msMean": 309.08181818181833,
+      "msMedian": 316.59999999999854,
+      "msP95": 833.4000000000015,
+      "late": 0.9090909090909091,
+      "stepsPerSec": 25.883114209241434
      }
     ],
     "down": [],
@@ -278,7 +312,7 @@
     "ok": false,
     "error": "어댑터를 얻지 못했다"
    },
-   "seconds": 72.61
+   "seconds": 85.6643999999999
   }
  }
 }

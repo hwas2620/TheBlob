@@ -14,7 +14,7 @@
 import { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU } from '../gpu/plasm/PlasmGPU';
 import { defaultParams } from '../gpu/plasm/params';
-import { benchSummary, bestHeld, CELLS_PER_STEP, FAST_DT, heldLabel, heldLimit, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
+import { benchSummary, bestHeld, CELLS_PER_STEP, FAST_DT, heldLabel, heldLimit, LOOP_VARIANT, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
 import { countingGl } from './glCount';
 import { REF_BASE } from './refData';
 import { applyVariant, testA0, testA12, testNoise, testParity, VARIANTS } from './tests';
@@ -40,7 +40,7 @@ const log = (line: string): void => {
 };
 
 /** 돌려 보기에 쓰는 계산 방식: 결과가 같은 것 중 가장 싼 것 */
-const FAST = VARIANTS[3];
+const FAST = VARIANTS[LOOP_VARIANT];
 const GRIDS = [256, 384, 512];
 const SPFS = [1, 2, 4, 8, 16];
 /**
@@ -105,9 +105,9 @@ function benchTable(bench: BenchResult): void {
   note.className = 'lead';
   note.textContent = `지속 측정: 구성마다 쉬지 않고 ${(bench.sustainMs / 1000).toFixed(1)}초씩 돌려 잰 스텝당 시간입니다. 패스는 드로콜에 타깃을 지우는 횟수를 더한 수이고, 전진 속도는 게임 지도(1500px)에서 dt 0.1 기준입니다. 주황색 줄이 격자마다 가장 빠른 방식입니다.`;
   const parts: HTMLElement[] = [];
-  const loop = bench.frameLoop;
-  if (loop && loop.rows.length > 0) {
-    // 게임과 같은 꼴의 루프에서 잰 값. 게임에서 쓸 수 있는 속도는 이쪽이다
+  // 게임과 같은 꼴의 루프에서 잰 값. 게임에서 쓸 수 있는 속도는 이쪽이다
+  for (const loop of [bench.frameLoop, bench.frameLoopSmall]) {
+    if (!loop || loop.rows.length === 0) continue;
     const held = bestHeld(loop);
     const limit = heldLimit(loop);
     const lt = document.createElement('table');
@@ -126,7 +126,7 @@ function benchTable(bench: BenchResult): void {
     }
     const ln = document.createElement('p');
     ln.className = 'lead';
-    ln.textContent = `프레임 루프 (${loop.N}², 가장 빠른 계산 방식): 게임처럼 화면 갱신마다 스텝을 돌리며 잰 값입니다. 주황색 줄이 ${heldLabel(loop)}을 지키면서 가장 빠른 설정입니다${held ? '' : ' (지킨 설정이 없습니다)'}. ✕ 는 화면 갱신을 지키지 못한 줄입니다. 내림차순·읽기 대조·20초 지속 구간의 값은 위 글 상자에 있습니다.`;
+    ln.textContent = `프레임 루프 (${loop.N}², 합친 패스 + 몸 주변만): 게임처럼 화면 갱신마다 스텝을 돌리며 잰 값입니다. 주황색 줄이 ${heldLabel(loop)}을 지키면서 가장 빠른 설정입니다${held ? '' : ' (지킨 설정이 없습니다)'}. ✕ 는 화면 갱신을 지키지 못한 줄입니다.`;
     parts.push(lt, ln);
   }
   el<HTMLDivElement>('benchTable').replaceChildren(...parts, table, note);
