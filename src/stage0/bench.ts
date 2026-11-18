@@ -606,9 +606,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
   }
   if (!glx.lost()) glx.reset();
   const webgpu = await webgpuProbe();
-  log(webgpu.ok
-    ? `  WebGPU(${webgpu.adapter}): 계산 디스패치 하나 ${webgpu.usPerDispatch!.toFixed(1)}µs (한 패스 안에서 잇달아), 패스를 따로 열면 ${webgpu.usPerPass!.toFixed(1)}µs`
-    : `  WebGPU: 쓸 수 없음 (${webgpu.error})`);
+  log(webgpuLine(webgpu));
   return {
     renderer,
     userAgent: navigator.userAgent,
@@ -630,6 +628,14 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
     webgpu,
     seconds: (performance.now() - tStart) / 1000,
   };
+}
+
+function webgpuLine(w: WebGpuProbe): string {
+  if (!w.ok) return `WebGPU: 쓸 수 없음 (${w.error})`;
+  let s = `WebGPU(${w.adapter}): 디스패치 하나 ${w.usPerDispatch!.toFixed(1)}µs (한 패스 안에서 잇달아) / 패스를 따로 열면 ${w.usPerPass!.toFixed(1)}µs`;
+  if (w.solveRectMs !== undefined) s += ` · 풀이 한 번 흉내(${w.solveN}², 디스패치 ${w.solveDispatches}번): 몸 주변만 ${w.solveRectMs.toFixed(2)}ms` + (w.solveFullMs === undefined ? '' : `, 전체 격자 ${w.solveFullMs.toFixed(2)}ms`);
+  if (w.error) s += ` (도중에 멈춤: ${w.error})`;
+  return s;
 }
 
 /** 대화창에 붙이기 쉬운 짧은 요약 (표만 복사해도 GPU 이름과 핵심 수치가 따라가게) */
@@ -656,9 +662,7 @@ export function benchSummary(b: BenchResult): string {
   } else {
     lines.push(`드로콜 하나의 고정 비용: ${f(b.usPerTinyDraw, 1)}µs`);
   }
-  lines.push(b.webgpu.ok
-    ? `WebGPU(${b.webgpu.adapter}): 디스패치 하나 ${f(b.webgpu.usPerDispatch!, 1)}µs / 패스를 따로 열면 ${f(b.webgpu.usPerPass!, 1)}µs`
-    : `WebGPU: 쓸 수 없음 (${b.webgpu.error})`);
+  lines.push(webgpuLine(b.webgpu));
   lines.push(`블록 ${b.blocks}개, 블록의 스텝 수 ${Object.entries(b.blockSteps).map(([n, v]) => `${n}²:${v}`).join(' ')}, 몸 ${Object.values(b.bodyArea)[0] ?? '-'}셀, 가려져 버린 블록 ${b.hiddenBlocks}`);
   lines.push('격자 사이클 방식 | 드로콜 패스 ms/스텝 풀이한번 | 차이방식: ms/스텝 풀이한번 읽기고정ms | 영역%');
   for (const r of b.rows) lines.push(`${r.N} ${r.cycles} ${r.variant} | ${r.drawCalls} ${r.passes} ${f(r.msPerStep)} ${f(r.msSolve)} | ${f(r.msDiff)} ${f(r.msSolveDiff)} ${f(r.msFixed)} | ${f(r.activeFraction * 100, 1)}`);
