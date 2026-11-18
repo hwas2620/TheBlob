@@ -14,7 +14,8 @@
 import { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU } from '../gpu/plasm/PlasmGPU';
 import { defaultParams } from '../gpu/plasm/params';
-import { CELLS_PER_STEP, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
+import { benchSummary, bestHeld, CELLS_PER_STEP, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
+import { countingGl } from './glCount';
 import { REF_BASE } from './refData';
 import { applyVariant, testA0, testA12, testNoise, testParity, VARIANTS } from './tests';
 
@@ -84,7 +85,7 @@ function benchTable(bench: BenchResult): void {
   for (const r of rows) best.set(r.N, Math.min(best.get(r.N) ?? Infinity, r.msPerStep));
   const table = document.createElement('table');
   const head = table.insertRow();
-  for (const h of ['격자', '계산 방식', '드로콜', 'ms/스텝', '풀이 한 번', '프레임당 스텝', '전진 px/s']) {
+  for (const h of ['격자', '계산 방식', '패스', 'ms/스텝', '풀이 한 번', '프레임당 스텝', '전진 px/s']) {
     const th = document.createElement('th');
     th.textContent = h;
     head.append(th);
@@ -92,12 +93,35 @@ function benchTable(bench: BenchResult): void {
   for (const r of rows) {
     const tr = table.insertRow();
     if (r.msPerStep === best.get(r.N)) tr.className = 'best';
-    for (const c of [`${r.N}²`, r.variant, String(r.drawCalls), r.msPerStep.toFixed(2), r.msSolve.toFixed(2), r.stepsPerFrame.toFixed(1), r.pxPerSec.toFixed(0)]) tr.insertCell().textContent = c;
+    for (const c of [`${r.N}²`, r.variant, String(r.passes), r.msPerStep.toFixed(2), r.msSolve.toFixed(2), r.stepsPerFrame.toFixed(1), r.pxPerSec.toFixed(0)]) tr.insertCell().textContent = c;
   }
   const note = document.createElement('p');
   note.className = 'lead';
-  note.textContent = '프레임당 스텝은 한 프레임에 4ms 를 쓴다고 볼 때의 값이고, 전진 속도는 게임 지도(1500px) 기준입니다. 주황색 줄이 격자마다 가장 빠른 방식입니다.';
-  el<HTMLDivElement>('benchTable').replaceChildren(table, note);
+  note.textContent = '패스는 드로콜에 타깃을 지우는 횟수를 더한 수입니다. 프레임당 스텝은 한 프레임에 4ms 를 쓴다고 볼 때의 값이고, 전진 속도는 게임 지도(1500px) 기준입니다. 주황색 줄이 격자마다 가장 빠른 방식입니다.';
+  const parts: HTMLElement[] = [];
+  const loop = bench.frameLoop;
+  if (loop && loop.rows.length > 0) {
+    // 게임과 같은 꼴의 루프에서 잰 값. 게임에서 쓸 수 있는 속도는 이쪽이다
+    const held = bestHeld(loop);
+    const lt = document.createElement('table');
+    lt.className = 'loop';
+    const lh = lt.insertRow();
+    for (const h of ['프레임당 스텝', '프레임 간격 ms', '초당 프레임', '초당 스텝', '전진 px/s']) {
+      const th = document.createElement('th');
+      th.textContent = h;
+      lh.append(th);
+    }
+    for (const r of loop.rows) {
+      const tr = lt.insertRow();
+      if (r === held) tr.className = 'best';
+      for (const c of [String(r.spf), r.msMean.toFixed(1), (1000 / r.msMean).toFixed(0), r.stepsPerSec.toFixed(0), (CELLS_PER_STEP * r.stepsPerSec * (MAP_PX / loop.N)).toFixed(0)]) tr.insertCell().textContent = c;
+    }
+    const ln = document.createElement('p');
+    ln.className = 'lead';
+    ln.textContent = `프레임 루프 (${loop.N}², 가장 빠른 계산 방식): 게임처럼 화면 갱신마다 스텝을 돌리며 잰 값입니다. 주황색 줄이 초당 60프레임을 지키면서 가장 빠른 설정입니다. 아래 표는 일을 몰아서 시켰을 때의 스텝당 시간입니다.`;
+    parts.push(lt, ln);
+  }
+  el<HTMLDivElement>('benchTable').replaceChildren(...parts, table, note);
 }
 
 async function main(): Promise<void> {
@@ -106,12 +130,15 @@ async function main(): Promise<void> {
 
   // 캔버스 하나에는 WebGL2 컨텍스트만 만든다. 글자는 DOM 에 쓴다
   const canvas = el<HTMLCanvasElement>('view');
-  const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
-  if (!gl) {
+  const glReal = canvas.getContext('webgl2', { antialias: false, alpha: false, preserveDrawingBuffer: true });
+  if (!glReal) {
     log('이 브라우저는 WebGL2 를 지원하지 않습니다.');
     window.__stage0 = { done: true, ok: false, result: null, error: 'no webgl2' };
     return;
   }
+  // count=1 이면 GL 호출을 세는 껍데기를 씌운다 (느려지므로 호출 수를 볼 때만)
+  const counting = q.get('count') === '1' ? countingGl(glReal) : null;
+  const gl = counting ? counting.gl : glReal;
   const caps = Glx.caps(gl);
   log(`GPU: ${caps.renderer}`);
   log(`float 렌더 타깃 ${caps.colorBufferFloat ? '지원' : '미지원'} · 다중 타깃 ${caps.maxDrawBuffers} · 타이머 질의 ${caps.timerQuery ? '지원' : '미지원'}`);
@@ -230,12 +257,17 @@ async function main(): Promise<void> {
 
   const benchStart = el<HTMLButtonElement>('benchStart');
   const benchCopy = el<HTMLButtonElement>('benchCopy');
-  let benchJson = '';
+  const benchText = el<HTMLTextAreaElement>('benchText');
+  // 글 상자를 누르면 전부 선택된다. 복사 단추가 막힌 곳(앱 안의 미리 보기 등)에서는 그대로 Ctrl/⌘+C 를 누르면 된다
+  benchText.onfocus = (): void => benchText.select();
   benchCopy.onclick = (): void => {
-    navigator.clipboard.writeText(benchJson).then(
-      () => (benchCopy.textContent = '복사했습니다'),
-      () => (benchCopy.textContent = '복사가 막혔습니다 — 아래 글자를 직접 골라 복사해 주세요'),
-    );
+    const failed = (): void => {
+      benchText.focus();
+      benchText.select();
+      benchCopy.textContent = '복사가 막혔습니다 — 글 상자가 선택돼 있으니 Ctrl/⌘+C 를 눌러 주세요';
+    };
+    if (!navigator.clipboard) failed();
+    else navigator.clipboard.writeText(benchText.value).then(() => (benchCopy.textContent = '복사했습니다'), failed);
   };
   const startBench = async (sizes: number[]): Promise<void> => {
     benchStart.disabled = true;
@@ -245,15 +277,17 @@ async function main(): Promise<void> {
     sim = null;
     try {
       const opt = (k: string): number | undefined => (q.has(k) && Number.isFinite(num(k, NaN)) ? num(k, NaN) : undefined);
-      const bench = await runBench(glx, caps.renderer, sizes, log, { block: opt('block'), blocks: opt('blocks') });
+      const bench = await runBench(glx, caps.renderer, sizes, log, { block: opt('block'), blocks: opt('blocks'), glCounts: counting?.counts, view: (s) => s.view(canvas.width, canvas.height) });
       log(`드로콜 하나의 고정 비용 약 ${bench.usPerTinyDraw.toFixed(1)}µs · 전체 ${bench.seconds.toFixed(0)}초`);
-      benchJson = JSON.stringify(bench);
+      // 요약(사람이 읽는 줄)과 전체 JSON 을 한 글 상자에 넣는다
+      // 붙여 넣기 쉽게 수는 소수 셋째 자리까지만 적는다
+      benchText.value = `${benchSummary(bench)}\n\n${JSON.stringify(bench, (_k, v: unknown) => (typeof v === 'number' ? Math.round(v * 1000) / 1000 : v))}`;
+      benchText.hidden = false;
       benchTable(bench);
       benchCopy.hidden = false;
       benchCopy.textContent = '결과 복사';
-      if (bench.errors.length > 0) log(`끝까지 재지 못한 격자: ${bench.errors.join(' / ')} — 나머지 결과는 아래에 있습니다.`);
-      log('\n끝났습니다. "결과 복사" 단추를 누르거나 아래 JSON 을 그대로 복사해 대화창에 붙여 주세요.\n');
-      log(benchJson);
+      if (bench.errors.length > 0) log(`끝까지 재지 못한 격자: ${bench.errors.join(' / ')} — 나머지 결과는 글 상자에 있습니다.`);
+      log('\n끝났습니다. "결과 복사" 단추를 누르거나, 글 상자를 눌러(전부 선택됩니다) 복사해서 대화창에 붙여 주세요.');
       window.__stage0 = { done: true, ok: true, result: { caps, bench } };
     } finally {
       benchStart.disabled = false;

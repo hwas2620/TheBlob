@@ -1,0 +1,972 @@
+{
+ "name": "glcalls",
+ "query": "bench=1&count=1&N=256,384,512,768&block=4&blocks=1",
+ "seconds": 180.697,
+ "done": true,
+ "ok": true,
+ "result": {
+  "caps": {
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "colorBufferFloat": true,
+   "maxDrawBuffers": 8,
+   "maxTextureSize": 8192,
+   "timerQuery": true
+  },
+  "bench": {
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+   "usPerTinyDraw": 49.449999999953434,
+   "rows": [
+    {
+     "N": 256,
+     "variant": "기준형",
+     "cycles": 2,
+     "drawCalls": 118,
+     "passes": 130,
+     "msPerStep": 114.80000000004657,
+     "msBlocks": [
+      114.8
+     ],
+     "msSolve": 43,
+     "msDiff": 117.8000000002794,
+     "msSolveDiff": 27.199999999720603,
+     "msFixed": -6.000000000465661,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.034843205574898756,
+     "pxPerSec": 0.24499128919850685,
+     "pulseSec": 19.133333333341096,
+     "glCalls": 790
+    },
+    {
+     "N": 256,
+     "variant": "합친 패스",
+     "cycles": 2,
+     "drawCalls": 94,
+     "passes": 94,
+     "msPerStep": 96.72499999997672,
+     "msBlocks": [
+      96.725
+     ],
+     "msSolve": 46,
+     "msDiff": 96.55000000004657,
+     "msSolveDiff": 40.5,
+     "msFixed": 0.3499999998603016,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.04135435513053464,
+     "pxPerSec": 0.2907728095115717,
+     "pulseSec": 16.12083333332945,
+     "glCalls": 722
+    },
+    {
+     "N": 256,
+     "variant": "합친 패스 + 몸 주변만",
+     "cycles": 2,
+     "drawCalls": 94,
+     "passes": 94,
+     "msPerStep": 25.024999999906868,
+     "msBlocks": [
+      25.025
+     ],
+     "msSolve": 13.975000000093132,
+     "msDiff": 27.149999999906868,
+     "msSolveDiff": 13.450000000186265,
+     "msFixed": -4.25,
+     "activeFraction": 0.12225341796875,
+     "stepsPerFrame": 0.1598401598407547,
+     "pxPerSec": 1.1238761238803063,
+     "pulseSec": 4.170833333317812,
+     "glCalls": 779
+    },
+    {
+     "N": 256,
+     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "cycles": 2,
+     "drawCalls": 70,
+     "passes": 70,
+     "msPerStep": 29.249999999883585,
+     "msBlocks": [
+      29.25
+     ],
+     "msSolve": 15.175000000046566,
+     "msDiff": 32.699999999953434,
+     "msSolveDiff": 13.549999999813735,
+     "msFixed": -6.900000000139698,
+     "activeFraction": 0.12225341796875,
+     "stepsPerFrame": 0.13675213675268102,
+     "pxPerSec": 0.9615384615422884,
+     "pulseSec": 4.874999999980598,
+     "glCalls": 671
+    },
+    {
+     "N": 256,
+     "variant": "합친 패스 + 두 번 스무딩",
+     "cycles": 2,
+     "drawCalls": 74,
+     "passes": 74,
+     "msPerStep": 94.05000000004657,
+     "msBlocks": [
+      94.05
+     ],
+     "msSolve": 33.97499999997672,
+     "msDiff": 85.10000000009313,
+     "msSolveDiff": 26.74999999976717,
+     "msFixed": 17.899999999906868,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.04253056884633726,
+     "pxPerSec": 0.2990430622008089,
+     "pulseSec": 15.67500000000776,
+     "glCalls": 640
+    },
+    {
+     "N": 256,
+     "variant": "기준형",
+     "cycles": 3,
+     "drawCalls": 164,
+     "passes": 182,
+     "msPerStep": 106.22500000009313,
+     "msBlocks": [
+      106.225
+     ],
+     "msSolve": 41.15000000002328,
+     "msDiff": 130.35000000009313,
+     "msSolveDiff": 43.9000000001397,
+     "msFixed": -48.25,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.03765591903974105,
+     "pxPerSec": 0.2647681807481792,
+     "pulseSec": 17.70416666668219,
+     "glCalls": 1094
+    },
+    {
+     "N": 256,
+     "variant": "합친 패스",
+     "cycles": 3,
+     "drawCalls": 128,
+     "passes": 128,
+     "msPerStep": 125.22499999997672,
+     "msBlocks": [
+      125.225
+     ],
+     "msSolve": 54.824999999953434,
+     "msDiff": 95.44999999995343,
+     "msSolveDiff": 56.25,
+     "msFixed": 59.550000000046566,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.03194250349371726,
+     "pxPerSec": 0.22459572769019948,
+     "pulseSec": 20.870833333329454,
+     "glCalls": 992
+    },
+    {
+     "N": 256,
+     "variant": "합친 패스 + 몸 주변만",
+     "cycles": 3,
+     "drawCalls": 128,
+     "passes": 128,
+     "msPerStep": 25.099999999976717,
+     "msBlocks": [
+      25.1
+     ],
+     "msSolve": 15.349999999976717,
+     "msDiff": 24.800000000046566,
+     "msSolveDiff": 14.49999999976717,
+     "msFixed": 0.5999999998603016,
+     "activeFraction": 0.12225341796875,
+     "stepsPerFrame": 0.15936254980094464,
+     "pxPerSec": 1.1205179282878919,
+     "pulseSec": 4.183333333329453,
+     "glCalls": 1065
+    },
+    {
+     "N": 256,
+     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "cycles": 3,
+     "drawCalls": 92,
+     "passes": 92,
+     "msPerStep": 37.72499999997672,
+     "msBlocks": [
+      37.725
+     ],
+     "msSolve": 35.97499999997672,
+     "msDiff": 45.050000000046566,
+     "msSolveDiff": 37.24999999976717,
+     "msFixed": -14.650000000139698,
+     "activeFraction": 0.12225341796875,
+     "stepsPerFrame": 0.10603048376414762,
+     "pxPerSec": 0.7455268389666629,
+     "pulseSec": 6.28749999999612,
+     "glCalls": 903
+    },
+    {
+     "N": 256,
+     "variant": "합친 패스 + 두 번 스무딩",
+     "cycles": 3,
+     "drawCalls": 98,
+     "passes": 98,
+     "msPerStep": 124.19999999995343,
+     "msBlocks": [
+      124.2
+     ],
+     "msSolve": 65.97499999997672,
+     "msDiff": 96,
+     "msSolveDiff": 87.05000000004657,
+     "msFixed": 56.39999999990687,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.03220611916265298,
+     "pxPerSec": 0.22644927536240375,
+     "pulseSec": 20.699999999992237,
+     "glCalls": 869
+    },
+    {
+     "N": 384,
+     "variant": "기준형",
+     "cycles": 2,
+     "drawCalls": 133,
+     "passes": 147,
+     "msPerStep": 239.72500000009313,
+     "msBlocks": [
+      239.725
+     ],
+     "msSolve": 120.42499999993015,
+     "msDiff": 261.25,
+     "msSolveDiff": 132.6500000001397,
+     "msFixed": -43.049999999813735,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.01668578579621836,
+     "pxPerSec": 0.07821462091977356,
+     "pulseSec": 39.95416666668219,
+     "glCalls": 895
+    },
+    {
+     "N": 384,
+     "variant": "합친 패스",
+     "cycles": 2,
+     "drawCalls": 105,
+     "passes": 105,
+     "msPerStep": 244.19999999995343,
+     "msBlocks": [
+      244.2
+     ],
+     "msSolve": 76.17500000004657,
+     "msDiff": 323.39999999990687,
+     "msSolveDiff": 70.85000000009313,
+     "msFixed": -158.39999999990687,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.016380016380019503,
+     "pxPerSec": 0.07678132678134142,
+     "pulseSec": 40.699999999992244,
+     "glCalls": 815
+    },
+    {
+     "N": 384,
+     "variant": "합친 패스 + 몸 주변만",
+     "cycles": 2,
+     "drawCalls": 105,
+     "passes": 105,
+     "msPerStep": 23.57500000006985,
+     "msBlocks": [
+      23.575
+     ],
+     "msSolve": 12.175000000046566,
+     "msDiff": 23.949999999953434,
+     "msSolveDiff": 12.950000000186265,
+     "msFixed": -0.7499999997671694,
+     "activeFraction": 0.05494859483506944,
+     "stepsPerFrame": 0.1696712619295079,
+     "pxPerSec": 0.7953340402945683,
+     "pulseSec": 3.929166666678308,
+     "glCalls": 883
+    },
+    {
+     "N": 384,
+     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "cycles": 2,
+     "drawCalls": 77,
+     "passes": 77,
+     "msPerStep": 23.5,
+     "msBlocks": [
+      23.5
+     ],
+     "msSolve": 15.474999999976717,
+     "msDiff": 21.5,
+     "msSolveDiff": 12.449999999953434,
+     "msFixed": 4,
+     "activeFraction": 0.05494859483506944,
+     "stepsPerFrame": 0.1702127659574468,
+     "pxPerSec": 0.7978723404255319,
+     "pulseSec": 3.9166666666666665,
+     "glCalls": 753
+    },
+    {
+     "N": 384,
+     "variant": "합친 패스 + 두 번 스무딩",
+     "cycles": 2,
+     "drawCalls": 85,
+     "passes": 85,
+     "msPerStep": 216.875,
+     "msBlocks": [
+      216.875
+     ],
+     "msSolve": 68.875,
+     "msDiff": 209.85000000009313,
+     "msSolveDiff": 67.95000000018626,
+     "msFixed": 14.049999999813735,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.018443804034582133,
+     "pxPerSec": 0.08645533141210376,
+     "pulseSec": 36.14583333333333,
+     "glCalls": 733
+    },
+    {
+     "N": 384,
+     "variant": "기준형",
+     "cycles": 3,
+     "drawCalls": 186,
+     "passes": 207,
+     "msPerStep": 274.125,
+     "msBlocks": [
+      274.125
+     ],
+     "msSolve": 107.67500000004657,
+     "msDiff": 244.4499999997206,
+     "msSolveDiff": 91.54999999981374,
+     "msFixed": 59.35000000055879,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.01459188326493388,
+     "pxPerSec": 0.06839945280437756,
+     "pulseSec": 45.6875,
+     "glCalls": 1248
+    },
+    {
+     "N": 384,
+     "variant": "합친 패스",
+     "cycles": 3,
+     "drawCalls": 144,
+     "passes": 144,
+     "msPerStep": 257.125,
+     "msBlocks": [
+      257.125
+     ],
+     "msSolve": 128,
+     "msDiff": 227.04999999981374,
+     "msSolveDiff": 106.09999999962747,
+     "msFixed": 60.15000000037253,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.015556635877491492,
+     "pxPerSec": 0.07292173067574137,
+     "pulseSec": 42.854166666666664,
+     "glCalls": 1128
+    },
+    {
+     "N": 384,
+     "variant": "합친 패스 + 몸 주변만",
+     "cycles": 3,
+     "drawCalls": 144,
+     "passes": 144,
+     "msPerStep": 31.900000000023283,
+     "msBlocks": [
+      31.9
+     ],
+     "msSolve": 19.300000000046566,
+     "msDiff": 35.9000000001397,
+     "msSolveDiff": 16.899999999906868,
+     "msFixed": -8.00000000023283,
+     "activeFraction": 0.05494859483506944,
+     "stepsPerFrame": 0.12539184952968904,
+     "pxPerSec": 0.5877742946704174,
+     "pulseSec": 5.316666666670547,
+     "glCalls": 1217
+    },
+    {
+     "N": 384,
+     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "cycles": 3,
+     "drawCalls": 102,
+     "passes": 102,
+     "msPerStep": 38.20000000006985,
+     "msBlocks": [
+      38.2
+     ],
+     "msSolve": 29.649999999906868,
+     "msDiff": 38.5999999998603,
+     "msSolveDiff": 26.799999999813735,
+     "msFixed": -0.7999999995809048,
+     "activeFraction": 0.05494859483506944,
+     "stepsPerFrame": 0.10471204188462528,
+     "pxPerSec": 0.4908376963341811,
+     "pulseSec": 6.3666666666783085,
+     "glCalls": 1022
+    },
+    {
+     "N": 384,
+     "variant": "합친 패스 + 두 번 스무딩",
+     "cycles": 3,
+     "drawCalls": 114,
+     "passes": 114,
+     "msPerStep": 265.30000000004657,
+     "msBlocks": [
+      265.3
+     ],
+     "msSolve": 97.17499999993015,
+     "msDiff": 292.10000000009313,
+     "msSolveDiff": 94.25000000023283,
+     "msFixed": -53.60000000009313,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.015077271013943828,
+     "pxPerSec": 0.0706747078778617,
+     "pulseSec": 44.21666666667443,
+     "glCalls": 1005
+    },
+    {
+     "N": 512,
+     "variant": "기준형",
+     "cycles": 2,
+     "drawCalls": 133,
+     "passes": 147,
+     "msPerStep": 421.1250000001164,
+     "msBlocks": [
+      421.125
+     ],
+     "msSolve": 138.65000000002328,
+     "msDiff": 494.05000000004657,
+     "msSolveDiff": 109.69999999995343,
+     "msFixed": -145.8499999998603,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.009498367468088796,
+     "pxPerSec": 0.033392698129999676,
+     "pulseSec": 70.18750000001941,
+     "glCalls": 895
+    },
+    {
+     "N": 512,
+     "variant": "합친 패스",
+     "cycles": 2,
+     "drawCalls": 105,
+     "passes": 105,
+     "msPerStep": 449.5250000000233,
+     "msBlocks": [
+      449.525
+     ],
+     "msSolve": 171.84999999997672,
+     "msDiff": 414.05000000004657,
+     "msSolveDiff": 164.9000000001397,
+     "msFixed": 70.94999999995343,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.008898281519381109,
+     "pxPerSec": 0.03128302096657421,
+     "pulseSec": 74.92083333333721,
+     "glCalls": 815
+    },
+    {
+     "N": 512,
+     "variant": "합친 패스 + 몸 주변만",
+     "cycles": 2,
+     "drawCalls": 105,
+     "passes": 105,
+     "msPerStep": 26.974999999976717,
+     "msBlocks": [
+      26.975
+     ],
+     "msSolve": 14.300000000046566,
+     "msDiff": 28.1500000001397,
+     "msSolveDiff": 16.200000000186265,
+     "msFixed": -2.350000000325963,
+     "activeFraction": 0.03159904479980469,
+     "stepsPerFrame": 0.14828544949039676,
+     "pxPerSec": 0.5213160333646761,
+     "pulseSec": 4.495833333329453,
+     "glCalls": 883
+    },
+    {
+     "N": 512,
+     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "cycles": 2,
+     "drawCalls": 77,
+     "passes": 77,
+     "msPerStep": 28.974999999976717,
+     "msBlocks": [
+      28.975
+     ],
+     "msSolve": 21.724999999976717,
+     "msDiff": 30.550000000046566,
+     "msSolveDiff": 19.8499999998603,
+     "msFixed": -3.1500000001396984,
+     "activeFraction": 0.03159904479980469,
+     "stepsPerFrame": 0.13805004314074942,
+     "pxPerSec": 0.4853321829166973,
+     "pulseSec": 4.829166666662786,
+     "glCalls": 753
+    },
+    {
+     "N": 512,
+     "variant": "합친 패스 + 두 번 스무딩",
+     "cycles": 2,
+     "drawCalls": 85,
+     "passes": 85,
+     "msPerStep": 407.5000000001164,
+     "msBlocks": [
+      407.5
+     ],
+     "msSolve": 170.82499999995343,
+     "msDiff": 452.19999999995343,
+     "msSolveDiff": 162.64999999990687,
+     "msFixed": -89.39999999967404,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.009815950920242594,
+     "pxPerSec": 0.03450920245397787,
+     "pulseSec": 67.91666666668607,
+     "glCalls": 733
+    },
+    {
+     "N": 512,
+     "variant": "기준형",
+     "cycles": 3,
+     "drawCalls": 186,
+     "passes": 207,
+     "msPerStep": 433.925000000163,
+     "msBlocks": [
+      433.925
+     ],
+     "msSolve": 230.79999999993015,
+     "msDiff": 463.44999999995343,
+     "msSolveDiff": 309.80000000004657,
+     "msFixed": -59.049999999580905,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.009218182865699136,
+     "pxPerSec": 0.03240767413722353,
+     "pulseSec": 72.3208333333605,
+     "glCalls": 1248
+    },
+    {
+     "N": 512,
+     "variant": "합친 패스",
+     "cycles": 3,
+     "drawCalls": 144,
+     "passes": 144,
+     "msPerStep": 551.5249999999069,
+     "msBlocks": [
+      551.525
+     ],
+     "msSolve": 286.5,
+     "msDiff": 532.1499999999069,
+     "msSolveDiff": 274.8000000002794,
+     "msFixed": 38.75,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.007252617741717375,
+     "pxPerSec": 0.02549748424822515,
+     "pulseSec": 91.9208333333178,
+     "glCalls": 1128
+    },
+    {
+     "N": 512,
+     "variant": "합친 패스 + 몸 주변만",
+     "cycles": 3,
+     "drawCalls": 144,
+     "passes": 144,
+     "msPerStep": 26.125,
+     "msBlocks": [
+      26.125
+     ],
+     "msSolve": 19.150000000023283,
+     "msDiff": 24.149999999906868,
+     "msSolveDiff": 18.5999999998603,
+     "msFixed": 3.9500000001862645,
+     "activeFraction": 0.03159904479980469,
+     "stepsPerFrame": 0.15311004784688995,
+     "pxPerSec": 0.5382775119617225,
+     "pulseSec": 4.354166666666667,
+     "glCalls": 1217
+    },
+    {
+     "N": 512,
+     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "cycles": 3,
+     "drawCalls": 102,
+     "passes": 102,
+     "msPerStep": 33.09999999997672,
+     "msBlocks": [
+      33.1
+     ],
+     "msSolve": 25.199999999953434,
+     "msDiff": 33.49999999976717,
+     "msSolveDiff": 25.600000000093132,
+     "msFixed": -0.7999999995809048,
+     "activeFraction": 0.03159904479980469,
+     "stepsPerFrame": 0.12084592145023607,
+     "pxPerSec": 0.4248489425984861,
+     "pulseSec": 5.516666666662786,
+     "glCalls": 1022
+    },
+    {
+     "N": 512,
+     "variant": "합친 패스 + 두 번 스무딩",
+     "cycles": 3,
+     "drawCalls": 114,
+     "passes": 114,
+     "msPerStep": 492.875,
+     "msBlocks": [
+      492.875
+     ],
+     "msSolve": 227.45000000006985,
+     "msDiff": 629.75,
+     "msSolveDiff": 213.19999999995343,
+     "msFixed": -273.75,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.008115647983768704,
+     "pxPerSec": 0.028531574942936844,
+     "pulseSec": 82.14583333333334,
+     "glCalls": 1005
+    },
+    {
+     "N": 768,
+     "variant": "기준형",
+     "cycles": 2,
+     "drawCalls": 148,
+     "passes": 164,
+     "msPerStep": 1012.5749999999534,
+     "msBlocks": [
+      1012.575
+     ],
+     "msSolve": 348.30000000004657,
+     "msDiff": 1118.3500000000931,
+     "msSolveDiff": 367.89999999990687,
+     "msFixed": -211.5500000002794,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.003950324667308776,
+     "pxPerSec": 0.009258573439004943,
+     "pulseSec": 168.76249999999226,
+     "glCalls": 1000
+    },
+    {
+     "N": 768,
+     "variant": "합친 패스",
+     "cycles": 2,
+     "drawCalls": 116,
+     "passes": 116,
+     "msPerStep": 949.625,
+     "msBlocks": [
+      949.625
+     ],
+     "msSolve": 330.5,
+     "msDiff": 879.25,
+     "msSolveDiff": 268.89999999990687,
+     "msFixed": 140.75,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.004212189021982361,
+     "pxPerSec": 0.009872318020271158,
+     "pulseSec": 158.27083333333337,
+     "glCalls": 908
+    },
+    {
+     "N": 768,
+     "variant": "합친 패스 + 몸 주변만",
+     "cycles": 2,
+     "drawCalls": 116,
+     "passes": 116,
+     "msPerStep": 23.824999999953434,
+     "msBlocks": [
+      23.825
+     ],
+     "msSolve": 17,
+     "msDiff": 25.350000000093132,
+     "msSolveDiff": 14.599999999627471,
+     "msFixed": -3.0500000002793968,
+     "activeFraction": 0.01373714870876736,
+     "stepsPerFrame": 0.16789087093422111,
+     "pxPerSec": 0.3934942287520808,
+     "pulseSec": 3.9708333333255723,
+     "glCalls": 987
+    },
+    {
+     "N": 768,
+     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "cycles": 2,
+     "drawCalls": 84,
+     "passes": 84,
+     "msPerStep": 42.79999999993015,
+     "msBlocks": [
+      42.8
+     ],
+     "msSolve": 39.65000000002328,
+     "msDiff": 44.9000000001397,
+     "msSolveDiff": 54.699999999953434,
+     "msFixed": -4.200000000419095,
+     "activeFraction": 0.01373714870876736,
+     "stepsPerFrame": 0.09345794392538617,
+     "pxPerSec": 0.21904205607512384,
+     "pulseSec": 7.1333333333216915,
+     "glCalls": 835
+    },
+    {
+     "N": 768,
+     "variant": "합친 패스 + 두 번 스무딩",
+     "cycles": 2,
+     "drawCalls": 96,
+     "passes": 96,
+     "msPerStep": 1236.5999999999767,
+     "msBlocks": [
+      1236.6
+     ],
+     "msSolve": 320.92499999993015,
+     "msDiff": 1103.0999999998603,
+     "msSolveDiff": 306.1500000001397,
+     "msFixed": 267.00000000023283,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.003234675723758754,
+     "pxPerSec": 0.007581271227559579,
+     "pulseSec": 206.09999999999613,
+     "glCalls": 826
+    },
+    {
+     "N": 768,
+     "variant": "기준형",
+     "cycles": 3,
+     "drawCalls": 208,
+     "passes": 232,
+     "msPerStep": 1745.0250000000233,
+     "msBlocks": [
+      1745.025
+     ],
+     "msSolve": 785.4499999999534,
+     "msDiff": 2237.4499999999534,
+     "msSolveDiff": 1104.8999999999069,
+     "msFixed": -984.8499999998603,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.0022922307703327725,
+     "pxPerSec": 0.005372415867967435,
+     "pulseSec": 290.8375000000039,
+     "glCalls": 1402
+    },
+    {
+     "N": 768,
+     "variant": "합친 패스",
+     "cycles": 3,
+     "drawCalls": 160,
+     "passes": 160,
+     "msPerStep": 1342.9500000000698,
+     "msBlocks": [
+      1342.95
+     ],
+     "msSolve": 622.7750000000233,
+     "msDiff": 1200.8000000000466,
+     "msSolveDiff": 537.0500000000466,
+     "msFixed": 284.30000000004657,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.0029785174429426205,
+     "pxPerSec": 0.006980900256896767,
+     "pulseSec": 223.8250000000116,
+     "glCalls": 1264
+    },
+    {
+     "N": 768,
+     "variant": "합친 패스 + 몸 주변만",
+     "cycles": 3,
+     "drawCalls": 160,
+     "passes": 160,
+     "msPerStep": 30.7249999998603,
+     "msBlocks": [
+      30.725
+     ],
+     "msSolve": 17.95000000006985,
+     "msDiff": 24.649999999906868,
+     "msSolveDiff": 16.4000000001397,
+     "msFixed": 12.149999999906868,
+     "activeFraction": 0.01373714870876736,
+     "stepsPerFrame": 0.13018714402012,
+     "pxPerSec": 0.30512611879715623,
+     "pulseSec": 5.120833333310051,
+     "glCalls": 1369
+    },
+    {
+     "N": 768,
+     "variant": "합친 패스 + 몸 주변만 + 두 번 스무딩",
+     "cycles": 3,
+     "drawCalls": 112,
+     "passes": 112,
+     "msPerStep": 40,
+     "msBlocks": [
+      40
+     ],
+     "msSolve": 33.22500000009313,
+     "msDiff": 30.100000000093132,
+     "msSolveDiff": 30.75,
+     "msFixed": 19.799999999813735,
+     "activeFraction": 0.01373714870876736,
+     "stepsPerFrame": 0.1,
+     "pxPerSec": 0.234375,
+     "pulseSec": 6.666666666666667,
+     "glCalls": 1141
+    },
+    {
+     "N": 768,
+     "variant": "합친 패스 + 두 번 스무딩",
+     "cycles": 3,
+     "drawCalls": 130,
+     "passes": 130,
+     "msPerStep": 1094.1999999999534,
+     "msBlocks": [
+      1094.2
+     ],
+     "msSolve": 523.3999999999069,
+     "msDiff": 1150.8999999999069,
+     "msSolveDiff": 601.2999999998137,
+     "msFixed": -113.39999999990687,
+     "activeFraction": 1,
+     "stepsPerFrame": 0.0036556388228844547,
+     "pxPerSec": 0.00856790349113544,
+     "pulseSec": 182.36666666665892,
+     "glCalls": 1141
+    }
+   ],
+   "bodyArea": {
+    "256": 1902,
+    "384": 1921,
+    "512": 1934,
+    "768": 1908
+   },
+   "blockSteps": {
+    "256": 4,
+    "384": 4,
+    "512": 4,
+    "768": 4
+   },
+   "blocks": 1,
+   "lagMargin": 8,
+   "sweep2Error": null,
+   "errors": [],
+   "hiddenBlocks": 0,
+   "profileN": 384,
+   "groups": [
+    {
+     "group": "간선 켜기",
+     "passesPerStep": 1,
+     "usPerPass": 274.99999999902985,
+     "msPerStep": 0.27499999999902985,
+     "glCalls": 3
+    },
+    {
+     "group": "위상",
+     "passesPerStep": 4,
+     "usPerPass": 388.54166666957707,
+     "msPerStep": 1.5541666666783083,
+     "glCalls": 16
+    },
+    {
+     "group": "쉬는 두께·가중치",
+     "passesPerStep": 1,
+     "usPerPass": 462.5000000014552,
+     "msPerStep": 0.4625000000014552,
+     "glCalls": 4
+    },
+    {
+     "group": "웜스타트",
+     "passesPerStep": 1,
+     "usPerPass": 106.24999999951494,
+     "msPerStep": 0.10624999999951494,
+     "glCalls": 3
+    },
+    {
+     "group": "조대 연산자",
+     "passesPerStep": 7,
+     "usPerPass": 93.877551019933,
+     "msPerStep": 0.657142857139531,
+     "glCalls": 54
+    },
+    {
+     "group": "V 사이클",
+     "passesPerStep": 78,
+     "usPerPass": 176.92307692267892,
+     "msPerStep": 13.799999999968955,
+     "glCalls": 668
+    },
+    {
+     "group": "유량",
+     "passesPerStep": 1,
+     "usPerPass": 764.0624999985448,
+     "msPerStep": 0.7640624999985448,
+     "glCalls": 7
+    },
+    {
+     "group": "전역 평균",
+     "passesPerStep": 3,
+     "usPerPass": 230.72916666812185,
+     "msPerStep": 0.6921875000043656,
+     "glCalls": 19
+    },
+    {
+     "group": "강화",
+     "passesPerStep": 1,
+     "usPerPass": 476.56249999757466,
+     "msPerStep": 0.47656249999757466,
+     "glCalls": 3
+    },
+    {
+     "group": "마름",
+     "passesPerStep": 4,
+     "usPerPass": 431.77083333042293,
+     "msPerStep": 1.7270833333216917,
+     "glCalls": 24
+    },
+    {
+     "group": "흐림",
+     "passesPerStep": 2,
+     "usPerPass": 1078.1249999975746,
+     "msPerStep": 2.156249999995149,
+     "glCalls": 12
+    },
+    {
+     "group": "젖음",
+     "passesPerStep": 2,
+     "usPerPass": 1024.9999999990298,
+     "msPerStep": 2.0499999999980596,
+     "glCalls": 15
+    }
+   ],
+   "probes": {
+    "tinyAlt": 52.85000000009313,
+    "tinySame": 29.0999999998603,
+    "tinyProg": 39.00000000023283,
+    "tinyClear": 1.8499999998603016,
+    "syncIdle": 100.00000009313226,
+    "glCall": 0.1,
+    "bindTex": 0.11999999997206032,
+    "bigR32F": 34.4499999997206,
+    "bigRGBA": 34.35000000009313,
+    "bigMRT": 47.39999999990687
+   },
+   "glByName": {
+    "disable": 4,
+    "bindFramebuffer": 77,
+    "bindTexture": 230,
+    "viewport": 40,
+    "enable": 4,
+    "scissor": 47,
+    "useProgram": 53,
+    "activeTexture": 212,
+    "uniform1i": 5,
+    "drawArrays": 77,
+    "uniform1f": 1,
+    "uniform2i": 2
+   },
+   "frameLoop": {
+    "N": 384,
+    "baseMs": 16.69999999999709,
+    "rows": [
+     {
+      "spf": 1,
+      "frames": 70,
+      "msMean": 39.99857142857145,
+      "msMedian": 33.35000000000218,
+      "msP95": 83.30000000000291,
+      "stepsPerSec": 25.000892889031736
+     }
+    ]
+   },
+   "webgpu": {
+    "ok": false,
+    "error": "어댑터를 얻지 못했다"
+   },
+   "seconds": 179.7381000000001
+  }
+ }
+}

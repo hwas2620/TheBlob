@@ -59,6 +59,8 @@ export class Glx {
   readonly gl: WebGL2RenderingContext;
   /** 지금까지의 드로콜 수 (비용 측정용) */
   drawCalls = 0;
+  /** 타깃을 지운 횟수. 드로콜은 아니지만 타깃을 바꾸는 패스라 비용이 든다 */
+  clearCalls = 0;
   readonly timerExt: unknown;
   private vao: WebGLVertexArrayObject;
   private readFbo: WebGLFramebuffer;
@@ -314,6 +316,21 @@ export class Glx {
     this.vaoBound = false;
   }
 
+  /** 측정용: 그리기와 무관한 가벼운 GL 호출을 n 번 한다 (GL 호출 하나가 드는 고정 비용) */
+  benchCalls(n: number): void {
+    const gl = this.gl;
+    for (let i = 0; i < n; i++) gl.activeTexture(gl.TEXTURE0 + (i & 3));
+    this.invalidate();
+  }
+
+  /** 측정용: 한 유닛에 텍스처 둘을 번갈아 n 번 묶는다 (텍스처 묶기 하나의 비용) */
+  benchBinds(n: number, a: Tex, b: Tex): void {
+    const gl = this.gl;
+    gl.activeTexture(gl.TEXTURE0);
+    for (let i = 0; i < n; i++) gl.bindTexture(gl.TEXTURE_2D, i & 1 ? a.tex : b.tex);
+    this.invalidate();
+  }
+
   /** 타깃의 모든 첨부를 한 값(또는 RGBA)으로 채운다 (드로콜이 아니다) */
   clear(t: Target, v: number | readonly number[] = 0): void {
     const gl = this.gl;
@@ -324,6 +341,7 @@ export class Glx {
     }
     const c = typeof v === 'number' ? new Float32Array([v, v, v, v]) : new Float32Array(v);
     for (let i = 0; i < t.n; i++) gl.clearBufferfv(gl.COLOR, i, c);
+    this.clearCalls++;
   }
 
   /** 텍스처 전체를 RGBA float 로 읽는다 (파이프라인을 멈추므로 시험·확인용) */
