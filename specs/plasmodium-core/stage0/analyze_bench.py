@@ -28,9 +28,41 @@ def load(path):
         j = json.loads(text)
         return j['result']['bench'] if 'result' in j else j
     except json.JSONDecodeError:
-        i = text.index('{"renderer"')
+        # 글 상자의 내용: 요약 줄들, 빈 줄, 그리고 '{"' 로 시작하는 JSON 한 줄
+        i = text.index('\n{"') + 1
         return json.JSONDecoder().raw_decode(text[i:])[0]
 
+
+def print_loop(L):
+    """프레임 루프 하나(오름·내림·읽기 대조·지속)를 표로 낸다"""
+    limit = max(18.5, L['baseMs'] * 1.12)
+    print('\n프레임 루프 (%d², 화면 갱신 주기 %.1fms, 지킨 것으로 보는 간격 ≤ %.1fms)' % (L['N'], L['baseMs'], limit))
+    print('  시험      프레임당 스텝  간격 평균/중앙/95백분위(ms)  늦은 프레임  초당 스텝  스텝당 ms  전진 px/s: %d² / 256² 환산 / 빠른 설정(%d²)' % (L['N'], L['N']))
+    best = None
+
+    def line(r):
+        held = r['msMean'] <= limit
+        px = CELLS_PER_STEP * r['stepsPerSec'] * MAP_PX / L['N']
+        late = '%4.0f%%' % (r['late'] * 100) if 'late' in r else '    -'
+        print('  %-8s %6d %s     %5.1f / %5.1f / %5.1f        %s     %6.0f     %5.2f       %5.1f / %5.1f / %5.1f' % (
+            r.get('label', '오름'), r['spf'], '*' if held else ' ', r['msMean'], r['msMedian'], r['msP95'], late, r['stepsPerSec'], r['msMean'] / r['spf'], px, px * L['N'] / 256, px * FAST_GAIN))
+        return held
+    for r in L['rows']:
+        if line(r) and (best is None or r['stepsPerSec'] > best['stepsPerSec']):
+            best = r
+    for r in L.get('down', []):
+        line(r)
+    for r in L.get('readback', []):
+        line(r)
+    print('  (* = 화면 갱신을 지킴. 256² 환산은 스텝당 시간이 격자와 무관하다고 볼 때의 값)')
+    if best:
+        print('  → 오름 시험에서 지킨 최대: 프레임당 %d스텝, 초당 %.0f스텝' % (best['spf'], best['stepsPerSec']))
+    S = L.get('sustained')
+    if S:
+        print('  지속 %.0f초 (프레임당 %d스텝) — 2초마다 초당 스텝 / 늦은 프레임%% / 그린 넓이%%:' % (S['seconds'], S['spf']))
+        print('    ' + ', '.join('%.0f/%.0f/%s' % (w['stepsPerSec'], w['late'] * 100, '%.0f' % (w['area'] * 100) if 'area' in w else '-') for w in S['windows']))
+    if L.get('note'):
+        print('  주의:', L['note'])
 
 def main():
     if len(sys.argv) < 2:
@@ -56,37 +88,10 @@ def main():
     else:
         print('WebGPU   : 쓸 수 없음 (%s)' % w.get('error'))
 
-    L = b.get('frameLoop')
     v4 = b.get('version', 3) >= 4
-    if L and L['rows']:
-        limit = max(18.5, L['baseMs'] * 1.12)
-        print('\n프레임 루프 (%d², 화면 갱신 주기 %.1fms, 지킨 것으로 보는 간격 ≤ %.1fms)' % (L['N'], L['baseMs'], limit))
-        print('  시험      프레임당 스텝  간격 평균/중앙/95백분위(ms)  늦은 프레임  초당 스텝  스텝당 ms  전진 px/s: %d² / 256² 환산 / 빠른 설정(%d²)' % (L['N'], L['N']))
-        best = None
-
-        def line(r):
-            held = r['msMean'] <= limit
-            px = CELLS_PER_STEP * r['stepsPerSec'] * MAP_PX / L['N']
-            late = '%4.0f%%' % (r['late'] * 100) if 'late' in r else '    -'
-            print('  %-8s %6d %s     %5.1f / %5.1f / %5.1f        %s     %6.0f     %5.2f       %5.1f / %5.1f / %5.1f' % (
-                r.get('label', '오름'), r['spf'], '*' if held else ' ', r['msMean'], r['msMedian'], r['msP95'], late, r['stepsPerSec'], r['msMean'] / r['spf'], px, px * L['N'] / 256, px * FAST_GAIN))
-            return held
-        for r in L['rows']:
-            if line(r) and (best is None or r['stepsPerSec'] > best['stepsPerSec']):
-                best = r
-        for r in L.get('down', []):
-            line(r)
-        for r in L.get('readback', []):
-            line(r)
-        print('  (* = 화면 갱신을 지킴. 256² 환산은 스텝당 시간이 격자와 무관하다고 볼 때의 값)')
-        if best:
-            print('  → 오름 시험에서 지킨 최대: 프레임당 %d스텝, 초당 %.0f스텝' % (best['spf'], best['stepsPerSec']))
-        S = L.get('sustained')
-        if S:
-            print('  지속 %.0f초 (프레임당 %d스텝) — 2초마다 초당 스텝 / 늦은 프레임%%:' % (S['seconds'], S['spf']))
-            print('    ' + ', '.join('%.0f/%.0f' % (w['stepsPerSec'], w['late'] * 100) for w in S['windows']))
-        if L.get('note'):
-            print('  주의:', L['note'])
+    for L in (b.get('frameLoop'), b.get('frameLoopSmall')):
+        if L and L['rows']:
+            print_loop(L)
 
     if v4:
         print('\n지속 측정 (구성마다 쉬지 않고 %.1f초) — 스텝당 ms · 초당 스텝 · 풀이 한 번 ms · 전진 px/s' % (b.get('sustainMs', 0) / 1000))
@@ -125,7 +130,7 @@ def main():
             calls = r.get('glCalls') or gl.get((N, 2, r['variant']))
             m_calls = calls * p['glCall'] / 1000 if calls and 'glCall' in p else None
             m_pass = (r['drawCalls'] * p['tinyAlt'] + (r['passes'] - r['drawCalls']) * p['tinyClear']) / 1000
-            print('  %-36s %5.2f / %5.2f      %s        %5.2f' % (r['variant'], r['msPerStep'], r.get('msDiff', float('nan')),
+            print('  %-36s %s      %s        %5.2f' % (r['variant'], '%5.2f        ' % r['msPerStep'] if v4 else '%5.2f / %5.2f' % (r['msPerStep'], r.get('msDiff', float('nan'))),
                                                                '%5.2f (%d번)' % (m_calls, calls) if m_calls is not None else '  -  ', m_pass))
         print('  (호출 수 모델은 호출 하나를 가장 가벼운 호출의 비용으로 친 아래쪽 값이다. 그리기와 타깃 전환의 비용은 패스 수 모델 쪽에 들어 있다)')
 
@@ -133,7 +138,9 @@ def main():
     if g:
         tot = sum(x['msPerStep'] for x in g)
         ref = next((r for r in b['rows'] if r['N'] == N and r['cycles'] == 2 and r['variant'] == '합친 패스 + 몸 주변만' and not r.get('tag')), None)
-        print('\n묶음별 (%s², 합친 패스 + 몸 주변만, 2사이클): 합 %.2fms%s' % (N, tot, ' — 같은 변형의 실측 %.2f(예전) / %.2f(차이)' % (ref['msPerStep'], ref.get('msDiff', float('nan'))) if ref else ''))
+        meas = '' if not ref else (' — 같은 변형의 지속 측정 %.2fms (묶음별은 짧게 몰아서 잰 값이라 더 크게 나온다)' % ref['msPerStep'] if v4
+                                  else ' — 같은 변형의 실측 %.2f(예전) / %.2f(차이)' % (ref['msPerStep'], ref.get('msDiff', float('nan'))))
+        print('\n묶음별 (%s², 합친 패스 + 몸 주변만, 2사이클): 합 %.2fms%s' % (N, tot, meas))
         for x in sorted(g, key=lambda x: -x['msPerStep']):
             print('  %-18s 패스 %3d × %7.1fµs = %6.3fms (%4.1f%%)' % (x['group'], x['passesPerStep'], x['usPerPass'], x['msPerStep'], 100 * x['msPerStep'] / tot if tot else 0))
     if b.get('errors'):
