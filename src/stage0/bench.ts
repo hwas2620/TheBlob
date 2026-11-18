@@ -295,8 +295,8 @@ function probePasses(sim: PlasmGPU, snap: Snapshot): PassProbes {
     tinyProg: time((k) => sim.mg.benchTinyProg(k)),
     tinyClear: time((k) => sim.mg.benchTinyClears(k)),
     syncIdle: median(idle),
-    glCall: time((k) => sim.mg.benchCalls(k), n * 5),
-    bindTex: time((k) => sim.mg.benchBinds(k), n * 5),
+    glCall: time((k) => sim.mg.benchCalls(k), n * 20), // 호출 하나가 1µs 에 못 미치므로 많이 되풀이해야 시계의 눈금(0.1~1ms)을 넘는다
+    bindTex: time((k) => sim.mg.benchBinds(k), n * 20),
     bigR32F: time((k) => sim.probe('r32f', k)),
     bigRGBA: time((k) => sim.probe('rgba', k)),
     bigMRT: time((k) => sim.probe('mrt', k)),

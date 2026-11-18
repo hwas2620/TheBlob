@@ -43,6 +43,12 @@ const log = (line: string): void => {
 const FAST = VARIANTS[3];
 const GRIDS = [256, 384, 512];
 const SPFS = [1, 2, 4, 8, 16];
+/**
+ * 한 스텝이 가는 모델 시간을 늘린 후보 설정: dt 와 맥동 주기를 함께 2배로 (6차 실험 V1).
+ * 스텝당 전진이 기준의 약 FAST_DT_GAIN 배다(유인원에 닿는 시각으로 잰 값. 무게중심으로 재면 더 작다). 기본 설정은 아니다
+ */
+const FAST_DT = { dt: 0.2, period: 8, substeps: 8 };
+const FAST_DT_GAIN = 1.7;
 
 /** 고르는 단추 한 줄. 누르면 pick 을 부르고 눌린 단추를 표시한다. 만든 단추들을 돌려준다 */
 function choices<T>(rowId: string, items: T[], label: (v: T) => string, initial: T, pick: (v: T) => void): HTMLButtonElement[] {
@@ -195,6 +201,7 @@ async function main(): Promise<void> {
   if (q.get('bench') === '1' || !GRIDS.includes(gridN)) gridN = 384;
   let spf = SPFS.includes(num('spf', 2)) ? num('spf', 2) : 2;
   let tri = q.get('tri') === '1';
+  let fastDt = q.get('fast') === '1';
   let sim: PlasmGPU | null = null;
 
   el('controls').hidden = false;
@@ -210,9 +217,10 @@ async function main(): Promise<void> {
   const startRun = (): void => {
     cancelAnimationFrame(raf);
     glx.reset();
-    const s = new PlasmGPU(glx, defaultParams({ N: gridN, seed: 1, triK: tri ? (2 * Math.PI) / 100 : 0 }));
+    const s = new PlasmGPU(glx, defaultParams({ N: gridN, seed: 1, triK: tri ? (2 * Math.PI) / 100 : 0, ...(fastDt ? FAST_DT : {}) }));
     applyVariant(s, FAST);
     sim = s;
+    const gain = fastDt ? FAST_DT_GAIN : 1;
     let frames = 0, steps = 0, draws0 = glx.drawCalls, t0 = performance.now();
     const frame = (): void => {
       if (sim !== s || glx.lost()) return;
@@ -226,7 +234,7 @@ async function main(): Promise<void> {
         const sps = steps / sec;
         setFps((frames / sec).toFixed(0));
         setSps(sps.toFixed(0));
-        setPx((CELLS_PER_STEP * sps * (MAP_PX / s.N)).toFixed(1));
+        setPx((CELLS_PER_STEP * gain * sps * (MAP_PX / s.N)).toFixed(1));
         setPulse((STEPS_PER_PULSE / sps).toFixed(2));
         setDraws(((glx.drawCalls - draws0 - frames) / steps).toFixed(0));
         setTime((s.step * s.params.dt).toFixed(0));
@@ -248,6 +256,10 @@ async function main(): Promise<void> {
     }),
     ...choices('triRow', [false, true], (on) => (on ? '삼각 격자' : '끔'), tri, (on) => {
       tri = on;
+      startRun();
+    }),
+    ...choices('dtRow', [false, true], (on) => (on ? '2배 (시험 중)' : '기본'), fastDt, (on) => {
+      fastDt = on;
       startRun();
     }),
   ];
