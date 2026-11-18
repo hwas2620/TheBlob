@@ -117,9 +117,22 @@ export interface BenchResult {
   glByName?: Record<string, number>;
   /** 화면 갱신에 맞춘 프레임 루프에서 프레임당 스텝 수별 프레임 간격 (profileN 격자, 가장 빠른 변형) */
   frameLoop: FrameLoop | null;
+  /** 텍스처 유닛을 샘플러마다 고정한 방식(지금)과 순서대로 배정한 방식(처음)의 스텝당 시간 (profileN 격자, 가장 빠른 변형, 블록을 번갈아 잰다) */
+  unitsAB: UnitsAB | null;
   /** 같은 기기에서 WebGPU 의 계산 디스패치 하나가 드는 고정 비용 */
   webgpu: WebGpuProbe;
   seconds: number;
+}
+
+export interface UnitsAB {
+  /** 스텝당 ms (든 시간을 스텝 수로 나눈 값의 중앙값)과 차이 방식의 값 */
+  fixedMs: number;
+  orderMs: number;
+  fixedDiff: number;
+  orderDiff: number;
+  /** 스텝당 GL 호출 수 (count=1 로 열었을 때만) */
+  fixedCalls?: number;
+  orderCalls?: number;
 }
 
 export interface FrameLoopRow {
@@ -290,6 +303,43 @@ function probePasses(sim: PlasmGPU, snap: Snapshot): PassProbes {
   };
 }
 
+/**
+ * 텍스처 유닛을 정하는 두 방식을 같은 몸, 같은 변형(가장 빠른 것)으로 번갈아 잰다. 두 방식의 결과는 같고 GL 호출 수만 다르다
+ * (384² 에서 스텝당 약 750번과 610번). 호출 수가 이 기기에서 비용인지를 직접 보여 준다
+ */
+async function unitsAB(glx: Glx, sim: PlasmGPU, snap: Snapshot, q: number, blocks: number, glCounts?: Map<string, number>): Promise<UnitsAB> {
+  const ms: number[][] = [[], []];
+  const diff: number[][] = [[], []];
+  const calls = [0, 0];
+  const run = (k: number): number => {
+    sim.refreshBounds();
+    sim.sync();
+    const t = performance.now();
+    for (let i = 0; i < k; i++) sim.stepOnce();
+    sim.sync();
+    return performance.now() - t;
+  };
+  try {
+    for (let b = 0; b < blocks; b++) {
+      for (const mode of b % 2 ? [1, 0] : [0, 1]) {
+        await whenVisible();
+        glx.fixedUnits = mode === 0;
+        prepare(sim, snap, 3, 2);
+        const g0 = glCounts ? totalCalls(glCounts) : 0;
+        const a = run(q);
+        const c = run(3 * q);
+        if (glCounts) calls[mode] = Math.round((totalCalls(glCounts) - g0) / (4 * q)); // 경계 상자를 읽는 호출이 조금 섞인다
+        ms[mode].push((a + c) / (4 * q));
+        diff[mode].push((c - a) / (2 * q));
+        await yieldNow();
+      }
+    }
+  } finally {
+    glx.fixedUnits = true;
+  }
+  return { fixedMs: median(ms[0]), orderMs: median(ms[1]), fixedDiff: median(diff[0]), orderDiff: median(diff[1]), ...(glCounts ? { fixedCalls: calls[0], orderCalls: calls[1] } : {}) };
+}
+
 /** 다음 화면 갱신을 기다린다. 탭이 가려져 갱신이 오지 않으면 null */
 function nextFrame(timeoutMs = 2000): Promise<number | null> {
   return new Promise((resolve) => {
@@ -380,6 +430,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
   const glCounts = opts.glCounts;
   let glByName: Record<string, number> | undefined;
   let loop: FrameLoop | null = null;
+  let ab: UnitsAB | null = null;
 
   const measure = async (N: number): Promise<void> => {
     log(`${N}² 준비 (${WARMUP_STEPS}스텝)…`);
@@ -514,6 +565,9 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
         : `프레임당 1스텝도 ${heldLabel(loop)}을 지키지 못했습니다`) + (loop.note ? ` (${loop.note})` : ''));
     }
     if (N === profileN) {
+      ab = await unitsAB(glx, sim, snap, q, blocks, glCounts);
+      log(`  ${N}² 텍스처 유닛 배정(가장 빠른 방식): 샘플러마다 고정 ${ab.fixedMs.toFixed(2)}ms/스텝, 순서대로(처음 방식) ${ab.orderMs.toFixed(2)}ms/스텝 (차이 방식 ${ab.fixedDiff.toFixed(2)} / ${ab.orderDiff.toFixed(2)})`
+        + (ab.fixedCalls === undefined ? '' : ` · GL 호출 ${ab.fixedCalls} / ${ab.orderCalls}`));
       groups = profileGroups(glx, sim, snap, glCounts);
       const sum = groups.reduce((a, g) => a + g.msPerStep, 0);
       if (glCounts) {
@@ -572,6 +626,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
     probes,
     ...(glByName ? { glByName } : {}),
     frameLoop: loop,
+    unitsAB: ab,
     webgpu,
     seconds: (performance.now() - tStart) / 1000,
   };
@@ -589,6 +644,10 @@ export function benchSummary(b: BenchResult): string {
     lines.push(held
       ? `→ ${heldLabel(L)}을 지키는 최대: 프레임당 ${held.spf}스텝, 초당 ${f(held.stepsPerSec, 0)}스텝, 전진 ${f(CELLS_PER_STEP * held.stepsPerSec * (MAP_PX / L.N), 0)}px/s`
       : `→ 프레임당 1스텝도 ${heldLabel(L)}을 지키지 못함`);
+  }
+  if (b.unitsAB) {
+    const u = b.unitsAB;
+    lines.push(`텍스처 유닛 배정 (${b.profileN}², 가장 빠른 방식) ms/스텝: 샘플러마다 고정 ${f(u.fixedMs)} / 순서대로(처음 방식) ${f(u.orderMs)} · 차이 방식 ${f(u.fixedDiff)} / ${f(u.orderDiff)}`);
   }
   if (b.probes) {
     const p = b.probes;
