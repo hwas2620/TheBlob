@@ -397,6 +397,8 @@ python3 specs/plasmodium-core/stage0/judge_a12.py                         # 판�
 node specs/plasmodium-core/stage0/run_stage0.cjs bench "bench=1&N=256,384" 7200                       # 속도 측정 (소프트웨어 렌더러라 시간은 참고용)
 node specs/plasmodium-core/stage0/run_stage0.cjs glcalls "bench=1&count=1&N=256,384,512,768&block=4&blocks=1" 3600  # 드로콜·패스·GL 호출 수 (네 격자)
 node specs/plasmodium-core/stage0/build_single.mjs <출력 폴더>                                          # 파일 하나짜리 시험 페이지
+python3 specs/plasmodium-core/stage0/analyze_bench.py <붙여 받은 측정 결과.txt>                        # 기기에서 잰 속도 측정 결과 풀이
+python3 specs/plasmodium-core/stage0/make_result.py                                                    # 이 문서를 RESULT-A.tmpl.md 와 기록에서 다시 만든다
 ```
 
 numpy 기준 자료는 `specs/plasmodium-core/stage0/ref/run_all.sh`가 만든다. 384² 직접 풀이 실행 둘(`export_ref.py a12 384 <시드> exact 400`)과
