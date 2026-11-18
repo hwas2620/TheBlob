@@ -64,7 +64,13 @@ fn main(@builtin(global_invocation_id) id: vec3<u32>) {
 const STORAGE = 0x80; // GPUBufferUsage.STORAGE
 const N_DISPATCH = 2000;
 
-export async function webgpuProbe(): Promise<WebGpuProbe> {
+/** 탐침이 끝나지 않는 기기에서도 속도 측정이 멈추지 않게 시간 제한을 둔다 */
+export function webgpuProbe(timeoutMs = 15000): Promise<WebGpuProbe> {
+  const timeout = new Promise<WebGpuProbe>((resolve) => setTimeout(() => resolve({ ok: false, error: `${timeoutMs / 1000}초 안에 끝나지 않았다` }), timeoutMs));
+  return Promise.race([probe(), timeout]);
+}
+
+async function probe(): Promise<WebGpuProbe> {
   const gpu = (navigator as unknown as { gpu?: { requestAdapter(): Promise<AdapterL | null> } }).gpu;
   if (!gpu) return { ok: false, error: '이 브라우저에 navigator.gpu 가 없다' };
   let device: DeviceL | null = null;

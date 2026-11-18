@@ -14,7 +14,7 @@
 import { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU } from '../gpu/plasm/PlasmGPU';
 import { defaultParams } from '../gpu/plasm/params';
-import { benchSummary, bestHeld, CELLS_PER_STEP, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
+import { benchSummary, bestHeld, CELLS_PER_STEP, heldLabel, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
 import { countingGl } from './glCount';
 import { REF_BASE } from './refData';
 import { applyVariant, testA0, testA12, testNoise, testParity, VARIANTS } from './tests';
@@ -118,7 +118,7 @@ function benchTable(bench: BenchResult): void {
     }
     const ln = document.createElement('p');
     ln.className = 'lead';
-    ln.textContent = `프레임 루프 (${loop.N}², 가장 빠른 계산 방식): 게임처럼 화면 갱신마다 스텝을 돌리며 잰 값입니다. 주황색 줄이 초당 60프레임을 지키면서 가장 빠른 설정입니다. 아래 표는 일을 몰아서 시켰을 때의 스텝당 시간입니다.`;
+    ln.textContent = `프레임 루프 (${loop.N}², 가장 빠른 계산 방식): 게임처럼 화면 갱신마다 스텝을 돌리며 잰 값입니다. 주황색 줄이 ${heldLabel(loop)}을 지키면서 가장 빠른 설정입니다.${held ? '' : ' (지킨 설정이 없습니다)'} 아래 표는 일을 몰아서 시켰을 때의 스텝당 시간입니다.`;
     parts.push(lt, ln);
   }
   el<HTMLDivElement>('benchTable').replaceChildren(...parts, table, note);

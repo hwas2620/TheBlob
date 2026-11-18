@@ -344,10 +344,22 @@ async function frameLoop(glx: Glx, sim: PlasmGPU, snap: Snapshot, view: (sim: Pl
   return out;
 }
 
-/** 프레임 루프 시험에서 60fps 를 지킨 줄 가운데 초당 스텝이 가장 많은 것 */
+/** 프레임 간격이 이 값(ms) 안이면 화면 갱신을 지킨 것으로 본다. 화면이 초당 60프레임보다 느리게 갱신되는 기기(절전 모드 등)에서는 그 주기를 기준으로 한다 */
+export function heldLimit(loop: FrameLoop): number {
+  return Math.max(HELD_MS, loop.baseMs * 1.12);
+}
+
+/** "초당 60프레임" 또는 그 화면의 갱신 속도 */
+export function heldLabel(loop: FrameLoop): string {
+  return loop.baseMs > HELD_MS ? `초당 ${Math.round(1000 / loop.baseMs)}프레임(이 화면의 갱신 속도)` : '초당 60프레임';
+}
+
+/** 프레임 루프 시험에서 화면 갱신을 지킨 줄 가운데 초당 스텝이 가장 많은 것 */
 export function bestHeld(loop: FrameLoop | null): FrameLoopRow | null {
   let best: FrameLoopRow | null = null;
-  for (const r of loop?.rows ?? []) if (r.msMean <= HELD_MS && (!best || r.stepsPerSec > best.stepsPerSec)) best = r;
+  if (!loop) return null;
+  const limit = heldLimit(loop);
+  for (const r of loop.rows) if (r.msMean <= limit && (!best || r.stepsPerSec > best.stepsPerSec)) best = r;
   return best;
 }
 
@@ -498,8 +510,8 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
       loop = await frameLoop(glx, sim, snap, opts.view, log);
       const held = bestHeld(loop);
       log(`  프레임 루프: 화면 갱신 주기 ${loop.baseMs.toFixed(1)}ms. ` + (held
-        ? `60fps 를 지키는 최대는 프레임당 ${held.spf}스텝(초당 ${held.stepsPerSec.toFixed(0)}스텝) → 전진 ${(CELLS_PER_STEP * held.stepsPerSec * (MAP_PX / N)).toFixed(0)}px/s`
-        : '프레임당 1스텝도 60fps 를 지키지 못했습니다') + (loop.note ? ` (${loop.note})` : ''));
+        ? `${heldLabel(loop)}을 지키는 최대는 프레임당 ${held.spf}스텝(초당 ${held.stepsPerSec.toFixed(0)}스텝) → 전진 ${(CELLS_PER_STEP * held.stepsPerSec * (MAP_PX / N)).toFixed(0)}px/s`
+        : `프레임당 1스텝도 ${heldLabel(loop)}을 지키지 못했습니다`) + (loop.note ? ` (${loop.note})` : ''));
     }
     if (N === profileN) {
       groups = profileGroups(glx, sim, snap, glCounts);
@@ -575,8 +587,8 @@ export function benchSummary(b: BenchResult): string {
     lines.push(`프레임 루프 (${L.N}², 화면 갱신 주기 ${f(L.baseMs, 1)}ms) — 프레임당 스텝: 간격 평균/중앙/95백분위 ms${L.note ? ` [${L.note}]` : ''}`);
     lines.push(L.rows.map((r) => `${r.spf}: ${f(r.msMean, 1)}/${f(r.msMedian, 1)}/${f(r.msP95, 1)}`).join(' | '));
     lines.push(held
-      ? `→ 60fps 를 지키는 최대: 프레임당 ${held.spf}스텝, 초당 ${f(held.stepsPerSec, 0)}스텝, 전진 ${f(CELLS_PER_STEP * held.stepsPerSec * (MAP_PX / L.N), 0)}px/s`
-      : '→ 프레임당 1스텝도 60fps 를 지키지 못함');
+      ? `→ ${heldLabel(L)}을 지키는 최대: 프레임당 ${held.spf}스텝, 초당 ${f(held.stepsPerSec, 0)}스텝, 전진 ${f(CELLS_PER_STEP * held.stepsPerSec * (MAP_PX / L.N), 0)}px/s`
+      : `→ 프레임당 1스텝도 ${heldLabel(L)}을 지키지 못함`);
   }
   if (b.probes) {
     const p = b.probes;
