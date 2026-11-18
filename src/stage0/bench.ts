@@ -268,13 +268,13 @@ function probePasses(sim: PlasmGPU, snap: Snapshot): PassProbes {
   prepare(sim, snap, 2, 2);
   // 저마다 k 번 하고 마지막 출력을 읽어 끝을 맞춘다
   const time = (f: (k: number) => void, k = n): number => diffMicros(sim, f, k);
-  // 쉬고 있을 때의 읽기 한 번
+  // 쉬고 있을 때의 읽기 한 번. 시계의 눈금(0.1~1ms)보다 짧을 수 있어 20번을 묶어 잰다
   const idle: number[] = [];
   sim.sync();
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 5; i++) {
     const t0 = performance.now();
-    sim.sync();
-    idle.push((performance.now() - t0) * 1000);
+    for (let j = 0; j < 20; j++) sim.sync();
+    idle.push(((performance.now() - t0) / 20) * 1000);
   }
   return {
     tinyAlt: time((k) => sim.mg.benchTinyDraws(k)),
