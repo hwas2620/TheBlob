@@ -49,9 +49,13 @@
       th, td { padding: 4px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
       th { color: var(--muted); font-weight: 400; font-family: var(--font-body); }
       td:nth-child(-n + 2), th:nth-child(-n + 2) { text-align: left; font-family: var(--font-body); }
+      table.loop td:nth-child(-n + 2) { text-align: right; font-family: var(--font-num); }
+      table.loop th:nth-child(-n + 2) { text-align: right; }
       tr.best td { color: var(--vein); }
       #nav { color: var(--muted); font-size: 13px; }
       a { color: var(--vein); }
+      textarea { width: 100%; font: 12px/1.5 var(--font-num); color: var(--text); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; resize: vertical; }
+      textarea:focus-visible { outline: 2px solid var(--vein); outline-offset: 2px; }
       pre { margin: 0; white-space: pre-wrap; word-break: break-all; font: 12px/1.5 var(--font-num); color: var(--muted); }
       [hidden] { display: none !important; }
     </style>
@@ -72,15 +76,17 @@
             <div class="row" id="gridRow"><span>격자</span></div>
             <div class="row" id="spfRow"><span>프레임당 스텝</span></div>
             <div class="row" id="triRow"><span>위상 무늬</span></div>
+            <div class="row" id="dtRow"><span>스텝의 길이</span></div>
           </div>
           <div id="tiles" hidden></div>
           <div class="group" id="benchBox" hidden>
             <h2>속도 측정</h2>
-            <p class="lead">이 기기의 GPU로 한 스텝에 걸리는 시간을 격자 크기와 계산 방식별로 잽니다. 1분 안팎 걸리고, 재는 동안 이 탭을 앞에 두어야 합니다.</p>
+            <p class="lead">이 기기의 GPU로 한 스텝에 걸리는 시간을 격자 크기와 계산 방식별로 재고, 게임처럼 화면 갱신마다 돌릴 때 프레임당 몇 스텝까지 되는지도 잽니다. 1~2분 걸리고, 재는 동안 이 탭을 앞에 두어야 합니다. 끝나면 아래 글 상자의 내용을 통째로 복사해 붙여 주세요.</p>
             <div class="row">
               <button class="primary" id="benchStart">속도 측정 시작</button>
               <button id="benchCopy" hidden>결과 복사</button>
             </div>
+            <textarea id="benchText" rows="9" readonly hidden aria-label="측정 결과 (복사해서 붙여 주세요)"></textarea>
             <div class="scroll" id="benchTable"></div>
           </div>
           <div id="nav"></div>

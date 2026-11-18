@@ -22,9 +22,23 @@ export interface Target {
 interface UniformInfo {
   loc: WebGLUniformLocation;
   type: number;
-  /** 샘플러 유니폼에 마지막으로 넣은 텍스처 유닛 */
+  /** 샘플러 유니폼에 지금 들어 있는 텍스처 유닛 */
   unit?: number;
+  /** 이 샘플러에 정해 둔 유닛 (프로그램을 만들 때 정한다) */
+  home?: number;
 }
+
+/**
+ * 샘플러 이름마다 정해 둔 텍스처 유닛.
+ * 같은 역할의 텍스처(압력, 가중치, 두께…)가 패스가 바뀌어도 같은 유닛에 남으므로, 패스마다 다시 묶는 일이 준다
+ * (스텝당 GL 호출의 절반 넘게가 텍스처 묶기였다). 한 프로그램 안에서 겹치거나 여기에 없는 이름이면 남는 유닛을 준다.
+ * 16 미만만 쓴다(프래그먼트 셰이더가 쓸 수 있는 유닛 수의 최소 보장값).
+ */
+const SAMPLER_UNIT: Record<string, number> = {
+  uP: 0, uW: 1, uWf: 1, uS: 2, uM: 3, uMf: 3, uE: 4, uR: 4, // 압력 풀이
+  uA: 5, uB: 6, uC: 7, uD: 8, uSrc: 9, uG: 10, uCinit: 10, uAux: 11, uPlan: 11, uRed: 11, uF: 12, uField: 13,
+};
+const MAX_UNITS = 16;
 
 export interface Prog {
   prog: WebGLProgram;
@@ -59,6 +73,13 @@ export class Glx {
   readonly gl: WebGL2RenderingContext;
   /** 지금까지의 드로콜 수 (비용 측정용) */
   drawCalls = 0;
+  /** 타깃을 지운 횟수. 드로콜은 아니지만 타깃을 바꾸는 패스라 비용이 든다 */
+  clearCalls = 0;
+  /**
+   * 샘플러마다 정해 둔 유닛에 텍스처를 묶는다(기본). 끄면 드로콜에 넘긴 순서대로 0번부터 묶는다 — 처음에 쓰던 방식이고,
+   * 두 방식의 비용을 같은 기기에서 견주려고 남겨 두었다. 결과는 같다
+   */
+  fixedUnits = true;
   readonly timerExt: unknown;
   private vao: WebGLVertexArrayObject;
   private readFbo: WebGLFramebuffer;
@@ -68,6 +89,7 @@ export class Glx {
   private vpW = -1;
   private vpH = -1;
   private scissorOn: boolean | null = null;
+  private scRect = [-1, -1, -1, -1];
   private unitTex: (WebGLTexture | null)[] = [];
   private activeUnit = -1;
   private vaoBound = false;
@@ -207,12 +229,39 @@ export class Glx {
       const loc = gl.getUniformLocation(prog, info.name);
       if (loc) uni.set(info.name, { loc, type: info.type });
     }
+    // 샘플러의 유닛을 정해 한 번만 넣는다. 정해 둔 유닛이 이 프로그램 안에서 겹치면 남는 유닛을 위에서부터 준다
+    const used = new Set<number>();
+    const samplers = [...uni].filter(([, info]) => info.type === gl.SAMPLER_2D);
+    for (const [key, info] of samplers) {
+      const want = SAMPLER_UNIT[key];
+      if (want !== undefined && !used.has(want)) {
+        info.home = want;
+        used.add(want);
+      }
+    }
+    let free = MAX_UNITS - 1;
+    for (const [, info] of samplers) {
+      if (info.home !== undefined) continue;
+      while (used.has(free)) free--;
+      if (free < 0) {
+        gl.deleteProgram(prog);
+        return fail(`샘플러가 너무 많다 (${name})`);
+      }
+      info.home = free;
+      used.add(free);
+    }
+    gl.useProgram(prog);
+    this.current = prog;
+    for (const [, info] of samplers) {
+      gl.uniform1i(info.loc, info.home!);
+      info.unit = info.home;
+    }
     const made: Prog = { prog, name, uni };
     this.progCache.set(fragSrc, made);
     return made;
   }
 
-  /** 풀스크린 쿼드 한 번. 텍스처 유니폼은 넘긴 순서대로 유닛에 묶는다 */
+  /** 풀스크린 쿼드 한 번. 텍스처는 그 샘플러에 정해 둔 유닛에 묶는다(이미 묶여 있으면 건너뛴다). fixedUnits 를 끄면 넘긴 순서대로 유닛에 묶는다 */
   draw(p: Prog, t: Target, u: Record<string, UVal>, rect?: Rect | null): void {
     const gl = this.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo);
@@ -226,7 +275,14 @@ export class Glx {
         gl.enable(gl.SCISSOR_TEST);
         this.scissorOn = true;
       }
-      gl.scissor(rect[0], rect[1], rect[2], rect[3]);
+      const sc = this.scRect;
+      if (sc[0] !== rect[0] || sc[1] !== rect[1] || sc[2] !== rect[2] || sc[3] !== rect[3]) {
+        gl.scissor(rect[0], rect[1], rect[2], rect[3]);
+        sc[0] = rect[0];
+        sc[1] = rect[1];
+        sc[2] = rect[2];
+        sc[3] = rect[3];
+      }
     } else if (this.scissorOn !== false) {
       gl.disable(gl.SCISSOR_TEST);
       this.scissorOn = false;
@@ -235,7 +291,7 @@ export class Glx {
       gl.useProgram(p.prog);
       this.current = p.prog;
     }
-    let unit = 0;
+    let next = 0;
     for (const key in u) {
       const info = p.uni.get(key);
       if (!info) continue; // 셰이더가 쓰지 않아 지워진 유니폼
@@ -250,6 +306,7 @@ export class Glx {
         else throw new Error(`지원하지 않는 유니폼 형식: ${p.name}.${key}`);
       } else {
         const tex = (v as Tex).tex;
+        const unit = this.fixedUnits ? info.home! : next++;
         if (this.unitTex[unit] !== tex) {
           if (this.activeUnit !== unit) {
             gl.activeTexture(gl.TEXTURE0 + unit);
@@ -262,7 +319,6 @@ export class Glx {
           gl.uniform1i(info.loc, unit);
           info.unit = unit;
         }
-        unit++;
       }
     }
     if (!this.vaoBound) {
@@ -309,9 +365,25 @@ export class Glx {
     this.vpW = -1;
     this.vpH = -1;
     this.scissorOn = null;
+    this.scRect = [-1, -1, -1, -1];
     this.unitTex = [];
     this.activeUnit = -1;
     this.vaoBound = false;
+  }
+
+  /** 측정용: 그리기와 무관한 가벼운 GL 호출을 n 번 한다 (GL 호출 하나가 드는 고정 비용) */
+  benchCalls(n: number): void {
+    const gl = this.gl;
+    for (let i = 0; i < n; i++) gl.activeTexture(gl.TEXTURE0 + (i & 3));
+    this.invalidate();
+  }
+
+  /** 측정용: 한 유닛에 텍스처 둘을 번갈아 n 번 묶는다 (텍스처 묶기 하나의 비용) */
+  benchBinds(n: number, a: Tex, b: Tex): void {
+    const gl = this.gl;
+    gl.activeTexture(gl.TEXTURE0);
+    for (let i = 0; i < n; i++) gl.bindTexture(gl.TEXTURE_2D, i & 1 ? a.tex : b.tex);
+    this.invalidate();
   }
 
   /** 타깃의 모든 첨부를 한 값(또는 RGBA)으로 채운다 (드로콜이 아니다) */
@@ -324,6 +396,7 @@ export class Glx {
     }
     const c = typeof v === 'number' ? new Float32Array([v, v, v, v]) : new Float32Array(v);
     for (let i = 0; i < t.n; i++) gl.clearBufferfv(gl.COLOR, i, c);
+    this.clearCalls++;
   }
 
   /** 텍스처 전체를 RGBA float 로 읽는다 (파이프라인을 멈추므로 시험·확인용) */

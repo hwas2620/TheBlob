@@ -10,6 +10,8 @@ import mgResRestrict from './shaders/mg_resrestrict.frag.glsl?raw';
 import mgProlongJacobi from './shaders/mg_prolong_jacobi.frag.glsl?raw';
 import mgJacobi2 from './shaders/mg_jacobi2.frag.glsl?raw';
 import mgProlongJacobi2 from './shaders/mg_prolong_jacobi2.frag.glsl?raw';
+import mgJacobi0 from './shaders/mg_jacobi0.frag.glsl?raw';
+import mgJacobi2z from './shaders/mg_jacobi2z.frag.glsl?raw';
 import edgeActivate from './shaders/edge_activate.frag.glsl?raw';
 import phase from './shaders/phase.frag.glsl?raw';
 import rest from './shaders/rest.frag.glsl?raw';
@@ -66,6 +68,8 @@ export function multigridShaders(vars: ShaderVars) {
     prolongJacobi: make(mgProlongJacobi, vars),
     jacobi2: make(mgJacobi2, vars),
     prolongJacobi2: make(mgProlongJacobi2, vars),
+    jacobi0: make(mgJacobi0, vars),
+    jacobi2z: make(mgJacobi2z, vars),
   };
 }
 

@@ -31,6 +31,8 @@ export class MultigridGPU {
   private pProlongJacobi: Prog;
   private pJacobi2: Prog | null = null;
   private pProlongJacobi2: Prog | null = null;
+  private pJacobi0: Prog;
+  private pJacobi2z: Prog | null = null;
   /** 두 번 스무딩 셰이더가 이 기기에서 컴파일되지 않았으면 그 이유 (그때는 sweep2 를 켜도 쓰지 않는다) */
   sweep2Error: string | null = null;
   /** true 면 "잔차+제한", "보간+첫 뒤 스무딩"을 한 패스씩으로 합친다 (레벨당 7 → 5 드로콜. 산술은 같다) */
@@ -43,6 +45,11 @@ export class MultigridGPU {
    */
   sweep2 = false;
   sweep2MaxArea = 4096;
+  /**
+   * true 면 조대 레벨의 해를 0 으로 지우는 패스 없이, 0 에서 출발한 첫 스무딩을 전용 패스로 한다(산술은 같다).
+   * 사이클마다 레벨 수만큼의 지우기 패스가 준다
+   */
+  zeroStart = false;
 
   /** 2로 나눠지는 동안, 한 변이 nmin 보다 클 때까지 줄인다 (mgt.py 와 같은 규칙) */
   static levels(N: number, nmin = 4): number[] {
@@ -63,13 +70,16 @@ export class MultigridGPU {
     this.pCoarsen = glx.program('mg_coarsen', src.coarsen);
     this.pResRestrict = glx.program('mg_resrestrict', src.resRestrict);
     this.pProlongJacobi = glx.program('mg_prolong_jacobi', src.prolongJacobi);
+    this.pJacobi0 = glx.program('mg_jacobi0', src.jacobi0);
     try {
       // 텍셀 읽기가 수백 번인 큰 셰이더라 드라이버에 따라 컴파일이 안 될 수 있다. 그때는 한 번씩 그리는 길로 돌아간다
       this.pJacobi2 = glx.program('mg_jacobi2', src.jacobi2);
       this.pProlongJacobi2 = glx.program('mg_prolong_jacobi2', src.prolongJacobi2);
+      this.pJacobi2z = glx.program('mg_jacobi2z', src.jacobi2z);
     } catch (e) {
       this.pJacobi2 = null;
       this.pProlongJacobi2 = null;
+      this.pJacobi2z = null;
       this.sweep2Error = e instanceof Error ? e.message : String(e);
     }
     for (let l = 0; l < this.L; l++) {
@@ -126,7 +136,7 @@ export class MultigridGPU {
 
   /** 이 레벨에서 스무딩 두 번을 한 패스로 할지 */
   private dbl(l: number): boolean {
-    if (!this.sweep2 || !this.pJacobi2 || !this.pProlongJacobi2) return false;
+    if (!this.sweep2 || !this.pJacobi2 || !this.pProlongJacobi2 || !this.pJacobi2z) return false;
     const r = this.lr(l);
     const area = r ? r[2] * r[3] : this.sizes[l] * this.sizes[l];
     return area <= this.sweep2MaxArea;
@@ -159,6 +169,58 @@ export class MultigridGPU {
     this.glx.readPixel(this.P[l][this.cur[l]]);
   }
 
+  /** 측정용: 가장 작은 레벨의 같은 타깃에, 상태를 하나도 바꾸지 않고 n 번 그린다 (타깃을 바꾸지 않는 드로콜의 비용) */
+  benchTinySame(n: number): void {
+    const l = this.L - 1;
+    const dst = 1 - this.cur[l];
+    for (let i = 0; i < n; i++) this.glx.draw(this.pJacobi0, this.tP[l][dst], { uW: this.W[l], uS: this.S[l], uM: this.M[l] });
+    this.glx.readPixel(this.P[l][dst]);
+  }
+
+  /** 측정용: 가장 작은 레벨의 같은 타깃에, 프로그램 둘을 번갈아 n 번 그린다 (텍스처 묶음은 그대로 — 프로그램 전환의 비용) */
+  benchTinyProg(n: number): void {
+    const l = this.L - 1;
+    const dst = 1 - this.cur[l];
+    // 유니폼을 같은 순서로 넘겨 두 프로그램이 같은 유닛을 쓰게 한다 (uP 는 뒤에)
+    const u = { uW: this.W[l], uS: this.S[l], uM: this.M[l], uP: this.P[l][this.cur[l]] };
+    for (let i = 0; i < n; i++) this.glx.draw(i & 1 ? this.pJacobi : this.pJacobi0, this.tP[l][dst], u);
+    this.glx.readPixel(this.P[l][dst]);
+  }
+
+  /** 측정용: 그리기와 무관한 GL 호출 n 번, 텍스처 묶기 n 번. 끝을 맞추려고 텍셀 하나를 읽는다 */
+  benchCalls(n: number): void {
+    this.glx.benchCalls(n);
+    this.sync();
+  }
+
+  benchBinds(n: number): void {
+    const l = this.L - 1;
+    this.glx.benchBinds(n, this.P[l][0], this.P[l][1]);
+    this.sync();
+  }
+
+  /** 측정용: 가장 작은 레벨의 타깃 둘을 번갈아 n 번 지운다 */
+  benchTinyClears(n: number): void {
+    const l = this.L - 1;
+    for (let i = 0; i < n; i++) this.glx.clear(this.tP[l][i & 1], 0);
+    this.glx.readPixel(this.P[l][(n - 1) & 1]);
+  }
+
+  /** 측정용: 레벨 0 (격자 크기의 R32F 타깃)에 가위를 좁힌 Jacobi 를 타깃을 번갈아 n 번 그린다 */
+  probeLevel0(n: number, r: Rect): void {
+    for (let i = 0; i < n; i++) {
+      const dst = 1 - this.cur[0];
+      this.glx.draw(this.pJacobi, this.tP[0][dst], { uP: this.P[0][this.cur[0]], uW: this.W[0], uS: this.S[0], uM: this.M[0] }, r);
+      this.cur[0] = dst;
+    }
+    this.glx.readPixel(this.P[0][this.cur[0]]);
+  }
+
+  /** 조대 연산자의 마지막 레벨에서 텍셀 하나를 읽어 재구성이 끝나기를 기다린다 (측정용) */
+  syncBuild(): void {
+    this.glx.readPixel(this.W[this.L - 1]);
+  }
+
   /** 방금 푼 해에서 텍셀 하나를 읽어 풀이의 명령이 모두 끝나기를 기다린다 (벽시계 측정용) */
   sync(): void {
     this.glx.readPixel(this.P[0][this.cur[0]]);
@@ -169,12 +231,13 @@ export class MultigridGPU {
     for (let i = 0; i < ncyc; i++) this.vcycle(0, nc);
   }
 
-  private vcycle(l: number, nc: number): void {
+  /** fromZero: 이 레벨의 해가 0 에서 출발한다(조대 레벨). zeroStart 가 켜져 있으면 지우지 않고 전용 패스로 시작한다 */
+  private vcycle(l: number, nc: number, fromZero = false): void {
     if (l === this.L - 1) {
-      this.smooth(l, nc);
+      this.smooth(l, nc, fromZero);
       return;
     }
-    this.smooth(l, 2);
+    this.smooth(l, 2, fromZero);
     const fine = { uP: this.P[l][this.cur[l]], uW: this.W[l], uS: this.S[l], uM: this.M[l] };
     if (this.merged) {
       this.glx.draw(this.pResRestrict, this.tS[l + 1], fine, this.lr(l + 1));
@@ -182,8 +245,12 @@ export class MultigridGPU {
       this.glx.draw(this.pResidual, this.tR[l], fine, this.lr(l));
       this.glx.draw(this.pRestrict, this.tS[l + 1], { uR: this.R[l] }, this.lr(l + 1));
     }
-    this.glx.clear(this.tP[l + 1][this.cur[l + 1]], 0);
-    this.vcycle(l + 1, nc);
+    if (this.zeroStart) {
+      this.vcycle(l + 1, nc, true);
+    } else {
+      this.glx.clear(this.tP[l + 1][this.cur[l + 1]], 0);
+      this.vcycle(l + 1, nc);
+    }
     const dst = 1 - this.cur[l];
     if (this.merged) {
       const two = this.dbl(l);
@@ -197,9 +264,20 @@ export class MultigridGPU {
     }
   }
 
-  /** 스무딩 k 번. 두 번씩 묶을 수 있는 레벨에서는 묶는다 */
-  private smooth(l: number, k: number): void {
-    if (!this.dbl(l)) {
+  /** 스무딩 k 번. 두 번씩 묶을 수 있는 레벨에서는 묶는다. fromZero 면 지금의 해를 읽지 않고 0 에서 출발한다 */
+  private smooth(l: number, k: number, fromZero = false): void {
+    const two = this.dbl(l);
+    let done = 0;
+    if (fromZero && k > 0) {
+      // 0 에서 출발한 첫 스무딩(묶을 수 있으면 두 번)을 전용 패스로. 대상 텍스처의 이전 내용은 읽지 않는다
+      const pair = two && k >= 2;
+      const dst = 1 - this.cur[l];
+      this.glx.draw(pair ? this.pJacobi2z! : this.pJacobi0, this.tP[l][dst], { uW: this.W[l], uS: this.S[l], uM: this.M[l] }, this.lr(l));
+      this.cur[l] = dst;
+      done = pair ? 2 : 1;
+    }
+    k -= done;
+    if (!two) {
       this.jacobi(l, k);
       return;
     }

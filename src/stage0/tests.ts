@@ -101,6 +101,7 @@ export async function testA0(glx: Glx, log: Log): Promise<A0Result> {
     for (const cfg of A0_CONFIGS) {
       const merged = cfg.merged;
       mg.merged = merged;
+      mg.zeroStart = merged;
       mg.sweep2 = cfg.sweep2;
       for (let k = 1; k <= 3; k++) {
         mg.clearAll();
@@ -122,6 +123,7 @@ export async function testA0(glx: Glx, log: Log): Promise<A0Result> {
       }
     }
     mg.merged = false;
+    mg.zeroStart = false;
     mg.sweep2 = false;
     const t0 = performance.now();
     const cg = solveCG(f.N, W4, M, rhs);
@@ -237,6 +239,7 @@ export const VARIANTS: Variant[] = [
 /** 변형을 시뮬레이션에 건다 */
 export function applyVariant(sim: PlasmGPU, v: Variant): void {
   sim.mg.merged = v.merged;
+  sim.mg.zeroStart = v.merged; // 기준형만 "해를 0 으로 지우고 시작"하는 원래 길을 남긴다
   sim.mg.sweep2 = v.sweep2;
   sim.scissor = v.scissor;
 }

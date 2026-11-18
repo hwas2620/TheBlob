@@ -43,6 +43,11 @@ export interface PlainState {
   pm: Float32Array;
 }
 
+/** 한 스텝의 패스 묶음 (압력 풀이는 따로) */
+export type PassGroup = 'edges' | 'phase' | 'rest' | 'init' | 'flux' | 'q0' | 'reinforce' | 'dry' | 'blur' | 'wet';
+const GROUPS_BEFORE_SOLVE: PassGroup[] = ['edges', 'phase', 'rest', 'init'];
+const GROUPS_AFTER_SOLVE: PassGroup[] = ['flux', 'q0', 'reinforce', 'dry', 'blur', 'wet'];
+
 /** snapshot() 이 읽어 둔 상태 (세 상태 텍스처의 RGBA 와 스텝 수) */
 export interface Snapshot {
   a: Float32Array;
@@ -361,74 +366,130 @@ export class PlasmGPU {
 
   /** 한 스텝. afterSolve 는 압력을 푼 직후(유량 갱신 전)에 불린다 — 시험이 풀이의 입력과 해를 읽는 자리 */
   stepOnce(afterSolve?: () => void): void {
-    const { glx, prog, params: p } = this;
-    const t = this.step * p.dt;
+    const p = this.params;
     const r = this.activeRect();
     this.mg.rect = r;
-    const flipAB = (): Target => {
-      this.curA = 1 - this.curA;
-      this.curB = 1 - this.curB;
-      return this.tAB[this.curA][this.curB];
-    };
-
-    // 1. 간선 켜기
-    glx.draw(prog.edgeActivate, this.tC[1 - this.curC], { uA: this.A[this.curA], uC: this.C[this.curC], uCinit: this.texCinit }, r);
-    this.curC = 1 - this.curC;
-
-    // 2. 위상
-    for (let s = 0; s < p.substeps; s++) {
-      glx.draw(prog.phase, this.tB[1 - this.curB], { uA: this.A[this.curA], uB: this.B[this.curB] }, r);
-      this.curB = 1 - this.curB;
-    }
-
-    // 3. 쉬는 두께, 우변, 간선 가중치
-    glx.draw(prog.rest, this.tAuxW, { uA: this.A[this.curA], uB: this.B[this.curB], uC: this.C[this.curC], uG: this.texG, uT: t }, r);
-
-    // 4~6. 압력
-    glx.draw(prog.mgInit, this.mg.p0Target(), { uA: this.A[this.curA], uB: this.B[this.curB] }, r);
+    for (const g of GROUPS_BEFORE_SOLVE) this.runGroup(g, r);
     this.mg.build();
     this.mg.solve(this.cycles, p.mgCoarseSweeps);
     if (afterSolve) afterSolve();
-    const P = this.mg.pTex();
-
-    // 7. 유량과 두께
-    {
-      const srcA = this.A[this.curA];
-      const srcB = this.B[this.curB];
-      glx.draw(prog.flux, flipAB(), { uA: srcA, uB: srcB, uW: this.W, uP: P }, r);
-    }
-
-    // 8. 전역 평균 (Q0)
-    glx.draw(prog.reduceQ0, this.tRed[0], { uW: this.W, uP: P, uA: this.A[this.curA], uC: this.C[this.curC] }, PlasmGPU.blockRect(r));
-    for (let i = 1; i < this.red.length; i++) glx.draw(prog.reduceSum, this.tRed[i], { uSrc: this.red[i - 1], uBlock: this.redBlock[i - 1] });
-
-    // 9. 강화
-    glx.draw(prog.reinforce, this.tC[1 - this.curC], { uC: this.C[this.curC], uW: this.W, uP: P, uRed: this.red[this.red.length - 1] }, r);
-    this.curC = 1 - this.curC;
-
-    // 10. 마름
-    glx.draw(prog.dryMark, this.tDry[0], { uA: this.A[this.curA], uAux: this.aux, uStep: this.step }, r);
-    glx.draw(prog.dryConfirm, this.tDry[1], { uA: this.A[this.curA], uD: this.dry[0] }, r);
-    glx.draw(prog.dryShare, this.tDry[2], { uA: this.A[this.curA], uD: this.dry[1] }, r);
-    {
-      const srcA = this.A[this.curA];
-      const srcB = this.B[this.curB];
-      glx.draw(prog.dryApply, flipAB(), { uA: srcA, uB: srcB, uD: this.dry[2] }, r);
-    }
-
-    // 11. 젖은 마스크의 흐림
-    glx.draw(prog.blur, this.tBlur[0], { uSrc: this.A[this.curA], uDir: [1, 0], uCh: 1 }, r);
-    glx.draw(prog.blur, this.tBlur[1], { uSrc: this.blur[0], uDir: [0, 1], uCh: 0 }, r);
-
-    // 12. 젖음
-    glx.draw(prog.wetMark, this.tPlan, { uA: this.A[this.curA], uB: this.B[this.curB], uF: this.blur[1], uField: this.texField }, r);
-    {
-      const srcA = this.A[this.curA];
-      const srcB = this.B[this.curB];
-      glx.draw(prog.wetApply, flipAB(), { uA: srcA, uB: srcB, uPlan: this.plan }, r);
-    }
+    for (const g of GROUPS_AFTER_SOLVE) this.runGroup(g, r);
     this.step++;
     if (this.scissor && this.autoBounds) this.updateBounds(r);
+  }
+
+  private flipAB(): Target {
+    this.curA = 1 - this.curA;
+    this.curB = 1 - this.curB;
+    return this.tAB[this.curA][this.curB];
+  }
+
+  /** 스텝의 패스 묶음 하나를 그린다. 압력 풀이(조대 연산자, V 사이클)는 MultigridGPU 가 한다 */
+  private runGroup(g: PassGroup, r: Rect | null): void {
+    const { glx, prog, params: p } = this;
+    switch (g) {
+      case 'edges': // 1. 간선 켜기
+        glx.draw(prog.edgeActivate, this.tC[1 - this.curC], { uA: this.A[this.curA], uC: this.C[this.curC], uCinit: this.texCinit }, r);
+        this.curC = 1 - this.curC;
+        break;
+      case 'phase': // 2. 위상
+        for (let s = 0; s < p.substeps; s++) {
+          glx.draw(prog.phase, this.tB[1 - this.curB], { uA: this.A[this.curA], uB: this.B[this.curB] }, r);
+          this.curB = 1 - this.curB;
+        }
+        break;
+      case 'rest': // 3. 쉬는 두께, 우변, 간선 가중치
+        glx.draw(prog.rest, this.tAuxW, { uA: this.A[this.curA], uB: this.B[this.curB], uC: this.C[this.curC], uG: this.texG, uT: this.step * p.dt }, r);
+        break;
+      case 'init': // 4. 압력의 웜스타트
+        glx.draw(prog.mgInit, this.mg.p0Target(), { uA: this.A[this.curA], uB: this.B[this.curB] }, r);
+        break;
+      case 'flux': {
+        // 7. 유량과 두께
+        const srcA = this.A[this.curA];
+        const srcB = this.B[this.curB];
+        glx.draw(prog.flux, this.flipAB(), { uA: srcA, uB: srcB, uW: this.W, uP: this.mg.pTex() }, r);
+        break;
+      }
+      case 'q0': // 8. 전역 평균 (Q0)
+        glx.draw(prog.reduceQ0, this.tRed[0], { uW: this.W, uP: this.mg.pTex(), uA: this.A[this.curA], uC: this.C[this.curC] }, PlasmGPU.blockRect(r));
+        for (let i = 1; i < this.red.length; i++) glx.draw(prog.reduceSum, this.tRed[i], { uSrc: this.red[i - 1], uBlock: this.redBlock[i - 1] });
+        break;
+      case 'reinforce': // 9. 강화
+        glx.draw(prog.reinforce, this.tC[1 - this.curC], { uC: this.C[this.curC], uW: this.W, uP: this.mg.pTex(), uRed: this.red[this.red.length - 1] }, r);
+        this.curC = 1 - this.curC;
+        break;
+      case 'dry': {
+        // 10. 마름
+        glx.draw(prog.dryMark, this.tDry[0], { uA: this.A[this.curA], uAux: this.aux, uStep: this.step }, r);
+        glx.draw(prog.dryConfirm, this.tDry[1], { uA: this.A[this.curA], uD: this.dry[0] }, r);
+        glx.draw(prog.dryShare, this.tDry[2], { uA: this.A[this.curA], uD: this.dry[1] }, r);
+        const srcA = this.A[this.curA];
+        const srcB = this.B[this.curB];
+        glx.draw(prog.dryApply, this.flipAB(), { uA: srcA, uB: srcB, uD: this.dry[2] }, r);
+        break;
+      }
+      case 'blur': // 11. 젖은 마스크의 흐림
+        glx.draw(prog.blur, this.tBlur[0], { uSrc: this.A[this.curA], uDir: [1, 0], uCh: 1 }, r);
+        glx.draw(prog.blur, this.tBlur[1], { uSrc: this.blur[0], uDir: [0, 1], uCh: 0 }, r);
+        break;
+      case 'wet': {
+        // 12. 젖음
+        glx.draw(prog.wetMark, this.tPlan, { uA: this.A[this.curA], uB: this.B[this.curB], uF: this.blur[1], uField: this.texField }, r);
+        const srcA = this.A[this.curA];
+        const srcB = this.B[this.curB];
+        glx.draw(prog.wetApply, this.flipAB(), { uA: srcA, uB: srcB, uPlan: this.plan }, r);
+        break;
+      }
+    }
+  }
+
+  /**
+   * 측정용: 패스 묶음 하나를 k 번 연달아 그리고 끝나기를 기다린다. 같은 입력으로 되풀이하므로 상태는 망가진다
+   * (재고 나면 restore 로 되돌린다). 'build' 와 'cycle' 은 압력 풀이의 조대 연산자 재구성과 V 사이클 한 번이다
+   */
+  profileGroup(g: PassGroup | 'build' | 'cycle', k: number): void {
+    const r = this.activeRect();
+    this.mg.rect = r;
+    for (let i = 0; i < k; i++) {
+      if (g === 'build') this.mg.build();
+      else if (g === 'cycle') this.mg.solve(1, this.params.mgCoarseSweeps);
+      else this.runGroup(g, r);
+    }
+    // 묶음의 마지막 출력을 읽어 끝을 맞춘다
+    const glx = this.glx;
+    if (g === 'build') this.mg.syncBuild();
+    else if (g === 'cycle' || g === 'init') this.mg.sync();
+    else if (g === 'edges' || g === 'reinforce') glx.readPixel(this.C[this.curC]);
+    else if (g === 'phase') glx.readPixel(this.B[this.curB]);
+    else if (g === 'rest') glx.readPixel(this.W);
+    else if (g === 'q0') glx.readPixel(this.red[this.red.length - 1]);
+    else if (g === 'blur') glx.readPixel(this.blur[1]);
+    else glx.readPixel(this.A[this.curA]);
+  }
+
+  /**
+   * 측정용: 타깃의 크기와 종류에 따라 패스 하나의 고정 비용이 얼마나 다른지 보려고, 가위를 4×4 로 좁힌 가벼운 패스를 n 번 그린다.
+   * 'r32f' 는 격자 크기의 R32F 타깃(레벨 0 의 압력), 'rgba' 는 RGBA32F 타깃(위상), 'mrt' 는 RGBA32F 두 장(두께와 위상)을 번갈아 쓴다
+   */
+  probe(kind: 'r32f' | 'rgba' | 'mrt', n: number): void {
+    const { glx, prog } = this;
+    const r: Rect = [0, 0, 4, 4];
+    if (kind === 'r32f') {
+      this.mg.probeLevel0(n, r);
+      return;
+    }
+    for (let i = 0; i < n; i++) {
+      if (kind === 'rgba') {
+        glx.draw(prog.phase, this.tB[1 - this.curB], { uA: this.A[this.curA], uB: this.B[this.curB] }, r);
+        this.curB = 1 - this.curB;
+      } else {
+        const srcA = this.A[this.curA];
+        const srcB = this.B[this.curB];
+        glx.draw(prog.wetApply, this.flipAB(), { uA: srcA, uB: srcB, uPlan: this.plan }, r);
+      }
+    }
+    glx.readPixel(kind === 'rgba' ? this.B[this.curB] : this.A[this.curA]);
   }
 
   /** 방금 돈 스텝의 통계 (1×1 텍셀 읽기 — 파이프라인을 멈춘다) */
