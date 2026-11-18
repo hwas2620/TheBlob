@@ -24,7 +24,8 @@
 
 - `src/gpu/plasm/` — 원형질체 코어. `PlasmGPU`(규칙 1~7), `MultigridGPU`(압력 풀이), `glx`(그리기 도우미), 셰이더 30개
 - `src/stage0/` — 시험 페이지의 코드. numpy 기준 자료 대조(`tests.ts`), CPU 기준 풀이(`cpuSolver.ts`), 속도 측정(`bench.ts`), GL 호출 세기(`glCount.ts`), WebGPU 탐침(`webgpuProbe.ts`)
-- `stage0.html` — 시험 페이지. 열면 384² 격자에서 굶은 이주가 돌고, 격자·프레임당 스텝을 단추로 바꾼다. "속도 측정" 단추가 A3의 측정이다
+- `stage0.html` — 시험 페이지. 열면 384² 격자에서 굶은 이주가 돌고, 격자·프레임당 스텝·스텝의 길이를 단추로 바꾼다. "속도 측정" 단추가 A3의 측정이다.
+  `main`에 올리면 GitHub Pages로 배포된다(2026-11-18부터): <https://hwas2620.github.io/TheBlob/stage0.html> (끝에 `?bench=1`을 붙이면 열자마자 잰다)
 - `specs/plasmodium-core/stage0/ref/` — numpy 기준 모델과 기준 실행 요약. 상태 덤프는 `public/stage0/ref/`
 - 게임(`index.html`)은 건드리지 않았다. `src/config.ts`에 상수 묶음 셋(`PLASM`, `OSCILLATOR`, `SLIME`)만 더했다
 
@@ -396,6 +397,8 @@ python3 specs/plasmodium-core/stage0/judge_a12.py                         # 판�
 node specs/plasmodium-core/stage0/run_stage0.cjs bench "bench=1&N=256,384" 7200                       # 속도 측정 (소프트웨어 렌더러라 시간은 참고용)
 node specs/plasmodium-core/stage0/run_stage0.cjs glcalls "bench=1&count=1&N=256,384,512,768&block=4&blocks=1" 3600  # 드로콜·패스·GL 호출 수 (네 격자)
 node specs/plasmodium-core/stage0/build_single.mjs <출력 폴더>                                          # 파일 하나짜리 시험 페이지
+python3 specs/plasmodium-core/stage0/analyze_bench.py <붙여 받은 측정 결과.txt>                        # 기기에서 잰 속도 측정 결과 풀이
+python3 specs/plasmodium-core/stage0/make_result.py                                                    # 이 문서를 RESULT-A.tmpl.md 와 기록에서 다시 만든다
 ```
 
 numpy 기준 자료는 `specs/plasmodium-core/stage0/ref/run_all.sh`가 만든다. 384² 직접 풀이 실행 둘(`export_ref.py a12 384 <시드> exact 400`)과
