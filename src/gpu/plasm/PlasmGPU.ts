@@ -110,6 +110,11 @@ export class PlasmGPU {
    * 그 자리에서 읽는 측정(벤치마크)이 그 크기를 흉내 낼 때 쓴다. 키우는 쪽은 언제나 안전하다
    */
   marginExtra = 0;
+  /**
+   * 측정용: 값을 주면 가위 사각형의 여유를 이 셀 수로 고정한다(잰 뒤 지난 스텝 수만큼 키우지 않는다).
+   * 경계 상자를 다시 재지 않고 오래 돌리면 몸이 사각형 밖으로 나갈 수 있어 결과가 틀려진다. 시간만 재는 짧은 구간에서 쓴다
+   */
+  fixedMargin: number | null = null;
   /** 스텝당 V 사이클 수 (params.mgCycles 에서 시작. 돌리는 중에 바꿀 수 있다) */
   cycles: number;
   private bounds: [number, number, number, number] | null = null; // 젖은 셀의 x0, y0, x1, y1
@@ -242,7 +247,7 @@ export class PlasmGPU {
   /** 이번 스텝에 그릴 영역. null 이면 전체 */
   private activeRect(): Rect | null {
     if (!this.scissor || !this.bounds) return null;
-    const m = BOUNDS_MARGIN + (this.step - this.boundsStep) + this.marginExtra;
+    const m = this.fixedMargin ?? BOUNDS_MARGIN + (this.step - this.boundsStep) + this.marginExtra;
     const x0 = this.bounds[0] - m;
     const y0 = this.bounds[1] - m;
     const x1 = this.bounds[2] + m;

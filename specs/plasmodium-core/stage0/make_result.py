@@ -23,11 +23,11 @@ bench = json.load(open(os.path.join(ROOT, 'results', 'bench.json')))['result']['
 V = ['기준형', '합친 패스', '합친 패스 + 두 번 스무딩', '합친 패스 + 몸 주변만 + 두 번 스무딩']
 draws = {}
 for r in bench['rows']:
-    if r['cycles'] == 2: draws[(r['N'], r['variant'])] = r
+    if r['cycles'] == 2 and not r.get('tag'): draws[(r['N'], r['variant'])] = r
 glc = json.load(open(os.path.join(ROOT, 'results', 'glcalls.json')))['result']['bench']
 differ = []
 for r in glc['rows']:
-    if r['cycles'] == 2:
+    if r['cycles'] == 2 and not r.get('tag'):
         k = (r['N'], r['variant'])
         if k in draws and draws[k]['drawCalls'] != r['drawCalls']: differ.append((k, draws[k]['drawCalls'], r['drawCalls']))
         draws[k] = r
@@ -43,7 +43,7 @@ for v in ['기준형', '합친 패스', '합친 패스 + 몸 주변만', '합친
         cells.append('-' if not r else (f"{r['drawCalls']}" + (f" + 지우기 {r['passes'] - r['drawCalls']}" if r.get('passes', r['drawCalls']) > r['drawCalls'] else '')
                                         + (f" (그린 영역 {r['activeFraction'] * 100:.0f}%)" if r['activeFraction'] < 0.999 else '')))
     lines.append(f'| {names[v]} | ' + ' | '.join(cells) + ' |')
-btab = '\n'.join(lines) + f"\n\n속도 측정 모드로 센 값이다(`results/glcalls.json`" + (". 256²와 384²는 `results/bench.json`의 값과 같다" if not differ else ". `results/bench.json`은 블록이 길어 그린 영역이 더 크고, 그래서 두 번 스무딩을 쓰는 레벨 수가 달라 드로콜 수가 다른 줄이 있다: " + ', '.join(f"{k[0]}² {k[1]} {a}" for k, a, b in differ)) + f"). 몸은 굶은 이주의 400스텝째 것(약 1900셀)이다."
+btab = '\n'.join(lines) + f"\n\n속도 측정 모드로 센 값이다(`results/glcalls.json`" + (". 256²와 384²는 `results/bench.json`의 값과 같다" if not differ else ". `results/bench.json`은 더 오래 돌려 가위 사각형의 여유가 더 크고, 그래서 두 번 스무딩을 쓰는 레벨 수가 달라 드로콜 수가 다른 줄이 있다: " + ', '.join(f"{k[0]}² {k[1]} {a}" for k, a, b in differ)) + f"). 몸은 굶은 이주의 400스텝째 것(약 1900셀)이다."
 gl_lines = ['| 계산 방식 | ' + ' | '.join(f'{n}²' for n in sizes) + ' |', '|---|' + '---|' * len(sizes)]
 for v in ['기준형', '합친 패스', '합친 패스 + 몸 주변만', '합친 패스 + 두 번 스무딩', '합친 패스 + 몸 주변만 + 두 번 스무딩']:
     gl_lines.append(f'| {names[v]} | ' + ' | '.join(str(draws[(n, v)]['glCalls']) if (n, v) in draws and 'glCalls' in draws[(n, v)] else '-' for n in sizes) + ' |')
@@ -56,7 +56,7 @@ gl_texpct = round(100 * (glc['glByName'].get('bindTexture', 0) + glc['glByName']
 num = dict(NRUN=str(n_a1), FLUX_MED=f'{min(fm):.2f}~{max(fm):.2f}', FLUX_P99=f'{min(fp):.2f}~{max(fp):.2f}')
 for n in (256, 384, 512, 768):
     num[f'D{n}'] = [str(draws[(n, v)]['drawCalls']) if (n, v) in draws else '-' for v in V]
-sw = {(r['N'], r['variant']): r for r in bench['rows'] if r['cycles'] == 2}
+sw = {(r['N'], r['variant']): r for r in bench['rows'] if r['cycles'] == 2 and not r.get('tag')}
 out = (tmpl.replace('{{JUDGE}}', judge).replace('{{BENCH}}', btab).replace('{{GLCALLS}}', '\n'.join(gl_lines)).replace('{{GLBYNAME}}', gl_byname).replace('{{GLTEXPCT}}', str(gl_texpct)).replace('{{GLMIN}}', gl_min).replace('{{GLMAX}}', gl_max).replace('{{N_A1}}', str(n_a1)).replace('{{D384_V3}}', num['D384'][3])
        .replace('{{SW_384_V0}}', f"{sw[(384, '기준형')]['msPerStep']:.0f}").replace('{{SW_384_V2}}', f"{sw[(384, '합친 패스 + 몸 주변만')]['msPerStep']:.0f}").replace('{{SW_TINY}}', f"{bench['usPerTinyDraw']:.0f}"))
 assert '{{' not in out, [x for x in out.split('{{')[1:]][:3]

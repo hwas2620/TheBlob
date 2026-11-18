@@ -47,6 +47,8 @@ export interface WebGpuProbe {
    */
   solveFullMs?: number;
   solveRectMs?: number;
+  /** 몸 주변만의 풀이 흉내를 쉬지 않고 0.8초쯤 돌렸을 때의 한 번의 시간(ms). 기기가 클럭을 올린 뒤의 값이다 */
+  solveRectSustainedMs?: number;
   solveN?: number;
   solveDispatches?: number;
   error?: string;
@@ -184,6 +186,14 @@ async function solveLike(dev: DeviceL, out: WebGpuProbe): Promise<void> {
     out.solveDispatches = dispatches;
     await run(0, 1);
     out.solveFullMs = Math.min(await run(0, 5), await run(0, 5));
+    // 쉬지 않고: 20번씩 묶어 잇달아 넣는다
+    const t0 = performance.now();
+    let solves = 0;
+    while (performance.now() - t0 < 800) {
+      await run(1, 20);
+      solves += 20;
+    }
+    out.solveRectSustainedMs = (performance.now() - t0) / solves;
   } finally {
     bufs.forEach((b) => b.destroy());
   }
