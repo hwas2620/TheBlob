@@ -2,8 +2,8 @@
 //
 //   stage0.html                       돌려 보기 + 속도 측정 단추
 //   stage0.html?run=1&N=384&spf=2[&tri=1]   돌려 보기의 처음 설정 (spf = 프레임당 스텝 수)
-//   stage0.html?bench=1[&N=256,384,512,768] 열자마자 속도 측정(A3)을 시작한다. 주소 끝에 #bench 를 붙여도 같다
-//                                     (&block=2&blocks=1 을 붙이면 드로콜 수만 볼 만큼 짧게 잰다)
+//   stage0.html?bench=1[&N=256,384,768] 열자마자 속도 측정(A3)을 시작한다. 주소 끝에 #bench 를 붙여도 같다
+//                                     (&sustain=20&loop=0 을 붙이면 드로콜 수만 볼 만큼 짧게 잰다. &all=1 은 모든 격자에서 변형 다섯을, &count=1 은 GL 호출 수를 센다)
 //   stage0.html?test=a0               A0 재생 시험 (멀티그리드를 numpy 와 대조)
 //   stage0.html?test=parity           스텝 일치 시험 (규칙 1~7 을 numpy 와 대조)
 //   stage0.html?test=a12&N=192&seed=1&cyc=2&steps=10000[&tri=1&variant=2&sync=1]   A1·A2 긴 실행 (variant: tests.ts 의 VARIANTS 번호. 0 기준형)
@@ -14,7 +14,7 @@
 import { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU } from '../gpu/plasm/PlasmGPU';
 import { defaultParams } from '../gpu/plasm/params';
-import { benchSummary, bestHeld, CELLS_PER_STEP, heldLabel, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
+import { benchSummary, bestHeld, CELLS_PER_STEP, FAST_DT, heldLabel, heldLimit, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
 import { countingGl } from './glCount';
 import { REF_BASE } from './refData';
 import { applyVariant, testA0, testA12, testNoise, testParity, VARIANTS } from './tests';
@@ -44,11 +44,9 @@ const FAST = VARIANTS[3];
 const GRIDS = [256, 384, 512];
 const SPFS = [1, 2, 4, 8, 16];
 /**
- * 한 스텝이 가는 모델 시간을 늘린 후보 설정: dt 와 맥동 주기를 함께 2배로 (6차 실험 V1).
- * 스텝당 전진이 기준의 약 FAST_DT_GAIN 배다(독립 검증의 앞면 속도 기준 1.61. 재는 법에 따라 1.47~1.75). 기본 설정은 아니다:
- * 192² 의 몸 크기에서는 검증됐지만 큰 몸에서는 확인되지 않았다 (research/round6/V1-speed/verify/REPORT.md)
+ * 후보 설정(FAST_DT: dt 와 맥동 주기를 함께 2배로)의 스텝당 전진이 기준의 몇 배인가.
+ * 독립 검증의 앞면 속도 기준 1.61 (재는 법에 따라 1.47~1.75). research/round6/V1-speed/verify/REPORT.md
  */
-const FAST_DT = { dt: 0.2, period: 8, substeps: 8 };
 const FAST_DT_GAIN = 1.6;
 
 /** 고르는 단추 한 줄. 누르면 pick 을 부르고 눌린 단추를 표시한다. 만든 단추들을 돌려준다 */
@@ -87,33 +85,35 @@ function tile(label: string, unit: string): (text: string) => void {
 }
 
 function benchTable(bench: BenchResult): void {
-  const rows = bench.rows.filter((r) => r.cycles === 2);
+  const rows = bench.rows;
   const best = new Map<number, number>();
-  for (const r of rows) best.set(r.N, Math.min(best.get(r.N) ?? Infinity, r.msPerStep));
+  for (const r of rows) if (!r.tag && r.cycles === 2) best.set(r.N, Math.min(best.get(r.N) ?? Infinity, r.msPerStep));
   const table = document.createElement('table');
   const head = table.insertRow();
-  for (const h of ['격자', '계산 방식', '패스', 'ms/스텝', '풀이 한 번', '프레임당 스텝', '전진 px/s']) {
+  for (const h of ['격자', '계산 방식', '패스', 'ms/스텝', '초당 스텝', '전진 px/s']) {
     const th = document.createElement('th');
     th.textContent = h;
     head.append(th);
   }
   for (const r of rows) {
     const tr = table.insertRow();
-    if (r.msPerStep === best.get(r.N)) tr.className = 'best';
-    for (const c of [`${r.N}²`, r.variant, String(r.passes), r.msPerStep.toFixed(2), r.msSolve.toFixed(2), r.stepsPerFrame.toFixed(1), r.pxPerSec.toFixed(0)]) tr.insertCell().textContent = c;
+    if (!r.tag && r.cycles === 2 && r.msPerStep === best.get(r.N)) tr.className = 'best';
+    const name = r.variant + (r.cycles === 2 ? '' : ` (${r.cycles}사이클)`) + (r.tag ? ` [${r.tag}]` : '');
+    for (const c of [`${r.N}²`, name, String(r.passes), r.msPerStep.toFixed(2), r.stepsPerSec.toFixed(0), r.pxPerSec.toFixed(0)]) tr.insertCell().textContent = c;
   }
   const note = document.createElement('p');
   note.className = 'lead';
-  note.textContent = '패스는 드로콜에 타깃을 지우는 횟수를 더한 수입니다. 프레임당 스텝은 한 프레임에 4ms 를 쓴다고 볼 때의 값이고, 전진 속도는 게임 지도(1500px) 기준입니다. 주황색 줄이 격자마다 가장 빠른 방식입니다.';
+  note.textContent = `지속 측정: 구성마다 쉬지 않고 ${(bench.sustainMs / 1000).toFixed(1)}초씩 돌려 잰 스텝당 시간입니다. 패스는 드로콜에 타깃을 지우는 횟수를 더한 수이고, 전진 속도는 게임 지도(1500px)에서 dt 0.1 기준입니다. 주황색 줄이 격자마다 가장 빠른 방식입니다.`;
   const parts: HTMLElement[] = [];
   const loop = bench.frameLoop;
   if (loop && loop.rows.length > 0) {
     // 게임과 같은 꼴의 루프에서 잰 값. 게임에서 쓸 수 있는 속도는 이쪽이다
     const held = bestHeld(loop);
+    const limit = heldLimit(loop);
     const lt = document.createElement('table');
     lt.className = 'loop';
     const lh = lt.insertRow();
-    for (const h of ['프레임당 스텝', '프레임 간격 ms', '초당 프레임', '초당 스텝', '전진 px/s']) {
+    for (const h of ['프레임당 스텝', '프레임 간격 ms', '늦은 프레임', '초당 스텝', '전진 px/s']) {
       const th = document.createElement('th');
       th.textContent = h;
       lh.append(th);
@@ -121,11 +121,12 @@ function benchTable(bench: BenchResult): void {
     for (const r of loop.rows) {
       const tr = lt.insertRow();
       if (r === held) tr.className = 'best';
-      for (const c of [String(r.spf), r.msMean.toFixed(1), (1000 / r.msMean).toFixed(0), r.stepsPerSec.toFixed(0), (CELLS_PER_STEP * r.stepsPerSec * (MAP_PX / loop.N)).toFixed(0)]) tr.insertCell().textContent = c;
+      const cells = [String(r.spf), r.msMean.toFixed(1) + (r.msMean <= limit ? '' : ' ✕'), `${(r.late * 100).toFixed(0)}%`, r.stepsPerSec.toFixed(0), (CELLS_PER_STEP * r.stepsPerSec * (MAP_PX / loop.N)).toFixed(0)];
+      for (const c of cells) tr.insertCell().textContent = c;
     }
     const ln = document.createElement('p');
     ln.className = 'lead';
-    ln.textContent = `프레임 루프 (${loop.N}², 가장 빠른 계산 방식): 게임처럼 화면 갱신마다 스텝을 돌리며 잰 값입니다. 주황색 줄이 ${heldLabel(loop)}을 지키면서 가장 빠른 설정입니다.${held ? '' : ' (지킨 설정이 없습니다)'} 아래 표는 일을 몰아서 시켰을 때의 스텝당 시간입니다.`;
+    ln.textContent = `프레임 루프 (${loop.N}², 가장 빠른 계산 방식): 게임처럼 화면 갱신마다 스텝을 돌리며 잰 값입니다. 주황색 줄이 ${heldLabel(loop)}을 지키면서 가장 빠른 설정입니다${held ? '' : ' (지킨 설정이 없습니다)'}. ✕ 는 화면 갱신을 지키지 못한 줄입니다. 내림차순·읽기 대조·20초 지속 구간의 값은 위 글 상자에 있습니다.`;
     parts.push(lt, ln);
   }
   el<HTMLDivElement>('benchTable').replaceChildren(...parts, table, note);
@@ -290,7 +291,7 @@ async function main(): Promise<void> {
     sim = null;
     try {
       const opt = (k: string): number | undefined => (q.has(k) && Number.isFinite(num(k, NaN)) ? num(k, NaN) : undefined);
-      const bench = await runBench(glx, caps.renderer, sizes, log, { block: opt('block'), blocks: opt('blocks'), glCounts: counting?.counts, view: (s) => s.view(canvas.width, canvas.height) });
+      const bench = await runBench(glx, caps.renderer, sizes, log, { sustainMs: opt('sustain'), loop: q.get('loop') !== '0', loopCap: opt('loopcap'), allVariants: q.get('all') === '1', glCounts: counting?.counts, view: (s) => s.view(canvas.width, canvas.height) });
       log(`드로콜 하나의 고정 비용 약 ${bench.usPerTinyDraw.toFixed(1)}µs · 전체 ${bench.seconds.toFixed(0)}초`);
       // 요약(사람이 읽는 줄)과 전체 JSON 을 한 글 상자에 넣는다
       // 붙여 넣기 쉽게 수는 소수 셋째 자리까지만 적는다
@@ -316,7 +317,7 @@ async function main(): Promise<void> {
     }
   };
   benchStart.onclick = (): void => {
-    void startBench([256, 384, 512, 768]).catch(fail);
+    void startBench([256, 384, 768]).catch(fail);
   };
 
   // 시험 모드 링크는 numpy 기준 자료가 함께 올라가 있을 때만 보인다 (파일로 연 페이지에는 없다)
@@ -330,7 +331,7 @@ async function main(): Promise<void> {
   }
 
   if (q.get('bench') === '1' || location.hash === '#bench') {
-    await startBench((q.get('N') ?? '256,384,512,768').split(',').map(Number));
+    await startBench((q.get('N') ?? '256,384,768').split(',').map(Number));
     return;
   }
   startRun();
