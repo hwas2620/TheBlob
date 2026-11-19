@@ -38,7 +38,8 @@ npm run preview  # Production preview
 
 게임과 분리된 새 시뮬레이션 코어. 아직 게임에 연결되지 않았다.
 - `src/gpu/plasm/` — 코어(WebGL2), `src/stage0/` + `stage0.html` — 시험 페이지 (`npm run dev` 뒤 `/stage0.html`)
-- 시험과 결과: `specs/plasmodium-core/stage0/RESULT-A.md` (다시 돌리는 법 포함)
+- 시험과 결과: `specs/plasmodium-core/stage0/RESULT-A.md` (관문 A: 풀이·속도), `RESULT-B.md` (관문 B: 먹이 규칙과 B1~B7 판정). 다시 돌리는 법 포함
+- numpy 기준 모델(`stage0/ref/`)이 정답이고 GPU는 그것과 같은 결과를 내야 한다. 여러 실행을 나란히 돌릴 때는 `NUMBA_NUM_THREADS=1`이 필요하다(`export_ref.py`가 기본으로 넣는다)
 - `main`에 올리면 GitHub Pages로 배포된다: https://hwas2620.github.io/TheBlob/stage0.html (속도 측정 결과는 `specs/plasmodium-core/stage0/analyze_bench.py`로 풀이)
 
 ## Playwright MCP Screenshots

@@ -3,6 +3,8 @@
 uniform sampler2D uA;
 uniform sampler2D uB;
 uniform sampler2D uC;
+uniform sampler2D uField; // g: 먹이 원반의 번호 + 1
+uniform sampler2D uFS;    // 먹이 상태. r: 남은 양
 uniform vec2 uCanvas;
 out vec4 o;
 void main() {
@@ -18,5 +20,10 @@ void main() {
     col = mix(vec3(0.16, 0.13, 0.03), vec3(0.84, 0.73, 0.16), clamp(A.r / 1.3, 0.0, 1.0));
     col = mix(col, vec3(1.0, 0.47, 0.16), clamp((pow(cn, 0.25) - 1.5) / 2.5, 0.0, 1.0));
   }
+#if {{FOOD_N}} > 0
+  // 먹이 원반: 살아 있으면 푸른빛, 다 먹혔으면 잿빛을 얹는다
+  float id = texelFetch(uField, c, 0).g;
+  if (id > 0.5) col = mix(col, texelFetch(uFS, ivec2(int(id) - 1, 0), 0).r > 0.0 ? vec3(0.24, 0.86, 1.0) : vec3(0.5), 0.35);
+#endif
   o = vec4(col, 1.0);
 }

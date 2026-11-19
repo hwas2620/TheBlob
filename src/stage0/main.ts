@@ -13,11 +13,13 @@
 
 import { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU } from '../gpu/plasm/PlasmGPU';
-import { defaultParams } from '../gpu/plasm/params';
+import { defaultParams, foodParams, type PlasmParams } from '../gpu/plasm/params';
 import { benchSummary, bestHeld, CELLS_PER_STEP, FAST_DT, heldLabel, heldLimit, LOOP_VARIANT, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
 import { countingGl } from './glCount';
 import { REF_BASE } from './refData';
-import { applyVariant, testA0, testA12, testNoise, testParity, VARIANTS } from './tests';
+import { FOOD3 } from './scenarios';
+import { testB, testBStats } from './gateB';
+import { applyVariant, testA0, testA12, testNoise, testParity, testParityFood, VARIANTS, type FoodBase } from './tests';
 
 interface Stage0State {
   done: boolean;
@@ -181,6 +183,34 @@ async function main(): Promise<void> {
     window.__stage0 = { done: true, ok: parity.every((p) => p.pass), result: { caps, parity } };
     return;
   }
+  if (test === 'parityfood') {
+    const base: FoodBase = new Map();
+    const parityFood = [];
+    for (const v of VARIANTS) parityFood.push(await testParityFood(glx, log, v, base));
+    window.__stage0 = { done: true, ok: parityFood.every((p) => p.pass), result: { caps, parityFood } };
+    return;
+  }
+  if (test === 'b') {
+    // 관문 B 의 시나리오 하나. dump=1 이면 상태 덤프를 러너로 보낸다 (run_stage0.cjs 로 돌릴 때)
+    const scn = q.get('scn') ?? 'mig';
+    const seed = num('seed', 1);
+    const b = await testB(
+      glx,
+      {
+        scn, seed, N: q.has('N') ? num('N', 192) : undefined, variant: num('variant', 2), syncBounds: q.get('sync') !== '0', checkEvery: num('check', 50),
+        dump: q.get('dump') === '1', name: q.get('name') ?? `b_${scn}_s${seed}`, resGate: q.has('gate') ? num('gate', 0.9) : undefined, T: q.has('T') ? num('T', 400) : undefined,
+      },
+      log,
+      (sim) => sim.view(canvas.width, canvas.height),
+    );
+    window.__stage0 = { done: true, ok: !b.nan && (b.stepsDone === b.steps || b.stop !== ''), result: { caps, b } };
+    return;
+  }
+  if (test === 'bstats') {
+    const bstats = await testBStats(glx, log);
+    window.__stage0 = { done: true, ok: bstats.ok, result: { caps, bstats } };
+    return;
+  }
   if (test === 'a12') {
     // dt, period, eps, sub 를 주면 기본 설정을 덮어쓴다 (tag 는 그 설정의 이름)
     const over: { dt?: number; period?: number; eps?: number; substeps?: number } = {};
@@ -204,6 +234,11 @@ async function main(): Promise<void> {
   let spf = SPFS.includes(num('spf', 2)) ? num('spf', 2) : 2;
   let tri = q.get('tri') === '1';
   let fastDt = q.get('fast') === '1';
+  // 먹이: 유인원 하나(굶은 이주. 먹지 않는다) / 대칭 먹이 셋(규칙 8: 먹고, 그 자리에 쌓고, 다 먹으면 떠난다) / 없음
+  type FoodChoice = 'one' | 'three' | 'none';
+  const FOODS: FoodChoice[] = ['one', 'three', 'none'];
+  let food: FoodChoice = FOODS.find((v) => v === q.get('food')) ?? 'one';
+  if (food === 'three') tri = true;
   let sim: PlasmGPU | null = null;
 
   el('controls').hidden = false;
@@ -215,11 +250,14 @@ async function main(): Promise<void> {
   const setPulse = tile('맥동 주기', '초');
   const setDraws = tile('스텝당 드로콜', '');
   const setTime = tile('모델 시간', '');
+  const setFood = tile('먹이 남은 양', '');
 
   const startRun = (): void => {
     cancelAnimationFrame(raf);
     glx.reset();
-    const s = new PlasmGPU(glx, defaultParams({ N: gridN, seed: 1, triK: tri ? (2 * Math.PI) / 100 : 0, ...(fastDt ? FAST_DT : {}) }));
+    // 위상 무늬의 주기는 격자 한 변의 약수여야 한다 (384² 는 96, 256²·512² 는 128)
+    const foodOver: Partial<PlasmParams> = food === 'three' ? foodParams(FOOD3) : food === 'none' ? { foods: [] } : {};
+    const s = new PlasmGPU(glx, defaultParams({ N: gridN, seed: 1, triK: tri ? (2 * Math.PI) / 100 : 0, triP: gridN % 96 === 0 ? 96 : 128, ...foodOver, ...(fastDt ? FAST_DT : {}) }));
     applyVariant(s, FAST);
     sim = s;
     const gain = fastDt ? FAST_DT_GAIN : 1;
@@ -240,6 +278,8 @@ async function main(): Promise<void> {
         setPulse((STEPS_PER_PULSE / sps).toFixed(2));
         setDraws(((glx.drawCalls - draws0 - frames) / steps).toFixed(0));
         setTime((s.step * s.params.dt).toFixed(0));
+        // 먹이 상태는 텍셀 몇 개를 읽는 것이라 반 초에 한 번은 부담이 없다
+        setFood(s.food.eats ? s.readFood().map((f) => (Number.isFinite(f.M) ? f.M.toFixed(0) : '∞')).join(' / ') : '–');
         frames = 0;
         steps = 0;
         draws0 = glx.drawCalls;
@@ -251,13 +291,23 @@ async function main(): Promise<void> {
   };
 
   // 격자와 무늬 단추는 시뮬레이션을 새로 만든다(앞의 GL 자원을 지운다). 속도를 재는 동안에는 잠근다
+  const triButtons = choices('triRow', [false, true], (on) => (on ? '삼각 격자' : '끔'), tri, (on) => {
+    tri = on;
+    startRun();
+  });
   const rebuilders = [
     ...choices('gridRow', GRIDS, (n) => `${n}²`, gridN, (n) => {
       gridN = n;
       startRun();
     }),
-    ...choices('triRow', [false, true], (on) => (on ? '삼각 격자' : '끔'), tri, (on) => {
-      tri = on;
+    ...triButtons,
+    ...choices('foodRow', FOODS, (v) => ({ one: '유인원 하나', three: '먹이 셋', none: '없음' })[v], food, (v) => {
+      food = v;
+      if (v === 'three' && !tri) {
+        // 먹이 사이에 굵은 관이 서려면 위상 무늬가 있어야 한다. 함께 켠다 (끄고 볼 수도 있다)
+        tri = true;
+        triButtons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === 1)));
+      }
       startRun();
     }),
     ...choices('dtRow', [false, true], (on) => (on ? '2배 (시험 중)' : '기본'), fastDt, (on) => {
@@ -324,7 +374,7 @@ async function main(): Promise<void> {
   if (location.protocol.startsWith('http')) {
     fetch(`${REF_BASE}manifest.json`).then(
       (r) => {
-        if (r.ok) nav.innerHTML = '개발용 시험: ' + ['?test=a0', '?test=parity', '?test=a12&N=192&steps=2000'].map((s) => `<a href="stage0.html${s}">${s}</a>`).join(' · ');
+        if (r.ok) nav.innerHTML = '개발용 시험: ' + ['?test=a0', '?test=parity', '?test=parityfood', '?test=a12&N=192&steps=2000', '?test=b&scn=food3&T=120'].map((s) => `<a href="stage0.html${s}">${s}</a>`).join(' · ');
       },
       () => undefined,
     );

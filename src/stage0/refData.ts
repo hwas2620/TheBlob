@@ -9,7 +9,7 @@ export interface RefField {
 export interface RefFile {
   file: string;
   tag: string;
-  kind: 'state' | 'solver';
+  kind: 'state' | 'solver' | 'foodstate' | 'food6state' | 'foodfadestate';
   N: number;
   step: number;
   t: number;
@@ -21,6 +21,10 @@ export interface RefFile {
   flux_err_p0?: number;
   wet?: number;
   nc?: number;
+  /** 먹이가 있는 상태(foodstate): 먹이마다 남은 양(−1 = 줄지 않음), 유인장의 세기, 다 떨어진 시각(null = 살아 있음) */
+  fM?: number[];
+  famp?: number[];
+  t_exh?: (number | null)[];
 }
 
 export interface RefManifest {

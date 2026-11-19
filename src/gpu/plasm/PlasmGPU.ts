@@ -1,14 +1,17 @@
-// 원형질체 코어 — 상태 텍스처와 한 스텝의 패스 순서 (spec 의 규칙 1~7)
+// 원형질체 코어 — 상태 텍스처와 한 스텝의 패스 순서 (spec 의 규칙 1~8)
 //
 //   cellA  h, wet, age, sage          cellB  θ, slime, p, 직전 p          edgeC  간선 전도도 E, N, NE, SE
+//   cellH  저장 배율 H, 직전 스텝의 쉬는 두께 (규칙 8 의 저장을 켰을 때만)
+//   food   먹이마다 텍셀 하나: 남은 양, 유인장의 세기, 떨어진 스텝, 이번 스텝에 셀 하나가 받는 두께
 //
-// 한 스텝: 간선 켜기 → 위상(부분 스텝) → 쉬는 두께·우변·가중치 → 멀티그리드 → 유량·두께 → 전역 평균 → 강화 → 마름 → 젖음
+// 한 스텝: 간선 켜기 → 위상(부분 스텝) → 쉬는 두께·우변·가중치 → 멀티그리드 → 먹는 양 → 유량·두께 → 전역 평균 → 강화 → 마름 → 젖음
 // numpy 기준 모델(specs/plasmodium-core/stage0/ref/ref_model.py)과 연산 순서를 맞췄다.
 
-import type { AsyncRead, Glx, Prog, Rect, Target, Tex } from './glx';
+import type { AsyncRead, Glx, Prog, Rect, Target, Tex, UVal } from './glx';
+import { foodGeometry, initialFoodState, packFoodState, unpackFoodState, type FoodGeometry, type FoodStat, type FoodState } from './food';
 import { noiseFields } from './hashNoise';
 import { MultigridGPU } from './MultigridGPU';
-import { shaderVars, type PlasmParams } from './params';
+import { foodMode, shaderVars, type FoodMode, type PlasmParams } from './params';
 import { plasmShaders } from './shaders';
 
 /** 스텝 통계 (1×1 축소 결과를 읽은 것) */
@@ -41,18 +44,40 @@ export interface PlainState {
   C: Float32Array[];
   p: Float32Array;
   pm: Float32Array;
+  /** 규칙 8: 저장 배율 H 와 직전 스텝의 쉬는 두께. 없으면 H = 1, 쉬는 두께 = h 로 둔다 (처음 상태와 같다) */
+  Hres?: Float32Array;
+  hbar?: Float32Array;
+  /** 규칙 8: 먹이 상태. 없으면 처음 상태 */
+  food?: FoodState[];
 }
 
 /** 한 스텝의 패스 묶음 (압력 풀이는 따로) */
-export type PassGroup = 'edges' | 'phase' | 'rest' | 'init' | 'flux' | 'q0' | 'reinforce' | 'dry' | 'blur' | 'wet';
+export type PassGroup = 'edges' | 'phase' | 'rest' | 'init' | 'food' | 'flux' | 'q0' | 'reinforce' | 'stats' | 'dry' | 'blur' | 'wet';
 const GROUPS_BEFORE_SOLVE: PassGroup[] = ['edges', 'phase', 'rest', 'init'];
-const GROUPS_AFTER_SOLVE: PassGroup[] = ['flux', 'q0', 'reinforce', 'dry', 'blur', 'wet'];
+const GROUPS_AFTER_SOLVE: PassGroup[] = ['food', 'flux', 'q0', 'reinforce', 'stats', 'dry', 'blur', 'wet'];
 
-/** snapshot() 이 읽어 둔 상태 (세 상태 텍스처의 RGBA 와 스텝 수) */
+/** 유량 구간의 누적 (enableStats 를 켰을 때). 값은 구간의 합이고 n 은 더한 스텝 수다 */
+export interface FlowStats {
+  n: number;
+  /** 간선마다 ΣQ, Σ|Q|, ΣC (RGBA = E, N, NE, SE) */
+  Q: Float32Array;
+  G: Float32Array;
+  C: Float32Array;
+}
+
+/** 두께 구간의 누적: RGBA = Σh, 최대 h, 최소 h, 구간 내내 젖어 있었는가(1/0) */
+export interface ThickStats {
+  n: number;
+  H: Float32Array;
+}
+
+/** snapshot() 이 읽어 둔 상태 (상태 텍스처의 RGBA 와 스텝 수. hres 는 RG, food 는 먹이 상태 텍셀) */
 export interface Snapshot {
   a: Float32Array;
   b: Float32Array;
   c: Float32Array;
+  hres: Float32Array | null;
+  food: Float32Array | null;
   step: number;
 }
 
@@ -82,7 +107,24 @@ export class PlasmGPU {
   private tAuxW: Target;
   private texG: Tex;
   private texCinit: Tex;
-  private texField: Tex;
+  private texField: Tex; // r: 항복 잡음 η, g: 먹이 원반의 번호 + 1
+  // ── 규칙 8 (먹이) ──
+  /** 먹이 규칙의 어느 부분이 켜져 있는가 */
+  readonly food: FoodMode;
+  /** 먹이의 자리와 원반 (CPU 쪽 사본) */
+  readonly foodGeom: FoodGeometry;
+  private H: [Tex, Tex] | null = null; // 저장 배율과 직전 쉬는 두께 (핑퐁)
+  private tRest: Target[]; // rest 패스의 타깃. 저장을 켜면 H 의 두 장에 맞춰 둘, 아니면 하나
+  private curH = 0;
+  private FS: [Tex, Tex] | null = null; // 먹이 상태 (핑퐁)
+  private tFS: Target[] = [];
+  private curFS = 0;
+  private texFoodPos: Tex | null = null;
+  private texFoodC: Tex[] = [];
+  private foodStat: Tex | null = null;
+  private tFoodStat: Target | null = null; // 통계만 뽑을 때 쓰는 타깃 (상태 출력은 버린다)
+  // ── 시험용 누적 통계 (enableStats) ──
+  private acc: { tex: Tex[][]; tgt: Target[]; cur: number; flowN: number; thickN: number; keepFlow: boolean; keepThick: boolean } | null = null;
   private dry: [Tex, Tex, Tex];
   private tDry: [Target, Target, Target];
   private blur: [Tex, Tex];
@@ -153,13 +195,34 @@ export class PlasmGPU {
     const noise = noiseFields(params.seed, N, params.edgeSigma, params.d0, params.d0Noise);
     this.texG = glx.tex(N, N, 'rgba32f', noise.G);
     this.texCinit = glx.tex(N, N, 'rgba32f', noise.Cinit);
+    this.food = foodMode(params);
+    this.foodGeom = foodGeometry(params);
     const field = new Float32Array(N * N * 2);
-    const food = this.attractantField();
     for (let i = 0; i < N * N; i++) {
       field[i * 2] = noise.eta[i];
-      field[i * 2 + 1] = food[i];
+      field[i * 2 + 1] = this.foodGeom.disc[i];
     }
     this.texField = glx.tex(N, N, 'rg32f', field);
+    this.texFoodC = this.foodGeom.fields.map((f) => glx.tex(N, N, 'rgba32f', f));
+    if (this.food.store) {
+      this.H = [glx.tex(N, N, 'rg32f'), glx.tex(N, N, 'rg32f')];
+      this.tRest = this.H.map((h) => glx.target(this.aux, this.W, h));
+    } else {
+      this.tRest = [this.tAuxW];
+    }
+    if (this.food.n > 0) {
+      const nf = this.food.n;
+      this.FS = [glx.tex(nf, 1, 'rgba32f'), glx.tex(nf, 1, 'rgba32f')];
+      this.foodStat = glx.tex(nf, 1, 'rgba32f');
+      this.tFS = this.FS.map((t) => glx.target(t, this.foodStat!));
+      this.tFoodStat = glx.target(glx.tex(nf, 1, 'rgba32f'), this.foodStat);
+      const pos = new Float32Array(nf * 4);
+      this.foodGeom.centre.forEach(([x, y], k) => {
+        pos[k * 4] = x;
+        pos[k * 4 + 1] = y;
+      });
+      this.texFoodPos = glx.tex(nf, 1, 'rgba32f', pos);
+    }
     // 타깃에 붙지 않는 텍스처는 할당에 실패해도 타깃의 완전성 검사에 걸리지 않는다
     glx.checkError(`${N}² 격자의 텍스처 만들기`);
 
@@ -191,15 +254,35 @@ export class PlasmGPU {
    * 상태를 통째로 바꾼다. 핑퐁 두 장 모두에 올린다 — "몸 주변만 계산"은 가위 밖을 다시 쓰지 않으므로
    * 다른 한 장에 이전 몸이 남아 있으면 안 된다. 작업 텍스처도 비우고 경계 상자를 CPU 에서 다시 잰다
    */
-  private setState(a: Float32Array, b: Float32Array, c: Float32Array, step: number): void {
+  private setState(a: Float32Array, b: Float32Array, c: Float32Array, step: number, hres: Float32Array | null, food: Float32Array | null): void {
     const { glx, N } = this;
-    this.curA = this.curB = this.curC = 0;
+    this.curA = this.curB = this.curC = this.curH = this.curFS = 0;
     for (let i = 0; i < 2; i++) {
       glx.upload(this.A[i], a);
       glx.upload(this.B[i], b);
       glx.upload(this.C[i], c);
     }
+    if (this.H) {
+      // 주지 않으면 처음 상태: H = 1, 직전 쉬는 두께 = h (numpy 기준과 같다)
+      let d = hres;
+      if (!d) {
+        d = new Float32Array(N * N * 2);
+        for (let i = 0; i < N * N; i++) {
+          d[i * 2] = 1;
+          d[i * 2 + 1] = a[i * 4];
+        }
+      }
+      for (const t of this.H) glx.upload(t, d);
+    }
+    if (this.FS) {
+      const s = food ?? initialFoodState(this.params);
+      for (const t of this.FS) glx.upload(t, s);
+    }
     this.step = step;
+    if (this.acc) {
+      this.acc.flowN = this.acc.thickN = 0;
+      this.acc.keepFlow = this.acc.keepThick = false;
+    }
     glx.clear(this.tAuxW, 0);
     for (const t of this.tDry) glx.clear(t, 0);
     for (const t of this.tBlur) glx.clear(t, 0);
@@ -231,12 +314,21 @@ export class PlasmGPU {
 
   /** 지금 상태를 통째로 읽어 둔다 (벤치마크가 변형마다 같은 몸에서 출발하게 하는 데 쓴다. 파이프라인이 멈춘다) */
   snapshot(): Snapshot {
-    return { a: this.readA(), b: this.readB(), c: this.readC(), step: this.step };
+    let hres: Float32Array | null = null;
+    if (this.H) {
+      const v = this.glx.read(this.H[this.curH]);
+      hres = new Float32Array(this.N * this.N * 2);
+      for (let i = 0; i < this.N * this.N; i++) {
+        hres[i * 2] = v[i * 4];
+        hres[i * 2 + 1] = v[i * 4 + 1];
+      }
+    }
+    return { a: this.readA(), b: this.readB(), c: this.readC(), hres, food: this.FS ? this.glx.read(this.FS[this.curFS]) : null, step: this.step };
   }
 
   /** snapshot 으로 읽어 둔 상태로 되돌린다 */
   restore(s: Snapshot): void {
-    this.setState(s.a, s.b, s.c, s.step);
+    this.setState(s.a, s.b, s.c, s.step, s.hres, s.food);
   }
 
   /** 방금 끝난 스텝의 마지막 출력에서 텍셀 하나를 읽어, 그 스텝까지의 명령이 모두 끝나기를 기다린다 (벽시계 측정용) */
@@ -307,29 +399,6 @@ export class PlasmGPU {
     this.boundsStep = step;
   }
 
-  /** 유인장 c = amp·Σ(주기 상) exp(−r²/2σ²). numpy 기준과 같은 식 */
-  private attractantField(): Float32Array {
-    const N = this.N;
-    const out = new Float32Array(N * N);
-    const a = this.params.attractant;
-    if (!a) return out;
-    const c0 = N / 2 - 0.5;
-    const fx = c0 + a.dist * Math.cos((a.angleDeg * Math.PI) / 180);
-    const fy = c0 + a.dist * Math.sin((a.angleDeg * Math.PI) / 180);
-    for (let y = 0; y < N; y++) {
-      for (let x = 0; x < N; x++) {
-        let g = 0;
-        for (let sx = -N; sx <= N; sx += N) {
-          for (let sy = -N; sy <= N; sy += N) {
-            g += Math.exp(-((x - fx - sx) ** 2 + (y - fy - sy) ** 2) / (2 * a.sigma * a.sigma));
-          }
-        }
-        out[y * N + x] = a.amp * g;
-      }
-    }
-    return out;
-  }
-
   /** 초기 상태: 격자 가운데의 원반 */
   reset(): void {
     const { N } = this;
@@ -346,7 +415,7 @@ export class PlasmGPU {
       }
     }
     const zero = new Float32Array(N * N * 4);
-    this.setState(a, zero, zero, 0);
+    this.setState(a, zero, zero, 0, null, null);
   }
 
   /** numpy 가 내보낸 "스텝 시작 시점의 상태"를 넣는다 */
@@ -366,7 +435,15 @@ export class PlasmGPU {
       b[i * 4 + 3] = s.pm[i];
       for (let k = 0; k < 4; k++) c[i * 4 + k] = s.C[k][i];
     }
-    this.setState(a, b, c, step);
+    let hres: Float32Array | null = null;
+    if (s.Hres && s.hbar) {
+      hres = new Float32Array(n * 2);
+      for (let i = 0; i < n; i++) {
+        hres[i * 2] = s.Hres[i];
+        hres[i * 2 + 1] = s.hbar[i];
+      }
+    }
+    this.setState(a, b, c, step, hres, s.food ? packFoodState(s.food) : null);
   }
 
   /** 한 스텝. afterSolve 는 압력을 푼 직후(유량 갱신 전)에 불린다 — 시험이 풀이의 입력과 해를 읽는 자리 */
@@ -403,17 +480,36 @@ export class PlasmGPU {
           this.curB = 1 - this.curB;
         }
         break;
-      case 'rest': // 3. 쉬는 두께, 우변, 간선 가중치
-        glx.draw(prog.rest, this.tAuxW, { uA: this.A[this.curA], uB: this.B[this.curB], uC: this.C[this.curC], uG: this.texG, uT: this.step * p.dt }, r);
+      case 'rest': // 3. 쉬는 두께, 우변, 간선 가중치 (저장을 켰으면 배율 H 도 갱신한다)
+        if (this.H && this.FS) {
+          glx.draw(prog.rest, this.tRest[1 - this.curH], {
+            uA: this.A[this.curA], uB: this.B[this.curB], uC: this.C[this.curC], uG: this.texG, uT: this.step * p.dt,
+            uH: this.H[this.curH], uField: this.texField, uFS: this.FS[this.curFS],
+          }, r);
+          this.curH = 1 - this.curH;
+        } else {
+          glx.draw(prog.rest, this.tAuxW, { uA: this.A[this.curA], uB: this.B[this.curB], uC: this.C[this.curC], uG: this.texG, uT: this.step * p.dt }, r);
+        }
         break;
       case 'init': // 4. 압력의 웜스타트
         glx.draw(prog.mgInit, this.mg.p0Target(), { uA: this.A[this.curA], uB: this.B[this.curB] }, r);
         break;
+      case 'food': // 6. 먹는 양 (먹이마다 텍셀 하나. 먹지 않는 설정이면 건너뛴다)
+        if (this.food.eats && this.FS) {
+          glx.draw(prog.food, this.tFS[1 - this.curFS], { uA: this.A[this.curA], uB: this.B[this.curB], uField: this.texField, uFS: this.FS[this.curFS], uFoodPos: this.texFoodPos!, uStep: this.step });
+          this.curFS = 1 - this.curFS;
+        }
+        break;
       case 'flux': {
-        // 7. 유량과 두께
+        // 7. 유량과 두께 (먹은 만큼 두꺼워진다)
         const srcA = this.A[this.curA];
         const srcB = this.B[this.curB];
-        glx.draw(prog.flux, this.flipAB(), { uA: srcA, uB: srcB, uW: this.W, uP: this.mg.pTex() }, r);
+        const u: Record<string, UVal> = { uA: srcA, uB: srcB, uW: this.W, uP: this.mg.pTex() };
+        if (this.food.active && this.FS) {
+          u.uField = this.texField;
+          u.uFS = this.FS[this.curFS];
+        }
+        glx.draw(prog.flux, this.flipAB(), u, r);
         break;
       }
       case 'q0': // 8. 전역 평균 (Q0)
@@ -423,6 +519,20 @@ export class PlasmGPU {
       case 'reinforce': // 9. 강화
         glx.draw(prog.reinforce, this.tC[1 - this.curC], { uC: this.C[this.curC], uW: this.W, uP: this.mg.pTex(), uRed: this.red[this.red.length - 1] }, r);
         this.curC = 1 - this.curC;
+        break;
+      case 'stats': // (시험용) 구간 통계의 누적. 가위 밖은 마른 땅이라 모두 0 이므로 전체 격자에 그린다
+        if (this.acc) {
+          const a = this.acc;
+          const src = a.tex[a.cur];
+          glx.draw(prog.statsAcc, a.tgt[1 - a.cur], {
+            uA: this.A[this.curA], uW: this.W, uP: this.mg.pTex(), uC: this.C[this.curC],
+            uAccQ: src[0], uAccG: src[1], uAccC: src[2], uAccH: src[3], uKeepFlow: a.keepFlow ? 1 : 0, uKeepThick: a.keepThick ? 1 : 0,
+          });
+          a.cur = 1 - a.cur;
+          a.flowN = a.keepFlow ? a.flowN + 1 : 1;
+          a.thickN = a.keepThick ? a.thickN + 1 : 1;
+          a.keepFlow = a.keepThick = true;
+        }
         break;
       case 'dry': {
         // 10. 마름
@@ -440,7 +550,10 @@ export class PlasmGPU {
         break;
       case 'wet': {
         // 12. 젖음
-        glx.draw(prog.wetMark, this.tPlan, { uA: this.A[this.curA], uB: this.B[this.curB], uF: this.blur[1], uField: this.texField }, r);
+        const u: Record<string, UVal> = { uA: this.A[this.curA], uB: this.B[this.curB], uF: this.blur[1], uField: this.texField };
+        this.texFoodC.forEach((t, i) => (u[`uFoodC${i}`] = t));
+        if (this.food.fades && this.FS) u.uFS = this.FS[this.curFS];
+        glx.draw(prog.wetMark, this.tPlan, u, r);
         const srcA = this.A[this.curA];
         const srcB = this.B[this.curB];
         glx.draw(prog.wetApply, this.flipAB(), { uA: srcA, uB: srcB, uPlan: this.plan }, r);
@@ -470,6 +583,7 @@ export class PlasmGPU {
     else if (g === 'rest') glx.readPixel(this.W);
     else if (g === 'q0') glx.readPixel(this.red[this.red.length - 1]);
     else if (g === 'blur') glx.readPixel(this.blur[1]);
+    else if (g === 'food') glx.readPixel(this.FS ? this.FS[this.curFS] : this.A[this.curA]);
     else glx.readPixel(this.A[this.curA]);
   }
 
@@ -514,7 +628,66 @@ export class PlasmGPU {
 
   /** 캔버스에 지금 상태를 그린다 */
   view(width: number, height: number): void {
-    this.glx.draw(this.prog.view, this.glx.screen(width, height), { uA: this.A[this.curA], uB: this.B[this.curB], uC: this.C[this.curC], uCanvas: [width, height] });
+    const u: Record<string, UVal> = { uA: this.A[this.curA], uB: this.B[this.curB], uC: this.C[this.curC], uCanvas: [width, height] };
+    if (this.FS) {
+      u.uField = this.texField;
+      u.uFS = this.FS[this.curFS];
+    }
+    this.glx.draw(this.prog.view, this.glx.screen(width, height), u);
+  }
+
+  // ── 규칙 8 의 읽기 (시험·확인용. 파이프라인을 멈춘다) ──
+  /** 먹이 상태 */
+  readFood(): FoodState[] {
+    return this.FS ? unpackFoodState(this.glx.read(this.FS[this.curFS]), this.food.n) : [];
+  }
+
+  /** 지금 상태에서 먹이 원반마다의 통계 (젖은 셀 수, 평균 두께, 위상). 먹이 패스를 통계용 타깃에 한 번 그린다 */
+  readFoodStat(): FoodStat[] {
+    if (!this.FS || !this.foodStat || !this.tFoodStat) return [];
+    this.glx.draw(this.prog.food, this.tFoodStat, { uA: this.A[this.curA], uB: this.B[this.curB], uField: this.texField, uFS: this.FS[this.curFS], uFoodPos: this.texFoodPos!, uStep: this.step });
+    const v = this.glx.read(this.foodStat);
+    const out: FoodStat[] = [];
+    for (let k = 0; k < this.food.n; k++) {
+      const wet = v[k * 4];
+      out.push({ wet, hMean: v[k * 4 + 1] / Math.max(this.foodGeom.discCells[k], 1), phase: wet > 0 ? Math.atan2(v[k * 4 + 3], v[k * 4 + 2]) : NaN });
+    }
+    return out;
+  }
+
+  // ── 시험용 누적 통계 ──
+  /** 구간 통계를 켠다: 스텝마다 패스 하나(출력 넉 장, 전체 격자)가 는다. 판정 도구가 쓰고 게임에서는 켜지 않는다 */
+  enableStats(): void {
+    if (this.acc) return;
+    const { glx, N } = this;
+    const tex = [0, 1].map(() => [0, 1, 2, 3].map(() => glx.tex(N, N, 'rgba32f')));
+    this.acc = { tex, tgt: tex.map((t) => glx.target(...t)), cur: 0, flowN: 0, thickN: 0, keepFlow: false, keepThick: false };
+  }
+
+  /** 지금까지의 유량 구간을 읽고 다음 스텝부터 새 구간을 시작한다 */
+  takeFlowStats(): FlowStats {
+    if (!this.acc) throw new Error('enableStats 를 먼저 부른다');
+    const a = this.acc;
+    const t = a.tex[a.cur];
+    const out = { n: a.flowN, Q: this.glx.read(t[0]), G: this.glx.read(t[1]), C: this.glx.read(t[2]) };
+    a.keepFlow = false;
+    a.flowN = 0;
+    return out;
+  }
+
+  /** 지금까지의 두께 구간을 읽고 다음 스텝부터 새 구간을 시작한다 */
+  takeThickStats(): ThickStats {
+    if (!this.acc) throw new Error('enableStats 를 먼저 부른다');
+    const a = this.acc;
+    const out = { n: a.thickN, H: this.glx.read(a.tex[a.cur][3]) };
+    a.keepThick = false;
+    a.thickN = 0;
+    return out;
+  }
+
+  /** 저장 배율 H (r)와 직전 스텝의 쉬는 두께 (g). 저장을 켜지 않았으면 null */
+  readH(): Float32Array | null {
+    return this.H ? this.glx.read(this.H[this.curH]) : null;
   }
 
   // ── 읽기 (RGBA float, N·N·4) ──

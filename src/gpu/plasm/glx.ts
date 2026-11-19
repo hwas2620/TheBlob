@@ -37,6 +37,7 @@ interface UniformInfo {
 const SAMPLER_UNIT: Record<string, number> = {
   uP: 0, uW: 1, uWf: 1, uS: 2, uM: 3, uMf: 3, uE: 4, uR: 4, // 압력 풀이
   uA: 5, uB: 6, uC: 7, uD: 8, uSrc: 9, uG: 10, uCinit: 10, uAux: 11, uPlan: 11, uRed: 11, uF: 12, uField: 13,
+  uH: 14, uFS: 15, // 규칙 8: 저장 배율, 먹이 상태
 };
 const MAX_UNITS = 16;
 

@@ -7,6 +7,7 @@
 //
 // dist/ 를 작은 정적 서버로 띄우고 stage0.html?<쿼리> 를 연 뒤 window.__stage0.done 을 기다린다.
 // 결과 JSON 은 results/<이름>.json, 화면 갈무리는 screenshots/stage0-<이름>.png 에 쓴다.
+// 페이지가 보내는 상태 덤프(POST /__dump/<실행>/<파일>. 관문 B 의 ?test=b&dump=1)는 STAGE0_DUMP 폴더(기본 dumps/)에 그대로 쓴다.
 // 이 컨테이너의 Chromium 은 소프트웨어 렌더러(SwiftShader)라서 시간 수치는 참고용이다.
 
 const http = require('http');
@@ -17,11 +18,43 @@ const { chromium } = require('playwright');
 const ROOT = path.resolve(__dirname, '..', '..', '..');
 // STAGE0_DIST 로 다른 빌드 폴더를 가리킬 수 있다 (긴 실행이 dist/ 를 쓰는 동안 개발용 빌드를 따로 시험할 때)
 const DIST = process.env.STAGE0_DIST ? path.resolve(process.env.STAGE0_DIST) : path.join(ROOT, 'dist');
+// 덤프는 크다(192² 한 장 3MB). 저장소에 넣지 않는다(.gitignore). metrics/gpu2run.py 가 numpy 실행과 같은 꼴로 바꾼 뒤 지운다
+const DUMP = process.env.STAGE0_DUMP ? path.resolve(process.env.STAGE0_DUMP) : path.join(__dirname, 'dumps');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.gz': 'application/octet-stream', '.svg': 'image/svg+xml' };
 
 function serve() {
   const server = http.createServer((req, res) => {
-    const rel = decodeURIComponent(req.url.split('?')[0]);
+    let rel;
+    try {
+      rel = decodeURIComponent(req.url.split('?')[0]);
+    } catch {
+      rel = '\0';
+    }
+    if (rel.includes('\0')) {
+      res.writeHead(400);
+      res.end('bad path');
+      return;
+    }
+    if (req.method === 'POST' && rel.startsWith('/__dump/')) {
+      const file = path.join(DUMP, rel.slice('/__dump/'.length));
+      if (!file.startsWith(DUMP + path.sep)) {
+        res.writeHead(400);
+        res.end('bad path');
+        return;
+      }
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      const out = fs.createWriteStream(file);
+      req.pipe(out);
+      out.on('finish', () => {
+        res.writeHead(200);
+        res.end('ok');
+      });
+      out.on('error', (e) => {
+        res.writeHead(500);
+        res.end(String(e));
+      });
+      return;
+    }
     const file = path.join(DIST, rel === '/' ? 'index.html' : rel);
     if (!file.startsWith(DIST) || !fs.existsSync(file)) {
       res.writeHead(404);
@@ -73,6 +106,9 @@ function serve() {
     }
     await new Promise((r) => setTimeout(r, 500));
   }
+  // 끝났다는 표시와 마지막 글 사이에 적힌 줄을 마저 찍는다
+  const rest = await page.evaluate(() => document.getElementById('out').textContent);
+  if (rest.length > printed) process.stdout.write(rest.slice(printed));
   const outDir = path.join(__dirname, 'results');
   fs.mkdirSync(outDir, { recursive: true });
   fs.mkdirSync(path.join(ROOT, 'screenshots'), { recursive: true });

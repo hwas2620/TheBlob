@@ -28,3 +28,10 @@ dist-ssr
 
 # Screenshots (Playwright MCP)
 screenshots/
+
+# 관문 B 의 상태 덤프 (크다. 지표만 남긴다)
+specs/plasmodium-core/stage0/dumps/
+specs/plasmodium-core/stage0/runs_gpu/
+
+# 파이썬 캐시
+__pycache__/
