@@ -1,0 +1,17 @@
+{
+ "run": "b_dir34_s2_pk4",
+ "origin": "numpy",
+ "N": 192,
+ "seed": 2,
+ "angle": 34,
+ "t_touch": [
+  252.4
+ ],
+ "stop": "touched",
+ "complete": true,
+ "nan": false,
+ "mass_err": 1.691768418476429e-16,
+ "neg_end": 0,
+ "h_min_in": -0.00048355605091689744,
+ "scn": "dir34"
+}
