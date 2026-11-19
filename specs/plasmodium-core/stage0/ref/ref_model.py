@@ -56,6 +56,7 @@ DEF = dict(
     res_acc=0, res_tau=30.0,     # 1: rest thickness on food grows by what the cell has eaten (cap h_res); 2: ramps toward h_res with time constant res_tau; 0: jumps to h_res on contact
     limit_net=0,                 # positivity limiter on NET outflow: only cells that would go negative scale down their outgoing edge fluxes
     stiff_h=0.0, stiff_pow=2.0,  # thin cells are stiffer: kappa_i = kappa*max(1,(stiff_h/h_i)^stiff_pow); 0 = off
+    sat_scent=0.0,               # [split] see the yield threshold: >0 limits the satiety term to scent-free ground
     sat_k=0.0, sat_tau=10.0,     # satiety: yield threshold += sat_k*S, S low-passed indicator of live food being covered
     c_lat=0.0,                   # lateral spreading of conductance to parallel neighbour edges (fraction per unit time)
     mech_rel=0.0, mech_gmax=0.5,     # [H1] accommodation feedback on the phase: dtheta/dt += clip(mech_rel*(h-hbar)/hbar, +-mech_gmax*omega)*sin(theta); <0: an over-filled cell is pulled toward its relaxed (thick) phase
@@ -528,7 +529,9 @@ def run(name, over):
         if P['sat_k'] > 0:
             feeding = 1.0 if (nf and any((fM[k_] > 0) and bool((fdisc[k_] & wet).any()) for k_ in range(nf))) else 0.0
             S_sat += (dt / P['sat_tau']) * (feeding - S_sat)
-        yld = P['hy0'] * (1 + P['y_sigma'] * eta) + curv + P['y_s'] * slime - P['y_c'] * food + P['sat_k'] * S_sat
+        # [split] sat_scent > 0: satiety holds back only the fronts with no food scent (attractant below sat_scent * food_amp); toward a food the front advances as usual
+        sat_w = np.clip(1.0 - food / (P['sat_scent'] * P['food_amp']), 0.0, 1.0) if (P['sat_k'] > 0 and P['sat_scent'] > 0) else 1.0
+        yld = P['hy0'] * (1 + P['y_sigma'] * eta) + curv + P['y_s'] * slime - P['y_c'] * food + P['sat_k'] * S_sat * sat_w
         # N2: donor thickness seen by the dry cell
         if P['wet_rho'] > 0:                          # sample the wet-masked thickness at distance wet_rho along the diagonals (bilinear, renormalised over wet cells)
             a_ = min(1.0, P['wet_rho'] / np.sqrt(2.0)); wA = a_ * (1 - a_); wD = a_ * a_
