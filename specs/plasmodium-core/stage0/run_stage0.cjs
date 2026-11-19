@@ -109,6 +109,12 @@ function serve() {
   // 끝났다는 표시와 마지막 글 사이에 적힌 줄을 마저 찍는다
   const rest = await page.evaluate(() => document.getElementById('out').textContent);
   if (rest.length > printed) process.stdout.write(rest.slice(printed));
+  // 속도 측정이면 글 상자의 요약(사용자가 복사해 붙이는 것의 앞부분)도 찍는다
+  const summary = await page.evaluate(() => {
+    const t = document.getElementById('benchText');
+    return t && t.value ? t.value.split('\n\n{')[0] : '';
+  });
+  if (summary) console.log(`\n── 글 상자의 요약 ──\n${summary}`);
   const outDir = path.join(__dirname, 'results');
   fs.mkdirSync(outDir, { recursive: true });
   fs.mkdirSync(path.join(ROOT, 'screenshots'), { recursive: true });

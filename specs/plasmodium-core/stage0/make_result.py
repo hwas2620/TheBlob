@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""RESULT-A.tmpl.md 의 자리표시({{…}})를 판정 출력(judge_a12.py)과 측정 기록(results/bench.json, results/glcalls.json)으로 채워 RESULT-A.md 를 쓴다.
+"""RESULT-A.tmpl.md 의 자리표시({{…}})를 판정 출력(judge_a12.py)과 측정 기록(results/bench.json, results/glcalls.json, results/margin_*.json)으로 채워 RESULT-A.md 를 쓴다.
 
 usage: python3 make_result.py      (이 폴더의 RESULT-A.tmpl.md → RESULT-A.md)
 글을 고칠 때는 RESULT-A.md 가 아니라 RESULT-A.tmpl.md 를 고치고 이 스크립트를 다시 돌린다.
@@ -57,8 +57,33 @@ num = dict(NRUN=str(n_a1), FLUX_MED=f'{min(fm):.2f}~{max(fm):.2f}', FLUX_P99=f'{
 for n in (256, 384, 512, 768):
     num[f'D{n}'] = [str(draws[(n, v)]['drawCalls']) if (n, v) in draws else '-' for v in V]
 sw = {(r['N'], r['variant']): r for r in bench['rows'] if r['cycles'] == 2 and not r.get('tag')}
+
+# 여유 규칙의 대조 실행: 같은 실행을 가위 사각형만 바꿔 돌린 것 (results/margin_*.json). 끝 상태 요약이 묶음 안에서 모두 같아야 한다
+MARGIN = [
+    ('굶은 이주', [('margin_a_full', '전체 격자 (가위 없음)'), ('margin_a_hard_sync', '옛 여유, 그 자리에서 읽기 (8스텝마다)'), ('margin_a_hard_y24', '옛 여유, 멈춤 없이 읽기 (24스텝마다 도착)'),
+                   ('margin_a_soft_y12', '새 여유, 멈춤 없이 읽기 (12스텝마다 도착)'), ('margin_a_soft_y24', '새 여유, 멈춤 없이 읽기 (24스텝마다 도착)'), ('margin_a_soft_y48', '새 여유, 멈춤 없이 읽기 (48스텝마다 도착)')]),
+    ('먹이 셋 (규칙 8)', [('margin_b_hard_sync', '옛 여유, 그 자리에서 읽기 (8스텝마다)'), ('margin_b_soft_y24', '새 여유, 멈춤 없이 읽기 (24스텝마다 도착)'), ('margin_b_soft_y48', '새 여유, 멈춤 없이 읽기 (48스텝마다 도착)')]),
+]
+mlines = ['| 실행 | 가위 사각형 | 그린 넓이 평균 | 여유 사용률 최대 | 그중 새 규칙이 덜 허용한 구간 (n > 16) | 넘친 횟수 | 끝 상태 요약 |', '|---|---|---|---|---|---|---|']
+msame = []
+for what, group in MARGIN:
+    hashes = set()
+    for name, label in group:
+        j = json.load(open(os.path.join(ROOT, 'results', name + '.json')))
+        assert j['done'] and j['ok'], name
+        a = j['result'].get('a12') or j['result']['b']
+        assert a['stepsDone'] == a['steps'] and not a['nan'], name
+        hashes.add(a['stateHash'])
+        scissor = '없음' not in label
+        soft = f"{a['marginUseSoft'] * 100:.0f}%" if a.get('softMargin') else '-'
+        mlines.append(f"| {what} {a['stepsDone']}스텝 | {label} | {a['activeFractionMean'] * 100:.1f}% | " + (f"{a['marginUse'] * 100:.0f}% | {soft} | {a['marginOverruns']}" if scissor else '- | - | -') + f" | `{a['stateHash']}` |")
+    msame.append(len(hashes) == 1)
+    print(what, '끝 상태 요약', hashes)
+assert all(msame), '끝 상태가 다른 실행이 있다'
+margin = '\n'.join(mlines) + ('\n\n  묶음마다 끝 상태 요약이 모두 같다. 여유 사용률의 최대는 처음 원반이 퍼지는 첫 8스텝의 값이다(8스텝에 6~7셀. 이 구간은 두 규칙이 같고 모델이 보장한다).'
+                                   ' 새 규칙이 "스텝당 한 칸"보다 덜 허용한 구간만 보면 사용률이 훨씬 낮다.')
 out = (tmpl.replace('{{JUDGE}}', judge).replace('{{BENCH}}', btab).replace('{{GLCALLS}}', '\n'.join(gl_lines)).replace('{{GLBYNAME}}', gl_byname).replace('{{GLTEXPCT}}', str(gl_texpct)).replace('{{GLMIN}}', gl_min).replace('{{GLMAX}}', gl_max).replace('{{N_A1}}', str(n_a1)).replace('{{D384_V3}}', num['D384'][3])
-       .replace('{{SW_384_V0}}', f"{sw[(384, '기준형')]['msPerStep']:.0f}").replace('{{SW_384_V2}}', f"{sw[(384, '합친 패스 + 몸 주변만')]['msPerStep']:.0f}").replace('{{SW_TINY}}', f"{bench['usPerTinyDraw']:.0f}"))
+       .replace('{{SW_384_V0}}', f"{sw[(384, '기준형')]['msPerStep']:.0f}").replace('{{SW_384_V2}}', f"{sw[(384, '합친 패스 + 몸 주변만')]['msPerStep']:.0f}").replace('{{SW_TINY}}', f"{bench['usPerTinyDraw']:.0f}").replace('{{MARGIN}}', margin))
 assert '{{' not in out, [x for x in out.split('{{')[1:]][:3]
 open(os.path.join(ROOT, 'RESULT-A.md'), 'w').write(out)
 print(num)

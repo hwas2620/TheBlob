@@ -6,7 +6,7 @@ usage: analyze_bench.py FILE [glcalls.json]
   둘째 인자를 주면 그 파일의 스텝당 GL 호출 수(count=1 로 센 것)를 호출 수 모델에 쓴다. 기본은 results/glcalls.json
 
 내는 것
-  1. 기기, 프레임 루프(게임에서 쓸 수 있는 속도), WebGPU
+  1. 기기, 프레임 루프(게임에서 쓸 수 있는 속도: 몸 주변만 / 전체 격자 / 지속), WebGPU(잰 경우)
   2. 스텝당 시간: 예전 방식 / 차이 방식 / 읽기의 고정 시간
   3. 비용 모델 셋의 예측과 실측의 비교 (384², 2사이클)
        호출 수 모델   GL 호출 수 × 호출 하나의 비용 (+ 텍스처 묶기의 웃돈)
@@ -35,35 +35,54 @@ def load(path):
 
 
 def print_loop(L):
-    """프레임 루프 하나(오름·내림·읽기 대조·지속)를 표로 낸다"""
+    """프레임 루프 하나(오름, 전체 격자, 지속. v4 까지는 내림·읽기 대조도)를 표로 낸다"""
     limit = max(18.5, L['baseMs'] * 1.12)
     print('\n프레임 루프 (%d², 화면 갱신 주기 %.1fms, 지킨 것으로 보는 간격 ≤ %.1fms)' % (L['N'], L['baseMs'], limit))
-    print('  시험      프레임당 스텝  간격 평균/중앙/95백분위(ms)  늦은 프레임  초당 스텝  스텝당 ms  전진 px/s: %d² / 256² 환산 / 빠른 설정(%d²)' % (L['N'], L['N']))
-    best = None
+    print('  시험      프레임당 스텝  간격 평균/중앙/95백분위(ms)  늦은 프레임  그린 넓이  초당 스텝  스텝당 ms  전진 px/s: %d² / 256² 환산 / 빠른 설정(%d²)' % (L['N'], L['N']))
 
     def line(r):
         held = r['msMean'] <= limit
         px = CELLS_PER_STEP * r['stepsPerSec'] * MAP_PX / L['N']
         late = '%4.0f%%' % (r['late'] * 100) if 'late' in r else '    -'
-        print('  %-8s %6d %s     %5.1f / %5.1f / %5.1f        %s     %6.0f     %5.2f       %5.1f / %5.1f / %5.1f' % (
-            r.get('label', '오름'), r['spf'], '*' if held else ' ', r['msMean'], r['msMedian'], r['msP95'], late, r['stepsPerSec'], r['msMean'] / r['spf'], px, px * L['N'] / 256, px * FAST_GAIN))
+        area = '%4.0f%%' % (r['area'] * 100) if 'area' in r else '    -'
+        print('  %-8s %6d %s     %5.1f / %5.1f / %5.1f        %s      %s     %6.0f     %5.2f       %5.1f / %5.1f / %5.1f' % (
+            r.get('label', '오름'), r['spf'], '*' if held else ' ', r['msMean'], r['msMedian'], r['msP95'], late, area, r['stepsPerSec'], r['msMean'] / r['spf'], px, px * L['N'] / 256, px * FAST_GAIN))
         return held
-    for r in L['rows']:
-        if line(r) and (best is None or r['stepsPerSec'] > best['stepsPerSec']):
-            best = r
+
+    def best_of(rows):
+        best = None
+        for r in rows:
+            if line(r) and (best is None or r['stepsPerSec'] > best['stepsPerSec']):
+                best = r
+        return best
+    best = best_of(L['rows'])
+    best_full = best_of(L.get('full', []))
     for r in L.get('down', []):
         line(r)
     for r in L.get('readback', []):
         line(r)
     print('  (* = 화면 갱신을 지킴. 256² 환산은 스텝당 시간이 격자와 무관하다고 볼 때의 값)')
     if best:
-        print('  → 오름 시험에서 지킨 최대: 프레임당 %d스텝, 초당 %.0f스텝' % (best['spf'], best['stepsPerSec']))
-    S = L.get('sustained')
-    if S:
-        print('  지속 %.0f초 (프레임당 %d스텝) — 2초마다 초당 스텝 / 늦은 프레임%% / 그린 넓이%%:' % (S['seconds'], S['spf']))
-        print('    ' + ', '.join('%.0f/%.0f/%s' % (w['stepsPerSec'], w['late'] * 100, '%.0f' % (w['area'] * 100) if 'area' in w else '-') for w in S['windows']))
+        print('  → 오름 시험(몸 주변만)에서 지킨 최대: 프레임당 %d스텝, 초당 %.0f스텝, 전진 %.0fpx/s' % (best['spf'], best['stepsPerSec'], CELLS_PER_STEP * best['stepsPerSec'] * MAP_PX / L['N']))
+    if L.get('full'):
+        if best_full:
+            print('  → 전체 격자에서 지킨 최대: 프레임당 %d스텝, 초당 %.0f스텝, 전진 %.0fpx/s' % (best_full['spf'], best_full['stepsPerSec'], CELLS_PER_STEP * best_full['stepsPerSec'] * MAP_PX / L['N']))
+        else:
+            print('  → 전체 격자에서는 지킨 설정이 없다')
+    for S in (L.get('sustainedHard'), L.get('sustained')):
+        if not S:
+            continue
+        v5 = bool(S['windows']) and 'box' in S['windows'][0]
+        print('  지속 %.0f초%s (프레임당 %d스텝) — 2초마다 초당 스텝 / 늦은 프레임%% / 그린 넓이%%%s:' % (
+            S['seconds'], ' [%s]' % S['label'] if S.get('label') else '', S['spf'], ' / 상자만의 넓이% / 여유(셀)' if v5 else ''))
+        print('    ' + ', '.join(
+            '%.0f/%.0f/%s' % (w['stepsPerSec'], w['late'] * 100, '%.0f' % (w['area'] * 100) if 'area' in w else '-')
+            + ('/%.0f/%.0f' % (w['box'] * 100, w['margin']) if v5 else '') for w in S['windows']))
+        if 'marginUse' in S:
+            print('    여유 사용률 최대 %.0f%% (완만한 구간 %.0f%%), 넘친 횟수 %d' % (S['marginUse'] * 100, S.get('marginUseSoft', 0) * 100, S.get('marginOverruns', 0)))
     if L.get('note'):
         print('  주의:', L['note'])
+
 
 def main():
     if len(sys.argv) < 2:
@@ -80,7 +99,9 @@ def main():
     print('GPU      :', b['renderer'])
     print('브라우저 :', b['userAgent'])
     w = b.get('webgpu') or {}
-    if w.get('ok'):
+    if 'webgpu' not in b:
+        pass   # v5 부터는 webgpu=1 로 열었을 때만 잰다
+    elif w.get('ok'):
         print('WebGPU   : %s — 디스패치 하나 %.1fµs (패스를 따로 열면 %.1fµs)' % (w.get('adapter'), w['usPerDispatch'], w['usPerPass']))
         if 'solveRectMs' in w:
             print('           풀이 한 번 흉내 (%d², 디스패치 %d번): 몸 주변만 %.2fms, 전체 격자 %s%s' % (
@@ -90,7 +111,7 @@ def main():
         print('WebGPU   : 쓸 수 없음 (%s)' % w.get('error'))
 
     v4 = b.get('version', 3) >= 4
-    for L in (b.get('frameLoop'), b.get('frameLoopSmall')):
+    for L in (b.get('frameLoopSmall'), b.get('frameLoop')) if b.get('version', 3) >= 5 else (b.get('frameLoop'), b.get('frameLoopSmall')):
         if L and L['rows']:
             print_loop(L)
 

@@ -85,6 +85,13 @@ export interface Snapshot {
 const BOUNDS_EVERY = 8;
 /** 경계 상자 밖으로 두는 여유(셀). 젖은 마스크 흐림의 반경 6 보다 커야 한다 */
 const BOUNDS_MARGIN = 10;
+/**
+ * 완만한 여유 규칙(softMargin)의 상수. 상자를 잰 뒤 n 스텝 동안 상자의 한 변이 넓어질 수 있다고 보는 셀 수가 min(n, SOFT_BASE + ⌈n × SOFT_RATE⌉) 이다.
+ * 근거는 numpy 기준 실행 50개의 첫 젖음 기록이다(RESULT-A.md 의 "여유 규칙의 근거와 확인"): 처음 원반이 퍼질 때가 가장 빨라서 4스텝에 4셀, 16스텝에 10셀,
+ * 32스텝에 12셀, 128스텝에 16셀까지 갔고(몸을 2배로 키운 실행), 그 뒤로는 어느 실행에서도 32스텝에 3셀, 128스텝에 8셀을 넘지 않았다. n ≤ 16 에서는 "스텝당 한 칸" 규칙과 같은 값이다
+ */
+const SOFT_BASE = 12;
+const SOFT_RATE = 0.25;
 
 export class PlasmGPU {
   readonly params: PlasmParams;
@@ -157,6 +164,23 @@ export class PlasmGPU {
    * 경계 상자를 다시 재지 않고 오래 돌리면 몸이 사각형 밖으로 나갈 수 있어 결과가 틀려진다. 시간만 재는 짧은 구간에서 쓴다
    */
   fixedMargin: number | null = null;
+  /**
+   * 게임 루프용: 여유를 "잰 뒤 지난 스텝 수"만큼이 아니라 완만하게 키운다(SOFT_BASE, SOFT_RATE).
+   * 경계 상자를 멈춤 없이 읽으면 한두 프레임 늦게 도착하고, 그사이 스텝당 한 칸씩 여유를 키우면 프레임당 스텝이 많을수록 그리는 넓이가 크게 는다
+   * (Adreno 840 에서 384², 프레임당 12스텝: 상자는 격자의 4~14% 인데 그린 넓이가 16% → 100% 로 갔다. 그리는 넓이가 늘면 스텝이 느려지고, 느려지면 읽기가 더 늦어진다).
+   * "스텝당 한 칸"은 모델이 보장하는 상한이고 이 규칙은 잰 값에 기댄 것이다. 넘쳤는지는 marginUse, marginOverruns 로 본다.
+   * 넘치면 사각형의 가장자리가 그동안 벽이 된다(밖의 셀은 젖지 못한다. 부피는 보존된다)
+   */
+  softMargin = false;
+  /** 진단: 새 경계 상자가 도착했을 때 (지난번 상자에서 실제로 넓어진 셀 수) / (그동안 여유가 허용한 셀 수) 의 최대. setState 가 0 으로 되돌린다 */
+  marginUse = 0;
+  /**
+   * 진단: 같은 비를 완만한 규칙이 "스텝당 한 칸"보다 적게 허용한 구간(n > 16)에서만 본 최대.
+   * 그 밖의 구간은 모델이 보장하므로(비가 1 을 넘을 수 없다) 완만한 규칙이 얼마나 빠듯한지는 이 값이 말해 준다
+   */
+  marginUseSoft = 0;
+  /** 진단: 위의 비가 1 을 넘은 횟수. 0 이 아니면 그 구간의 계산이 전체 격자 계산과 달랐을 수 있다 */
+  marginOverruns = 0;
   /** 스텝당 V 사이클 수 (params.mgCycles 에서 시작. 돌리는 중에 바꿀 수 있다) */
   cycles: number;
   private bounds: [number, number, number, number] | null = null; // 젖은 셀의 x0, y0, x1, y1
@@ -303,6 +327,9 @@ export class PlasmGPU {
     }
     this.bounds = x1 >= 0 ? [x0, y0, x1, y1] : null;
     this.boundsStep = this.step;
+    this.marginUse = 0;
+    this.marginUseSoft = 0;
+    this.marginOverruns = 0;
     this.dropPending();
   }
 
@@ -336,10 +363,20 @@ export class PlasmGPU {
     this.glx.readPixel(this.A[this.curA]);
   }
 
+  /** 경계 상자를 잰 뒤 n 스텝 동안 상자의 한 변이 넓어질 수 있다고 보는 셀 수 */
+  private growth(n: number): number {
+    return this.softMargin ? Math.min(n, SOFT_BASE + Math.ceil(n * SOFT_RATE)) : n;
+  }
+
+  /** 지금 가위 사각형이 경계 상자 밖으로 두는 여유(셀) */
+  activeMargin(): number {
+    return this.fixedMargin ?? BOUNDS_MARGIN + this.growth(this.step - this.boundsStep) + this.marginExtra;
+  }
+
   /** 이번 스텝에 그릴 영역. null 이면 전체 */
   private activeRect(): Rect | null {
     if (!this.scissor || !this.bounds) return null;
-    const m = this.fixedMargin ?? BOUNDS_MARGIN + (this.step - this.boundsStep) + this.marginExtra;
+    const m = this.activeMargin();
     const x0 = this.bounds[0] - m;
     const y0 = this.bounds[1] - m;
     const x1 = this.bounds[2] + m;
@@ -394,8 +431,30 @@ export class PlasmGPU {
     return r ? (r[2] * r[3]) / (this.N * this.N) : 1;
   }
 
+  /** 젖은 셀의 경계 상자(가장 최근에 잰 것. 여유는 뺀 것)가 격자에서 차지하는 비율. 젖은 셀이 없으면 0 */
+  boundsFraction(): number {
+    const b = this.bounds;
+    return b ? ((b[2] - b[0] + 1) * (b[3] - b[1] + 1)) / (this.N * this.N) : 0;
+  }
+
   private applyBounds(v: Float32Array, step: number): void {
-    this.bounds = v[0] > 1e8 ? null : [v[0], v[1], -v[2], -v[3]];
+    const nb: [number, number, number, number] | null = v[0] > 1e8 ? null : [v[0], v[1], -v[2], -v[3]];
+    // 진단: 지난번 상자에서 실제로 넓어진 셀 수를 그동안 여유가 허용한 셀 수와 견준다.
+    // 그 스텝에 전체 격자를 그리고 있었으면(사각형이 격자 가장자리에 닿음) 견주지 않는다: 계산은 맞고, 토러스를 넘어간 몸의 상자는 한 번에 크게 뛴다
+    const ob = this.bounds;
+    const n = step - this.boundsStep;
+    if (nb && ob && n > 0 && this.fixedMargin === null) {
+      const allowed = this.growth(n);
+      const m = BOUNDS_MARGIN + allowed + this.marginExtra;
+      const wasFull = ob[0] - m < 0 || ob[1] - m < 0 || ob[2] + m >= this.N || ob[3] + m >= this.N;
+      if (!wasFull) {
+        const grown = Math.max(ob[0] - nb[0], ob[1] - nb[1], nb[2] - ob[2], nb[3] - ob[3]);
+        this.marginUse = Math.max(this.marginUse, grown / allowed);
+        if (allowed < n) this.marginUseSoft = Math.max(this.marginUseSoft, grown / allowed);
+        if (grown > allowed) this.marginOverruns++;
+      }
+    }
+    this.bounds = nb;
     this.boundsStep = step;
   }
 

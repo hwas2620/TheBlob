@@ -522,6 +522,10 @@ export interface A12Options {
   over?: { dt?: number; period?: number; eps?: number; substeps?: number };
   /** 덮어쓴 설정의 이름. 판정 스크립트가 ref/a12_N…_<tag>.json 을 찾는다 */
   tag?: string;
+  /** 가위 사각형의 여유를 완만하게 키운다 (PlasmGPU.softMargin. 게임 루프의 설정) */
+  softMargin?: boolean;
+  /** 이 스텝마다 이벤트 루프로 돌아간다 (기본 100). 멈춤 없는 읽기는 돌아간 뒤에야 도착하므로, 이 값이 경계 상자가 늦는 스텝 수를 정한다 */
+  yieldEvery?: number;
 }
 
 export interface A12Result extends A12Options {
@@ -549,6 +553,51 @@ export interface A12Result extends A12Options {
   disp_100_300: number | null;
   tTouch: number | null;
   areaEnd: number;
+  /** 끝 상태의 요약 (stateHash). 가위 사각형이 달라도 같은 계산이면 같은 값이 나온다 */
+  stateHash: string;
+  /** 여유의 사용률: (경계 상자가 실제로 넓어진 셀 수) / (그동안 여유가 허용한 셀 수) 의 최대, 완만한 규칙이 더 적게 허용한 구간에서만 본 최대, 1 을 넘은 횟수 */
+  marginUse: number;
+  marginUseSoft: number;
+  marginOverruns: number;
+}
+
+/**
+ * 모델 상태를 비트 단위로 요약한다. 두 실행이 같은 상태에 닿았는지 볼 때 쓴다.
+ * 젖은 셀은 상태 전부(두께·나이·위상·점액·압력·전도도), 마른 셀은 두께와 점액만 넣는다: 마른 셀의 나머지 값(압력 따위)은 모델이 쓰지 않고,
+ * 가위 사각형 안에 들었는지에 따라 달라질 수 있다. +0 과 −0 은 같은 것으로 친다
+ */
+export function stateHash(sim: PlasmGPU): string {
+  const s = sim.snapshot();
+  const n = sim.N * sim.N;
+  const bits = (v: Float32Array): Uint32Array => new Uint32Array(v.buffer, v.byteOffset, v.length);
+  const a = bits(s.a), b = bits(s.b), c = bits(s.c);
+  const hr = s.hres ? bits(s.hres) : null;
+  let h1 = 0x811c9dc5, h2 = 0x9747b28c;
+  const eat = (u: number): void => {
+    const w = u === 0x80000000 ? 0 : u;
+    h1 = Math.imul(h1 ^ w, 0x01000193);
+    h2 = Math.imul((h2 << 5) | (h2 >>> 27), 0x85ebca6b) ^ w;
+  };
+  for (let i = 0; i < n; i++) {
+    const wet = s.a[i * 4 + 1] > 0.5;
+    eat(wet ? 1 : 0);
+    eat(a[i * 4]);
+    eat(b[i * 4 + 1]);
+    if (!wet) continue;
+    eat(a[i * 4 + 2]);
+    eat(a[i * 4 + 3]);
+    eat(b[i * 4]);
+    eat(b[i * 4 + 2]);
+    eat(b[i * 4 + 3]);
+    for (let k = 0; k < 4; k++) eat(c[i * 4 + k]);
+    if (hr) {
+      eat(hr[i * 2]);
+      eat(hr[i * 2 + 1]);
+    }
+  }
+  if (s.food) for (const u of bits(s.food)) eat(u);
+  const hex = (x: number): string => (x >>> 0).toString(16).padStart(8, '0');
+  return hex(h1) + hex(h2);
 }
 
 export function quantile(sorted: number[], q: number): number {
@@ -566,6 +615,8 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
   const variant = VARIANTS[opts.variant] ?? VARIANTS[0];
   applyVariant(sim, variant);
   sim.asyncBounds = !opts.syncBounds;
+  sim.softMargin = opts.softMargin === true;
+  const yieldEvery = Math.max(1, opts.yieldEvery ?? 100);
   const N = opts.N;
   const n = N * N;
   const dt = params.dt;
@@ -655,8 +706,8 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
         const last = fluxErrSeries.slice(-20).sort((a, b) => a - b);
         log(`  스텝 ${stepsDone}: 넓이 ${areaEnd}, 무게중심 (${cen[0].toFixed(1)}, ${cen[1].toFixed(1)}), 최대 전도도 ${cMaxRun.toFixed(0)}, 최근 유량 오차 중앙 ${quantile(last, 0.5).toFixed(3)}, ${((performance.now() - t0) / 1000).toFixed(0)}초`);
       }
-      await new Promise((r) => setTimeout(r, 0));
     }
+    if (stepsDone % yieldEvery === 0) await new Promise((r) => setTimeout(r, 0));
   }
   const at = (t: number): number[] | null => traj.find((r) => Math.abs(r[0] - t) < 1e-6) ?? null;
   const disp = (ta: number, tb: number): number | null => {
@@ -687,11 +738,16 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
     disp_100_300: disp(100, 300),
     tTouch,
     areaEnd,
+    stateHash: stateHash(sim),
+    marginUse: sim.marginUse,
+    marginUseSoft: sim.marginUseSoft,
+    marginOverruns: sim.marginOverruns,
   };
-  log(`${N}² 시드 ${opts.seed} ${opts.cycles}사이클${opts.tri ? ' 삼각 격자' : ''} [${variant.name}${variant.scissor ? (opts.syncBounds ? ', 경계 상자 즉시 읽기' : ', 경계 상자 비동기') : ''}]: ${stepsDone}스텝, NaN ${nan ? '있음' : '없음'}, 스텝 끝 음수 두께 ${negEndSteps}스텝(최소 ${hMinEnd.toExponential(2)}), `
+  log(`${N}² 시드 ${opts.seed} ${opts.cycles}사이클${opts.tri ? ' 삼각 격자' : ''} [${variant.name}${variant.scissor ? (opts.syncBounds ? ', 경계 상자 즉시 읽기' : `, 경계 상자 비동기(${yieldEvery}스텝마다 도착)`) + (opts.softMargin ? ', 완만한 여유' : '') : ''}]: ${stepsDone}스텝, NaN ${nan ? '있음' : '없음'}, 스텝 끝 음수 두께 ${negEndSteps}스텝(최소 ${hMinEnd.toExponential(2)}), `
     + `스텝 안 최소 두께 ${hMinInStep.toExponential(2)}, 최대 전도도 ${cMaxRun.toFixed(0)}, 부피 오차 ${res.volumeRelErr.toExponential(2)}`);
   log(`  유량 오차 중앙 ${res.fluxErr.median.toFixed(3)} / 90백분위 ${res.fluxErr.p90.toFixed(3)} / 99백분위 ${res.fluxErr.p99.toFixed(3)} / 최대 ${res.fluxErr.max.toFixed(3)} (${sorted.length}회)`);
   log(`  이동 t=0~300 ${res.disp_0_300?.toFixed(1) ?? '-'}셀, t=0~400 ${res.disp_0_400?.toFixed(1) ?? '-'}셀, t=100~300 ${res.disp_100_300?.toFixed(1) ?? '-'}셀, 유인원에 닿은 시각 ${tTouch ?? '-'}, `
-    + `몸이 격자 절반까지 퍼진 시각 ${tWrap ?? '-'}, 스텝당 드로콜 ${drawCallsPerStep}, 그린 영역 평균 ${(res.activeFractionMean * 100).toFixed(0)}%, ${res.seconds.toFixed(0)}초`);
+    + `몸이 격자 절반까지 퍼진 시각 ${tWrap ?? '-'}, 스텝당 드로콜 ${drawCallsPerStep}, 그린 영역 평균 ${(res.activeFractionMean * 100).toFixed(1)}%, ${res.seconds.toFixed(0)}초`);
+  log(`  끝 상태 요약 ${res.stateHash}, 여유 사용률 최대 ${(res.marginUse * 100).toFixed(0)}% (완만한 구간 ${(res.marginUseSoft * 100).toFixed(0)}%, 넘친 횟수 ${res.marginOverruns})`);
   return res;
 }
