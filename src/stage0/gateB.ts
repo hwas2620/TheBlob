@@ -10,7 +10,7 @@ import { defaultParams, foodParams, type PlasmParams } from '../gpu/plasm/params
 import { fluxError, solveCG } from './cpuSolver';
 import { loadManifest, loadRef } from './refData';
 import { FOOD3, SCENARIOS } from './scenarios';
-import { applyVariant, channel, quantile, refFood, toState, VARIANTS, type Log } from './tests';
+import { applyVariant, channel, quantile, refFood, stateHash, toState, VARIANTS, type Log } from './tests';
 
 /** 덤프 한 장에 든 평면의 순서 (metrics/gpu2run.py 의 PLANES 와 같아야 한다) */
 export const DUMP_PLANES = [
@@ -152,6 +152,9 @@ export interface BOptions {
   resGate?: number;
   /** 길이를 바꾼다 (모델 시간. 시험용) */
   T?: number;
+  /** 가위 사각형의 여유를 완만하게 키운다 (PlasmGPU.softMargin), 이 스텝마다 이벤트 루프로 돌아간다 (기본 100). tests.ts 의 A12Options 와 같다 */
+  softMargin?: boolean;
+  yieldEvery?: number;
 }
 
 export interface BResult extends BOptions {
@@ -190,6 +193,11 @@ export interface BResult extends BOptions {
   /** 덤프한 시각 */
   dumped: number[];
   dumpFailed: boolean;
+  /** 끝 상태의 요약과 여유의 사용률 (tests.ts 의 A12Result 와 같다) */
+  stateHash: string;
+  marginUse: number;
+  marginUseSoft: number;
+  marginOverruns: number;
 }
 
 /** 점액 시나리오의 처음 상태: 가운데의 원반 + 원반 밖의 점액 흔적 */
@@ -225,6 +233,8 @@ export async function testB(glx: Glx, opts: BOptions, log: Log, onFrame?: (sim: 
   const variant = VARIANTS[opts.variant] ?? VARIANTS[2];
   applyVariant(sim, variant);
   sim.asyncBounds = !opts.syncBounds;
+  sim.softMargin = opts.softMargin === true;
+  const yieldEvery = Math.max(1, opts.yieldEvery ?? 100);
   if (scn.slime0) sim.loadState(slimeStart(params, scn.slime0), 0);
   const n = N * N;
   const dt = params.dt;
@@ -374,8 +384,8 @@ export async function testB(glx: Glx, opts: BOptions, log: Log, onFrame?: (sim: 
         const last = fluxErrSeries.slice(-20).sort((x, y) => x - y);
         log(`  스텝 ${stepsDone}: 넓이 ${areaEnd}, 부피 ${vEnd.toFixed(1)}, 최대 전도도 ${cMaxRun.toFixed(0)}, 최근 유량 오차 중앙 ${quantile(last, 0.5).toFixed(3)}, 먹이 남은 양 ${mEnd.map((m) => (Number.isFinite(m) ? m.toFixed(0) : '∞')).join('/') || '-'}, ${((performance.now() - t0) / 1000).toFixed(0)}초`);
       }
-      await new Promise((r) => setTimeout(r, 0));
     }
+    if (stepsDone % yieldEvery === 0) await new Promise((r) => setTimeout(r, 0));
   }
 
   const sorted = fluxErrSeries.slice().sort((x, y) => x - y);
@@ -431,13 +441,18 @@ export async function testB(glx: Glx, opts: BOptions, log: Log, onFrame?: (sim: 
     newLeft,
     dumped: rec.dumped,
     dumpFailed: rec.failed,
+    stateHash: stateHash(sim),
+    marginUse: sim.marginUse,
+    marginUseSoft: sim.marginUseSoft,
+    marginOverruns: sim.marginOverruns,
   };
   log(`[${opts.scn}] ${stepsDone}스텝${stop ? ` (${stop})` : ''}, NaN ${nan ? '있음' : '없음'}, 스텝 끝 음수 두께 ${negEndSteps}스텝(최소 ${hMinEnd.toExponential(2)}), 스텝 안 최소 두께 ${hMinInStep.toExponential(2)}, `
     + `최대 전도도 ${cMaxRun.toFixed(0)}, 부피 ${v0.toFixed(1)} → ${vEnd.toFixed(1)} (먹은 양 ${eaten.toFixed(1)}, 오차 ${massErrMax.toExponential(2)})`);
   log(`  유량 오차 중앙 ${fluxErr.median.toFixed(3)} / 90백분위 ${fluxErr.p90.toFixed(3)} / 99백분위 ${fluxErr.p99.toFixed(3)} / 최대 ${fluxErr.max.toFixed(3)} (${sorted.length}회)`);
   if (nf > 0) log(`  먹이에 닿은 시각 ${tTouch.map((t) => t?.toFixed(1) ?? '-').join(' / ')}, 다 떨어진 시각 ${tExh.map((t) => t?.toFixed(1) ?? '-').join(' / ')}`);
   if (countNew) log(`  새로 젖은 셀 ${newTotal}개 가운데 흔적이 없는 쪽(오른쪽) ${newTotal - newLeft}개 (${newTotal > 0 ? (((newTotal - newLeft) / newTotal) * 100).toFixed(1) : '-'}%)`);
-  log(`  스텝당 드로콜 ${drawCallsPerStep}, 그린 영역 평균 ${(res.activeFractionMean * 100).toFixed(0)}%, 덤프 ${rec.dumped.length}장${rec.failed ? ' (보내지 못함)' : ''}, ${res.seconds.toFixed(0)}초`);
+  log(`  스텝당 드로콜 ${drawCallsPerStep}, 그린 영역 평균 ${(res.activeFractionMean * 100).toFixed(1)}%, 덤프 ${rec.dumped.length}장${rec.failed ? ' (보내지 못함)' : ''}, ${res.seconds.toFixed(0)}초`);
+  log(`  끝 상태 요약 ${res.stateHash}, 여유 사용률 최대 ${(res.marginUse * 100).toFixed(0)}% (완만한 구간 ${(res.marginUseSoft * 100).toFixed(0)}%, 넘친 횟수 ${res.marginOverruns})${opts.syncBounds ? '' : ` · 경계 상자 비동기(${yieldEvery}스텝마다 도착)${opts.softMargin ? ', 완만한 여유' : ''}`}`);
   return res;
 }
 
