@@ -39,6 +39,7 @@ DEF = dict(
     # --- N3 ---
     foods=[], food_sigma=25.0, food_amp=1.0, food_r=4.0, reservoir=0, eat=0.0, gain=0.0, food_M=0.0, food_fade=10.0,
     bridge_keep=0, bridge_break=1.0, tube_keep=0.0, h_res=1.0,
+    bridge_mem=0.0, bridge_mem_tau=1e9,   # [split] >0: a bridge cell is also kept while its remembered peak conductance (max of Cn, forgetting with time constant bridge_mem_tau) is >= bridge_mem: strands that were real veins outlive the flow that made them
     gm_every=20.0, nsnap=5, log_every=50,
     # --- N2 (front isotropy) ---
     wet_rho=0.0, curv='n8', curv_sigma=1.5, curv_ref=0.33, curv_gain=8.0, curv_cap=99.0, stop_touch=0,
@@ -177,6 +178,7 @@ def run(name, over):
     wet = dist < P['R_init']
     h = np.where(wet, P['h_init'], 0.0)
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
+    Cpk = np.zeros((N, N))
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
     elif P['slime0'] == 'all': slime[~wet] = 1.0
     C = [np.zeros((N, N)) for _ in DIRS]; eage = [np.zeros((N, N)) for _ in DIRS]
@@ -327,6 +329,7 @@ def run(name, over):
             theta = np.where(wet, wv * t, 0.0)
         # ---- rest thickness ----
         Cn = node_C()
+        if P['bridge_mem'] > 0: Cpk = np.maximum(Cn, Cpk * np.exp(-dt / P['bridge_mem_tau']))
         if P['res_acc'] == 2:      # ramp: on live food the stored-mass factor relaxes toward h_res with time constant res_tau (demand builds gradually, mass is drawn from the body)
             gate_ = (h >= P['res_gate'] * hbar_prev) if P['res_gate'] > 0 else 1.0     # the stored-mass target grows only while the cell is filled to its current rest thickness (demand follows supply)
             Hres = Hres + dt * resmask * wet * gate_ * (P['h_res'] - Hres) / P['res_tau']
@@ -474,8 +477,9 @@ def run(name, over):
                 xb = [~nb(wet, d) for d in RING]
                 Nc = np.zeros((N, N), np.int8)
                 for q in (0, 2, 4, 6): Nc += xb[q].astype(np.int8) - (xb[q] & xb[q + 1] & xb[(q + 2) % 8]).astype(np.int8)
-                ok = ((Nc <= 1) | (Cn < P['bridge_break'])) & (colour == step % 4)
-                nbridge_kept += int((Dm & (Nc > 1) & (Cn >= P['bridge_break'])).sum()); Dm &= ok
+                strong = (Cn >= P['bridge_break']) | ((Cpk >= P['bridge_mem']) if P['bridge_mem'] > 0 else False)
+                ok = ((Nc <= 1) | ~strong) & (colour == step % 4)
+                nbridge_kept += int((Dm & (Nc > 1) & strong).sum()); Dm &= ok
         if P['neg_dry']: Dm = Dm | (wet & (h < 0))
         if Dm.any():
             stay = wet & ~Dm; ns = np.zeros((N, N))
@@ -493,7 +497,7 @@ def run(name, over):
             else:
                 give = np.where(Dm, h / np.maximum(ns, 1), 0.0)
                 for d in ALL: h += np.where(stay, nb(give, d), 0.0)
-            h[Dm] = 0.0; wet = stay; slime[Dm] = 1.0; age[Dm] = 0.0; sage[Dm] = 0.0; p[Dm] = 0.0; pm[Dm] = 0.0; Hres[Dm] = 1.0
+            h[Dm] = 0.0; wet = stay; slime[Dm] = 1.0; age[Dm] = 0.0; sage[Dm] = 0.0; p[Dm] = 0.0; pm[Dm] = 0.0; Hres[Dm] = 1.0; Cpk[Dm] = 0.0
             ser_dry[step] = int(Dm.sum())
         # ---- wetting (thickness yield) ----
         pw = np.where(wet, (h - tube) if P['tube_yield'] else h, -np.inf)
