@@ -7,11 +7,16 @@ usage: export_ref.py PART [...]
   dumps384     384², 시드 1: 풀이 재생용 상태(스텝 2000)
   a12 N SEED SOLVER [T] [키=값 …] [tag=이름]   A1·A2 기준 실행 (SOLVER = mg | exact). 요약을 a12_N{N}_s{SEED}_{SOLVER}[_이름].json 에 쓴다.
                           키=값 은 모델 설정을 덮어쓴다 (예: dt=0.2 period=8 osc_sub=8 tag=dt2p8)
+  b SCN SEED [키=값 …] [tag=이름]   관문 B 의 기준 실행. SCN 은 아래 SCN 표의 이름. runs/b_{SCN}_s{SEED}[_이름]/ 에 상태(vs_t*.npz)를 남긴다
+  dumpsfood    192², 대칭 먹이 셋, 시드 1: 먹이가 있는 스텝 일치용 상태 (닿기 직전, 먹는 중, 첫 먹이가 떨어진 직후에서 +0, +1, +10, +50 스텝)
 
 상태 파일은 public/stage0/ref/ 에 float32 .bin.gz 로, 목록은 manifest.json 에 쓴다.
 기준 설정은 5차 검증의 "굶은 이주"에서 마름의 부피 나눔만 spec 대로 두께 비례(dry_weight='h')로 바꾼 것이다. 잡음은 해시 난수(noise='hash').
 """
-import json, os, sys, numpy as np
+import json, os, sys
+# 실행 여럿을 나란히 돌릴 때 스레드가 서로 다투지 않게 한다. numba 의 병렬 커널(mgt.py)이 CPU 를 다 잡으려 들면 한 스텝이 80배까지 느려진다
+for _k in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS', 'NUMBA_NUM_THREADS'): os.environ.setdefault(_k, '1')
+import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 PUB = os.path.normpath(os.path.join(HERE, '..', '..', '..', '..', 'public', 'stage0', 'ref'))
 sys.path.insert(0, HERE)
@@ -20,6 +25,24 @@ GA = dict(N=192, T=400, dt=0.1, seed=1,
           foods=[[27, 70]], food_sigma=60.0, food_amp=0.5, food_r=4.0, reservoir=0, eat=0.0, gain=0.0, food_M=0.0,
           bridge_keep=1, bridge_break=1.0, wet_rho=0.92, curv='gauss', curv_sigma=2.0, curv_ref=0.33, curv_gain=8.0, dry_weight='h', neg_dry=1,
           solver='mg', ncyc=2, nc=4, extrap=0.5, check_every=20, noise='hash', gm_every=1e9, nsnap=4, vsave=0)
+
+
+# ── 관문 B ──
+# 위상 무늬 (나) 흘러가는 삼각 격자. GPU 쪽(config.ts 의 OSCILLATOR)과 같은 값
+TRI = dict(tri_k=2 * np.pi / 100, tri_P=96, tri_T=80.0, tri_v=0.24)
+# 규칙 8 의 값: 5차 기준 먹이 실행(Y3_tri96d)의 것 + spec 의 "쉬는 두께의 90% 이상 차 있을 때만" (res_gate)
+FOOD = dict(reservoir=1, eat=0.05, gain=1.0, food_M=1200.0, food_fade=10.0, h_res=4.0, res_acc=2, res_tau=30.0, res_gate=0.9, food_sigma=25.0, food_amp=1.0, food_r=5.0)
+GB = dict(GA, **TRI, vsave=1, gm_every=20.0)
+SCN = {
+    'mig': dict(T=400),                                                          # 굶은 이주: GA 의 유인원 하나 (27°, 70셀)
+    'dir0': dict(foods=[[0, 70]], T=500, stop_touch=1), 'dir13': dict(foods=[[13, 70]], T=500, stop_touch=1), 'dir27': dict(foods=[[27, 70]], T=500, stop_touch=1),
+    'dir34': dict(foods=[[34, 70]], T=500, stop_touch=1), 'dir45': dict(foods=[[45, 70]], T=500, stop_touch=1),       # 방향별 도달 시각 (B2)
+    'food3': dict(FOOD, foods=[[20, 40], [140, 40], [260, 40]], T=480),         # 대칭 먹이 셋 (5차 Y3)
+    'asym3': dict(FOOD, foods=[[0, 35], [100, 45], [200, 40]], T=480),          # 비대칭 먹이 셋 (5차 A3)
+    'food4': dict(FOOD, N=256, tri_P=128, foods=[[10, 45], [100, 75], [215, 60], [300, 40]], T=700, eat=0.02, ncyc=3),   # 4차의 긴 배치 (F1 9-2절). 256² 라 무늬의 주기를 128 로
+    'long': dict(T=2000),                                                        # 지속: 굶은 이주를 500주기
+    'mig256': dict(N=256, tri_P=128, T=400), 'food3_256': dict(FOOD, N=256, tri_P=128, foods=[[20, 40], [140, 40], [260, 40]], T=480),   # 게임 격자 후보
+}
 
 
 def summarise(name, P, tag=''):
@@ -65,6 +88,16 @@ def main():
         over = dict(GA); over.update(N=N, seed=seed, solver=solver, T=T)
         over.update({k: (int(v) if k == 'osc_sub' else float(v)) for k, v in kv.items()})
         name = f'a12_N{N}_s{seed}_{solver}' + (f'_{tag}' if tag else ''); R.run(name, over); summarise(name, over, tag)
+    elif part == 'b':
+        scn = sys.argv[2]; seed = int(sys.argv[3]); kv = dict(a.split('=', 1) for a in sys.argv[4:]); tag = kv.pop('tag', '')
+        over = dict(GB); over.update(SCN[scn]); over.update(seed=seed)
+        for k, v in kv.items(): over[k] = json.loads(v) if v[:1] in '[{' else (int(v) if k in ('N', 'osc_sub', 'ncyc', 'res_acc', 'reservoir', 'vsave') else float(v))
+        R.run(f'b_{scn}_s{seed}' + (f'_{tag}' if tag else ''), over)
+    elif part == 'dumpsfood':
+        s0 = [int(a) for a in sys.argv[2:5]]           # 세 시점의 스텝 (닿기 직전, 먹는 중, 첫 먹이가 떨어진 직후). 먼저 b food3 1 을 돌려 metrics.json 의 t_touch, t_exh 를 보고 정한다
+        steps = tuple(s + d for s in s0 for d in (0, 1, 10, 50))
+        over = dict(GB); over.update(SCN['food3']); over.update(seed=1, T=(max(steps) + 2) * GA['dt'], vsave=0, gm_every=1e9, dump_dir=PUB, dump_state_steps=steps, dump_food=1, dump_tag='foodstate', check_every=0)
+        R.run('dumpsfood', over)
     else:
         raise SystemExit(__doc__)
 

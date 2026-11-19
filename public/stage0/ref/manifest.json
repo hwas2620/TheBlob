@@ -638,6 +638,990 @@
    ],
    "flux_err_p0": 0.07750960752220787,
    "nc": 4
+  },
+  {
+   "file": "foodstate_N192_s1_step00580.bin.gz",
+   "tag": "foodstate_N192_s1_step00580",
+   "N": 192,
+   "step": 580,
+   "t": 58.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    1200.0,
+    1200.0,
+    1200.0
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step00581.bin.gz",
+   "tag": "foodstate_N192_s1_step00581",
+   "N": 192,
+   "step": 581,
+   "t": 58.1,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    1200.0,
+    1200.0,
+    1200.0
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step00590.bin.gz",
+   "tag": "foodstate_N192_s1_step00590",
+   "N": 192,
+   "step": 590,
+   "t": 59.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    1200.0,
+    1200.0,
+    1199.995
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step00630.bin.gz",
+   "tag": "foodstate_N192_s1_step00630",
+   "N": 192,
+   "step": 630,
+   "t": 63.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    1200.0,
+    1200.0,
+    1199.6599999999962
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step02000.bin.gz",
+   "tag": "foodstate_N192_s1_step02000",
+   "N": 192,
+   "step": 2000,
+   "t": 200.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    742.4149999999789,
+    782.0599999999769,
+    710.1300000000122
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step02001.bin.gz",
+   "tag": "foodstate_N192_s1_step02001",
+   "N": 192,
+   "step": 2001,
+   "t": 200.10000000000002,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    742.024999999979,
+    781.6699999999769,
+    709.7350000000122
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step02010.bin.gz",
+   "tag": "foodstate_N192_s1_step02010",
+   "N": 192,
+   "step": 2010,
+   "t": 201.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    738.5149999999791,
+    778.159999999977,
+    706.1800000000123
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step02050.bin.gz",
+   "tag": "foodstate_N192_s1_step02050",
+   "N": 192,
+   "step": 2050,
+   "t": 205.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    722.9149999999796,
+    762.5599999999775,
+    690.3800000000131
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step03790.bin.gz",
+   "tag": "foodstate_N192_s1_step03790",
+   "N": 192,
+   "step": 3790,
+   "t": 379.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    44.315000000000296,
+    83.95999999999968,
+    3.0800000000301666
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step03791.bin.gz",
+   "tag": "foodstate_N192_s1_step03791",
+   "N": 192,
+   "step": 3791,
+   "t": 379.1,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    43.925000000000296,
+    83.56999999999968,
+    2.6850000000301666
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step03800.bin.gz",
+   "tag": "foodstate_N192_s1_step03800",
+   "N": 192,
+   "step": 3800,
+   "t": 380.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    40.41500000000029,
+    80.05999999999968,
+    0.0
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    0.9801986733067564
+   ],
+   "t_exh": [
+    null,
+    null,
+    379.70000000000005
+   ]
+  },
+  {
+   "file": "foodstate_N192_s1_step03840.bin.gz",
+   "tag": "foodstate_N192_s1_step03840",
+   "N": 192,
+   "step": 3840,
+   "t": 384.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodstate",
+   "fM": [
+    24.815000000000268,
+    64.45999999999965,
+    0.0
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    0.6570468198150575
+   ],
+   "t_exh": [
+    null,
+    null,
+    379.70000000000005
+   ]
   }
  ]
 }

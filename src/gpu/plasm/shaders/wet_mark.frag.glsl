@@ -2,14 +2,29 @@
 // 규칙 7 (1/2): 마른 셀이 젖을지 판정하고 부피를 줄 이웃을 고른다
 //   마른 셀이 보는 두께 P = max(축 이웃 4개의 h, 대각 4방향의 보간값)
 //   P > hy0·(1 + σ_y·η) + λ·gain·(f_ref − f) + y_s·slime − y_c·c  이면 젖는다 (f = 젖은 마스크의 가우스 흐림)
+//   유인장 c = Σ_먹이 (세기 × 그 먹이의 가우스). 세기는 살아 있으면 1 이고 다 먹히면 사라진다 (규칙 8)
 //   공급 셀은 8이웃 가운데 가장 두꺼운 셀 (E, N, NE, SE, W, S, SW, NW 순서에서 처음으로 더 큰 것)
 uniform sampler2D uA;     // 마름 뒤의 h, wet, age, sage
 uniform sampler2D uB;     // g: slime
 uniform sampler2D uF;     // r: 젖은 마스크의 흐림
-uniform sampler2D uField; // r: 항복 잡음 η, g: 유인장 c
+uniform sampler2D uField; // r: 항복 잡음 η
+#if {{FOOD_N}} > 0
+uniform sampler2D uFoodC0; // 먹이 0~3 의 유인장
+#endif
+#if {{FOOD_N}} > 4
+uniform sampler2D uFoodC1; // 먹이 4~7 의 유인장
+#endif
+#if {{FOOD_FADES}}
+uniform sampler2D uFS;     // 먹이 상태. g: 유인장의 세기
+#endif
 out vec4 o;
 const ivec2 ALL[8] = ivec2[8](ivec2(1, 0), ivec2(0, 1), ivec2(1, 1), ivec2(1, -1), ivec2(-1, 0), ivec2(0, -1), ivec2(-1, -1), ivec2(-1, 1));
 const float NONE = -1e30;
+#if {{FOOD_FADES}}
+float foodAmp(int k) { return texelFetch(uFS, ivec2(k, 0), 0).g; }
+#else
+float foodAmp(int k) { return 1.0; }
+#endif
 void main() {
   ivec2 c = ivec2(gl_FragCoord.xy);
   ivec2 n = textureSize(uA, 0);
@@ -35,7 +50,15 @@ void main() {
       ptest = max(ptest, ({{WET_WA}} * (hz[x] + hz[y]) + {{WET_WD}} * hz[d]) / max(den, 1e-30));
     }
   }
-  vec4 fld = texelFetch(uField, c, 0);
-  float yld = {{HY0}} * (1.0 + {{Y_SIGMA}} * fld.r) + {{CURV_K}} * ({{CURV_REF}} - texelFetch(uF, c, 0).r) + {{Y_S}} * texelFetch(uB, c, 0).g - {{Y_C}} * fld.g;
+  float cf = 0.0;
+#if {{FOOD_N}} > 0
+  vec4 g0 = texelFetch(uFoodC0, c, 0);
+  for (int k = 0; k < {{FOOD_N0}}; k++) cf += foodAmp(k) * g0[k];
+#endif
+#if {{FOOD_N}} > 4
+  vec4 g1 = texelFetch(uFoodC1, c, 0);
+  for (int k = 4; k < {{FOOD_N}}; k++) cf += foodAmp(k) * g1[k - 4];
+#endif
+  float yld = {{HY0}} * (1.0 + {{Y_SIGMA}} * texelFetch(uField, c, 0).r) + {{CURV_K}} * ({{CURV_REF}} - texelFetch(uF, c, 0).r) + {{Y_S}} * texelFetch(uB, c, 0).g - {{Y_C}} * cf;
   o = vec4(ptest > yld ? 1.0 : 0.0, float(arg), 0.0, 0.0);
 }

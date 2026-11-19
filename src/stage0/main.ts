@@ -17,7 +17,7 @@ import { defaultParams } from '../gpu/plasm/params';
 import { benchSummary, bestHeld, CELLS_PER_STEP, FAST_DT, heldLabel, heldLimit, LOOP_VARIANT, MAP_PX, runBench, STEPS_PER_PULSE, type BenchResult } from './bench';
 import { countingGl } from './glCount';
 import { REF_BASE } from './refData';
-import { applyVariant, testA0, testA12, testNoise, testParity, VARIANTS } from './tests';
+import { applyVariant, testA0, testA12, testNoise, testParity, testParityFood, VARIANTS, type FoodBase } from './tests';
 
 interface Stage0State {
   done: boolean;
@@ -179,6 +179,13 @@ async function main(): Promise<void> {
     const parity = [];
     for (const v of VARIANTS) parity.push(await testParity(glx, log, v));
     window.__stage0 = { done: true, ok: parity.every((p) => p.pass), result: { caps, parity } };
+    return;
+  }
+  if (test === 'parityfood') {
+    const base: FoodBase = new Map();
+    const parityFood = [];
+    for (const v of VARIANTS) parityFood.push(await testParityFood(glx, log, v, base));
+    window.__stage0 = { done: true, ok: parityFood.every((p) => p.pass), result: { caps, parityFood } };
     return;
   }
   if (test === 'a12') {

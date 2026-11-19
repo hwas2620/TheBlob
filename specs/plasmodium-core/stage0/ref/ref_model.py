@@ -66,6 +66,7 @@ DEF = dict(
     ph_every=10,                     # [H1] record phase-pattern diagnostics every ph_every steps
     noise='np',                  # [stage0] 'hash': static noise fields from the integer-hash generator shared with the browser (hashNoise.ts)
     dump_dir=None, dump_state_steps=(), dump_solver_steps=(),   # [stage0] export full states (at the start of a step) and solver inputs/outputs as float32 .bin.gz
+    dump_food=0, dump_tag='state',                              # [stage0 B] dump_food=1: the state dump also carries the stored-mass factor Hres, the previous mean rest thickness and the per-food state
     wave_a0=0.0, vsave=0,        # [verify] wave_a0: initial direction (deg) of the prescribed wave; vsave=1: save a light state every gm_every
 )
 # E7 "sheet front" parameter set = base of every E10 run
@@ -272,7 +273,11 @@ def run(name, over):
     for step in range(steps + 1):
         t = step * dt
         if P['dump_dir'] and step in P['dump_state_steps']:
-            _dump(P, f"state_N{N}_s{P['seed']}_step{step:05d}", step, t, [('h', h), ('wet', wet), ('age', age), ('sage', sage), ('theta', theta), ('slime', slime), ('C', C), ('p', p), ('pm', pm)], dict(kind='state'))
+            flds = [('h', h), ('wet', wet), ('age', age), ('sage', sage), ('theta', theta), ('slime', slime), ('C', C), ('p', p), ('pm', pm)]; ext = dict(kind='state')
+            if P['dump_food']:      # per-food state: remaining amount (-1 = unlimited), attractant amplitude, time of exhaustion (None = alive)
+                flds += [('Hres', Hres), ('hbar', hbar_prev)]
+                ext = dict(kind='foodstate', fM=[(-1.0 if np.isinf(v) else float(v)) for v in fM], famp=[float(v) for v in famp], t_exh=[(None if np.isnan(v) else float(v)) for v in t_exh])
+            _dump(P, f"{P['dump_tag']}_N{N}_s{P['seed']}_step{step:05d}", step, t, flds, ext)
         # ---- edges ----
         act = []
         for k, d in enumerate(DIRS):

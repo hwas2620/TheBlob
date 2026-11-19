@@ -1,16 +1,18 @@
 // 원형질체 코어의 파라미터 — config.ts 의 PLASM / OSCILLATOR / SLIME 에서 기본값을 만들고
 // 셰이더 플레이스홀더 표로 바꾼다. 값을 바꾸려면 PlasmGPU 를 새로 만든다(셰이더를 다시 컴파일한다).
 
-import { PLASM, OSCILLATOR, SLIME } from '../../config';
+import { PLASM, OSCILLATOR, SLIME, PLASM_FOOD } from '../../config';
 
-export interface Attractant {
-  /** 초기 원반 중심에서 본 방향(도)과 거리(셀) */
+/** 먹이의 자리: 초기 원반 중심에서 본 방향(도)과 거리(셀) */
+export interface FoodSpot {
   angleDeg: number;
   dist: number;
-  /** 가우스 폭(셀)과 진폭 */
-  sigma: number;
-  amp: number;
 }
+
+/** 한 번에 둘 수 있는 먹이 수 (먹이별 유인장을 RGBA 두 장에 담는다) */
+export const MAX_FOODS = 8;
+/** 줄지 않는 먹이의 "남은 양". float32 에서 먹는 양을 빼도 그대로다 */
+export const FOOD_UNLIMITED = 1e30;
 
 export interface PlasmParams {
   N: number;
@@ -60,7 +62,28 @@ export interface PlasmParams {
   mgOmega: number;
   mgCoarseScale: number;
   mgExtrap: number;
-  attractant: Attractant | null;
+  // ── 규칙 8 (먹이) ──
+  /** 먹이의 자리 (MAX_FOODS 개까지. 원반이 서로 겹치면 안 된다) */
+  foods: FoodSpot[];
+  /** 유인장 c = amp·Σ(주기 상) exp(−r²/2σ²) 의 폭(셀)과 진폭 */
+  foodSigma: number;
+  foodAmp: number;
+  /** 먹이 원반의 반지름(셀). 이 안의 젖은 셀이 먹는다 */
+  foodR: number;
+  /** 먹이 하나의 양. 0 이면 줄지 않는다 */
+  foodM: number;
+  /** 젖은 먹이 셀 하나가 단위 시간에 먹는 양. 0 이면 먹지 않는다(유인원 노릇만 한다) */
+  eat: number;
+  /** 먹은 양이 두께로 바뀌는 비율 */
+  gain: number;
+  /** 다 먹은 먹이의 유인장이 사라지는 시간 */
+  foodFade: number;
+  /** 살아 있는 먹이 위의 젖은 셀은 늙지 않고(sage 가 멈춘다) 쉬는 두께의 배율 H 가 오른다 */
+  reservoir: boolean;
+  /** H 의 상한, 오르는 시간 상수, "쉬는 두께의 이 비율 이상 차 있을 때만 오른다"(0 = 조건 없음) */
+  hRes: number;
+  resTau: number;
+  resGate: number;
 }
 
 export function defaultParams(over: Partial<PlasmParams> = {}): PlasmParams {
@@ -112,10 +135,66 @@ export function defaultParams(over: Partial<PlasmParams> = {}): PlasmParams {
     mgOmega: PLASM.MG_OMEGA,
     mgCoarseScale: PLASM.MG_COARSE_SCALE,
     mgExtrap: PLASM.MG_EXTRAP,
-    // 굶은 이주 시험의 유인장 (numpy 기준 실행과 같은 값)
-    attractant: { angleDeg: 27, dist: 70, sigma: 60, amp: 0.5 },
+    // 굶은 이주 시험의 유인원 하나 (numpy 기준 실행 GA 와 같은 값): 넓고 약한 유인장만 있고 먹지도 저장하지도 않는다
+    foods: [{ angleDeg: 27, dist: 70 }],
+    foodSigma: 60,
+    foodAmp: 0.5,
+    foodR: 4,
+    foodM: 0,
+    eat: 0,
+    gain: 0,
+    foodFade: PLASM_FOOD.FADE,
+    reservoir: false,
+    hRes: PLASM_FOOD.H_MAX,
+    resTau: PLASM_FOOD.TAU_H,
+    resGate: PLASM_FOOD.GATE,
     ...over,
   };
+}
+
+/** 규칙 8 을 켠 설정: 먹이를 먹고 그 자리에 부피를 쌓는다 (numpy 기준 실행의 FOOD 와 같은 값). defaultParams 의 over 에 넣는다 */
+export function foodParams(foods: FoodSpot[], over: Partial<PlasmParams> = {}): Partial<PlasmParams> {
+  return {
+    foods,
+    foodSigma: PLASM_FOOD.SIGMA,
+    foodAmp: PLASM_FOOD.AMP,
+    foodR: PLASM_FOOD.R,
+    foodM: PLASM_FOOD.M,
+    eat: PLASM_FOOD.EAT,
+    gain: PLASM_FOOD.GAIN,
+    foodFade: PLASM_FOOD.FADE,
+    reservoir: true,
+    hRes: PLASM_FOOD.H_MAX,
+    resTau: PLASM_FOOD.TAU_H,
+    resGate: PLASM_FOOD.GATE,
+    ...over,
+  };
+}
+
+/** 먹이 패스가 원반을 훑는 창의 반폭(셀). 창의 가운데는 먹이 자리를 반올림한 셀이다 */
+export function foodWindow(p: PlasmParams): number {
+  return Math.ceil(p.foodR) + 1;
+}
+
+/** 먹이 규칙의 어느 부분이 켜져 있는가 (셰이더의 #if 와 패스 구성이 이것을 따른다) */
+export interface FoodMode {
+  /** 먹이 수 */
+  n: number;
+  /** 스텝마다 먹는다 → 먹이 상태가 바뀐다 (먹이 패스를 돈다) */
+  eats: boolean;
+  /** 먹이 상태가 셀의 두께나 노화에 영향을 준다 (유량 패스가 먹이 상태를 읽는다) */
+  active: boolean;
+  /** 쉬는 두께의 배율 H 를 쓴다 (rest 패스의 출력이 한 장 는다) */
+  store: boolean;
+  /** 먹이가 떨어질 수 있다 → 유인장의 세기가 바뀐다 */
+  fades: boolean;
+}
+
+export function foodMode(p: PlasmParams): FoodMode {
+  const n = p.foods.length;
+  if (n > MAX_FOODS) throw new Error(`먹이는 ${MAX_FOODS}개까지 둘 수 있다 (${n}개)`);
+  const eats = n > 0 && p.eat > 0;
+  return { n, eats, active: n > 0 && (p.eat > 0 || p.reservoir), store: n > 0 && p.reservoir, fades: eats && p.foodM > 0 };
 }
 
 /** GLSL float 리터럴 */
@@ -138,7 +217,23 @@ export function shaderVars(p: PlasmParams): Record<string, string> {
   }
   const kernel = w.map((v) => glf(v / sum)).join(', ');
   const a = Math.min(1, p.wetRho / Math.SQRT2);
+  const fm = foodMode(p);
   return {
+    FOOD_N: String(fm.n),
+    FOOD_N0: String(Math.min(fm.n, 4)),
+    FOOD_ACTIVE: fm.active ? '1' : '0',
+    FOOD_STORE: fm.store ? '1' : '0',
+    FOOD_FADES: fm.fades ? '1' : '0',
+    RESERVOIR: p.reservoir ? '1.0' : '0.0',
+    EAT: glf(p.eat),
+    GAIN: glf(p.gain),
+    FADE: glf(Math.max(p.foodFade, 1e-6)),
+    H_MAX: glf(p.hRes),
+    TAU_H: glf(p.resTau),
+    RES_GATE_ON: p.resGate > 0 ? '1' : '0',
+    RES_GATE: glf(p.resGate),
+    FOOD_UNLIMITED: '1e29', // 남은 양이 이보다 크면 줄지 않는 먹이다 (FOOD_UNLIMITED 의 1/10)
+    FOOD_WIN: String(foodWindow(p)),
     DT: glf(p.dt),
     DTS: glf(p.dt / p.substeps),
     OMEGA0: glf(twoPi / p.period),

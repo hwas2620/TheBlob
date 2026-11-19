@@ -17,6 +17,7 @@ import phase from './shaders/phase.frag.glsl?raw';
 import rest from './shaders/rest.frag.glsl?raw';
 import mgInit from './shaders/mg_init.frag.glsl?raw';
 import flux from './shaders/flux.frag.glsl?raw';
+import food from './shaders/food.frag.glsl?raw';
 import reduceQ0 from './shaders/reduce_q0.frag.glsl?raw';
 import reduceSum from './shaders/reduce_sum.frag.glsl?raw';
 import reduceStats from './shaders/reduce_stats.frag.glsl?raw';
@@ -79,6 +80,7 @@ export function plasmShaders(vars: ShaderVars) {
     phase: make(phase, vars),
     rest: make(rest, vars),
     mgInit: make(mgInit, vars),
+    food: make(food, vars),
     flux: make(flux, vars),
     reduceQ0: make(reduceQ0, vars),
     reduceSum: make(reduceSum, vars),

@@ -4,7 +4,8 @@ import { Glx } from '../gpu/plasm/glx';
 import { MultigridGPU } from '../gpu/plasm/MultigridGPU';
 import { PlasmGPU, type PlainState } from '../gpu/plasm/PlasmGPU';
 import { hashNormal, hashU01 } from '../gpu/plasm/hashNoise';
-import { defaultParams, shaderVars } from '../gpu/plasm/params';
+import { defaultParams, foodParams, shaderVars, type FoodSpot } from '../gpu/plasm/params';
+import type { FoodState } from '../gpu/plasm/food';
 import { fluxError, relDiff, solveCG } from './cpuSolver';
 import { interleave, loadManifest, loadRef, type RefArrays, type RefFile } from './refData';
 
@@ -143,7 +144,21 @@ export async function testA0(glx: Glx, log: Log): Promise<A0Result> {
 
 function toState(ref: RefArrays): PlainState {
   const g = (k: string): Float32Array => ref.get(k)![0];
-  return { h: g('h'), wet: g('wet'), age: g('age'), sage: g('sage'), theta: g('theta'), slime: g('slime'), C: ref.get('C')!, p: g('p'), pm: g('pm') };
+  const s: PlainState = { h: g('h'), wet: g('wet'), age: g('age'), sage: g('sage'), theta: g('theta'), slime: g('slime'), C: ref.get('C')!, p: g('p'), pm: g('pm') };
+  if (ref.has('Hres') && ref.has('hbar')) {
+    s.Hres = g('Hres');
+    s.hbar = g('hbar');
+  }
+  return s;
+}
+
+/** numpy 가 내보낸 먹이 상태 (manifest 의 fM, famp, t_exh) */
+function refFood(f: RefFile, dt: number): FoodState[] {
+  const fM = f.fM ?? [];
+  return fM.map((m, k) => {
+    const te = f.t_exh?.[k];
+    return { M: m < 0 ? Infinity : m, amp: f.famp?.[k] ?? 1, stepExh: te === null || te === undefined ? -1 : Math.round(te / dt) };
+  });
 }
 
 export interface StateDiff {
@@ -310,6 +325,137 @@ export async function testParity(glx: Glx, log: Log, variant: Variant): Promise<
   return { variant: variant.name, pass, drawCallsPerStep, mature: [m1, m10], initial, initialVolumeRelErr };
 }
 
+// ───────────────────────── 먹이가 있는 스텝 일치 시험 (관문 B) ─────────────────────────
+
+/** 대칭 먹이 셋 (numpy 기준 실행의 SCN['food3']) */
+export const FOOD3: FoodSpot[] = [{ angleDeg: 20, dist: 40 }, { angleDeg: 140, dist: 40 }, { angleDeg: 260, dist: 40 }];
+
+export interface FoodDiff extends StateDiff {
+  /** 출발한 스텝과 그 뒤로 돈 스텝 수 */
+  from: number;
+  after: number;
+  /** 먹이의 남은 양의 상대 차이 (먹이 가운데 최대. 분모는 처음의 양) */
+  mRelDiff: number;
+  /** 유인장 세기의 최대 차이 */
+  ampDiff: number;
+  /** 다 떨어진 스텝이 numpy 와 다른 먹이 수 */
+  exhMismatch: number;
+  /** 저장 배율 H 의 차이 (양쪽 다 젖은 셀): 최대, 1e-5 를 넘는 셀 수 */
+  hresMaxDiff: number;
+  hresOver: number;
+  /** 직전 스텝의 쉬는 두께의 최대 차이 (젖음이 같은 셀) */
+  hbarMaxDiff: number;
+  /** 먹이의 남은 양: GPU, numpy */
+  mGpu: number[];
+  mRef: number[];
+  /** 기준형(변형 0)의 같은 시점 상태와의 차이. 기준형 자신은 null */
+  vsBase: { wetMismatch: number; hMaxDiff: number } | null;
+}
+
+export interface ParityFoodResult {
+  variant: string;
+  pass: boolean;
+  drawCallsPerStep: number;
+  diffs: FoodDiff[];
+}
+
+/** 기준형이 낸 상태 (변형끼리 견주는 데 쓴다): "출발 스텝+지난 스텝" → cellA */
+export type FoodBase = Map<string, Float32Array>;
+
+function fmtFood(d: FoodDiff): string {
+  return `먹이 남은 양 상대 차이 ${d.mRelDiff.toExponential(2)}, 세기 차이 ${d.ampDiff.toExponential(2)}, 떨어진 스텝 불일치 ${d.exhMismatch}, H 최대 차이 ${d.hresMaxDiff.toExponential(2)} (1e-5 넘는 셀 ${d.hresOver}), `
+    + `쉬는 두께 최대 차이 ${d.hbarMaxDiff.toExponential(2)}${d.vsBase ? `, 기준형과 젖음 불일치 ${d.vsBase.wetMismatch} · h 최대 차이 ${d.vsBase.hMaxDiff.toExponential(2)}` : ''}`;
+}
+
+/**
+ * 먹이가 있는 스텝 일치 시험: 대칭 먹이 셋의 numpy 상태(닿기 직전, 먹는 중, 첫 먹이가 떨어지기 직전)에서 출발해
+ * 1·10·50스텝 뒤를 numpy 와 견준다. 판정은 1스텝과 10스텝 뒤로 하고 50스텝 뒤는 기록만 한다(궤적이 float32 때문에 갈라지기 시작한다)
+ */
+export async function testParityFood(glx: Glx, log: Log, variant: Variant, base: FoodBase): Promise<ParityFoodResult> {
+  const man = await loadManifest();
+  const files = new Map<number, RefFile>();
+  for (const f of man.files) if (f.kind === 'foodstate' && f.N === 192) files.set(f.step, f);
+  const params = defaultParams({ N: 192, seed: 1, triK: (2 * Math.PI) / 100, ...foodParams(FOOD3) });
+  const get = async (step: number): Promise<{ f: RefFile; s: PlainState }> => {
+    const f = files.get(step);
+    if (!f) throw new Error(`먹이 기준 상태가 없다: 스텝 ${step}`);
+    const s = toState(await loadRef(f));
+    s.food = refFood(f, params.dt);
+    return { f, s };
+  };
+  const starts = [...files.keys()].filter((s) => files.has(s + 1) && files.has(s + 10) && files.has(s + 50)).sort((a, b) => a - b);
+  if (starts.length === 0) throw new Error('먹이 기준 상태가 없다 (export_ref.py dumpsfood)');
+  const sim = new PlasmGPU(glx, params);
+  applyVariant(sim, variant);
+  sim.asyncBounds = false;
+  const isBase = variant === VARIANTS[0];
+  const n = sim.N * sim.N;
+  log(`[${variant.name}] 먹이 ${params.foods.length}개, 원반의 셀 수 ${sim.foodGeom.discCells.join('/')}`);
+  const diffs: FoodDiff[] = [];
+  let drawCallsPerStep = 0;
+  for (const from of starts) {
+    const start = await get(from);
+    sim.loadState(start.s, from);
+    log(`스텝 ${from} 에서 출발 (먹이 남은 양 ${start.s.food!.map((x) => x.M.toFixed(1)).join(' / ')})`);
+    let done = 0;
+    for (const after of [1, 10, 50]) {
+      for (; done < after; done++) {
+        const d0 = glx.drawCalls;
+        sim.stepOnce();
+        if (drawCallsPerStep === 0) drawCallsPerStep = glx.drawCalls - d0;
+      }
+      const ref = await get(from + after);
+      const sd = diffState(sim, ref.s);
+      const a = sim.readA();
+      const hv = sim.readH();
+      const fg = sim.readFood();
+      const fr = ref.s.food!;
+      let mRelDiff = 0, ampDiff = 0, exhMismatch = 0, hresMaxDiff = 0, hresOver = 0, hbarMaxDiff = 0;
+      fg.forEach((g, k) => {
+        const r = fr[k];
+        if (Number.isFinite(r.M) || Number.isFinite(g.M)) mRelDiff = Math.max(mRelDiff, Math.abs(g.M - r.M) / params.foodM);
+        ampDiff = Math.max(ampDiff, Math.abs(g.amp - r.amp));
+        if (g.stepExh !== r.stepExh) exhMismatch++;
+      });
+      if (hv && ref.s.Hres && ref.s.hbar) {
+        for (let i = 0; i < n; i++) {
+          const wg = a[i * 4 + 1] > 0.5;
+          const wr = ref.s.wet[i] > 0.5;
+          if (wg !== wr) continue;
+          hbarMaxDiff = Math.max(hbarMaxDiff, Math.abs(hv[i * 4 + 1] - ref.s.hbar[i]));
+          if (!wg) continue;
+          const d = Math.abs(hv[i * 4] - ref.s.Hres[i]);
+          hresMaxDiff = Math.max(hresMaxDiff, d);
+          if (d > 1e-5) hresOver++;
+        }
+      }
+      const key = `${from}+${after}`;
+      let vsBase: FoodDiff['vsBase'] = null;
+      const b = base.get(key);
+      if (isBase) base.set(key, a);
+      else if (b) {
+        let wetMismatch = 0, hMaxDiff = 0;
+        for (let i = 0; i < n; i++) {
+          if (a[i * 4 + 1] > 0.5 !== b[i * 4 + 1] > 0.5) wetMismatch++;
+          hMaxDiff = Math.max(hMaxDiff, Math.abs(a[i * 4] - b[i * 4]));
+        }
+        vsBase = { wetMismatch, hMaxDiff };
+      }
+      const d: FoodDiff = { ...sd, from, after, mRelDiff, ampDiff, exhMismatch, hresMaxDiff, hresOver, hbarMaxDiff, mGpu: fg.map((x) => x.M), mRef: fr.map((x) => x.M), vsBase };
+      diffs.push(d);
+      log(`  ${after}스텝 뒤: ${fmtDiff(sd)}`);
+      log(`    ${fmtFood(d)} · 부피 GPU ${sd.volumeGpu.toFixed(3)} / numpy ${sd.volumeRef.toFixed(3)}`);
+    }
+  }
+  const pass = diffs.every((d) => {
+    if (d.after === 1) return d.wetMismatch === 0 && d.hMaxDiff <= 1e-3 && d.thetaMedDiff <= 1e-4 && d.cMedRelDiff <= 1e-4 && d.mRelDiff <= 1e-5 && d.exhMismatch === 0 && d.hresMaxDiff <= 1e-5;
+    if (d.after === 10) return d.wetMismatch <= 0.005 * d.bodyCells && d.mRelDiff <= 1e-5 && d.exhMismatch === 0 && d.hresOver <= 0.005 * d.bodyCells;
+    return true; // 50스텝 뒤는 기록만
+  });
+  log(`먹이 스텝 일치 시험 [${variant.name}] → ${pass ? '통과' : '실패'} · 스텝당 드로콜 ${drawCallsPerStep}`);
+  return { variant: variant.name, pass, drawCallsPerStep, diffs };
+}
+
 // ───────────────────────── A1·A2: 긴 실행 ─────────────────────────
 
 export interface A12Options {
@@ -388,9 +534,10 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
   const v0 = sim.readEndStats().volume;
   const c0 = N / 2 - 0.5;
   const cen = [c0, c0];
-  const att = params.attractant;
-  const fx = att ? c0 + att.dist * Math.cos((att.angleDeg * Math.PI) / 180) : 0;
-  const fy = att ? c0 + att.dist * Math.sin((att.angleDeg * Math.PI) / 180) : 0;
+  // 닿았는지는 첫 먹이(굶은 이주의 유인원)의 원반으로 본다
+  const att = sim.foodGeom.pos.length > 0 ? sim.foodGeom.pos[0] : null;
+  const fx = att ? att[0] : 0;
+  const fy = att ? att[1] : 0;
   const mimg = (v: number): number => ((((v + N / 2) % N) + N) % N) - N / 2;
   const fluxErrSeries: number[] = [];
   const traj: number[][] = [];
@@ -413,7 +560,7 @@ export async function testA12(glx: Glx, opts: A12Options, log: Log, onFrame?: (s
         if (a[i + 1] > 0.5) {
           area++;
           extent = Math.max(extent, Math.abs(dx), Math.abs(dy));
-          if (att && Math.hypot(mimg(x - fx), mimg(y - fy)) < 4.0) touch = true;
+          if (att && Math.hypot(mimg(x - fx), mimg(y - fy)) < params.foodR) touch = true;
         }
       }
     }
