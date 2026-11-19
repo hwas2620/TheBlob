@@ -16,8 +16,9 @@
 
 import type { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU, type PassGroup, type Snapshot } from '../gpu/plasm/PlasmGPU';
-import { defaultParams, type PlasmParams } from '../gpu/plasm/params';
+import { defaultParams, foodParams, type PlasmParams } from '../gpu/plasm/params';
 import { totalCalls } from './glCount';
+import { FOOD3 } from './scenarios';
 import { applyVariant, VARIANTS, type Log } from './tests';
 import { webgpuProbe, type WebGpuProbe } from './webgpuProbe';
 
@@ -182,7 +183,11 @@ export const FAST_DT: Partial<PlasmParams> = { dt: 0.2, period: 8, substeps: 8 }
 export const FAST_DT_NAME = 'dt 0.2 + 주기 8';
 /** 같은 구성을 측정의 끝에 다시 잰 줄의 이름 */
 export const DRIFT_NAME = '끝에 다시';
+/** 규칙 8(먹이)을 켠 설정의 줄: 대칭 먹이 셋 + 위상 무늬. 스텝에 먹이 패스 하나와 저장 배율(출력 한 장)이 는다 */
+export const FOOD_NAME = '먹이 셋';
 const WARMUP_STEPS = 400;
+/** 먹이 줄의 준비 스텝: 세 먹이에 모두 닿아 먹고 있는 몸이 되게 한다 (닿는 시각이 모델 시간 59~76) */
+const FOOD_WARMUP_STEPS = 1000;
 const DEFAULT_SUSTAIN_MS = 1200;
 /**
  * 프레임 루프와 돌려 보기가 쓰는 변형: 합친 패스 + 몸 주변만.
@@ -576,13 +581,13 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
   let loopSmall: FrameLoop | null = null;
 
   /** 굶은 이주를 WARMUP_STEPS 스텝 돌려 몸을 만든다 */
-  const grow = async (N: number, over: Partial<PlasmParams>): Promise<{ sim: PlasmGPU; snap: Snapshot }> => {
+  const grow = async (N: number, over: Partial<PlasmParams>, warmup = WARMUP_STEPS): Promise<{ sim: PlasmGPU; snap: Snapshot }> => {
     glx.reset(); // 앞의 텍스처를 지운다 (768² 는 150MB 쯤 쓴다)
     const sim = new PlasmGPU(glx, defaultParams({ N, seed: 1, ...over }));
     applyVariant(sim, VARIANTS[2]);
     sim.asyncBounds = false;
     sim.autoBounds = false;
-    for (let s = 0; s < WARMUP_STEPS; s++) {
+    for (let s = 0; s < warmup; s++) {
       sim.stepOnce();
       if (s % 8 === 7) sim.refreshBounds();
       if (s % 100 === 99) await yieldNow();
@@ -623,6 +628,14 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
       + `${r.msPerStep.toFixed(2)}ms/스텝 (${m.steps}스텝을 ${m.seconds.toFixed(1)}초. 풀이 한 번 ${r.msSolve.toFixed(2)}ms, 영역 ${(r.activeFraction * 100).toFixed(0)}%) → 초당 ${stepsPerSec.toFixed(0)}스텝`);
   };
 
+  /** 규칙 8 을 켠 설정의 줄 (먹고 있는 몸). 위상 무늬의 주기는 격자 한 변의 약수여야 한다 */
+  const foodRow = async (N: number): Promise<void> => {
+    log(`${N}² 준비 [${FOOD_NAME}] (${FOOD_WARMUP_STEPS}스텝)…`);
+    await yieldNow();
+    const fed = await grow(N, { triK: (2 * Math.PI) / 100, triP: N % 96 === 0 ? 96 : 128, ...foodParams(FOOD3) }, FOOD_WARMUP_STEPS);
+    await row(fed.sim, fed.snap, LOOP_VARIANT, 2, FOOD_NAME);
+  };
+
   const measure = async (N: number): Promise<void> => {
     log(`${N}² 준비 (${WARMUP_STEPS}스텝)…`);
     await yieldNow();
@@ -649,6 +662,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
         loopSmall = await frameLoop(glx, sim, snap, opts.view, log, false);
         loopLine(loopSmall);
       }
+      if (N === 256) await foodRow(N);
       return;
     }
     await row(sim, snap, LOOP_VARIANT, 3);
@@ -687,6 +701,7 @@ export async function runBench(glx: Glx, renderer: string, sizes: number[], log:
     await yieldNow();
     const fast = await grow(N, FAST_DT);
     await row(fast.sim, fast.snap, LOOP_VARIANT, 2, FAST_DT_NAME);
+    await foodRow(N);
   };
 
   for (const N of sizes) {

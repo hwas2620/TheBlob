@@ -22,6 +22,7 @@ import reduceQ0 from './shaders/reduce_q0.frag.glsl?raw';
 import reduceSum from './shaders/reduce_sum.frag.glsl?raw';
 import reduceStats from './shaders/reduce_stats.frag.glsl?raw';
 import reinforce from './shaders/reinforce.frag.glsl?raw';
+import statsAcc from './shaders/stats_acc.frag.glsl?raw';
 import dryMark from './shaders/dry_mark.frag.glsl?raw';
 import dryConfirm from './shaders/dry_confirm.frag.glsl?raw';
 import dryShare from './shaders/dry_share.frag.glsl?raw';
@@ -86,6 +87,7 @@ export function plasmShaders(vars: ShaderVars) {
     reduceSum: make(reduceSum, vars),
     reduceStats: make(reduceStats, vars),
     reinforce: make(reinforce, vars),
+    statsAcc: make(statsAcc, vars),
     dryMark: make(dryMark, vars),
     dryConfirm: make(dryConfirm, vars),
     dryShare: make(dryShare, vars),

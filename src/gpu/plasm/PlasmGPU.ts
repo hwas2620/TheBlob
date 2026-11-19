@@ -52,9 +52,24 @@ export interface PlainState {
 }
 
 /** 한 스텝의 패스 묶음 (압력 풀이는 따로) */
-export type PassGroup = 'edges' | 'phase' | 'rest' | 'init' | 'food' | 'flux' | 'q0' | 'reinforce' | 'dry' | 'blur' | 'wet';
+export type PassGroup = 'edges' | 'phase' | 'rest' | 'init' | 'food' | 'flux' | 'q0' | 'reinforce' | 'stats' | 'dry' | 'blur' | 'wet';
 const GROUPS_BEFORE_SOLVE: PassGroup[] = ['edges', 'phase', 'rest', 'init'];
-const GROUPS_AFTER_SOLVE: PassGroup[] = ['food', 'flux', 'q0', 'reinforce', 'dry', 'blur', 'wet'];
+const GROUPS_AFTER_SOLVE: PassGroup[] = ['food', 'flux', 'q0', 'reinforce', 'stats', 'dry', 'blur', 'wet'];
+
+/** 유량 구간의 누적 (enableStats 를 켰을 때). 값은 구간의 합이고 n 은 더한 스텝 수다 */
+export interface FlowStats {
+  n: number;
+  /** 간선마다 ΣQ, Σ|Q|, ΣC (RGBA = E, N, NE, SE) */
+  Q: Float32Array;
+  G: Float32Array;
+  C: Float32Array;
+}
+
+/** 두께 구간의 누적: RGBA = Σh, 최대 h, 최소 h, 구간 내내 젖어 있었는가(1/0) */
+export interface ThickStats {
+  n: number;
+  H: Float32Array;
+}
 
 /** snapshot() 이 읽어 둔 상태 (상태 텍스처의 RGBA 와 스텝 수. hres 는 RG, food 는 먹이 상태 텍셀) */
 export interface Snapshot {
@@ -108,6 +123,8 @@ export class PlasmGPU {
   private texFoodC: Tex[] = [];
   private foodStat: Tex | null = null;
   private tFoodStat: Target | null = null; // 통계만 뽑을 때 쓰는 타깃 (상태 출력은 버린다)
+  // ── 시험용 누적 통계 (enableStats) ──
+  private acc: { tex: Tex[][]; tgt: Target[]; cur: number; flowN: number; thickN: number; keepFlow: boolean; keepThick: boolean } | null = null;
   private dry: [Tex, Tex, Tex];
   private tDry: [Target, Target, Target];
   private blur: [Tex, Tex];
@@ -262,6 +279,10 @@ export class PlasmGPU {
       for (const t of this.FS) glx.upload(t, s);
     }
     this.step = step;
+    if (this.acc) {
+      this.acc.flowN = this.acc.thickN = 0;
+      this.acc.keepFlow = this.acc.keepThick = false;
+    }
     glx.clear(this.tAuxW, 0);
     for (const t of this.tDry) glx.clear(t, 0);
     for (const t of this.tBlur) glx.clear(t, 0);
@@ -499,6 +520,20 @@ export class PlasmGPU {
         glx.draw(prog.reinforce, this.tC[1 - this.curC], { uC: this.C[this.curC], uW: this.W, uP: this.mg.pTex(), uRed: this.red[this.red.length - 1] }, r);
         this.curC = 1 - this.curC;
         break;
+      case 'stats': // (시험용) 구간 통계의 누적. 가위 밖은 마른 땅이라 모두 0 이므로 전체 격자에 그린다
+        if (this.acc) {
+          const a = this.acc;
+          const src = a.tex[a.cur];
+          glx.draw(prog.statsAcc, a.tgt[1 - a.cur], {
+            uA: this.A[this.curA], uW: this.W, uP: this.mg.pTex(), uC: this.C[this.curC],
+            uAccQ: src[0], uAccG: src[1], uAccC: src[2], uAccH: src[3], uKeepFlow: a.keepFlow ? 1 : 0, uKeepThick: a.keepThick ? 1 : 0,
+          });
+          a.cur = 1 - a.cur;
+          a.flowN = a.keepFlow ? a.flowN + 1 : 1;
+          a.thickN = a.keepThick ? a.thickN + 1 : 1;
+          a.keepFlow = a.keepThick = true;
+        }
+        break;
       case 'dry': {
         // 10. 마름
         glx.draw(prog.dryMark, this.tDry[0], { uA: this.A[this.curA], uAux: this.aux, uStep: this.step }, r);
@@ -617,6 +652,36 @@ export class PlasmGPU {
       const wet = v[k * 4];
       out.push({ wet, hMean: v[k * 4 + 1] / Math.max(this.foodGeom.discCells[k], 1), phase: wet > 0 ? Math.atan2(v[k * 4 + 3], v[k * 4 + 2]) : NaN });
     }
+    return out;
+  }
+
+  // ── 시험용 누적 통계 ──
+  /** 구간 통계를 켠다: 스텝마다 패스 하나(출력 넉 장, 전체 격자)가 는다. 판정 도구가 쓰고 게임에서는 켜지 않는다 */
+  enableStats(): void {
+    if (this.acc) return;
+    const { glx, N } = this;
+    const tex = [0, 1].map(() => [0, 1, 2, 3].map(() => glx.tex(N, N, 'rgba32f')));
+    this.acc = { tex, tgt: tex.map((t) => glx.target(...t)), cur: 0, flowN: 0, thickN: 0, keepFlow: false, keepThick: false };
+  }
+
+  /** 지금까지의 유량 구간을 읽고 다음 스텝부터 새 구간을 시작한다 */
+  takeFlowStats(): FlowStats {
+    if (!this.acc) throw new Error('enableStats 를 먼저 부른다');
+    const a = this.acc;
+    const t = a.tex[a.cur];
+    const out = { n: a.flowN, Q: this.glx.read(t[0]), G: this.glx.read(t[1]), C: this.glx.read(t[2]) };
+    a.keepFlow = false;
+    a.flowN = 0;
+    return out;
+  }
+
+  /** 지금까지의 두께 구간을 읽고 다음 스텝부터 새 구간을 시작한다 */
+  takeThickStats(): ThickStats {
+    if (!this.acc) throw new Error('enableStats 를 먼저 부른다');
+    const a = this.acc;
+    const out = { n: a.thickN, H: this.glx.read(a.tex[a.cur][3]) };
+    a.keepThick = false;
+    a.thickN = 0;
     return out;
   }
 

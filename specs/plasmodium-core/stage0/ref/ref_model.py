@@ -68,6 +68,7 @@ DEF = dict(
     dump_dir=None, dump_state_steps=(), dump_solver_steps=(),   # [stage0] export full states (at the start of a step) and solver inputs/outputs as float32 .bin.gz
     dump_food=0, dump_tag='state',                              # [stage0 B] dump_food=1: the state dump also carries the stored-mass factor Hres, the previous mean rest thickness and the per-food state
     wave_a0=0.0, vsave=0,        # [verify] wave_a0: initial direction (deg) of the prescribed wave; vsave=1: save a light state every gm_every
+    slime0='',                   # [stage0 B] initial slime outside the disc: 'half' = on the half plane x < centre, 'all' = everywhere (slime avoidance test)
 )
 # E7 "sheet front" parameter set = base of every E10 run
 BASE = dict(T=400, kappa=20, hy0=1.05, h_fill=0.2, Q0_auto=0.2, tau_a=50, r=0.05, D0=2, rate=0.05, lam=0.06, y_sigma=0.02)
@@ -174,6 +175,8 @@ def run(name, over):
     wet = dist < P['R_init']
     h = np.where(wet, P['h_init'], 0.0)
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
+    if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
+    elif P['slime0'] == 'all': slime[~wet] = 1.0
     C = [np.zeros((N, N)) for _ in DIRS]; eage = [np.zeros((N, N)) for _ in DIRS]
     act_prev = [np.zeros((N, N), bool) for _ in DIRS]
     p = np.zeros((N, N)); pm = np.zeros((N, N)); mgs = mgt.MGT(N) if P['solver'] == 'mg' else None; mg_err = []
@@ -188,9 +191,12 @@ def run(name, over):
     Qf = [np.zeros((N, N)) for _ in DIRS]; Qs = [np.zeros((N, N)) for _ in DIRS]
     sQ = [np.zeros((N, N)) for _ in DIRS]; sA = [np.zeros((N, N)) for _ in DIRS]; cnt_q = 0
     Qmean_last = [np.zeros((N, N)) for _ in DIRS]; Qgross_last = [np.zeros((N, N)) for _ in DIRS]; qwin_t = -1.0
+    sC = [np.zeros((N, N)) for _ in DIRS]; Cmean_last = [np.zeros((N, N)) for _ in DIRS]      # [stage0 B] conductance averaged over the same window as the fluxes
     hmax_w = np.full((N, N), -np.inf); hmin_w = np.full((N, N), np.inf); hsum_w = np.zeros((N, N)); wet_w = np.ones((N, N), bool); cnt_w = 0
     hamp_last = np.zeros((N, N)); hmean_last = np.zeros((N, N))
     ser_new = np.zeros(steps + 1, np.int32); ser_area = np.zeros(steps + 1, np.int32); ser_dry = np.zeros(steps + 1, np.int32); ser_vol = np.zeros(steps + 1, np.float64)
+    ser_newl = np.zeros(steps + 1, np.int32)      # [stage0 B] newly wetted cells on the half plane x < centre
+    neg_end_steps = 0                             # [stage0 B] steps that end with a wet cell of negative thickness
     mass_err_max = 0.0
     gm_n = max(1, int(round(P['gm_every'] / dt))); gseries = []; newdir = np.zeros(3, np.int64); newdir_series = []
     colour = (X.astype(int) % 2) + 2 * (Y.astype(int) % 2)
@@ -447,14 +453,14 @@ def run(name, over):
         if P['slime_tau'] < 1e8: slime *= np.exp(-dt / P['slime_tau'])
         # ---- rolling statistics ----
         hmax_w = np.maximum(hmax_w, h); hmin_w = np.minimum(hmin_w, h); hsum_w += h; wet_w &= wet; cnt_w += 1
-        for k in range(4): sQ[k] += Q[k]; sA[k] += np.abs(Q[k])
+        for k in range(4): sQ[k] += Q[k]; sA[k] += np.abs(Q[k]); sC[k] += C[k]
         cnt_q += 1
         if cnt_w >= nper:
             hamp_last = np.where(wet_w, 0.5 * (hmax_w - hmin_w), 0.0); hmean_last = np.where(wet_w, hsum_w / cnt_w, 0.0)
             hmax_w[:] = -np.inf; hmin_w[:] = np.inf; hsum_w[:] = 0; wet_w[:] = True; cnt_w = 0
         if cnt_q >= nwin:
-            Qmean_last = [sQ[k] / cnt_q for k in range(4)]; Qgross_last = [sA[k] / cnt_q for k in range(4)]; qwin_t = t
-            for k in range(4): sQ[k][:] = 0; sA[k][:] = 0
+            Qmean_last = [sQ[k] / cnt_q for k in range(4)]; Qgross_last = [sA[k] / cnt_q for k in range(4)]; Cmean_last = [sC[k] / cnt_q for k in range(4)]; qwin_t = t
+            for k in range(4): sQ[k][:] = 0; sA[k][:] = 0; sC[k][:] = 0
             cnt_q = 0
         # ---- drying ----
         Dm = wet & (h < P['h_min']) & (age > P['grace'])
@@ -524,7 +530,7 @@ def run(name, over):
             np.subtract.at(h, (sy, sx), amt)
             h[ys, xs] = amt; wet[ys, xs] = True; age[ys, xs] = 0.0; sage[ys, xs] = 0.0; twet[ys, xs] = t; Hres[ys, xs] = 1.0
             p[ys, xs] = p[sy, sx]; pm[ys, xs] = pm[sy, sx]; theta[ys, xs] = theta[sy, sx]
-            ser_new[step] = ys.size
+            ser_new[step] = ys.size; ser_newl[step] = int((xs < c0).sum())
             if nf:                                             # direction of new wetting relative to the food(s), seen from the centroid
                 vx = mimg(xs - cen_u[0]); vy = mimg(ys - cen_u[1]); vn = np.maximum(np.hypot(vx, vy), 1e-9); best = np.full(xs.size, -2.0)
                 live = [k_ for k_ in range(nf) if np.isnan(t_touch[k_])] or list(range(nf))
@@ -534,7 +540,7 @@ def run(name, over):
                 newdir += np.array([(best > 0.5).sum(), ((best <= 0.5) & (best >= -0.5)).sum(), (best < -0.5).sum()])
         if wet.any():
             hm_end = float(h[wet].min()); hmin_end = min(hmin_end, hm_end)
-            if hm_end < 0: neg_end_cellsteps += int((wet & (h < 0)).sum())
+            if hm_end < 0: neg_end_cellsteps += int((wet & (h < 0)).sum()); neg_end_steps += 1
         ser_area[step] = int(wet.sum()); ser_vol[step] = h.sum()
         if nf: hfood_ser.append([float(h[fdisc[k_]].sum() / max(int(fdisc[k_].sum()), 1)) for k_ in range(nf)] + [float(np.angle(np.exp(1j * theta[fdisc[k_] & wet]).sum())) if (fdisc[k_] & wet).any() else np.nan for k_ in range(nf)])
         mass_err_max = max(mass_err_max, abs(float((h.sum() - V0 - Vinj) / V0)))
@@ -563,12 +569,13 @@ def run(name, over):
             g['vol3r'] = [round(float(h[np.hypot(mimg(X - fx), mimg(Y - fy)) < 3 * P['food_r']].sum() / h.sum()), 3) for fx, fy in fpos]
             g['vol_on_food'] = [round(float(h[fdisc[k_]].sum() / h.sum()), 3) for k_ in range(nf)]
             gseries.append(g)
-            if P['vsave']: np.savez_compressed(os.path.join(out, f'vs_t{int(round(t)):04d}.npz'), C=np.array(C, np.float32), wet=wet, h=h.astype(np.float32), age=age.astype(np.float32), sage=sage.astype(np.float32), theta=theta.astype(np.float32), Qgross=np.array(Qgross_last, np.float32), Qmean=np.array(Qmean_last, np.float32), t=t, fM=fM.copy(), cen=np.array(cen_u), hamp=hamp_last.astype(np.float32), hmean=hmean_last.astype(np.float32))
+            if P['vsave']: np.savez_compressed(os.path.join(out, f'vs_t{int(round(t)):04d}.npz'), C=np.array(C, np.float32), wet=wet, h=h.astype(np.float32), age=age.astype(np.float32), sage=sage.astype(np.float32), theta=theta.astype(np.float32), Qgross=np.array(Qgross_last, np.float32), Qmean=np.array(Qmean_last, np.float32), Cmean=np.array(Cmean_last, np.float32), t=t, fM=fM.copy(), cen=np.array(cen_u), hamp=hamp_last.astype(np.float32), hmean=hmean_last.astype(np.float32))
         if step in snaps:
             snapi += 1; render(os.path.join(out, f'snapshot_{snapi}_t{int(round(t)):04d}.png'), t)
             S = state(t); np.savez_compressed(os.path.join(out, f'state_t{int(round(t)):04d}.npz'), **S)
             full_states[f't{int(round(t)):04d}'] = graphm.full(S)
         if not wet.any(): stop = 'all dry'; break
+        if P['stop_touch'] and nf and not np.isnan(t_touch).any(): stop = 'touched'; break      # [stage0 B] reach-time runs end when every food has been touched
     nstep = step + 1
 
     # ------------------------------ outputs ------------------------------
@@ -581,7 +588,7 @@ def run(name, over):
     if hfood_ser: np.save(os.path.join(out, 'hfood.npy'), np.array(hfood_ser, np.float32))     # per step: mean h on each food disc, then circular-mean phase of each food disc
     if ph_ser: np.save(os.path.join(out, 'ph_ser.npy'), np.array(ph_ser, np.float32))   # [H1] t, order parameter R, mean dtheta/dx, mean dtheta/dy, rms dx, rms dy, centroid x, y, cv of h
     np.save(os.path.join(out, 'G_edges.npy'), np.array(G, np.float32)); json.dump([[float(e_[0]), float(e_[1]), float(e_[2])] for e_ in mg_err], open(os.path.join(out, 'mg_err_series.json'), 'w'))   # [verify]
-    np.savez_compressed(os.path.join(out, 'series.npz'), new=ser_new[:nstep], area=ser_area[:nstep], dry=ser_dry[:nstep], vol=ser_vol[:nstep], dt=dt)
+    np.savez_compressed(os.path.join(out, 'series.npz'), new=ser_new[:nstep], newl=ser_newl[:nstep], area=ser_area[:nstep], dry=ser_dry[:nstep], vol=ser_vol[:nstep], dt=dt)
     json.dump(P, open(os.path.join(out, 'params.json'), 'w'), indent=1)
     cen = centroid()
     if P['neg_diag'] and negrec: np.save(os.path.join(out, 'negrec.npy'), np.array(negrec, float))
@@ -592,7 +599,7 @@ def run(name, over):
                t_exh=[None if np.isnan(v) else round(float(v), 1) for v in t_exh], fM_end=[None if np.isinf(v) else round(float(v), 2) for v in fM],
                bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), traj=traj,
                mg_err=([float(np.median([e[1] for e in mg_err])), float(np.percentile([e[1] for e in mg_err], 90)), float(max(e[1] for e in mg_err)), float(np.median([e[2] for e in mg_err]))] if mg_err else None), mg_err_n=len(mg_err),
-               h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
+               h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), neg_end_steps=int(neg_end_steps), steps_done=int(nstep), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
     wm = hmean_last > 0
     if wm.any():
         ha = hamp_last[wm]; hm = hmean_last[wm]; sh = hm > 0.5 * P['h0']

@@ -20,6 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 MAP_PX = 1500
 CELLS_PER_STEP = 0.02   # dt 0.1
 FAST_GAIN = 1.6         # dt 0.2 + 맥동 주기 8 (독립 검증의 앞면 속도 기준 1.61. 재는 법에 따라 1.47~1.75)
+FAST_TAG = 'dt 0.2 + 주기 8'   # 이 줄만 스텝당 전진이 다르다 (다른 꼬리표의 줄은 기준 설정과 같다)
 
 
 def load(path):
@@ -97,7 +98,7 @@ def main():
         print('\n지속 측정 (구성마다 쉬지 않고 %.1f초) — 스텝당 ms · 초당 스텝 · 풀이 한 번 ms · 전진 px/s' % (b.get('sustainMs', 0) / 1000))
         for r in b['rows']:
             name = r['variant'] + ('' if r['cycles'] == 2 else ' (%d사이클)' % r['cycles']) + (' [%s]' % r['tag'] if r.get('tag') else '')
-            gain = FAST_GAIN if r.get('tag') else 1
+            gain = FAST_GAIN if r.get('tag') == FAST_TAG else 1
             print('  %4d² %-52s 패스 %3d  %6.2f  %6.0f  %5.2f  %6.1f' % (r['N'], name, r['passes'], r['msPerStep'], r['stepsPerSec'], r['msSolve'], r['pxPerSec'] * gain))
 
     if not v4:

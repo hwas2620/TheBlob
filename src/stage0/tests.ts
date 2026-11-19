@@ -4,7 +4,8 @@ import { Glx } from '../gpu/plasm/glx';
 import { MultigridGPU } from '../gpu/plasm/MultigridGPU';
 import { PlasmGPU, type PlainState } from '../gpu/plasm/PlasmGPU';
 import { hashNormal, hashU01 } from '../gpu/plasm/hashNoise';
-import { defaultParams, foodParams, shaderVars, type FoodSpot } from '../gpu/plasm/params';
+import { defaultParams, foodParams, shaderVars } from '../gpu/plasm/params';
+import { FOOD3 } from './scenarios';
 import type { FoodState } from '../gpu/plasm/food';
 import { fluxError, relDiff, solveCG } from './cpuSolver';
 import { interleave, loadManifest, loadRef, type RefArrays, type RefFile } from './refData';
@@ -142,7 +143,7 @@ export async function testA0(glx: Glx, log: Log): Promise<A0Result> {
 // ───────────────────────── 스텝 일치 시험 ─────────────────────────
 
 
-function toState(ref: RefArrays): PlainState {
+export function toState(ref: RefArrays): PlainState {
   const g = (k: string): Float32Array => ref.get(k)![0];
   const s: PlainState = { h: g('h'), wet: g('wet'), age: g('age'), sage: g('sage'), theta: g('theta'), slime: g('slime'), C: ref.get('C')!, p: g('p'), pm: g('pm') };
   if (ref.has('Hres') && ref.has('hbar')) {
@@ -153,7 +154,7 @@ function toState(ref: RefArrays): PlainState {
 }
 
 /** numpy 가 내보낸 먹이 상태 (manifest 의 fM, famp, t_exh) */
-function refFood(f: RefFile, dt: number): FoodState[] {
+export function refFood(f: RefFile, dt: number): FoodState[] {
   const fM = f.fM ?? [];
   return fM.map((m, k) => {
     const te = f.t_exh?.[k];
@@ -326,9 +327,6 @@ export async function testParity(glx: Glx, log: Log, variant: Variant): Promise<
 }
 
 // ───────────────────────── 먹이가 있는 스텝 일치 시험 (관문 B) ─────────────────────────
-
-/** 대칭 먹이 셋 (numpy 기준 실행의 SCN['food3']) */
-export const FOOD3: FoodSpot[] = [{ angleDeg: 20, dist: 40 }, { angleDeg: 140, dist: 40 }, { angleDeg: 260, dist: 40 }];
 
 export interface FoodDiff extends StateDiff {
   /** 출발한 스텝과 그 뒤로 돈 스텝 수 */
@@ -507,7 +505,7 @@ export interface A12Result extends A12Options {
   areaEnd: number;
 }
 
-function quantile(sorted: number[], q: number): number {
+export function quantile(sorted: number[], q: number): number {
   if (sorted.length === 0) return NaN;
   const pos = (sorted.length - 1) * q;
   const lo = Math.floor(pos);
