@@ -96,7 +96,7 @@ def main():
     elif part == 'b':
         scn = sys.argv[2]; seed = int(sys.argv[3]); kv = dict(a.split('=', 1) for a in sys.argv[4:]); tag = kv.pop('tag', '')
         over = dict(GB); over.update(SCN[scn]); over.update(seed=seed)
-        for k, v in kv.items(): over[k] = json.loads(v) if v[:1] in '[{' else (int(v) if k in ('N', 'osc_sub', 'ncyc', 'res_acc', 'reservoir', 'vsave') else float(v))
+        for k, v in kv.items(): over[k] = json.loads(v) if v[:1] in '[{' else (int(v) if k in ('N', 'osc_sub', 'ncyc', 'res_acc', 'reservoir', 'vsave', 'f32') else float(v))
         R.run(f'b_{scn}_s{seed}' + (f'_{tag}' if tag else ''), over)
     elif part == 'dumpsfood':
         s0 = [int(a) for a in sys.argv[2:5]]           # 세 시점의 스텝 (닿기 직전, 먹는 중, 첫 먹이가 떨어진 직후). 먼저 b food3 1 을 돌려 metrics.json 의 t_touch, t_exh 를 보고 정한다

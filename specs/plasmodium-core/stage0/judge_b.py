@@ -107,7 +107,7 @@ def judge(crit, what, g, n, thr, ok_fn, fmt='%.3g', cont=True, quorum=1.0):
     print(f'      numpy {show(n)}   → {sum(np_)}/{len(np_)}')
     why = '' if not full else (f' (넘은 수 {"같음" if same_cnt else "다름"}' + (f', GPU 중앙 {f(med(g), fmt)} 이 numpy 범위 {f(min(n), fmt)}~{f(max(n), fmt)} {"안" if same_val else "밖"}' if cont else '') + ')')
     print(f'      같은가: {same_mark(same)}{why}   기준: {mark(crit_ok)}' + ('' if None not in g else '  (없는 값은 불통과로 셌다)'))
-    OUT.append(dict(crit=crit, what=what.strip(), thr=thr, gpu=g, numpy=n, gpu_pass=sum(gp), numpy_pass=sum(np_), n_gpu=len(gp), n_numpy=len(np_), same=same, ok=crit_ok))
+    OUT.append(dict(crit=crit, what=what.strip(), thr=thr, gpu=g, numpy=n, gpu_pass=sum(gp), numpy_pass=sum(np_), n_gpu=len(gp), n_numpy=len(np_), same=same, ok=crit_ok, fmt=fmt, cont=cont))
     return same, crit_ok
 
 
@@ -242,16 +242,50 @@ def main():
     line('B7', 'B1 (부피·음수·몸 밖)을 채움', 'long', '', lambda r: 1.0 if b1_ok(r) else 0.0, '= 1', lambda v: v > 0.5, fmt='%.0f', cont=False)
 
     # ───────── 덧붙임: 판정에 쓰지 않는 추가 시드 ─────────
-    extra = sorted(s for s in range(1, 100) if run('gpu', 'mig', s) and run('numpy', 'mig', s))
-    if len(extra) > len(EXPECT[('mig', '')]):
-        print(f'\n덧붙임 — 굶은 이주의 시드 {len(extra)}개(판정에 쓰지 않은 것 포함)로 본 GPU − numpy 의 짝 차이')
-        print('  %-26s %9s %9s %10s %9s %7s %12s' % ('지표', 'GPU 평균', 'numpy 평균', '차이 평균', '표준편차', 't', 'GPU 가 큰 수'))
-        for k, label in (('gross_net', '정맥 총유량/순유량'), ('veinT', '정맥 최대 성분(시간 평균)'), ('rad_ratio', '반지름 p90/p10'), ('sheet_amp', '시트 두께 진폭'), ('disp300', '이동 t=0~300'), ('chord', '현의 격자 방향 비율'), ('rear_ratio', '먼/가까운 절반의 전도도')):
-            pr = [(run('gpu', 'mig', s).get(k), run('numpy', 'mig', s).get(k)) for s in extra]; pr = [(a, b) for a, b in pr if a is not None and b is not None]
+    METRICS = (('gross_net', '정맥 총유량/순유량'), ('veinT', '정맥 최대 성분(시간 평균)'), ('rad_ratio', '반지름 p90/p10'), ('sheet_amp', '시트 두께 진폭'), ('disp300', '이동 t=0~300'), ('chord', '현의 격자 방향 비율'), ('rear_ratio', '먼/가까운 절반의 전도도'))
+
+    def paired(title, crit, a_of, b_of, seeds, a_name, b_name):
+        print(f'\n{title}')
+        print('  %-26s %10s %10s %10s %9s %7s %14s %s' % ('지표', f'{a_name} 평균', f'{b_name} 평균', '차이 평균', '표준편차', 't', f'{a_name} 가 큰 수', f'{a_name} 중앙이 {b_name} 범위 안인가'))
+        for k, label in METRICS:
+            pr = [(a_of(s_).get(k), b_of(s_).get(k)) for s_ in seeds]; pr = [(x, y) for x, y in pr if x is not None and y is not None]
             if len(pr) < 3: continue
-            a = np.array([p[0] for p in pr], float); b = np.array([p[1] for p in pr], float); d = a - b; sd = d.std(ddof=1); t = d.mean() / (sd / np.sqrt(d.size)) if sd > 0 else float('nan')
-            print('  %-26s %9.3f %9.3f %+10.3f %9.3f %7.2f %9d/%d' % (label, a.mean(), b.mean(), d.mean(), sd, t, int((d > 0).sum()), d.size))
-            OUT.append(dict(crit='extra', what=label, n=int(d.size), gpu_mean=float(a.mean()), numpy_mean=float(b.mean()), diff_mean=float(d.mean()), diff_sd=float(sd), t=float(t), gpu_higher=int((d > 0).sum())))
+            a = np.array([p_[0] for p_ in pr], float); b = np.array([p_[1] for p_ in pr], float); d = a - b; sd = d.std(ddof=1); t = d.mean() / (sd / np.sqrt(d.size)) if sd > 0 else float('nan')
+            inside = bool(b.min() <= np.median(a) <= b.max())
+            print('  %-26s %10.3f %10.3f %+10.3f %9.3f %7.2f %11d/%d   %s (%s 범위 %.3g~%.3g, %s 중앙 %.3g)' % (label, a.mean(), b.mean(), d.mean(), sd, t, int((d > 0).sum()), d.size, '안' if inside else '밖', b_name, b.min(), b.max(), a_name, np.median(a)))
+            OUT.append(dict(crit=crit, what=label, n=int(d.size), a=a_name, b=b_name, a_mean=float(a.mean()), b_mean=float(b.mean()), diff_mean=float(d.mean()), diff_sd=float(sd), t=float(t), a_higher=int((d > 0).sum()),
+                            b_min=float(b.min()), b_max=float(b.max()), a_median=float(np.median(a)), inside=inside))
+
+    extra = sorted(s_ for s_ in range(1, 100) if run('gpu', 'mig', s_) and run('numpy', 'mig', s_))
+    if len(extra) > len(EXPECT[('mig', '')]):
+        paired(f'덧붙임 1 — 굶은 이주의 시드 {len(extra)}개(판정에 쓰지 않은 것 포함)로 본 GPU − numpy 의 짝 차이', 'extra', lambda s_: run('gpu', 'mig', s_), lambda s_: run('numpy', 'mig', s_), extra, 'GPU', 'numpy')
+    # 대조 실험: numpy 기준 모델을 float32 로 (f32 = 저장 상태만 반올림, f32s = 압력 풀이의 반복값도 float32)
+    for tag, what in (('f32', '저장 상태를 스텝마다 float32 로 반올림'), ('f32s', '저장 상태 반올림 + 압력 풀이도 float32')):
+        ss = sorted(s_ for s_ in range(1, 100) if run('numpy', 'mig', s_, tag) and run('numpy', 'mig', s_))
+        if not ss: continue
+        paired(f'덧붙임 2 ({tag}) — 대조 실험: numpy 를 float32 로 돌린 실행({what}) − 그대로의 numpy (굶은 이주, 시드 {len(ss)}개)', f'extra_{tag}', lambda s_, tag=tag: run('numpy', 'mig', s_, tag), lambda s_: run('numpy', 'mig', s_), ss, tag, 'numpy')
+        both = [s_ for s_ in ss if run('gpu', 'mig', s_)]
+        if both: paired(f'           같은 시드의 GPU − {tag} (시드 {len(both)}개)', f'extra_gpu_{tag}', lambda s_: run('gpu', 'mig', s_), lambda s_, tag=tag: run('numpy', 'mig', s_, tag), both, 'GPU', tag)
+    longs = sorted(s_ for s_ in range(1, 100) if run('gpu', 'long', s_) or run('numpy', 'long', s_))
+    if len(longs) > len(EXPECT[('long', '')]):
+        print(f'\n덧붙임 3 — 지속 실행의 시드를 늘려 본 것 (판정 뒤에 더했다. 시드 {longs})')
+        print('  %-6s %4s %8s %10s %16s %12s %12s %14s' % ('출처', '시드', '끝 넓이', '젖음 바뀜', 'B3 채운 구간/5', '정맥 최소', '몸 밖 최대', '끝 구간 진폭'))
+        agg = {}
+        for origin in ('gpu', 'numpy'):
+            for s_ in longs:
+                r = run(origin, 'long', s_)
+                if r is None: continue
+                segs = r.get('segments') or []
+                row = dict(area=r.get('area_end'), turnover=r.get('turnover'), seg_ok=sum(1 for g_ in segs if (g_['veinT'] or 0) >= 0.8 and (g_['strahler'] or 0) >= 4 and (g_['rad_ratio'] or 0) >= 2),
+                           vein_min=min((g_['veinT'] or 0) for g_ in segs) if segs else None, out_max=r.get('out_frac'), amp=segs[-1]['sheet_amp'] if len(segs) == SEGMENTS else None)
+                agg.setdefault(origin, []).append(row)
+                print('  %-6s %4d %8s %10s %16s %12s %12s %14s' % (origin, s_, f(row['area'], '%d'), f(row['turnover'], '%.3f'), f'{row["seg_ok"]}/{SEGMENTS}', f(row['vein_min'], '%.3f'), f(row['out_max'], '%.3f'), f(row['amp'], '%.3f')))
+        for k, label in (('area', '끝 넓이'), ('turnover', '젖음이 바뀌는 셀의 비율'), ('seg_ok', 'B3 을 채운 구간 수'), ('vein_min', '구간별 정맥 최대 성분의 최소'), ('out_max', '몸 밖 부피의 최대'), ('amp', '끝 구간의 진폭')):
+            g_ = have([r_[k] for r_ in agg.get('gpu', [])]); n_ = have([r_[k] for r_ in agg.get('numpy', [])])
+            if len(g_) >= 3 and len(n_) >= 3:
+                inside = within(g_, n_)
+                print(f'  {label}: GPU 중앙 {f(med(g_))} (범위 {f(min(g_))}~{f(max(g_))}), numpy 중앙 {f(med(n_))} (범위 {f(min(n_))}~{f(max(n_))}) → GPU 중앙이 numpy 범위(±5%) {"안" if inside else "밖"}')
+                OUT.append(dict(crit='extra_long', what=label, n_gpu=len(g_), n_numpy=len(n_), gpu=g_, numpy=n_, gpu_median=med(g_), numpy_median=med(n_), inside=inside))
 
     # ───────── 요약 ─────────
     print('\n요약 — 기준별로 GPU 가 numpy 와 같은가 / 모델이 기준을 넘는가 ("(견줌)" 줄과 들여 쓴 보조 줄은 뺀다)')

@@ -9,7 +9,8 @@ export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THRE
 # run <시나리오> <시드> [쿼리에 더할 것] [이름 꼬리]
 run() {
   local name="b_$1_s$2${4:+_$4}"
-  node $R "$name" "test=b&scn=$1&seed=$2&dump=1&name=$name${3:+&$3}" 10800 > "$L/$name.log" 2>&1
+  rm -rf "$D/dumps/$name"      # 앞서 중단된 실행의 덤프가 남아 있지 않게
+  node $R "$name" "test=b&scn=$1&seed=$2&dump=1&name=$name${3:+&$3}" 10800 > "$L/$name.log" 2>&1 || echo "(러너가 실패로 끝났다: 값이 깨졌거나 끝까지 돌지 못했다. 판정에서는 '없음'이 된다)" >> "$L/$name.log"
   python3 $D/metrics/gpu2run.py "$D/dumps/$name" >> "$L/$name.log" 2>&1 && python3 $D/metrics/bmet.py "$D/runs_gpu/$name" --out $L/b >> "$L/$name.log" 2>&1
 }
 (
@@ -31,4 +32,8 @@ run() {
   run mig2x 1 "check=100"; run mig2x 2 "check=100"           # 몸 길이 2배 (B4 의 위상 지연)
   run food3 1 "gate=0" g0; run food3 2 "gate=0" g0           # 90% 조건을 끈 길 (코드 경로 확인)
 ) &
+wait
+# 덧붙임 (판정에는 쓰지 않는다): 굶은 이주의 시드를 15개까지 늘려 GPU − numpy 의 짝 차이를 본다
+( for s in 6 7 8 9 10; do run mig $s; done ) &
+( for s in 11 12 13 14 15; do run mig $s; done ) &
 wait; echo ALL_DONE > $L/b_done.txt

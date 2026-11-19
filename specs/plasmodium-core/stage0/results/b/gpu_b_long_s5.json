@@ -1,0 +1,183 @@
+{
+ "run": "b_long_s5",
+ "origin": "gpu",
+ "N": 192,
+ "seed": 5,
+ "steps": 20001,
+ "expected_steps": 20001,
+ "complete": true,
+ "nan": false,
+ "n_states": 100,
+ "stop": "",
+ "mass_err": 8.174351283482142e-07,
+ "neg_end": 0,
+ "neg_end_cellsteps": null,
+ "h_min_end": 0.00012850447092205286,
+ "h_min_in": -0.0007970643928274512,
+ "flux_err": [
+  0.052602108324304855,
+  0.10515560381145257,
+  0.24215823297691066
+ ],
+ "t_touch": [
+  232.60000000000002
+ ],
+ "t_exh": [
+  null
+ ],
+ "area_end": 3058,
+ "out_frac": 0.4904,
+ "disp300": 52.81,
+ "disp_angle": 5.3,
+ "veinT": 0.873,
+ "vein4": 0.879,
+ "strahler": 5.0,
+ "rad_ratio": 2.584,
+ "chord": 0.306,
+ "gross_net": 4.291,
+ "sheet_amp": 0.073,
+ "rear_ratio": 5.033,
+ "rear_rho": 0.347,
+ "veinT_min": 0.381,
+ "strahler_min": 4,
+ "lag": [
+  [
+   100.0,
+   0.175,
+   69.7,
+   null
+  ],
+  [
+   120.0,
+   0.242,
+   75.5,
+   null
+  ],
+  [
+   140.0,
+   0.332,
+   80.1,
+   null
+  ],
+  [
+   160.0,
+   0.443,
+   84.6,
+   null
+  ],
+  [
+   180.0,
+   0.559,
+   88.1,
+   null
+  ],
+  [
+   200.0,
+   0.707,
+   90.8,
+   null
+  ],
+  [
+   220.0,
+   0.906,
+   95.3,
+   null
+  ],
+  [
+   240.0,
+   1.16,
+   93.9,
+   null
+  ],
+  [
+   260.0,
+   0.95,
+   92.3,
+   null
+  ],
+  [
+   280.0,
+   1.102,
+   92.8,
+   null
+  ],
+  [
+   300.0,
+   1.003,
+   90.2,
+   null
+  ]
+ ],
+ "lag_min": 0.175,
+ "lag_max": 1.16,
+ "segments": [
+  {
+   "t": [
+    200,
+    400
+   ],
+   "veinT": 0.863,
+   "strahler": 5.0,
+   "rad_ratio": 2.768,
+   "sheet_amp": 0.073,
+   "gross_net": 4.254,
+   "out_frac": 0.0102,
+   "area": 3003
+  },
+  {
+   "t": [
+    400,
+    800
+   ],
+   "veinT": 0.89,
+   "strahler": 5.0,
+   "rad_ratio": 2.542,
+   "sheet_amp": 0.075,
+   "gross_net": 4.808,
+   "out_frac": 0.0159,
+   "area": 3100
+  },
+  {
+   "t": [
+    800,
+    1200
+   ],
+   "veinT": 0.567,
+   "strahler": 5.0,
+   "rad_ratio": 2.501,
+   "sheet_amp": 0.075,
+   "gross_net": 4.411,
+   "out_frac": 0.4897,
+   "area": 3045
+  },
+  {
+   "t": [
+    1200,
+    1600
+   ],
+   "veinT": 0.511,
+   "strahler": 5.0,
+   "rad_ratio": 2.557,
+   "sheet_amp": 0.073,
+   "gross_net": 4.093,
+   "out_frac": 0.4904,
+   "area": 2945
+  },
+  {
+   "t": [
+    1600,
+    2000
+   ],
+   "veinT": 0.956,
+   "strahler": 5.0,
+   "rad_ratio": 2.711,
+   "sheet_amp": 0.058,
+   "gross_net": 3.882,
+   "out_frac": 0.2798,
+   "area": 3058
+  }
+ ],
+ "turnover": 0.094,
+ "t_last": 2000.0,
+ "scn": "long"
+}

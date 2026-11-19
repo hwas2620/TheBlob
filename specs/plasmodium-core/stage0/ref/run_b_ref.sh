@@ -20,5 +20,12 @@ r() { python3 export_ref.py b "$@" > "logs/b_$(echo "$@" | tr ' ' '_').log" 2>&1
   for s in 1 2 3; do r mig256 $s; r food3_256 $s; done   # 게임 격자 후보 256² (무늬 주기 128)
   r mig 1 N=384 tag=N384; r mig 2 N=384 tag=N384   # 384² 확인
   r food3 1 N=384 tag=N384
+  r mig2x 1; r mig2x 2                             # 몸 길이 2배 (B4 의 위상 지연)
+  r food3 1 res_gate=0 tag=g0; r food3 2 res_gate=0 tag=g0   # 90% 조건을 끈 길 (GPU 의 같은 실행과 견준다)
 ) &
+wait
+# 덧붙임 (판정에는 쓰지 않는다): 굶은 이주의 시드를 15개까지 늘려 GPU − numpy 의 짝 차이를 본다
+( for s in 6 7 8 9; do r mig $s; done ) &
+( for s in 10 11 12; do r mig $s; done ) &
+( for s in 13 14 15; do r mig $s; done ) &
 wait; echo ALL_DONE > logs/b_done.txt

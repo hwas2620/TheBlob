@@ -1,0 +1,17 @@
+{
+ "run": "b_dir45_s2",
+ "origin": "gpu",
+ "N": 192,
+ "seed": 2,
+ "angle": 45,
+ "t_touch": [
+  256
+ ],
+ "stop": "touched",
+ "complete": true,
+ "nan": false,
+ "mass_err": 4.54130626860119e-07,
+ "neg_end": 0,
+ "h_min_in": 0.010769447311758995,
+ "scn": "dir45"
+}

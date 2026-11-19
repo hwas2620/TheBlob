@@ -69,6 +69,8 @@ DEF = dict(
     dump_food=0, dump_tag='state',                              # [stage0 B] dump_food=1: the state dump also carries the stored-mass factor Hres, the previous mean rest thickness and the per-food state
     wave_a0=0.0, vsave=0,        # [verify] wave_a0: initial direction (deg) of the prescribed wave; vsave=1: save a light state every gm_every
     slime0='',                   # [stage0 B] initial slime outside the disc: 'half' = on the half plane x < centre, 'all' = everywhere (slime avoidance test)
+    f32=0,                       # [stage0 B] 1: round the stored state to float32 at the end of every step and keep the phase in [0, 2pi) - what the GPU textures do. Control experiment only
+                                 #            2: in addition the multigrid solver keeps its iterates in float32 arrays (solver='mg' only)
 )
 # E7 "sheet front" parameter set = base of every E10 run
 BASE = dict(T=400, kappa=20, hy0=1.05, h_fill=0.2, Q0_auto=0.2, tau_a=50, r=0.05, D0=2, rate=0.05, lam=0.06, y_sigma=0.02)
@@ -179,7 +181,7 @@ def run(name, over):
     elif P['slime0'] == 'all': slime[~wet] = 1.0
     C = [np.zeros((N, N)) for _ in DIRS]; eage = [np.zeros((N, N)) for _ in DIRS]
     act_prev = [np.zeros((N, N), bool) for _ in DIRS]
-    p = np.zeros((N, N)); pm = np.zeros((N, N)); mgs = mgt.MGT(N) if P['solver'] == 'mg' else None; mg_err = []
+    p = np.zeros((N, N)); pm = np.zeros((N, N)); mgs = mgt.MGT(N, FT=np.float32 if P['f32'] >= 2 else np.float64) if P['solver'] == 'mg' else None; mg_err = []
     V0 = h.sum()
     steps = int(round(P['T'] / dt))
     snaps = sorted(set(int(steps * (i + 1) / P['nsnap']) for i in range(P['nsnap'])))
@@ -539,6 +541,10 @@ def run(name, over):
                     gx = mimg(fpos[k_][0] - cen_u[0]); gy = mimg(fpos[k_][1] - cen_u[1]); gn = max(np.hypot(gx, gy), 1e-9)
                     best = np.maximum(best, (vx * gx + vy * gy) / (vn * gn))
                 newdir += np.array([(best > 0.5).sum(), ((best <= 0.5) & (best >= -0.5)).sum(), (best < -0.5).sum()])
+        if P['f32']:      # the state the next step starts from is what a float32 texture would hold
+            r32 = lambda a_: np.asarray(a_, np.float32).astype(np.float64)
+            h = r32(h); p = r32(p); pm = r32(pm); age = r32(age); sage = r32(sage); slime = r32(slime); Hres = r32(Hres); hbar_prev = r32(hbar_prev)
+            theta = r32(np.where(wet, np.mod(theta, 2 * np.pi), 0.0)); C = [r32(c_) for c_ in C]
         nm_ = wet & ~wet_end_prev; ser_newm[step] = int(nm_.sum()); ser_newlm[step] = int((nm_ & (X < c0)).sum()); wet_end_prev = wet.copy()
         if wet.any():
             hm_end = float(h[wet].min()); hmin_end = min(hmin_end, hm_end)
