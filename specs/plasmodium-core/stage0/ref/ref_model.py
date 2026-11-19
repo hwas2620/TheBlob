@@ -39,6 +39,7 @@ DEF = dict(
     # --- N3 ---
     foods=[], food_sigma=25.0, food_amp=1.0, food_r=4.0, reservoir=0, eat=0.0, gain=0.0, food_M=0.0, food_fade=10.0,
     bridge_keep=0, bridge_break=1.0, tube_keep=0.0, h_res=1.0,
+    neg_fill=0,   # [split] 1: with neg_dry, a kept bridge cell (bridge_keep) whose thickness went negative is not dried; its deficit is shared among its neighbours in proportion to their thickness
     bridge_mem=0.0, bridge_mem_tau=1e9,   # [split] >0: a bridge cell is also kept while its remembered peak conductance (max of Cn, forgetting with time constant bridge_mem_tau) is >= bridge_mem: strands that were real veins outlive the flow that made them
     gm_every=20.0, nsnap=5, log_every=50,
     # --- N2 (front isotropy) ---
@@ -208,7 +209,7 @@ def run(name, over):
     negrec = []
     hmin_end = 0.0; neg_end_cellsteps = 0
     hfood_ser = []; ph_ser = []
-    nbridge_kept = 0; ntube_kept = 0; nlim_steps = 0; nlim_cells = 0; lim_cut_max = 0.0; hpre_min = 0.0; neg_cellsteps = 0; S_sat = 0.0
+    nbridge_kept = 0; ntube_kept = 0; nneg_fill = 0; nlim_steps = 0; nlim_cells = 0; lim_cut_max = 0.0; hpre_min = 0.0; neg_cellsteps = 0; S_sat = 0.0
 
     def node_C():
         Cn = np.zeros((N, N))
@@ -470,7 +471,8 @@ def run(name, over):
             cnt_q = 0
         # ---- drying ----
         Dm = wet & (h < P['h_min']) & (age > P['grace'])
-        if Dm.any():
+        negm = (wet & (h < 0)) if P['neg_dry'] else None; prot = None
+        if Dm.any() or (P['neg_fill'] and negm is not None and negm.any()):
             if P['tube_keep'] > 0:
                 keep = Dm & (Cn > P['tube_keep']); ntube_kept += int(keep.sum()); Dm &= ~keep
             if P['bridge_keep']:
@@ -480,7 +482,12 @@ def run(name, over):
                 strong = (Cn >= P['bridge_break']) | ((Cpk >= P['bridge_mem']) if P['bridge_mem'] > 0 else False)
                 ok = ((Nc <= 1) | ~strong) & (colour == step % 4)
                 nbridge_kept += int((Dm & (Nc > 1) & strong).sum()); Dm &= ok
-        if P['neg_dry']: Dm = Dm | (wet & (h < 0))
+                prot = (Nc > 1) & strong
+        fill = None
+        if P['neg_dry']:
+            if P['neg_fill'] and prot is not None:     # a kept strand that went negative is not dried: its deficit is taken from its neighbours (below)
+                fill = negm & prot; negm = negm & ~prot
+            Dm = Dm | negm
         if Dm.any():
             stay = wet & ~Dm; ns = np.zeros((N, N))
             for d in ALL: ns += nb(stay, d)
@@ -499,6 +506,13 @@ def run(name, over):
                 for d in ALL: h += np.where(stay, nb(give, d), 0.0)
             h[Dm] = 0.0; wet = stay; slime[Dm] = 1.0; age[Dm] = 0.0; sage[Dm] = 0.0; p[Dm] = 0.0; pm[Dm] = 0.0; Hres[Dm] = 1.0; Cpk[Dm] = 0.0
             ser_dry[step] = int(Dm.sum())
+        if fill is not None and fill.any():
+            fill &= wet
+            giver = wet & ~fill; hpos = np.where(giver, np.maximum(h, 0.0), 0.0); sh = np.zeros((N, N))
+            for d in ALL: sh += nb(hpos, d)
+            fok = fill & (sh > 0); gf = np.where(fok, h / np.maximum(sh, 1e-30), 0.0); addf = np.zeros((N, N))
+            for d in ALL: addf += np.where(giver, nb(gf, d) * hpos, 0.0)
+            h += addf; h[fok] = 0.0; nneg_fill += int(fok.sum())
         # ---- wetting (thickness yield) ----
         pw = np.where(wet, (h - tube) if P['tube_yield'] else h, -np.inf)
         pmax = np.full((N, N), -np.inf); arg = np.zeros((N, N), np.int8); nw = np.zeros((N, N))
@@ -609,7 +623,7 @@ def run(name, over):
                area_end=int(wet.sum()), foods=[[round(a, 2), round(b, 2)] for a, b in fpos],
                t_touch=[None if np.isnan(v) else round(float(v), 1) for v in t_touch], t_cover=[None if np.isnan(v) else round(float(v), 1) for v in t_cover],
                t_exh=[None if np.isnan(v) else round(float(v), 1) for v in t_exh], fM_end=[None if np.isinf(v) else round(float(v), 2) for v in fM],
-               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), traj=traj,
+               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), traj=traj,
                mg_err=([float(np.median([e[1] for e in mg_err])), float(np.percentile([e[1] for e in mg_err], 90)), float(max(e[1] for e in mg_err)), float(np.median([e[2] for e in mg_err]))] if mg_err else None), mg_err_n=len(mg_err),
                h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), neg_end_steps=int(neg_end_steps), steps_done=int(nstep), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
     wm = hmean_last > 0
