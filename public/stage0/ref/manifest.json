@@ -1622,6 +1622,607 @@
     null,
     379.70000000000005
    ]
+  },
+  {
+   "file": "food6state_N192_s1_step00500.bin.gz",
+   "tag": "food6state_N192_s1_step00500",
+   "N": 192,
+   "step": 500,
+   "t": 50.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "food6state",
+   "fM": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "food6state_N192_s1_step00501.bin.gz",
+   "tag": "food6state_N192_s1_step00501",
+   "N": 192,
+   "step": 501,
+   "t": 50.1,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "food6state",
+   "fM": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "food6state_N192_s1_step00510.bin.gz",
+   "tag": "food6state_N192_s1_step00510",
+   "N": 192,
+   "step": 510,
+   "t": 51.0,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "food6state",
+   "fM": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodfadestate_N192_s1_step00786.bin.gz",
+   "tag": "foodfadestate_N192_s1_step00786",
+   "N": 192,
+   "step": 786,
+   "t": 78.60000000000001,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodfadestate",
+   "fM": [
+    12.309999999999967,
+    19.589999999999986,
+    0.7350000000000523
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodfadestate_N192_s1_step00787.bin.gz",
+   "tag": "foodfadestate_N192_s1_step00787",
+   "N": 192,
+   "step": 787,
+   "t": 78.7,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodfadestate",
+   "fM": [
+    12.179999999999966,
+    19.574999999999985,
+    0.49500000000005223
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "t_exh": [
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "file": "foodfadestate_N192_s1_step00796.bin.gz",
+   "tag": "foodfadestate_N192_s1_step00796",
+   "N": 192,
+   "step": 796,
+   "t": 79.60000000000001,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodfadestate",
+   "fM": [
+    10.984999999999964,
+    19.374999999999982,
+    0.0
+   ],
+   "famp": [
+    1.0,
+    1.0,
+    0.5488116360940295
+   ],
+   "t_exh": [
+    null,
+    null,
+    78.9
+   ]
+  },
+  {
+   "file": "foodfadestate_N192_s1_step00906.bin.gz",
+   "tag": "foodfadestate_N192_s1_step00906",
+   "N": 192,
+   "step": 906,
+   "t": 90.60000000000001,
+   "seed": 1,
+   "fields": [
+    {
+     "name": "h",
+     "ch": 1,
+     "offset": 0
+    },
+    {
+     "name": "wet",
+     "ch": 1,
+     "offset": 36864
+    },
+    {
+     "name": "age",
+     "ch": 1,
+     "offset": 73728
+    },
+    {
+     "name": "sage",
+     "ch": 1,
+     "offset": 110592
+    },
+    {
+     "name": "theta",
+     "ch": 1,
+     "offset": 147456
+    },
+    {
+     "name": "slime",
+     "ch": 1,
+     "offset": 184320
+    },
+    {
+     "name": "C",
+     "ch": 4,
+     "offset": 221184
+    },
+    {
+     "name": "p",
+     "ch": 1,
+     "offset": 368640
+    },
+    {
+     "name": "pm",
+     "ch": 1,
+     "offset": 405504
+    },
+    {
+     "name": "Hres",
+     "ch": 1,
+     "offset": 442368
+    },
+    {
+     "name": "hbar",
+     "ch": 1,
+     "offset": 479232
+    }
+   ],
+   "floats": 516096,
+   "kind": "foodfadestate",
+   "fM": [
+    0.0,
+    9.194999999999999,
+    0.0
+   ],
+   "famp": [
+    0.005516564420760835,
+    1.0,
+    9.14242314781736e-05
+   ],
+   "t_exh": [
+    85.30000000000001,
+    null,
+    78.9
+   ]
   }
  ]
 }

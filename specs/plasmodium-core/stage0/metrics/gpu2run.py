@@ -45,7 +45,10 @@ def convert(dump_dir, out_dir, keep=False):
     P = meta['params']; N = P['N']; nf = meta['nf']
     os.makedirs(out_dir, exist_ok=True)
     for f in glob.glob(os.path.join(out_dir, 'vs_t*.npz')): os.remove(f)
-    files = sorted(glob.glob(os.path.join(dump_dir, 'vs_t*.bin')))
+    # 이 실행이 보냈다고 적은 시각만 바꾼다 (앞서 중단된 실행의 덤프가 같은 폴더에 남아 있어도 섞이지 않게)
+    sent = {int(round(t)) for t in meta['dumped']}
+    files = [f for f in sorted(glob.glob(os.path.join(dump_dir, 'vs_t*.bin'))) if int(os.path.basename(f)[4:8]) in sent]
+    if len(files) != len(sent): raise SystemExit(f'{dump_dir}: 보냈다고 적힌 덤프 {len(sent)}장 가운데 {len(files)}장만 있다')
     for f in files:
         t = int(os.path.basename(f)[4:8]); S = read_dump(f, N)
         np.savez_compressed(os.path.join(out_dir, f'vs_t{t:04d}.npz'), t=float(t), **S)

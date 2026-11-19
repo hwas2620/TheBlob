@@ -24,7 +24,17 @@ const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
 
 function serve() {
   const server = http.createServer((req, res) => {
-    const rel = decodeURIComponent(req.url.split('?')[0]);
+    let rel;
+    try {
+      rel = decodeURIComponent(req.url.split('?')[0]);
+    } catch {
+      rel = '\0';
+    }
+    if (rel.includes('\0')) {
+      res.writeHead(400);
+      res.end('bad path');
+      return;
+    }
     if (req.method === 'POST' && rel.startsWith('/__dump/')) {
       const file = path.join(DUMP, rel.slice('/__dump/'.length));
       if (!file.startsWith(DUMP + path.sep)) {

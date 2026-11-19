@@ -33,6 +33,7 @@ GPU 와 numpy 를 똑같이 채점한다: 두 쪽 모두 같은 꼴의 파일(vs
             굵은 쌍 = 경로 최소 전도도(중앙) ≥ 5 × 정맥 중앙.  시드의 통과 = 모든 먹이에 닿음 & 모든 쌍이 굵음 & 같은 성분 ≥ 0.9 & 몸 최대 성분 ≥ 0.9
   B6 점액   frac_empty 새로 젖은 셀 가운데 흔적이 없는 쪽(가운데의 오른쪽)의 비율. 처음 원반이 퍼지는 t < 20 은 뺀다   [새로 만든 것]
             late_new   사방이 흔적일 때 뒤쪽 절반(t ≥ T/2)에 새로 젖은 셀 수 ("멈추지 않음" = 100개 이상)
+            "새로 젖은 셀"은 스텝 끝의 젖은 마스크가 앞 스텝 끝보다 늘어난 셀이다 (양쪽 출처 모두). 100개가 안 되면 비율을 내지 않는다
   B7 지속   구간(200~400, 400~800, …, 1600~2000)마다 B3 의 값. turnover = 이웃한 저장 시각 사이에 젖음이 바뀐 셀 ÷ 넓이의 중앙 (끝 400 시간)
             "얼어붙지 않음" = turnover > 0.02 이고 sheet_amp ≥ 0.03, "사라지지 않음" = 끝의 넓이 > 0
 """
@@ -168,7 +169,11 @@ def common(run_dir, states, P):
     """B1 과 실행의 기본 정보"""
     met = json.load(open(os.path.join(run_dir, 'metrics.json')))
     steps = met.get('steps_done') or int(round(met.get('t_end', 0) / P['dt'])) + 1
-    out = dict(run=os.path.basename(run_dir.rstrip('/')), origin=met.get('origin', 'numpy'), N=P['N'], seed=P['seed'], steps=int(steps), n_states=len(states), stop=met.get('stop', ''),
+    expected = int(round(P['T'] / P['dt'])) + 1; stop = met.get('stop', '')
+    # 온전한 실행: 끝까지 돌았거나(스텝 수가 맞다) 모든 먹이에 닿아서 멈췄고, 값이 깨지지 않았다
+    complete = bool(not met.get('nan', False) and ((stop == '' and int(steps) == expected) or stop == 'touched') and met.get('mass_err_max') is not None)
+    out = dict(run=os.path.basename(run_dir.rstrip('/')), origin=met.get('origin', 'numpy'), N=P['N'], seed=P['seed'], steps=int(steps), expected_steps=expected, complete=complete, nan=bool(met.get('nan', False)),
+               n_states=len(states), stop=stop,
                mass_err=met.get('mass_err_max'), neg_end=met.get('neg_end_steps'), neg_end_cellsteps=met.get('neg_end_cellsteps'), h_min_end=met.get('h_min_end_of_step'), h_min_in=met.get('h_min_seen'),
                flux_err=met.get('mg_err'), t_touch=met.get('t_touch'), t_exh=met.get('t_exh'), area_end=int(states[-1]['wet'].sum()) if states else None)
     bo = body_out(states)
@@ -238,10 +243,13 @@ def food(run_dir):
 
 def slime(run_dir):
     states, G, P = vmet.load_states(run_dir); out = common(run_dir, states, P)
-    s = np.load(os.path.join(run_dir, 'series.npz')); new = s['new'].astype(float); newl = s['newl'].astype(float); dt = P['dt']
+    s = np.load(os.path.join(run_dir, 'series.npz')); dt = P['dt']
+    # 새로 젖은 셀 = 스텝 끝의 젖은 마스크가 앞 스텝 끝보다 늘어난 셀. numpy 실행은 이 방법의 열(newm, newlm)을 따로 갖고, GPU 실행의 new, newl 은 처음부터 이 방법이다
+    new = s['newm' if 'newm' in s.files else 'new'].astype(float); newl = s['newlm' if 'newlm' in s.files else 'newl'].astype(float)
     k0 = int(round(20 / dt)); half = new.size // 2
     out['new_total'] = int(new.sum()); out['new_after20'] = int(new[k0:].sum())
-    out['frac_empty_all'] = rnd(1 - newl.sum() / max(new.sum(), 1)); out['frac_empty'] = rnd(1 - newl[k0:].sum() / max(new[k0:].sum(), 1))
+    out['frac_empty_all'] = rnd(1 - newl.sum() / new.sum()) if new.sum() >= 100 else None
+    out['frac_empty'] = rnd(1 - newl[k0:].sum() / new[k0:].sum()) if new[k0:].sum() >= 100 else None      # 새로 젖은 셀이 100개도 안 되면 비율을 내지 않는다 (멈춘 몸이 통과로 나오지 않게)
     out['late_new'] = int(new[half:].sum()); out['slime0'] = P.get('slime0', '')
     return out
 
@@ -249,6 +257,7 @@ def slime(run_dir):
 def touch(run_dir):
     P = json.load(open(os.path.join(run_dir, 'params.json'))); met = json.load(open(os.path.join(run_dir, 'metrics.json')))
     return dict(run=os.path.basename(run_dir.rstrip('/')), origin=met.get('origin', 'numpy'), N=P['N'], seed=P['seed'], angle=P['foods'][0][0], t_touch=met.get('t_touch'), stop=met.get('stop', ''),
+                complete=bool(not met.get('nan', False) and met.get('stop', '') == 'touched'), nan=bool(met.get('nan', False)),
                 mass_err=met.get('mass_err_max'), neg_end=met.get('neg_end_steps'), h_min_in=met.get('h_min_seen'))
 
 

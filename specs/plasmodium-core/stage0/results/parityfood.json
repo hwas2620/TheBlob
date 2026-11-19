@@ -1,7 +1,7 @@
 {
  "name": "parityfood",
  "query": "test=parityfood",
- "seconds": 27.429,
+ "seconds": 127.815,
  "done": true,
  "ok": true,
  "result": {
@@ -32,6 +32,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1343.9999974295497,
       "volumeRef": 1343.9999999776483,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 1,
       "mRelDiff": 0,
@@ -40,6 +41,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -49,6 +53,16 @@
        1200,
        1200,
        1200
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": null
      },
@@ -66,6 +80,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.0050029158592,
       "volumeRef": 1344.0050000697374,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 10,
       "mRelDiff": 4.0690103257171965e-9,
@@ -74,6 +89,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000019669532775878906,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -83,6 +101,16 @@
        1200,
        1200,
        1199.995
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": null
      },
@@ -100,6 +128,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.3403322845697,
       "volumeRef": 1344.3400003910065,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 50,
       "mRelDiff": 2.766927051804184e-7,
@@ -108,6 +137,9 @@
       "hresMaxDiff": 1.1920928955078125e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.000018596649169921875,
+      "ageMaxDiff": 0.0000762939453125,
+      "sageMaxDiff": 0.0000762939453125,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -117,6 +149,16 @@
        1200,
        1200,
        1199.6599999999962
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": null
      },
@@ -134,6 +176,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2710.570028871298,
       "volumeRef": 2710.5699985106476,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 1,
       "mRelDiff": 3.051756057933138e-8,
@@ -142,6 +185,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        742.0249633789062,
        781.6699829101562,
@@ -151,6 +197,16 @@
        742.024999999979,
        781.6699999999769,
        709.7350000000122
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": null
      },
@@ -168,6 +224,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2721.1452834683005,
       "volumeRef": 2721.1449993331917,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 10,
       "mRelDiff": 1.5869141653486925e-7,
@@ -176,6 +233,9 @@
       "hresMaxDiff": 7.152557373046875e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.00001436471939086914,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        738.5148315429688,
        778.1598510742188,
@@ -185,6 +245,16 @@
        738.5149999999791,
        778.159999999977,
        706.1800000000123
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": null
      },
@@ -202,6 +272,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2768.1466304739006,
       "volumeRef": 2768.1450017322786,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 50,
       "mRelDiff": 8.097330838078657e-7,
@@ -210,6 +281,9 @@
       "hresMaxDiff": 9.5367431640625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000336766242980957,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        722.9142456054688,
        762.5592651367188,
@@ -219,6 +293,16 @@
        722.9149999999796,
        762.5599999999775,
        690.3800000000131
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": null
      },
@@ -236,6 +320,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4813.820020445157,
       "volumeRef": 4813.820000998676,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 1,
       "mRelDiff": 6.357831239256484e-10,
@@ -244,6 +329,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.000030517578125,
+      "sageMaxDiff": 0.000030517578125,
+      "ageOver": 0,
       "mGpu": [
        43.92499923706055,
        83.56999969482422,
@@ -253,6 +341,16 @@
        43.925000000000296,
        83.56999999999968,
        2.6850000000301666
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": null
      },
@@ -270,6 +368,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4823.52513492899,
       "volumeRef": 4823.525000415742,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 10,
       "mRelDiff": 4.323323838188268e-9,
@@ -278,6 +377,9 @@
       "hresMaxDiff": 0.0000011920928955078125,
       "hresOver": 0,
       "hbarMaxDiff": 0.000003337860107421875,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        40.41500473022461,
        80.06000518798828,
@@ -287,6 +389,16 @@
        40.41500000000029,
        80.05999999999968,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.9801987409591675
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.9801986733067564
       ],
       "vsBase": null
      },
@@ -304,6 +416,7 @@
       "slimeMismatch": 2,
       "volumeGpu": 4854.725528605748,
       "volumeRef": 4854.725003384054,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 50,
       "mRelDiff": 2.4668375940469406e-8,
@@ -312,6 +425,9 @@
       "hresMaxDiff": 0.00000286102294921875,
       "hresOver": 0,
       "hbarMaxDiff": 0.0003146827220916748,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        24.81502914428711,
        64.46002960205078,
@@ -321,6 +437,280 @@
        24.815000000000268,
        64.45999999999965,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.657046914100647
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.6570468198150575
+      ],
+      "vsBase": null
+     },
+     {
+      "step": 501,
+      "bodyCells": 3847,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0007053017616271973,
+      "thetaMedDiff": 0.0000017165505425964511,
+      "thetaMaxDiff": 0.000006866518305059799,
+      "cMedRelDiff": 2.084978294333467e-7,
+      "cMaxRelDiff": 0.000021396670260611444,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.000016161005005375976,
+      "slimeMismatch": 0,
+      "volumeGpu": 1888.724998595193,
+      "volumeRef": 1888.7249998369953,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 1,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 2.384185791015625e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": null
+     },
+     {
+      "step": 510,
+      "bodyCells": 3957,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0005660057067871094,
+      "thetaMedDiff": 0.0000033894489703811814,
+      "thetaMaxDiff": 0.000014551549107011397,
+      "cMedRelDiff": 4.320778016572776e-7,
+      "cMaxRelDiff": 0.00002834886311651094,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00001858617885094091,
+      "slimeMismatch": 0,
+      "volumeGpu": 1910.099982259795,
+      "volumeRef": 1910.1000017207116,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 10,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 2.384185791015625e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.0000017285346984863281,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": null
+     },
+     {
+      "step": 787,
+      "bodyCells": 2999,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0003249645233154297,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.000018040444530242894,
+      "cMedRelDiff": 3.890617317246616e-7,
+      "cMaxRelDiff": 0.00001821456805595693,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00007193960735097251,
+      "slimeMismatch": 0,
+      "volumeGpu": 1371.749999165535,
+      "volumeRef": 1371.7500008940697,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 1,
+      "mRelDiff": 3.814697340231987e-8,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.00000762939453125,
+      "sageMaxDiff": 0.00000762939453125,
+      "ageOver": 0,
+      "mGpu": [
+       12.180000305175781,
+       19.575000762939453,
+       0.4950000047683716
+      ],
+      "mRef": [
+       12.179999999999966,
+       19.574999999999985,
+       0.49500000000005223
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
+      ],
+      "vsBase": null
+     },
+     {
+      "step": 796,
+      "bodyCells": 3001,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0002955794334411621,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.00002257039753317258,
+      "cMedRelDiff": 6.315577688146699e-7,
+      "cMaxRelDiff": 0.000022582708291551422,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00004737158032309624,
+      "slimeMismatch": 0,
+      "volumeGpu": 1373.6399957090616,
+      "volumeRef": 1373.6400009393692,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 10,
+      "mRelDiff": 9.536743252880342e-8,
+      "ampDiff": 3.8024012494197734e-8,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000002384185791015625,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       10.98499870300293,
+       19.375001907348633,
+       0
+      ],
+      "mRef": [
+       10.984999999999964,
+       19.374999999999982,
+       0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.548811674118042
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.5488116360940295
+      ],
+      "vsBase": null
+     },
+     {
+      "step": 906,
+      "bodyCells": 2969,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.00009530782699584961,
+      "thetaMedDiff": 0.00002118758558111722,
+      "thetaMaxDiff": 0.00006481818555670316,
+      "cMedRelDiff": 0.00000615581135108884,
+      "cMaxRelDiff": 0.00019321392126529498,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00014289556795142857,
+      "slimeMismatch": 0,
+      "volumeGpu": 1394.80497841537,
+      "volumeRef": 1394.805000513792,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 120,
+      "mRelDiff": 9.38415527418357e-7,
+      "ampDiff": 8.785736209729333e-10,
+      "exhMismatch": 0,
+      "hresMaxDiff": 3.5762786865234375e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000013828277587890625,
+      "ageMaxDiff": 0.00018310546875,
+      "sageMaxDiff": 0.00018310546875,
+      "ageOver": 0,
+      "mGpu": [
+       0,
+       9.195018768310547,
+       0
+      ],
+      "mRef": [
+       0,
+       9.194999999999999,
+       0
+      ],
+      "ampGpu": [
+       0.005516563542187214,
+       1,
+       0.00009142424823949113
+      ],
+      "ampRef": [
+       0.005516564420760835,
+       1,
+       0.0000914242314781736
       ],
       "vsBase": null
      }
@@ -345,6 +735,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1343.9999974295497,
       "volumeRef": 1343.9999999776483,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 1,
       "mRelDiff": 0,
@@ -353,6 +744,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -362,6 +756,16 @@
        1200,
        1200,
        1200
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -382,6 +786,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.0050029158592,
       "volumeRef": 1344.0050000697374,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 10,
       "mRelDiff": 4.0690103257171965e-9,
@@ -390,6 +795,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000019669532775878906,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -399,6 +807,16 @@
        1200,
        1200,
        1199.995
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -419,6 +837,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.3403322845697,
       "volumeRef": 1344.3400003910065,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 50,
       "mRelDiff": 2.766927051804184e-7,
@@ -427,6 +846,9 @@
       "hresMaxDiff": 1.1920928955078125e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.000018596649169921875,
+      "ageMaxDiff": 0.0000762939453125,
+      "sageMaxDiff": 0.0000762939453125,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -436,6 +858,16 @@
        1200,
        1200,
        1199.6599999999962
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -456,6 +888,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2710.570028871298,
       "volumeRef": 2710.5699985106476,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 1,
       "mRelDiff": 3.051756057933138e-8,
@@ -464,6 +897,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        742.0249633789062,
        781.6699829101562,
@@ -473,6 +909,16 @@
        742.024999999979,
        781.6699999999769,
        709.7350000000122
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -493,6 +939,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2721.1452834683005,
       "volumeRef": 2721.1449993331917,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 10,
       "mRelDiff": 1.5869141653486925e-7,
@@ -501,6 +948,9 @@
       "hresMaxDiff": 7.152557373046875e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.00001436471939086914,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        738.5148315429688,
        778.1598510742188,
@@ -510,6 +960,16 @@
        738.5149999999791,
        778.159999999977,
        706.1800000000123
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -530,6 +990,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2768.1466304739006,
       "volumeRef": 2768.1450017322786,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 50,
       "mRelDiff": 8.097330838078657e-7,
@@ -538,6 +999,9 @@
       "hresMaxDiff": 9.5367431640625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000336766242980957,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        722.9142456054688,
        762.5592651367188,
@@ -547,6 +1011,16 @@
        722.9149999999796,
        762.5599999999775,
        690.3800000000131
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -567,6 +1041,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4813.820020445157,
       "volumeRef": 4813.820000998676,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 1,
       "mRelDiff": 6.357831239256484e-10,
@@ -575,6 +1050,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.000030517578125,
+      "sageMaxDiff": 0.000030517578125,
+      "ageOver": 0,
       "mGpu": [
        43.92499923706055,
        83.56999969482422,
@@ -584,6 +1062,16 @@
        43.925000000000296,
        83.56999999999968,
        2.6850000000301666
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -604,6 +1092,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4823.52513492899,
       "volumeRef": 4823.525000415742,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 10,
       "mRelDiff": 4.323323838188268e-9,
@@ -612,6 +1101,9 @@
       "hresMaxDiff": 0.0000011920928955078125,
       "hresOver": 0,
       "hbarMaxDiff": 0.000003337860107421875,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        40.41500473022461,
        80.06000518798828,
@@ -621,6 +1113,16 @@
        40.41500000000029,
        80.05999999999968,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.9801987409591675
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.9801986733067564
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -641,6 +1143,7 @@
       "slimeMismatch": 2,
       "volumeGpu": 4854.725528605748,
       "volumeRef": 4854.725003384054,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 50,
       "mRelDiff": 2.4668375940469406e-8,
@@ -649,6 +1152,9 @@
       "hresMaxDiff": 0.00000286102294921875,
       "hresOver": 0,
       "hbarMaxDiff": 0.0003146827220916748,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        24.81502914428711,
        64.46002960205078,
@@ -658,6 +1164,295 @@
        24.815000000000268,
        64.45999999999965,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.657046914100647
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.6570468198150575
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 501,
+      "bodyCells": 3847,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0007053017616271973,
+      "thetaMedDiff": 0.0000017165505425964511,
+      "thetaMaxDiff": 0.000006866518305059799,
+      "cMedRelDiff": 2.084978294333467e-7,
+      "cMaxRelDiff": 0.000021396670260611444,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.000016161005005375976,
+      "slimeMismatch": 0,
+      "volumeGpu": 1888.724998595193,
+      "volumeRef": 1888.7249998369953,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 1,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 2.384185791015625e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 510,
+      "bodyCells": 3957,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0005660057067871094,
+      "thetaMedDiff": 0.0000033894489703811814,
+      "thetaMaxDiff": 0.000014551549107011397,
+      "cMedRelDiff": 4.320778016572776e-7,
+      "cMaxRelDiff": 0.00002834886311651094,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00001858617885094091,
+      "slimeMismatch": 0,
+      "volumeGpu": 1910.099982259795,
+      "volumeRef": 1910.1000017207116,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 10,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 2.384185791015625e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.0000017285346984863281,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 787,
+      "bodyCells": 2999,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0003249645233154297,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.000018040444530242894,
+      "cMedRelDiff": 3.890617317246616e-7,
+      "cMaxRelDiff": 0.00001821456805595693,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00007193960735097251,
+      "slimeMismatch": 0,
+      "volumeGpu": 1371.749999165535,
+      "volumeRef": 1371.7500008940697,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 1,
+      "mRelDiff": 3.814697340231987e-8,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.00000762939453125,
+      "sageMaxDiff": 0.00000762939453125,
+      "ageOver": 0,
+      "mGpu": [
+       12.180000305175781,
+       19.575000762939453,
+       0.4950000047683716
+      ],
+      "mRef": [
+       12.179999999999966,
+       19.574999999999985,
+       0.49500000000005223
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 796,
+      "bodyCells": 3001,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0002955794334411621,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.00002257039753317258,
+      "cMedRelDiff": 6.315577688146699e-7,
+      "cMaxRelDiff": 0.000022582708291551422,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00004737158032309624,
+      "slimeMismatch": 0,
+      "volumeGpu": 1373.6399957090616,
+      "volumeRef": 1373.6400009393692,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 10,
+      "mRelDiff": 9.536743252880342e-8,
+      "ampDiff": 3.8024012494197734e-8,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000002384185791015625,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       10.98499870300293,
+       19.375001907348633,
+       0
+      ],
+      "mRef": [
+       10.984999999999964,
+       19.374999999999982,
+       0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.548811674118042
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.5488116360940295
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 906,
+      "bodyCells": 2969,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.00009530782699584961,
+      "thetaMedDiff": 0.00002118758558111722,
+      "thetaMaxDiff": 0.00006481818555670316,
+      "cMedRelDiff": 0.00000615581135108884,
+      "cMaxRelDiff": 0.00019321392126529498,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00014289556795142857,
+      "slimeMismatch": 0,
+      "volumeGpu": 1394.80497841537,
+      "volumeRef": 1394.805000513792,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 120,
+      "mRelDiff": 9.38415527418357e-7,
+      "ampDiff": 8.785736209729333e-10,
+      "exhMismatch": 0,
+      "hresMaxDiff": 3.5762786865234375e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000013828277587890625,
+      "ageMaxDiff": 0.00018310546875,
+      "sageMaxDiff": 0.00018310546875,
+      "ageOver": 0,
+      "mGpu": [
+       0,
+       9.195018768310547,
+       0
+      ],
+      "mRef": [
+       0,
+       9.194999999999999,
+       0
+      ],
+      "ampGpu": [
+       0.005516563542187214,
+       1,
+       0.00009142424823949113
+      ],
+      "ampRef": [
+       0.005516564420760835,
+       1,
+       0.0000914242314781736
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -685,6 +1480,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1343.9999974295497,
       "volumeRef": 1343.9999999776483,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 1,
       "mRelDiff": 0,
@@ -693,6 +1489,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -702,6 +1501,16 @@
        1200,
        1200,
        1200
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -722,6 +1531,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.0050029158592,
       "volumeRef": 1344.0050000697374,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 10,
       "mRelDiff": 4.0690103257171965e-9,
@@ -730,6 +1540,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000019669532775878906,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -739,6 +1552,16 @@
        1200,
        1200,
        1199.995
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -759,6 +1582,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.3403322845697,
       "volumeRef": 1344.3400003910065,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 50,
       "mRelDiff": 2.766927051804184e-7,
@@ -767,6 +1591,9 @@
       "hresMaxDiff": 1.1920928955078125e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.000018596649169921875,
+      "ageMaxDiff": 0.0000762939453125,
+      "sageMaxDiff": 0.0000762939453125,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -776,6 +1603,16 @@
        1200,
        1200,
        1199.6599999999962
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -796,6 +1633,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2710.570028871298,
       "volumeRef": 2710.5699985106476,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 1,
       "mRelDiff": 3.051756057933138e-8,
@@ -804,6 +1642,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        742.0249633789062,
        781.6699829101562,
@@ -813,6 +1654,16 @@
        742.024999999979,
        781.6699999999769,
        709.7350000000122
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -833,6 +1684,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2721.1452834683005,
       "volumeRef": 2721.1449993331917,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 10,
       "mRelDiff": 1.5869141653486925e-7,
@@ -841,6 +1693,9 @@
       "hresMaxDiff": 7.152557373046875e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.00001436471939086914,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        738.5148315429688,
        778.1598510742188,
@@ -850,6 +1705,16 @@
        738.5149999999791,
        778.159999999977,
        706.1800000000123
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -870,6 +1735,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2768.1466304739006,
       "volumeRef": 2768.1450017322786,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 50,
       "mRelDiff": 8.097330838078657e-7,
@@ -878,6 +1744,9 @@
       "hresMaxDiff": 9.5367431640625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000336766242980957,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        722.9142456054688,
        762.5592651367188,
@@ -887,6 +1756,16 @@
        722.9149999999796,
        762.5599999999775,
        690.3800000000131
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -907,6 +1786,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4813.820020445157,
       "volumeRef": 4813.820000998676,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 1,
       "mRelDiff": 6.357831239256484e-10,
@@ -915,6 +1795,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.000030517578125,
+      "sageMaxDiff": 0.000030517578125,
+      "ageOver": 0,
       "mGpu": [
        43.92499923706055,
        83.56999969482422,
@@ -924,6 +1807,16 @@
        43.925000000000296,
        83.56999999999968,
        2.6850000000301666
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -944,6 +1837,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4823.52513492899,
       "volumeRef": 4823.525000415742,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 10,
       "mRelDiff": 4.323323838188268e-9,
@@ -952,6 +1846,9 @@
       "hresMaxDiff": 0.0000011920928955078125,
       "hresOver": 0,
       "hbarMaxDiff": 0.000003337860107421875,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        40.41500473022461,
        80.06000518798828,
@@ -961,6 +1858,16 @@
        40.41500000000029,
        80.05999999999968,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.9801987409591675
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.9801986733067564
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -981,6 +1888,7 @@
       "slimeMismatch": 2,
       "volumeGpu": 4854.725528605748,
       "volumeRef": 4854.725003384054,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 50,
       "mRelDiff": 2.4668375940469406e-8,
@@ -989,6 +1897,9 @@
       "hresMaxDiff": 0.00000286102294921875,
       "hresOver": 0,
       "hbarMaxDiff": 0.0003146827220916748,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        24.81502914428711,
        64.46002960205078,
@@ -998,6 +1909,295 @@
        24.815000000000268,
        64.45999999999965,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.657046914100647
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.6570468198150575
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 501,
+      "bodyCells": 3847,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0007053017616271973,
+      "thetaMedDiff": 0.0000017165505425964511,
+      "thetaMaxDiff": 0.000006866518305059799,
+      "cMedRelDiff": 2.084978294333467e-7,
+      "cMaxRelDiff": 0.000021396670260611444,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.000016161005005375976,
+      "slimeMismatch": 0,
+      "volumeGpu": 1888.724998595193,
+      "volumeRef": 1888.7249998369953,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 1,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 2.384185791015625e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 510,
+      "bodyCells": 3957,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0005660057067871094,
+      "thetaMedDiff": 0.0000033894489703811814,
+      "thetaMaxDiff": 0.000014551549107011397,
+      "cMedRelDiff": 4.320778016572776e-7,
+      "cMaxRelDiff": 0.00002834886311651094,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00001858617885094091,
+      "slimeMismatch": 0,
+      "volumeGpu": 1910.099982259795,
+      "volumeRef": 1910.1000017207116,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 10,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 2.384185791015625e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.0000017285346984863281,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 787,
+      "bodyCells": 2999,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0003249645233154297,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.000018040444530242894,
+      "cMedRelDiff": 3.890617317246616e-7,
+      "cMaxRelDiff": 0.00001821456805595693,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00007193960735097251,
+      "slimeMismatch": 0,
+      "volumeGpu": 1371.749999165535,
+      "volumeRef": 1371.7500008940697,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 1,
+      "mRelDiff": 3.814697340231987e-8,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.00000762939453125,
+      "sageMaxDiff": 0.00000762939453125,
+      "ageOver": 0,
+      "mGpu": [
+       12.180000305175781,
+       19.575000762939453,
+       0.4950000047683716
+      ],
+      "mRef": [
+       12.179999999999966,
+       19.574999999999985,
+       0.49500000000005223
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 796,
+      "bodyCells": 3001,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0002955794334411621,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.00002257039753317258,
+      "cMedRelDiff": 6.315577688146699e-7,
+      "cMaxRelDiff": 0.000022582708291551422,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00004737158032309624,
+      "slimeMismatch": 0,
+      "volumeGpu": 1373.6399957090616,
+      "volumeRef": 1373.6400009393692,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 10,
+      "mRelDiff": 9.536743252880342e-8,
+      "ampDiff": 3.8024012494197734e-8,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000002384185791015625,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       10.98499870300293,
+       19.375001907348633,
+       0
+      ],
+      "mRef": [
+       10.984999999999964,
+       19.374999999999982,
+       0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.548811674118042
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.5488116360940295
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 906,
+      "bodyCells": 2969,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.00009530782699584961,
+      "thetaMedDiff": 0.00002118758558111722,
+      "thetaMaxDiff": 0.00006481818555670316,
+      "cMedRelDiff": 0.00000615581135108884,
+      "cMaxRelDiff": 0.00019321392126529498,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00014289556795142857,
+      "slimeMismatch": 0,
+      "volumeGpu": 1394.80497841537,
+      "volumeRef": 1394.805000513792,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 120,
+      "mRelDiff": 9.38415527418357e-7,
+      "ampDiff": 8.785736209729333e-10,
+      "exhMismatch": 0,
+      "hresMaxDiff": 3.5762786865234375e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000013828277587890625,
+      "ageMaxDiff": 0.00018310546875,
+      "sageMaxDiff": 0.00018310546875,
+      "ageOver": 0,
+      "mGpu": [
+       0,
+       9.195018768310547,
+       0
+      ],
+      "mRef": [
+       0,
+       9.194999999999999,
+       0
+      ],
+      "ampGpu": [
+       0.005516563542187214,
+       1,
+       0.00009142424823949113
+      ],
+      "ampRef": [
+       0.005516564420760835,
+       1,
+       0.0000914242314781736
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1025,6 +2225,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1343.9999974295497,
       "volumeRef": 1343.9999999776483,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 1,
       "mRelDiff": 0,
@@ -1033,6 +2234,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -1042,6 +2246,16 @@
        1200,
        1200,
        1200
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1062,6 +2276,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.0050029158592,
       "volumeRef": 1344.0050000697374,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 10,
       "mRelDiff": 4.0690103257171965e-9,
@@ -1070,6 +2285,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000019669532775878906,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -1079,6 +2297,16 @@
        1200,
        1200,
        1199.995
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1099,6 +2327,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.3403322845697,
       "volumeRef": 1344.3400003910065,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 50,
       "mRelDiff": 2.766927051804184e-7,
@@ -1107,6 +2336,9 @@
       "hresMaxDiff": 1.1920928955078125e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.000018596649169921875,
+      "ageMaxDiff": 0.0000762939453125,
+      "sageMaxDiff": 0.0000762939453125,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -1116,6 +2348,16 @@
        1200,
        1200,
        1199.6599999999962
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1136,6 +2378,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2710.570028871298,
       "volumeRef": 2710.5699985106476,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 1,
       "mRelDiff": 3.051756057933138e-8,
@@ -1144,6 +2387,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        742.0249633789062,
        781.6699829101562,
@@ -1153,6 +2399,16 @@
        742.024999999979,
        781.6699999999769,
        709.7350000000122
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1173,6 +2429,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2721.1452834683005,
       "volumeRef": 2721.1449993331917,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 10,
       "mRelDiff": 1.5869141653486925e-7,
@@ -1181,6 +2438,9 @@
       "hresMaxDiff": 7.152557373046875e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.00001436471939086914,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        738.5148315429688,
        778.1598510742188,
@@ -1190,6 +2450,16 @@
        738.5149999999791,
        778.159999999977,
        706.1800000000123
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1210,6 +2480,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2768.1466304739006,
       "volumeRef": 2768.1450017322786,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 50,
       "mRelDiff": 8.097330838078657e-7,
@@ -1218,6 +2489,9 @@
       "hresMaxDiff": 9.5367431640625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000336766242980957,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        722.9142456054688,
        762.5592651367188,
@@ -1227,6 +2501,16 @@
        722.9149999999796,
        762.5599999999775,
        690.3800000000131
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1247,6 +2531,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4813.820020445157,
       "volumeRef": 4813.820000998676,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 1,
       "mRelDiff": 6.357831239256484e-10,
@@ -1255,6 +2540,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.000030517578125,
+      "sageMaxDiff": 0.000030517578125,
+      "ageOver": 0,
       "mGpu": [
        43.92499923706055,
        83.56999969482422,
@@ -1264,6 +2552,16 @@
        43.925000000000296,
        83.56999999999968,
        2.6850000000301666
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1284,6 +2582,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4823.52513492899,
       "volumeRef": 4823.525000415742,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 10,
       "mRelDiff": 4.323323838188268e-9,
@@ -1292,6 +2591,9 @@
       "hresMaxDiff": 0.0000011920928955078125,
       "hresOver": 0,
       "hbarMaxDiff": 0.000003337860107421875,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        40.41500473022461,
        80.06000518798828,
@@ -1301,6 +2603,16 @@
        40.41500000000029,
        80.05999999999968,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.9801987409591675
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.9801986733067564
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1321,6 +2633,7 @@
       "slimeMismatch": 2,
       "volumeGpu": 4854.725528605748,
       "volumeRef": 4854.725003384054,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 50,
       "mRelDiff": 2.4668375940469406e-8,
@@ -1329,6 +2642,9 @@
       "hresMaxDiff": 0.00000286102294921875,
       "hresOver": 0,
       "hbarMaxDiff": 0.0003146827220916748,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        24.81502914428711,
        64.46002960205078,
@@ -1338,6 +2654,295 @@
        24.815000000000268,
        64.45999999999965,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.657046914100647
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.6570468198150575
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 501,
+      "bodyCells": 3847,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0007053017616271973,
+      "thetaMedDiff": 0.0000017165505425964511,
+      "thetaMaxDiff": 0.000006866518305059799,
+      "cMedRelDiff": 2.084978294333467e-7,
+      "cMaxRelDiff": 0.000021396670260611444,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.000016161005005375976,
+      "slimeMismatch": 0,
+      "volumeGpu": 1888.724998595193,
+      "volumeRef": 1888.7249998369953,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 1,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 2.384185791015625e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 510,
+      "bodyCells": 3957,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0005660057067871094,
+      "thetaMedDiff": 0.0000033894489703811814,
+      "thetaMaxDiff": 0.000014551549107011397,
+      "cMedRelDiff": 4.320778016572776e-7,
+      "cMaxRelDiff": 0.00002834886311651094,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00001858617885094091,
+      "slimeMismatch": 0,
+      "volumeGpu": 1910.099982259795,
+      "volumeRef": 1910.1000017207116,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 10,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 2.384185791015625e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.0000017285346984863281,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 787,
+      "bodyCells": 2999,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0003249645233154297,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.000018040444530242894,
+      "cMedRelDiff": 3.890617317246616e-7,
+      "cMaxRelDiff": 0.00001821456805595693,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00007193960735097251,
+      "slimeMismatch": 0,
+      "volumeGpu": 1371.749999165535,
+      "volumeRef": 1371.7500008940697,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 1,
+      "mRelDiff": 3.814697340231987e-8,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.00000762939453125,
+      "sageMaxDiff": 0.00000762939453125,
+      "ageOver": 0,
+      "mGpu": [
+       12.180000305175781,
+       19.575000762939453,
+       0.4950000047683716
+      ],
+      "mRef": [
+       12.179999999999966,
+       19.574999999999985,
+       0.49500000000005223
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 796,
+      "bodyCells": 3001,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0002955794334411621,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.00002257039753317258,
+      "cMedRelDiff": 6.315577688146699e-7,
+      "cMaxRelDiff": 0.000022582708291551422,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00004737158032309624,
+      "slimeMismatch": 0,
+      "volumeGpu": 1373.6399957090616,
+      "volumeRef": 1373.6400009393692,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 10,
+      "mRelDiff": 9.536743252880342e-8,
+      "ampDiff": 3.8024012494197734e-8,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000002384185791015625,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       10.98499870300293,
+       19.375001907348633,
+       0
+      ],
+      "mRef": [
+       10.984999999999964,
+       19.374999999999982,
+       0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.548811674118042
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.5488116360940295
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 906,
+      "bodyCells": 2969,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.00009530782699584961,
+      "thetaMedDiff": 0.00002118758558111722,
+      "thetaMaxDiff": 0.00006481818555670316,
+      "cMedRelDiff": 0.00000615581135108884,
+      "cMaxRelDiff": 0.00019321392126529498,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00014289556795142857,
+      "slimeMismatch": 0,
+      "volumeGpu": 1394.80497841537,
+      "volumeRef": 1394.805000513792,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 120,
+      "mRelDiff": 9.38415527418357e-7,
+      "ampDiff": 8.785736209729333e-10,
+      "exhMismatch": 0,
+      "hresMaxDiff": 3.5762786865234375e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000013828277587890625,
+      "ageMaxDiff": 0.00018310546875,
+      "sageMaxDiff": 0.00018310546875,
+      "ageOver": 0,
+      "mGpu": [
+       0,
+       9.195018768310547,
+       0
+      ],
+      "mRef": [
+       0,
+       9.194999999999999,
+       0
+      ],
+      "ampGpu": [
+       0.005516563542187214,
+       1,
+       0.00009142424823949113
+      ],
+      "ampRef": [
+       0.005516564420760835,
+       1,
+       0.0000914242314781736
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1365,6 +2970,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1343.9999974295497,
       "volumeRef": 1343.9999999776483,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 1,
       "mRelDiff": 0,
@@ -1373,6 +2979,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -1382,6 +2991,16 @@
        1200,
        1200,
        1200
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1402,6 +3021,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.0050029158592,
       "volumeRef": 1344.0050000697374,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 10,
       "mRelDiff": 4.0690103257171965e-9,
@@ -1410,6 +3030,9 @@
       "hresMaxDiff": 0,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000019669532775878906,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -1419,6 +3042,16 @@
        1200,
        1200,
        1199.995
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1439,6 +3072,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 1344.3403322845697,
       "volumeRef": 1344.3400003910065,
+      "family": "대칭 먹이 셋",
       "from": 580,
       "after": 50,
       "mRelDiff": 2.766927051804184e-7,
@@ -1447,6 +3081,9 @@
       "hresMaxDiff": 1.1920928955078125e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.000018596649169921875,
+      "ageMaxDiff": 0.0000762939453125,
+      "sageMaxDiff": 0.0000762939453125,
+      "ageOver": 0,
       "mGpu": [
        1200,
        1200,
@@ -1456,6 +3093,16 @@
        1200,
        1200,
        1199.6599999999962
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1476,6 +3123,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2710.570028871298,
       "volumeRef": 2710.5699985106476,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 1,
       "mRelDiff": 3.051756057933138e-8,
@@ -1484,6 +3132,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
       "mGpu": [
        742.0249633789062,
        781.6699829101562,
@@ -1493,6 +3144,16 @@
        742.024999999979,
        781.6699999999769,
        709.7350000000122
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1513,6 +3174,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2721.1452834683005,
       "volumeRef": 2721.1449993331917,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 10,
       "mRelDiff": 1.5869141653486925e-7,
@@ -1521,6 +3183,9 @@
       "hresMaxDiff": 7.152557373046875e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.00001436471939086914,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        738.5148315429688,
        778.1598510742188,
@@ -1530,6 +3195,16 @@
        738.5149999999791,
        778.159999999977,
        706.1800000000123
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1550,6 +3225,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 2768.1466304739006,
       "volumeRef": 2768.1450017322786,
+      "family": "대칭 먹이 셋",
       "from": 2000,
       "after": 50,
       "mRelDiff": 8.097330838078657e-7,
@@ -1558,6 +3234,9 @@
       "hresMaxDiff": 9.5367431640625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 0.0000336766242980957,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        722.9142456054688,
        762.5592651367188,
@@ -1567,6 +3246,16 @@
        722.9149999999796,
        762.5599999999775,
        690.3800000000131
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1587,6 +3276,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4813.820020445157,
       "volumeRef": 4813.820000998676,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 1,
       "mRelDiff": 6.357831239256484e-10,
@@ -1595,6 +3285,9 @@
       "hresMaxDiff": 2.384185791015625e-7,
       "hresOver": 0,
       "hbarMaxDiff": 4.76837158203125e-7,
+      "ageMaxDiff": 0.000030517578125,
+      "sageMaxDiff": 0.000030517578125,
+      "ageOver": 0,
       "mGpu": [
        43.92499923706055,
        83.56999969482422,
@@ -1604,6 +3297,16 @@
        43.925000000000296,
        83.56999999999968,
        2.6850000000301666
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1624,6 +3327,7 @@
       "slimeMismatch": 0,
       "volumeGpu": 4823.52513492899,
       "volumeRef": 4823.525000415742,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 10,
       "mRelDiff": 4.323323838188268e-9,
@@ -1632,6 +3336,9 @@
       "hresMaxDiff": 0.0000011920928955078125,
       "hresOver": 0,
       "hbarMaxDiff": 0.000003337860107421875,
+      "ageMaxDiff": 0.00006103515625,
+      "sageMaxDiff": 0.00006103515625,
+      "ageOver": 0,
       "mGpu": [
        40.41500473022461,
        80.06000518798828,
@@ -1641,6 +3348,16 @@
        40.41500000000029,
        80.05999999999968,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.9801987409591675
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.9801986733067564
       ],
       "vsBase": {
        "wetMismatch": 0,
@@ -1661,6 +3378,7 @@
       "slimeMismatch": 2,
       "volumeGpu": 4854.725528605748,
       "volumeRef": 4854.725003384054,
+      "family": "대칭 먹이 셋",
       "from": 3790,
       "after": 50,
       "mRelDiff": 2.4668375940469406e-8,
@@ -1669,6 +3387,9 @@
       "hresMaxDiff": 0.00000286102294921875,
       "hresOver": 0,
       "hbarMaxDiff": 0.0003146827220916748,
+      "ageMaxDiff": 0.00030517578125,
+      "sageMaxDiff": 0.00030517578125,
+      "ageOver": 0,
       "mGpu": [
        24.81502914428711,
        64.46002960205078,
@@ -1678,6 +3399,295 @@
        24.815000000000268,
        64.45999999999965,
        0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.657046914100647
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.6570468198150575
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 501,
+      "bodyCells": 3847,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0007053017616271973,
+      "thetaMedDiff": 0.0000017165505425964511,
+      "thetaMaxDiff": 0.000006866518305059799,
+      "cMedRelDiff": 2.084978294333467e-7,
+      "cMaxRelDiff": 0.000021396670260611444,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.000016161005005375976,
+      "slimeMismatch": 0,
+      "volumeGpu": 1888.724998595193,
+      "volumeRef": 1888.7249998369953,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 1,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 2.384185791015625e-7,
+      "ageMaxDiff": 0.000003814697265625,
+      "sageMaxDiff": 0.000003814697265625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 510,
+      "bodyCells": 3957,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0005660057067871094,
+      "thetaMedDiff": 0.0000033894489703811814,
+      "thetaMaxDiff": 0.000014551549107011397,
+      "cMedRelDiff": 4.320778016572776e-7,
+      "cMaxRelDiff": 0.00002834886311651094,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00001858617885094091,
+      "slimeMismatch": 0,
+      "volumeGpu": 1910.099982259795,
+      "volumeRef": 1910.1000017207116,
+      "family": "줄지 않는 먹이 여섯",
+      "from": 500,
+      "after": 10,
+      "mRelDiff": 0,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 2.384185791015625e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.0000017285346984863281,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "mRef": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 787,
+      "bodyCells": 2999,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0003249645233154297,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.000018040444530242894,
+      "cMedRelDiff": 3.890617317246616e-7,
+      "cMaxRelDiff": 0.00001821456805595693,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00007193960735097251,
+      "slimeMismatch": 0,
+      "volumeGpu": 1371.749999165535,
+      "volumeRef": 1371.7500008940697,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 1,
+      "mRelDiff": 3.814697340231987e-8,
+      "ampDiff": 0,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 1.7881393432617188e-7,
+      "ageMaxDiff": 0.00000762939453125,
+      "sageMaxDiff": 0.00000762939453125,
+      "ageOver": 0,
+      "mGpu": [
+       12.180000305175781,
+       19.575000762939453,
+       0.4950000047683716
+      ],
+      "mRef": [
+       12.179999999999966,
+       19.574999999999985,
+       0.49500000000005223
+      ],
+      "ampGpu": [
+       1,
+       1,
+       1
+      ],
+      "ampRef": [
+       1,
+       1,
+       1
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 796,
+      "bodyCells": 3001,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.0002955794334411621,
+      "thetaMedDiff": 0.0000054042598378600815,
+      "thetaMaxDiff": 0.00002257039753317258,
+      "cMedRelDiff": 6.315577688146699e-7,
+      "cMaxRelDiff": 0.000022582708291551422,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00004737158032309624,
+      "slimeMismatch": 0,
+      "volumeGpu": 1373.6399957090616,
+      "volumeRef": 1373.6400009393692,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 10,
+      "mRelDiff": 9.536743252880342e-8,
+      "ampDiff": 3.8024012494197734e-8,
+      "exhMismatch": 0,
+      "hresMaxDiff": 1.1920928955078125e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000002384185791015625,
+      "ageMaxDiff": 0.0000152587890625,
+      "sageMaxDiff": 0.0000152587890625,
+      "ageOver": 0,
+      "mGpu": [
+       10.98499870300293,
+       19.375001907348633,
+       0
+      ],
+      "mRef": [
+       10.984999999999964,
+       19.374999999999982,
+       0
+      ],
+      "ampGpu": [
+       1,
+       1,
+       0.548811674118042
+      ],
+      "ampRef": [
+       1,
+       1,
+       0.5488116360940295
+      ],
+      "vsBase": {
+       "wetMismatch": 0,
+       "hMaxDiff": 0
+      }
+     },
+     {
+      "step": 906,
+      "bodyCells": 2969,
+      "wetMismatch": 0,
+      "hMaxDiff": 0.00009530782699584961,
+      "thetaMedDiff": 0.00002118758558111722,
+      "thetaMaxDiff": 0.00006481818555670316,
+      "cMedRelDiff": 0.00000615581135108884,
+      "cMaxRelDiff": 0.00019321392126529498,
+      "edgeMismatch": 0,
+      "pRelDiff": 0.00014289556795142857,
+      "slimeMismatch": 0,
+      "volumeGpu": 1394.80497841537,
+      "volumeRef": 1394.805000513792,
+      "family": "금방 떨어지는 먹이 셋",
+      "from": 786,
+      "after": 120,
+      "mRelDiff": 9.38415527418357e-7,
+      "ampDiff": 8.785736209729333e-10,
+      "exhMismatch": 0,
+      "hresMaxDiff": 3.5762786865234375e-7,
+      "hresOver": 0,
+      "hbarMaxDiff": 0.000013828277587890625,
+      "ageMaxDiff": 0.00018310546875,
+      "sageMaxDiff": 0.00018310546875,
+      "ageOver": 0,
+      "mGpu": [
+       0,
+       9.195018768310547,
+       0
+      ],
+      "mRef": [
+       0,
+       9.194999999999999,
+       0
+      ],
+      "ampGpu": [
+       0.005516563542187214,
+       1,
+       0.00009142424823949113
+      ],
+      "ampRef": [
+       0.005516564420760835,
+       1,
+       0.0000914242314781736
       ],
       "vsBase": {
        "wetMismatch": 0,

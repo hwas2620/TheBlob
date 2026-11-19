@@ -9,6 +9,9 @@ usage: export_ref.py PART [...]
                           키=값 은 모델 설정을 덮어쓴다 (예: dt=0.2 period=8 osc_sub=8 tag=dt2p8)
   b SCN SEED [키=값 …] [tag=이름]   관문 B 의 기준 실행. SCN 은 아래 SCN 표의 이름. runs/b_{SCN}_s{SEED}[_이름]/ 에 상태(vs_t*.npz)를 남긴다
   dumpsfood    192², 대칭 먹이 셋, 시드 1: 먹이가 있는 스텝 일치용 상태 (닿기 직전, 먹는 중, 첫 먹이가 떨어진 직후에서 +0, +1, +10, +50 스텝)
+  dumpsfood2 six|fade [S]   먹이 스텝 일치의 나머지 길 (192², 시드 1). S 를 주지 않으면 먼저 한 번 돌려 닿은 시각·떨어진 시각만 찍는다
+                 six   줄지 않는 먹이 여섯(60° 간격, 거리 30)을 먹는다 → 스텝 S, S+1, S+10
+                 fade  금방 떨어지는 먹이 셋(양 20, 유인장이 사라지는 시간 1) → 스텝 S, S+1, S+10, S+120 (유인장의 세기가 1e-4 아래에서 멈춘 뒤까지)
 
 상태 파일은 public/stage0/ref/ 에 float32 .bin.gz 로, 목록은 manifest.json 에 쓴다.
 기준 설정은 5차 검증의 "굶은 이주"에서 마름의 부피 나눔만 spec 대로 두께 비례(dry_weight='h')로 바꾼 것이다. 잡음은 해시 난수(noise='hash').
@@ -100,6 +103,13 @@ def main():
         steps = tuple(s + d for s in s0 for d in (0, 1, 10, 50))
         over = dict(GB); over.update(SCN['food3']); over.update(seed=1, T=(max(steps) + 2) * GA['dt'], vsave=0, gm_every=1e9, dump_dir=PUB, dump_state_steps=steps, dump_food=1, dump_tag='foodstate', check_every=0)
         R.run('dumpsfood', over)
+    elif part == 'dumpsfood2':
+        case = sys.argv[2]; S = int(sys.argv[3]) if len(sys.argv) > 3 else None
+        extra = {'six': dict(foods=[[a, 30] for a in range(0, 360, 60)], food_M=0.0), 'fade': dict(foods=[[20, 40], [140, 40], [260, 40]], food_M=20.0, food_fade=1.0)}[case]
+        steps = () if S is None else tuple(S + d for d in ((0, 1, 10) if case == 'six' else (0, 1, 10, 120)))
+        over = dict(GB); over.update(FOOD); over.update(extra); over.update(seed=1, T=(max(steps) + 2) * GA['dt'] if steps else 130.0, vsave=0, gm_every=1e9, check_every=0)
+        if steps: over.update(dump_dir=PUB, dump_state_steps=steps, dump_food=1, dump_tag={'six': 'food6state', 'fade': 'foodfadestate'}[case])
+        m = R.run('dumpsfood2_' + case, over); print('t_touch', m['t_touch'], 't_cover', m['t_cover'], 't_exh', m['t_exh'])
     else:
         raise SystemExit(__doc__)
 

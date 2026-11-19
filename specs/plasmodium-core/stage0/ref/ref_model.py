@@ -196,6 +196,7 @@ def run(name, over):
     hamp_last = np.zeros((N, N)); hmean_last = np.zeros((N, N))
     ser_new = np.zeros(steps + 1, np.int32); ser_area = np.zeros(steps + 1, np.int32); ser_dry = np.zeros(steps + 1, np.int32); ser_vol = np.zeros(steps + 1, np.float64)
     ser_newl = np.zeros(steps + 1, np.int32)      # [stage0 B] newly wetted cells on the half plane x < centre
+    ser_newm = np.zeros(steps + 1, np.int32); ser_newlm = np.zeros(steps + 1, np.int32); wet_end_prev = wet.copy()      # [stage0 B] the same counted from the end-of-step wet masks (what the GPU harness can see)
     neg_end_steps = 0                             # [stage0 B] steps that end with a wet cell of negative thickness
     mass_err_max = 0.0
     gm_n = max(1, int(round(P['gm_every'] / dt))); gseries = []; newdir = np.zeros(3, np.int64); newdir_series = []
@@ -282,7 +283,7 @@ def run(name, over):
             flds = [('h', h), ('wet', wet), ('age', age), ('sage', sage), ('theta', theta), ('slime', slime), ('C', C), ('p', p), ('pm', pm)]; ext = dict(kind='state')
             if P['dump_food']:      # per-food state: remaining amount (-1 = unlimited), attractant amplitude, time of exhaustion (None = alive)
                 flds += [('Hres', Hres), ('hbar', hbar_prev)]
-                ext = dict(kind='foodstate', fM=[(-1.0 if np.isinf(v) else float(v)) for v in fM], famp=[float(v) for v in famp], t_exh=[(None if np.isnan(v) else float(v)) for v in t_exh])
+                ext = dict(kind=P['dump_tag'], fM=[(-1.0 if np.isinf(v) else float(v)) for v in fM], famp=[float(v) for v in famp], t_exh=[(None if np.isnan(v) else float(v)) for v in t_exh])
             _dump(P, f"{P['dump_tag']}_N{N}_s{P['seed']}_step{step:05d}", step, t, flds, ext)
         # ---- edges ----
         act = []
@@ -538,6 +539,7 @@ def run(name, over):
                     gx = mimg(fpos[k_][0] - cen_u[0]); gy = mimg(fpos[k_][1] - cen_u[1]); gn = max(np.hypot(gx, gy), 1e-9)
                     best = np.maximum(best, (vx * gx + vy * gy) / (vn * gn))
                 newdir += np.array([(best > 0.5).sum(), ((best <= 0.5) & (best >= -0.5)).sum(), (best < -0.5).sum()])
+        nm_ = wet & ~wet_end_prev; ser_newm[step] = int(nm_.sum()); ser_newlm[step] = int((nm_ & (X < c0)).sum()); wet_end_prev = wet.copy()
         if wet.any():
             hm_end = float(h[wet].min()); hmin_end = min(hmin_end, hm_end)
             if hm_end < 0: neg_end_cellsteps += int((wet & (h < 0)).sum()); neg_end_steps += 1
@@ -588,7 +590,7 @@ def run(name, over):
     if hfood_ser: np.save(os.path.join(out, 'hfood.npy'), np.array(hfood_ser, np.float32))     # per step: mean h on each food disc, then circular-mean phase of each food disc
     if ph_ser: np.save(os.path.join(out, 'ph_ser.npy'), np.array(ph_ser, np.float32))   # [H1] t, order parameter R, mean dtheta/dx, mean dtheta/dy, rms dx, rms dy, centroid x, y, cv of h
     np.save(os.path.join(out, 'G_edges.npy'), np.array(G, np.float32)); json.dump([[float(e_[0]), float(e_[1]), float(e_[2])] for e_ in mg_err], open(os.path.join(out, 'mg_err_series.json'), 'w'))   # [verify]
-    np.savez_compressed(os.path.join(out, 'series.npz'), new=ser_new[:nstep], newl=ser_newl[:nstep], area=ser_area[:nstep], dry=ser_dry[:nstep], vol=ser_vol[:nstep], dt=dt)
+    np.savez_compressed(os.path.join(out, 'series.npz'), new=ser_new[:nstep], newl=ser_newl[:nstep], newm=ser_newm[:nstep], newlm=ser_newlm[:nstep], area=ser_area[:nstep], dry=ser_dry[:nstep], vol=ser_vol[:nstep], dt=dt)
     json.dump(P, open(os.path.join(out, 'params.json'), 'w'), indent=1)
     cen = centroid()
     if P['neg_diag'] and negrec: np.save(os.path.join(out, 'negrec.npy'), np.array(negrec, float))
