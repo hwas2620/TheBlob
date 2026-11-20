@@ -1,0 +1,71 @@
+asym3 23 vcdv
+long 23 vthAv thin_h=0.15
+long 31 vcdv
+long 31 vthAv thin_h=0.15
+long 32 vcdv
+long 32 vthAv thin_h=0.15
+food4 24 vthAv thin_h=0.15
+food4 25 vthAv thin_h=0.15
+food4 26 vthAv thin_h=0.15
+food3_256 21 vthAv thin_h=0.15
+food3_256 22 vthAv thin_h=0.15
+food3_256 23 vthAv thin_h=0.15
+asym3 23 vthAv thin_h=0.15
+asym3 31 vcdv
+asym3 31 vthAv thin_h=0.15
+asym3 32 vcdv
+asym3 32 vthAv thin_h=0.15
+asym3 33 vcdv
+asym3 33 vthAv thin_h=0.15
+asym3 34 vcdv
+asym3 34 vthAv thin_h=0.15
+asym3 35 vcdv
+asym3 35 vthAv thin_h=0.15
+asym3 36 vcdv
+asym3 36 vthAv thin_h=0.15
+asym3 37 vcdv
+asym3 37 vthAv thin_h=0.15
+asym3 38 vcdv
+asym3 38 vthAv thin_h=0.15
+asym3 39 vcdv
+asym3 39 vthAv thin_h=0.15
+asym3 40 vcdv
+asym3 40 vthAv thin_h=0.15
+asym3 41 vcdv
+asym3 41 vthAv thin_h=0.15
+asym3 42 vcdv
+asym3 42 vthAv thin_h=0.15
+asym3 43 vcdv
+asym3 43 vthAv thin_h=0.15
+asym3 44 vcdv
+asym3 44 vthAv thin_h=0.15
+food3 25 vthAv thin_h=0.15
+food3 26 vthAv thin_h=0.15
+food3 31 vcdv
+food3 31 vthAv thin_h=0.15
+food3 32 vcdv
+food3 32 vthAv thin_h=0.15
+food3 33 vcdv
+food3 33 vthAv thin_h=0.15
+food3 34 vcdv
+food3 34 vthAv thin_h=0.15
+mig 31 vcdv
+mig 31 vthAv thin_h=0.15
+mig 32 vcdv
+mig 32 vthAv thin_h=0.15
+mig 33 vcdv
+mig 33 vthAv thin_h=0.15
+mig 34 vcdv
+mig 34 vthAv thin_h=0.15
+mig 35 vcdv
+mig 35 vthAv thin_h=0.15
+mig 36 vcdv
+mig 36 vthAv thin_h=0.15
+mig 37 vcdv
+mig 37 vthAv thin_h=0.15
+mig 38 vcdv
+mig 38 vthAv thin_h=0.15
+mig 39 vcdv
+mig 39 vthAv thin_h=0.15
+mig 40 vcdv
+mig 40 vthAv thin_h=0.15
