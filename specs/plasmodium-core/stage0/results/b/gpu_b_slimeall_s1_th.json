@@ -1,0 +1,33 @@
+{
+ "run": "b_slimeall_s1_th",
+ "origin": "gpu",
+ "N": 192,
+ "seed": 1,
+ "steps": 2001,
+ "expected_steps": 2001,
+ "complete": true,
+ "nan": false,
+ "n_states": 10,
+ "stop": "",
+ "mass_err": 3.633045014880952e-07,
+ "neg_end": 0,
+ "neg_end_cellsteps": null,
+ "h_min_end": 0.20000000298023224,
+ "h_min_in": 0.4821946322917938,
+ "flux_err": [
+  0.07799608907715183,
+  0.1421166572945219,
+  0.25847341805409
+ ],
+ "t_touch": [],
+ "t_exh": [],
+ "area_end": 1892,
+ "out_frac": 0.0,
+ "new_total": 1444,
+ "new_after20": 898,
+ "frac_empty_all": 0.698,
+ "frac_empty": 0.806,
+ "late_new": 434,
+ "slime0": "all",
+ "scn": "slimeall"
+}

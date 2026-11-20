@@ -1,0 +1,17 @@
+{
+ "name": "b_mig_s11_th",
+ "query": "test=b&scn=mig&seed=11&dump=1&name=b_mig_s11_th",
+ "seconds": 0.878,
+ "done": true,
+ "ok": false,
+ "result": {
+  "caps": {
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "colorBufferFloat": true,
+   "maxDrawBuffers": 8,
+   "maxTextureSize": 8192,
+   "timerQuery": true
+  }
+ },
+ "error": "context lost"
+}

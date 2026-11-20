@@ -1,0 +1,33 @@
+{
+ "run": "b_slimehalf_s2_th",
+ "origin": "gpu",
+ "N": 192,
+ "seed": 2,
+ "steps": 2001,
+ "expected_steps": 2001,
+ "complete": true,
+ "nan": false,
+ "n_states": 10,
+ "stop": "",
+ "mass_err": 2.724783761160714e-07,
+ "neg_end": 0,
+ "neg_end_cellsteps": null,
+ "h_min_end": 0.10025382041931152,
+ "h_min_in": 0.09924884140491486,
+ "flux_err": [
+  0.0597844752122432,
+  0.10795771587218227,
+  0.13632739763426713
+ ],
+ "t_touch": [],
+ "t_exh": [],
+ "area_end": 2767,
+ "out_frac": 0.0006,
+ "new_total": 4048,
+ "new_after20": 3070,
+ "frac_empty_all": 0.955,
+ "frac_empty": 1.0,
+ "late_new": 1799,
+ "slime0": "half",
+ "scn": "slimehalf"
+}
