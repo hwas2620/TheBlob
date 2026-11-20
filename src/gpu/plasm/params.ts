@@ -46,6 +46,11 @@ export interface PlasmParams {
   r: number;
   edgeSigma: number;
   bridgeBreak: number;
+  /**
+   * 규칙 6 의 외톨이 셀 말리기: 남는 젖은 이웃이 없는 마를 후보도 마르고, 넘겨줄 곳이 없는 그 부피는 버린다(계획 C).
+   * 관문 A 의 설정(defaultParams)은 false 로 두어 그 산술을 그대로 둔다. 관문 B 의 시나리오와 돌려 보기는 true
+   */
+  crumbDry: boolean;
   rInit: number;
   hInit: number;
   period: number;
@@ -119,6 +124,7 @@ export function defaultParams(over: Partial<PlasmParams> = {}): PlasmParams {
     r: PLASM.R,
     edgeSigma: PLASM.EDGE_SIGMA,
     bridgeBreak: PLASM.BRIDGE_BREAK,
+    crumbDry: false,
     rInit: PLASM.R_INIT,
     hInit: PLASM.H_INIT,
     period: OSCILLATOR.PERIOD,
@@ -167,6 +173,7 @@ export function foodParams(foods: FoodSpot[], over: Partial<PlasmParams> = {}): 
     hRes: PLASM_FOOD.H_MAX,
     resTau: PLASM_FOOD.TAU_H,
     resGate: PLASM_FOOD.GATE,
+    crumbDry: true,
     ...over,
   };
 }
@@ -256,6 +263,7 @@ export function shaderVars(p: PlasmParams): Record<string, string> {
     Q0_FLOOR: glf(p.q0Floor),
     C_MAX: glf(p.cMax),
     BRIDGE_BREAK: glf(p.bridgeBreak),
+    CRUMB_DRY: p.crumbDry ? '1' : '0',
     HY0: glf(p.hy0),
     Y_SIGMA: glf(p.ySigma),
     CURV_K: glf(p.lambdaC * p.curvGain),

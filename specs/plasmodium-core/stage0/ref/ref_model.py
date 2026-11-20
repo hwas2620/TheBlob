@@ -39,6 +39,7 @@ DEF = dict(
     # --- N3 ---
     foods=[], food_sigma=25.0, food_amp=1.0, food_r=4.0, reservoir=0, eat=0.0, gain=0.0, food_M=0.0, food_fade=10.0,
     bridge_keep=0, bridge_break=1.0, tube_keep=0.0, h_res=1.0,
+    crumb_from=0,  # [stage0 C] first step at which crumb_dry acts (parity dumps switch it on in a state that still holds isolated cells)
     crumb_dry=0,   # [split] 1: a drying cell with no wet neighbour left dries too (its volume is dropped and booked in V_crumb) - no stuck isolated cells
     neg_fill=0,   # [split] 1: with neg_dry, a kept bridge cell (bridge_keep) whose thickness went negative is not dried; its deficit is shared among its neighbours in proportion to their thickness
     bridge_mem=0.0, bridge_mem_tau=1e9,   # [split] >0: a bridge cell is also kept while its remembered peak conductance (max of Cn, forgetting with time constant bridge_mem_tau) is >= bridge_mem: strands that were real veins outlive the flow that made them
@@ -493,7 +494,7 @@ def run(name, over):
         if Dm.any():
             stay = wet & ~Dm; ns = np.zeros((N, N))
             for d in ALL: ns += nb(stay, d)
-            if P['crumb_dry']:      # a drying cell with no staying neighbour has nowhere to hand its volume: it dries anyway and the (tiny) volume is dropped and booked
+            if P['crumb_dry'] and step >= P['crumb_from']:      # a drying cell with no staying neighbour has nowhere to hand its volume: it dries anyway and the (tiny) volume is dropped and booked
                 lone = Dm & (ns <= 0)
                 if lone.any(): V_crumb += float(h[lone].sum()); ncrumb += int(lone.sum()); h[lone] = 0.0
             else:

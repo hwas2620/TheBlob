@@ -155,6 +155,8 @@ export interface BOptions {
   /** 가위 사각형의 여유를 완만하게 키운다 (PlasmGPU.softMargin), 이 스텝마다 이벤트 루프로 돌아간다 (기본 100). tests.ts 의 A12Options 와 같다 */
   softMargin?: boolean;
   yieldEvery?: number;
+  /** 규칙 6 의 외톨이 셀 말리기 (기본 켬). 계획 C 이전의 기록과 견줄 때 끈다 */
+  crumbDry?: boolean;
 }
 
 export interface BResult extends BOptions {
@@ -228,7 +230,8 @@ export async function testB(glx: Glx, opts: BOptions, log: Log, onFrame?: (sim: 
   const N = opts.N ?? scn.N;
   const over: Partial<PlasmParams> = { ...scn.over };
   if (opts.resGate !== undefined) over.resGate = opts.resGate;
-  const params = defaultParams({ N, seed: opts.seed, triK: (2 * Math.PI) / 100, ...over });
+  // 관문 B 의 시나리오는 모두 외톨이 셀 말리기를 켠다 (numpy 기준 실행의 GB 와 같다. 계획 C). crumb=0 으로 끈 길을 돌릴 수 있다
+  const params = defaultParams({ N, seed: opts.seed, triK: (2 * Math.PI) / 100, crumbDry: opts.crumbDry ?? true, ...over });
   const sim = new PlasmGPU(glx, params);
   const variant = VARIANTS[opts.variant] ?? VARIANTS[2];
   applyVariant(sim, variant);
