@@ -1,0 +1,24 @@
+# 덧붙인 실행 1 (탐색). 처음 정한 때: 본 실행의 처음 넷이 끝난 23:43 UTC (실행이 예상보다 3.5배 빨라 여유가 생겼다).
+# 00:00 UTC 에 고침(이 대기열이 시작되기 전): long 21·22 쌍을 보니 192² 판의 지속 실행은 t≈1820~1950 에 젖음도 마름도 멈춘다
+#   (지금 규칙의 기존 시드 1~5 와 새 시드 21, 22 모두. 판 전체가 흔적으로 덮인 때다). 그대로 T=4000 까지 돌리면 뒤 절반은 멈춘 몸이라
+#   "옛 관이 계속 쌓이는가"를 볼 수 없다. 그래서 흔적이 옅어지는 설정(slime_tau=300, 작성자가 st300 으로 돌려 본 값)의 T=4000 쌍을 더했다.
+# (1) 더 오래 T=4000
+# (00:10 UTC 에 뺌, 대기열 시작 전: 흔적을 그대로 둔 후보의 T=4000 은 판을 다 쓰고 멈춘 뒤의 구간이 대부분일 것이라 값이 적다. 지금 규칙 쪽 하나만 남겨 멈춤이 끝까지 가는지 본다)
+long 21 v0T4 T=4000
+long 21 v0T4st T=4000 slime_tau=300
+long 21 vpkT4st T=4000 slime_tau=300 bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+long 22 vpkT4st T=4000 slime_tau=300 bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+long 22 v0T4st T=4000 slime_tau=300
+# (2) 어느 규칙이 일을 하는가: 포만 항 없이(vbm), 기억 없이(vsat)
+long 21 vbm bridge_mem=50 crumb_dry=1
+long 22 vbm bridge_mem=50 crumb_dry=1
+long 23 vbm bridge_mem=50 crumb_dry=1
+long 21 vsat sat_k=0.4 sat_scent=0.5 crumb_dry=1
+long 22 vsat sat_k=0.4 sat_scent=0.5 crumb_dry=1
+# (3) 굶은 이주 256²: 포만 항이 판의 75.6% 에 걸리는 경우 (유인원에 닿은 뒤)
+mig256 21 v0
+mig256 21 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+mig256 22 v0
+mig256 22 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+mig256 23 v0
+mig256 23 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
