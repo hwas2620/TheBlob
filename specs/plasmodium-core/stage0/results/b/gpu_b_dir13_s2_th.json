@@ -1,0 +1,17 @@
+{
+ "run": "b_dir13_s2_th",
+ "origin": "gpu",
+ "N": 192,
+ "seed": 2,
+ "angle": 13,
+ "t_touch": [
+  229.3
+ ],
+ "stop": "touched",
+ "complete": true,
+ "nan": false,
+ "mass_err": 3.633045014880952e-07,
+ "neg_end": 0,
+ "h_min_in": 0.032658886164426804,
+ "scn": "dir13"
+}

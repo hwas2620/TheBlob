@@ -1,0 +1,17 @@
+{
+ "run": "b_dir0_s2_th",
+ "origin": "gpu",
+ "N": 192,
+ "seed": 2,
+ "angle": 0,
+ "t_touch": [
+  225.9
+ ],
+ "stop": "touched",
+ "complete": true,
+ "nan": false,
+ "mass_err": 0.00018982660202752975,
+ "neg_end": 0,
+ "h_min_in": 0.02717011049389839,
+ "scn": "dir0"
+}

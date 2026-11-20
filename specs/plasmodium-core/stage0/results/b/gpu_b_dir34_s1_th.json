@@ -1,0 +1,17 @@
+{
+ "run": "b_dir34_s1_th",
+ "origin": "gpu",
+ "N": 192,
+ "seed": 1,
+ "angle": 34,
+ "t_touch": [
+  248.8
+ ],
+ "stop": "touched",
+ "complete": true,
+ "nan": false,
+ "mass_err": 5.613054547991071e-05,
+ "neg_end": 0,
+ "h_min_in": 0.02253282628953457,
+ "scn": "dir34"
+}

@@ -1,0 +1,17 @@
+{
+ "run": "b_dir0_s1_th",
+ "origin": "numpy",
+ "N": 192,
+ "seed": 1,
+ "angle": 0,
+ "t_touch": [
+  251.2
+ ],
+ "stop": "touched",
+ "complete": true,
+ "nan": false,
+ "mass_err": 1.691768418476429e-16,
+ "neg_end": 0,
+ "h_min_in": 0.0,
+ "scn": "dir0"
+}

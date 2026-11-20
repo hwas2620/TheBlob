@@ -1,7 +1,7 @@
 {
  "name": "parity",
  "query": "test=parity",
- "seconds": 10.79,
+ "seconds": 19.282,
  "done": true,
  "ok": true,
  "result": {

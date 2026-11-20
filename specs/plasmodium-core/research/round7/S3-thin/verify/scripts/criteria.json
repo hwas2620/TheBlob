@@ -1,0 +1,30 @@
+{
+ "written_utc": "2026-11-20 08:55",
+ "candidate": {"tag": "vthAv", "args": "thin_h=0.15"},
+ "control": {"existing_tag": "vcd", "new_tag": "vcdv", "args": ""},
+ "seeds": {
+  "asym3": {"seeds": [23, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44], "existing_vcd": [23]},
+  "food3": {"seeds": [25, 26, 31, 32, 33, 34], "existing_vcd": [25, 26]},
+  "food3_256": {"seeds": [21, 22, 23], "existing_vcd": [21, 22, 23]},
+  "food4": {"seeds": [24, 25, 26], "existing_vcd": [24, 25, 26]},
+  "mig": {"seeds": [31, 32, 33, 34, 35, 36, 37, 38, 39, 40], "existing_vcd": []},
+  "long": {"seeds": [23, 31, 32], "existing_vcd": [23]}
+ },
+ "repro_check": {"scn": "asym3", "seed": 23, "tag": "vcdv", "compare": ["h.npy", "C_edges.npy", "metrics.neg_end_steps", "metrics.h_min_seen"]},
+ "groups": {"food_all": ["asym3", "food3", "food3_256", "food4"], "food_near": ["asym3", "food3", "food3_256"], "starved": ["mig", "long"]},
+ "C1": {"confirm": {"pairs_le_all": true, "cand_zero_min": 18, "hmin_med_ratio_lt": 0.5}, "refute": {"pairs_gt_min": 3, "hmin_med_ratio_ge": 1.0}},
+ "C2": {"mig_late": 10.0, "mig_late_max_confirm": 1, "mig_late_refute": 2, "disp_med_rel_confirm": -0.05, "disp_med_rel_refute": -0.10, "food_late": 10.0, "food_late_refute": 2},
+ "C3": {"range_widen": 0.5, "mig_keys": ["veinT", "vein4", "gross_net"], "mig_in_min": 8, "same_confirm": 20, "same_refute_lt": 16, "pass_drop_confirm_max": 1, "pass_drop_refute": 3, "thr_lost_confirm_max": 1, "thr_lost_refute": 2,
+        "gate": {"veinT": [">=", 0.8], "strahler": [">=", 4], "rad_ratio": [">=", 2], "rear_ratio": [">", 1], "rear_rho": [">", 0], "gross_net": [">=", 3], "sheet_amp": [">=", 0.03], "lag300": ["in", 0.5, 2.0]}},
+ "C4": {"mean_margin": 0.1},
+ "C5": {"med_confirm": 0.03, "big": 0.10, "med_refute": 0.05, "big_refute": 3},
+ "C6": {"asym3_diff_confirm_max": 1, "asym3_diff_refute": 3},
+ "C7": {"all": 40, "partial_min": 36},
+ "W1": {"chance": {"LmG_max": 1, "dthick_min": -2, "D2_max": 1}, "systematic": {"LmG_min": 3, "dthick_max": -4, "D2_min": 3}},
+ "W2": {"deep_abs": -0.05, "deep_factor": 2.0, "rare": 1, "repro": 2},
+ "W3": {"lower_min": 8, "med_le": -0.10, "not_lower_max": 6, "not_med_gt": -0.05, "gate": 3.0},
+ "W4": {"thr": 0.10, "repro_jumps": 2, "repro_ratio": 2.0, "no_ratio": 1.5},
+ "S1": {"factor": 10.0, "floor": 1e-12, "bad": 1e-3},
+ "S2": {"same_med": 1.05, "same_p90": 1.10, "bad": 1.15, "max_abs": 1.0, "max_abs_runs": 2},
+ "S3": {"out": 0.10}
+}

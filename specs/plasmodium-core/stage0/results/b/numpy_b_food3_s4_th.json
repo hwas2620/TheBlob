@@ -1,0 +1,71 @@
+{
+ "run": "b_food3_s4_th",
+ "origin": "numpy",
+ "N": 192,
+ "seed": 4,
+ "steps": 4801,
+ "expected_steps": 4801,
+ "complete": true,
+ "nan": false,
+ "n_states": 24,
+ "stop": "",
+ "mass_err": 1.27423410777898e-13,
+ "neg_end": 0,
+ "neg_end_cellsteps": 0,
+ "h_min_end": 0.0,
+ "h_min_in": 0.0,
+ "flux_err": [
+  0.06866110447407535,
+  0.140710193669435,
+  0.44024992403895674,
+  0.06853440818563766
+ ],
+ "t_touch": [
+  65.1,
+  75.5,
+  58.8
+ ],
+ "t_exh": [
+  391.7,
+  399.9,
+  379.3
+ ],
+ "area_end": 10264,
+ "out_frac": 0.0198,
+ "t_touch_v": [
+  65.0,
+  75.4,
+  58.7
+ ],
+ "window": [
+  95.4,
+  379.3,
+  14
+ ],
+ "pathminC": {
+  "0-1": 177.6,
+  "0-2": 390.4,
+  "1-2": 177.6
+ },
+ "vein_medC": 25.8,
+ "same4": {
+  "0-1": 0.93,
+  "0-2": 1.0,
+  "1-2": 0.93
+ },
+ "body_min": 0.98,
+ "body_min_all": 0.98,
+ "vein4": 0.947,
+ "note": null,
+ "reached": true,
+ "pairs": 3,
+ "thick": 3,
+ "ratio": {
+  "0-1": 6.9,
+  "0-2": 15.1,
+  "1-2": 6.9
+ },
+ "same_ok": 3,
+ "pass": true,
+ "scn": "food3"
+}

@@ -39,6 +39,7 @@ DEF = dict(
     # --- N3 ---
     foods=[], food_sigma=25.0, food_amp=1.0, food_r=4.0, reservoir=0, eat=0.0, gain=0.0, food_M=0.0, food_fade=10.0,
     bridge_keep=0, bridge_break=1.0, tube_keep=0.0, h_res=1.0,
+    thin_h=0.0, thin_pow=2.0,    # [S3] thickness-limited edge conductance (0 = off)
     fan_comp=0,                  # [R4] 1: front competition (Kuroda 2015: after a branching one of the two fronts stops extending and disappears). Off by default
     fan_young=10.0, fan_new=2.0, # [R4] a front = 8-connected cluster of cells younger than fan_young; its vigour = cells younger than fan_new in it
     fan_frac=0.5, fan_tau=40.0,  # [R4] a front whose vigour stays below fan_frac x the strongest front's for fan_tau stops: it wets no more cells
@@ -390,6 +391,9 @@ def run(name, over):
         hstar = hstar + tube
         # ---- pressure / flux / volume ----
         W = [act[k] * G[k] * (C[k] + P['r']) / Ls[k] for k in range(4)]
+        if P['thin_h'] > 0:      # [S3] an edge conducts less when either end is nearly empty: x clip(min(h_i, h_j) / thin_h, 0, 1)^thin_pow (an empty tube is a thin tube)
+            hp_ = np.maximum(h, 0.0)
+            W = [W[k] * np.clip(np.minimum(hp_, nb(hp_, d)) / P['thin_h'], 0.0, 1.0) ** P['thin_pow'] for k, d in enumerate(DIRS)]
         if P['solver'] == 'mg':
             kap_f = kap * np.maximum(1.0, (P['stiff_h'] / np.maximum(h, 1e-3)) ** P['stiff_pow']) if P['stiff_h'] > 0 else kap
             p0 = np.where(wet, p + P['extrap'] * (p - pm), 0.0); pm = p

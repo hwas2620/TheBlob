@@ -51,6 +51,11 @@ export interface PlasmParams {
    * 관문 A 의 설정(defaultParams)은 false 로 두어 그 산술을 그대로 둔다. 관문 B 의 시나리오와 돌려 보기는 true
    */
   crumbDry: boolean;
+  /**
+   * 규칙 3 의 얇은 칸 줄임: 간선 가중치에 s_e = min(1, max(0, min(h_i, h_j)) / thinH)² 를 곱한다(계획 D). 0 이면 끈다.
+   * 관문 A 의 설정(defaultParams)은 0 으로 두어 그 산술을 그대로 둔다. 관문 B 의 시나리오와 돌려 보기는 PLASM.THIN_H
+   */
+  thinH: number;
   rInit: number;
   hInit: number;
   period: number;
@@ -125,6 +130,7 @@ export function defaultParams(over: Partial<PlasmParams> = {}): PlasmParams {
     edgeSigma: PLASM.EDGE_SIGMA,
     bridgeBreak: PLASM.BRIDGE_BREAK,
     crumbDry: false,
+    thinH: 0,
     rInit: PLASM.R_INIT,
     hInit: PLASM.H_INIT,
     period: OSCILLATOR.PERIOD,
@@ -174,6 +180,7 @@ export function foodParams(foods: FoodSpot[], over: Partial<PlasmParams> = {}): 
     resTau: PLASM_FOOD.TAU_H,
     resGate: PLASM_FOOD.GATE,
     crumbDry: true,
+    thinH: PLASM.THIN_H,
     ...over,
   };
 }
@@ -264,6 +271,8 @@ export function shaderVars(p: PlasmParams): Record<string, string> {
     C_MAX: glf(p.cMax),
     BRIDGE_BREAK: glf(p.bridgeBreak),
     CRUMB_DRY: p.crumbDry ? '1' : '0',
+    THIN_ON: p.thinH > 0 ? '1' : '0',
+    INV_THIN_H: glf(p.thinH > 0 ? 1 / p.thinH : 0),
     HY0: glf(p.hy0),
     Y_SIGMA: glf(p.ySigma),
     CURV_K: glf(p.lambdaC * p.curvGain),

@@ -1,7 +1,7 @@
 {
  "name": "a0",
  "query": "test=a0",
- "seconds": 2.738,
+ "seconds": 5.984,
  "done": true,
  "ok": true,
  "result": {
@@ -117,7 +117,7 @@
      ],
      "cgRelDiff": 2.4920103608733744e-8,
      "cgIters": 264,
-     "cgMs": 44.5,
+     "cgMs": 63.799999999813735,
      "drawCallsPerCycle": 46,
      "pass": true
     },
@@ -219,7 +219,7 @@
      ],
      "cgRelDiff": 2.5854464097451597e-8,
      "cgIters": 308,
-     "cgMs": 28.4000000001397,
+     "cgMs": 35.59999999962747,
      "drawCallsPerCycle": 46,
      "pass": true
     },
@@ -321,7 +321,7 @@
      ],
      "cgRelDiff": 2.7165666975369287e-8,
      "cgIters": 352,
-     "cgMs": 44.39999999990687,
+     "cgMs": 63.10000000055879,
      "drawCallsPerCycle": 46,
      "pass": true
     },
@@ -423,7 +423,7 @@
      ],
      "cgRelDiff": 2.4795620420203983e-8,
      "cgIters": 342,
-     "cgMs": 25.199999999953434,
+     "cgMs": 38.80000000074506,
      "drawCallsPerCycle": 53,
      "pass": true
     }

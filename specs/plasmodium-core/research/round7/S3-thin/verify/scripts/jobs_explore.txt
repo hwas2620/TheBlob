@@ -1,0 +1,33 @@
+food3 25 vthAvT7 thin_h=0.15 T=700
+food3 25 vcdvT7 T=700
+food3 26 vthAvT7 thin_h=0.15 T=700
+food3 26 vcdvT7 T=700
+food3 31 vthAvT7 thin_h=0.15 T=700
+food3 31 vcdvT7 T=700
+food3 32 vthAvT7 thin_h=0.15 T=700
+food3 32 vcdvT7 T=700
+food3 33 vthAvT7 thin_h=0.15 T=700
+food3 33 vcdvT7 T=700
+food3 34 vthAvT7 thin_h=0.15 T=700
+food3 34 vcdvT7 T=700
+asym3 22 vthAdiag thin_h=0.15 neg_diag=1
+mig 41 vthAv thin_h=0.15
+mig 41 vcdv
+mig 42 vthAv thin_h=0.15
+mig 42 vcdv
+mig 43 vthAv thin_h=0.15
+mig 43 vcdv
+mig 44 vthAv thin_h=0.15
+mig 44 vcdv
+mig 45 vthAv thin_h=0.15
+mig 45 vcdv
+mig 46 vthAv thin_h=0.15
+mig 46 vcdv
+mig 47 vthAv thin_h=0.15
+mig 47 vcdv
+mig 48 vthAv thin_h=0.15
+mig 48 vcdv
+mig 49 vthAv thin_h=0.15
+mig 49 vcdv
+mig 50 vthAv thin_h=0.15
+mig 50 vcdv

@@ -6,6 +6,7 @@
 
 import type { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU, type PlainState } from '../gpu/plasm/PlasmGPU';
+import { PLASM } from '../config';
 import { defaultParams, foodParams, type PlasmParams } from '../gpu/plasm/params';
 import { fluxError, solveCG } from './cpuSolver';
 import { loadManifest, loadRef } from './refData';
@@ -157,6 +158,8 @@ export interface BOptions {
   yieldEvery?: number;
   /** 규칙 6 의 외톨이 셀 말리기 (기본 켬). 계획 C 이전의 기록과 견줄 때 끈다 */
   crumbDry?: boolean;
+  /** 규칙 3 의 얇은 칸 줄임 h_thin (기본 PLASM.THIN_H, 0 = 끔). 계획 D 이전의 기록과 견줄 때 끈다 */
+  thinH?: number;
 }
 
 export interface BResult extends BOptions {
@@ -230,8 +233,8 @@ export async function testB(glx: Glx, opts: BOptions, log: Log, onFrame?: (sim: 
   const N = opts.N ?? scn.N;
   const over: Partial<PlasmParams> = { ...scn.over };
   if (opts.resGate !== undefined) over.resGate = opts.resGate;
-  // 관문 B 의 시나리오는 모두 외톨이 셀 말리기를 켠다 (numpy 기준 실행의 GB 와 같다. 계획 C). crumb=0 으로 끈 길을 돌릴 수 있다
-  const params = defaultParams({ N, seed: opts.seed, triK: (2 * Math.PI) / 100, crumbDry: opts.crumbDry ?? true, ...over });
+  // 관문 B 의 시나리오는 모두 외톨이 셀 말리기(계획 C)와 얇은 칸 줄임(계획 D)을 켠다 (numpy 기준 실행의 GB 와 같다). crumb=0, thin=0 으로 끈 길을 돌릴 수 있다
+  const params = defaultParams({ N, seed: opts.seed, triK: (2 * Math.PI) / 100, crumbDry: opts.crumbDry ?? true, thinH: opts.thinH ?? PLASM.THIN_H, ...over });
   const sim = new PlasmGPU(glx, params);
   const variant = VARIANTS[opts.variant] ?? VARIANTS[2];
   applyVariant(sim, variant);

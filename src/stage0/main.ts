@@ -13,6 +13,7 @@
 //
 // 시험 결과는 window.__stage0 에도 남긴다(헤드리스 러너가 읽는다).
 
+import { PLASM } from '../config';
 import { Glx } from '../gpu/plasm/glx';
 import { PlasmGPU } from '../gpu/plasm/PlasmGPU';
 import { defaultParams, foodParams, type PlasmParams } from '../gpu/plasm/params';
@@ -211,6 +212,7 @@ async function main(): Promise<void> {
         scn, seed, N: q.has('N') ? num('N', 192) : undefined, variant: num('variant', 2), syncBounds: q.get('sync') !== '0', checkEvery: num('check', 50),
         dump: q.get('dump') === '1', name: q.get('name') ?? `b_${scn}_s${seed}`, resGate: q.has('gate') ? num('gate', 0.9) : undefined, T: q.has('T') ? num('T', 400) : undefined,
         softMargin: q.get('soft') === '1', yieldEvery: q.has('yield') ? num('yield', 100) : undefined, crumbDry: q.get('crumb') !== '0',
+        thinH: q.has('thin') ? num('thin', 0) : undefined,
       },
       log,
       (sim) => sim.view(canvas.width, canvas.height),
@@ -270,7 +272,7 @@ async function main(): Promise<void> {
     glx.reset();
     // 위상 무늬의 주기는 격자 한 변의 약수여야 한다 (384² 는 96, 256²·512² 는 128)
     const foodOver: Partial<PlasmParams> = food === 'three' ? foodParams(FOOD3) : food === 'none' ? { foods: [] } : {};
-    const s = new PlasmGPU(glx, defaultParams({ N: gridN, seed: 1, triK: tri ? (2 * Math.PI) / 100 : 0, triP: gridN % 96 === 0 ? 96 : 128, crumbDry: true, ...foodOver, ...(fastDt ? FAST_DT : {}) }));
+    const s = new PlasmGPU(glx, defaultParams({ N: gridN, seed: 1, triK: tri ? (2 * Math.PI) / 100 : 0, triP: gridN % 96 === 0 ? 96 : 128, crumbDry: true, thinH: PLASM.THIN_H, ...foodOver, ...(fastDt ? FAST_DT : {}) }));
     applyVariant(s, FAST);
     s.softMargin = true; // 게임 루프의 설정: 경계 상자가 늦게 도착해도 그리는 넓이가 크게 늘지 않게
     sim = s;
