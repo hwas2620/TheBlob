@@ -7,7 +7,8 @@ D=specs/plasmodium-core/stage0; R=$D/run_stage0.cjs; L=$D/results; mkdir -p $L/b
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1
 run() {   # GPU: run <시나리오> <시드> [쿼리에 더할 것] [이름 꼬리]
   local name="b_$1_s$2${4:+_$4}_th"
-  rm -rf "$D/dumps/$name"
+  [ -f "$L/b/gpu_$name.json" ] && return 0   # 이미 채점된 실행은 건너뛴다 (다시 돌려도 빠진 것만 돈다)
+  rm -rf "$D/dumps/$name" "$D/runs_gpu/$name"
   node $R "$name" "test=b&scn=$1&seed=$2&dump=1&name=$name${3:+&$3}" 10800 > "$L/$name.log" 2>&1 || echo "(러너가 실패로 끝났다)" >> "$L/$name.log"
   python3 $D/metrics/gpu2run.py "$D/dumps/$name" >> "$L/$name.log" 2>&1 && python3 $D/metrics/bmet.py "$D/runs_gpu/$name" --out $L/b >> "$L/$name.log" 2>&1
 }
@@ -15,17 +16,19 @@ ref() {   # numpy: ref <시나리오> <시드> [키=값 …] [꼬리=이름]
   local scn=$1 seed=$2; shift 2; local tag=th extra=()
   for a in "$@"; do case $a in tail=*) tag="${a#tail=}_th";; *) extra+=("$a");; esac; done
   local name="b_${scn}_s${seed}_$tag"
+  [ -f "$L/b/numpy_$name.json" ] && return 0
+  rm -rf "$D/ref/runs/$name"
   (cd $D/ref && python3 export_ref.py b $scn $seed "${extra[@]}" tag=$tag > logs/$name.log 2>&1) && python3 $D/metrics/bmet.py "$D/ref/runs/$name" --out $L/b >> "$D/ref/logs/$name.log" 2>&1
 }
 gpu_main() {
-  ( for s in 1 2 3 4 5; do run mig $s; done; for s in 1 2 3 4 5 6; do run food3 $s; done; for s in 1 2 3; do run slimehalf $s; run slimeall $s; done; run long 1 ) &
-  ( for d in dir0 dir13 dir27 dir34 dir45; do run $d 1; run $d 2; done; for s in 1 2 3; do run asym3 $s; done; for s in 1 2 3; do run food4 $s; done; run long 2 ) &
+  ( for s in 1 2 3 4 5; do run mig $s; done; for s in 1 2 3 4 5 6; do run food3 $s; done; for s in 1 2 3; do run slimehalf $s; run slimeall $s; done ) &
+  ( for d in dir0 dir13 dir27 dir34 dir45; do run $d 1; run $d 2; done; for s in 1 2 3; do run asym3 $s; done; for s in 1 2 3; do run food4 $s; done ) &
   ( for s in 1 2 3; do run mig256 $s; run food3_256 $s; done; run mig 1 "N=384&check=100" N384; run mig 2 "N=384&check=100" N384; run food3 1 "N=384&check=100" N384
     run mig2x 1 "check=100"; run mig2x 2 "check=100"; run food3 1 "gate=0" g0; run food3 2 "gate=0" g0 ) &
   wait
-  ( for s in 6 7 8 9 10; do run mig $s; done; run long 3 ) &
-  ( for s in 11 12 13 14 15; do run mig $s; done; run long 4 ) &
-  ( run long 5 ) &
+  ( run long 1; run long 4; for s in 6 7 8; do run mig $s; done ) &
+  ( run long 2; run long 5; for s in 9 10 11; do run mig $s; done ) &
+  ( run long 3; for s in 12 13 14 15; do run mig $s; done ) &
   wait
 }
 ref_main() {
