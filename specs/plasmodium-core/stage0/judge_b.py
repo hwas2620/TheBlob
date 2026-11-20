@@ -36,7 +36,9 @@ SEGMENTS = 5      # 지속 실행의 구간 수 (200~400, 400~800, 800~1200, 120
 def load():
     R = {}
     for f in sorted(glob.glob(os.path.join(HERE, 'results', 'b', '*.json'))):
-        o = json.load(open(f)); R[(o['origin'], o['run'])] = o
+        o = json.load(open(f))
+        if o['run'].endswith('_cd'): continue      # 계획 C 의 재실행(외톨이 셀 말리기)은 judge_b_crumb.py 가 끼워 쓴다
+        R[(o['origin'], o['run'])] = o
     return R
 
 
