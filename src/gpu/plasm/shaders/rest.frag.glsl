@@ -10,7 +10,7 @@ uniform sampler2D uC; // 켜진 간선의 전도도
 uniform sampler2D uG; // 정적 간선 잡음
 uniform float uT;     // 모델 시간
 layout(location = 0) out vec4 oAux; // 우변, 차폐 항, 인접 최대 전도도, h*
-layout(location = 1) out vec4 oW;   // 간선 가중치 W = G·(C + r)/L
+layout(location = 1) out vec4 oW;   // 간선 가중치 W = G·(C + r)/L · s_e  (s_e: THIN_ON 일 때만)
 #if {{FOOD_STORE}}
 uniform sampler2D uH;     // r: 저장 배율 H, g: 직전 스텝의 쉬는 두께 (맥동을 뺀 값)
 uniform sampler2D uField; // g: 먹이 원반의 번호 + 1
@@ -44,6 +44,13 @@ void main() {
   float hstar = (hs + tube) * (1.0 + {{EPS}} * cos(texelFetch(uB, c, 0).r + psi));
   oAux = vec4(A.g * (A.r - hstar) / {{DT}}, A.g * {{INV_KAPPA_DT}}, Cn, hstar);
   oW = vec4(greaterThan(C0, vec4(0.0))) * texelFetch(uG, c, 0) * (C0 + {{R_BASE}}) * vec4(1.0, 1.0, 0.7071067811865476, 0.7071067811865476);
+#if {{THIN_ON}}
+  // 규칙 3 의 s_e: 얇은 칸일수록 덜 흐른다. 두 끝 가운데 얇은 쪽의 두께로 min(1, h/h_thin)². 간선 r,g,b,a 의 다른 끝은 +x, +y, +x+y, +x−y
+  vec4 hj = vec4(texelFetch(uA, wr(c + ivec2(1, 0), n), 0).r, texelFetch(uA, wr(c + ivec2(0, 1), n), 0).r,
+                texelFetch(uA, wr(c + ivec2(1, 1), n), 0).r, texelFetch(uA, wr(c + ivec2(1, -1), n), 0).r);
+  vec4 se = clamp(max(min(vec4(A.r), hj), 0.0) * {{INV_THIN_H}}, 0.0, 1.0);
+  oW *= se * se;
+#endif
 #if {{FOOD_STORE}}
   oH = vec4(H, hs + tube, 0.0, 0.0);
 #endif

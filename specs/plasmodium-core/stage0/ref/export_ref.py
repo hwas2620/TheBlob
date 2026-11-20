@@ -37,7 +37,7 @@ TRI = dict(tri_k=2 * np.pi / 100, tri_P=96, tri_T=80.0, tri_v=0.24)
 # 규칙 8 의 값: 5차 기준 먹이 실행(Y3_tri96d)의 것 + spec 의 "쉬는 두께의 90% 이상 차 있을 때만" (res_gate)
 FOOD = dict(reservoir=1, eat=0.05, gain=1.0, food_M=1200.0, food_fade=10.0, h_res=4.0, res_acc=2, res_tau=30.0, res_gate=0.9, food_sigma=25.0, food_amp=1.0, food_r=5.0)
 # crumb_dry=1: 규칙 6 의 외톨이 셀 말리기 (2026-11-20 spec 반영, 계획 C). 이 줄 이전에 돌린 관문 B 기록(results/b)은 이 규칙 없이 돈 것이다
-GB = dict(GA, **TRI, vsave=1, gm_every=20.0, crumb_dry=1)
+GB = dict(GA, **TRI, vsave=1, gm_every=20.0, crumb_dry=1, thin_h=0.15)   # crumb_dry: 계획 C, thin_h: 계획 D (규칙 3 의 s_e)
 SCN = {
     'mig': dict(T=400),                                                          # 굶은 이주: GA 의 유인원 하나 (27°, 70셀)
     'dir0': dict(foods=[[0, 70]], T=500, stop_touch=1), 'dir13': dict(foods=[[13, 70]], T=500, stop_touch=1), 'dir27': dict(foods=[[27, 70]], T=500, stop_touch=1),
@@ -109,7 +109,7 @@ def main():
         # 외톨이 셀 말리기의 스텝 일치용 (계획 C): 지금 규칙으로 S 스텝까지 돌려 외딴 음수 셀이 있는 상태를 만들고, S 부터 규칙을 켠다
         S = int(sys.argv[2]) if len(sys.argv) > 2 else 3790
         steps = tuple(S + d for d in (0, 1, 10, 50))
-        over = dict(GB); over.update(SCN['food3']); over.update(seed=1, crumb_dry=1, crumb_from=S, T=(max(steps) + 2) * GA['dt'], vsave=0, gm_every=1e9,
+        over = dict(GB); over.update(SCN['food3']); over.update(seed=1, crumb_dry=1, crumb_from=S, thin_h=0.0, T=(max(steps) + 2) * GA['dt'], vsave=0, gm_every=1e9,
                                                            dump_dir=PUB, dump_state_steps=steps, dump_food=1, dump_tag='foodcrumbstate', check_every=0)
         m = R.run('dumpscrumb', over); print('V_crumb', m.get('V_crumb'), 'crumb_cells', m.get('crumb_cells'))
     elif part == 'dumpsfood2':

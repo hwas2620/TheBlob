@@ -37,7 +37,7 @@ def load():
     R = {}
     for f in sorted(glob.glob(os.path.join(HERE, 'results', 'b', '*.json'))):
         o = json.load(open(f))
-        if o['run'].endswith('_cd'): continue      # 계획 C 의 재실행(외톨이 셀 말리기)은 judge_b_crumb.py 가 끼워 쓴다
+        if o['run'].endswith(('_cd', '_th')): continue      # 계획 C(_cd)·D(_th) 의 재실행은 judge_b_crumb.py, judge_b_thin.py 가 끼워 쓴다
         R[(o['origin'], o['run'])] = o
     return R
 
