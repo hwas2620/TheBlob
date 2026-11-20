@@ -344,6 +344,8 @@ const FOOD_FAMILIES: FoodFamily[] = [
   { kind: 'food6state', name: '줄지 않는 먹이 여섯', over: foodParams([0, 60, 120, 180, 240, 300].map((angleDeg) => ({ angleDeg, dist: 30 })), { foodM: 0 }), afters: [1, 10] },
   // 떨어지는 순간(+3스텝)과 유인장의 세기가 1e-4 아래에서 멈춘 뒤(+120스텝)까지
   { kind: 'foodfadestate', name: '금방 떨어지는 먹이 셋', over: foodParams(FOOD3, { foodM: 20, foodFade: 1 }), afters: [1, 10, 120] },
+  // 외톨이 셀 말리기(계획 C): 규칙 없이 3790스텝까지 돌아 외딴 음수 셀이 남은 상태에서 규칙을 켠다. 그 셀들이 처음 몇 스텝 안에 마른다
+  { kind: 'foodcrumbstate', name: '외톨이 셀 말리기', over: foodParams(FOOD3), afters: [1, 10, 50] },
 ];
 
 export interface FoodDiff extends StateDiff {

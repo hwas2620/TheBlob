@@ -9,7 +9,7 @@ export interface RefField {
 export interface RefFile {
   file: string;
   tag: string;
-  kind: 'state' | 'solver' | 'foodstate' | 'food6state' | 'foodfadestate';
+  kind: 'state' | 'solver' | 'foodstate' | 'food6state' | 'foodfadestate' | 'foodcrumbstate';
   N: number;
   step: number;
   t: number;

@@ -1,0 +1,14 @@
+# 덧붙인 실행 2 (탐색: 세기 하나를 바꾸면 결론이 뒤집히는가). 2026-11-19 23:55 UTC 에 정했다.
+# 정할 때 본 것: long 21 쌍, food4 21·22 쌍, food3 21 쌍, mig 21 쌍의 결과. (00:27 UTC: 줄의 순서만 바꿨다 — 넷씩 돌 때 빈 자리가 덜 남게)
+# (1) long: 기억의 문턱 50 → 25, 100 (나머지는 묶음 그대로)
+# (2) food4: 포만의 세기 0.4 → 0.3, 0.5 (나머지는 묶음 그대로)
+long 21 vbm100 bridge_mem=100 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+long 22 vbm100 bridge_mem=100 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food4 21 vsk03 bridge_mem=50 sat_k=0.3 sat_scent=0.5 crumb_dry=1
+food4 22 vsk03 bridge_mem=50 sat_k=0.3 sat_scent=0.5 crumb_dry=1
+food4 23 vsk03 bridge_mem=50 sat_k=0.3 sat_scent=0.5 crumb_dry=1
+food4 21 vsk05 bridge_mem=50 sat_k=0.5 sat_scent=0.5 crumb_dry=1
+long 21 vbm25 bridge_mem=25 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+long 22 vbm25 bridge_mem=25 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food4 22 vsk05 bridge_mem=50 sat_k=0.5 sat_scent=0.5 crumb_dry=1
+food4 23 vsk05 bridge_mem=50 sat_k=0.5 sat_scent=0.5 crumb_dry=1

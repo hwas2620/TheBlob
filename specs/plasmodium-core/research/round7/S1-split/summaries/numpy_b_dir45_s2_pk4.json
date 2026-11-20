@@ -1,0 +1,17 @@
+{
+ "run": "b_dir45_s2_pk4",
+ "origin": "numpy",
+ "N": 192,
+ "seed": 2,
+ "angle": 45,
+ "t_touch": [
+  256.0
+ ],
+ "stop": "touched",
+ "complete": true,
+ "nan": false,
+ "mass_err": 3.0754169052674536e-16,
+ "neg_end": 0,
+ "h_min_in": -0.0018797589070821356,
+ "scn": "dir45"
+}

@@ -9,6 +9,7 @@ usage: export_ref.py PART [...]
                           키=값 은 모델 설정을 덮어쓴다 (예: dt=0.2 period=8 osc_sub=8 tag=dt2p8)
   b SCN SEED [키=값 …] [tag=이름]   관문 B 의 기준 실행. SCN 은 아래 SCN 표의 이름. runs/b_{SCN}_s{SEED}[_이름]/ 에 상태(vs_t*.npz)를 남긴다
   dumpsfood    192², 대칭 먹이 셋, 시드 1: 먹이가 있는 스텝 일치용 상태 (닿기 직전, 먹는 중, 첫 먹이가 떨어진 직후에서 +0, +1, +10, +50 스텝)
+  dumpscrumb [S]           외톨이 셀 말리기의 스텝 일치용 (192², 대칭 먹이 셋, 시드 1): S 까지 규칙 없이, S 부터 규칙을 켜고 +0, +1, +10, +50 스텝
   dumpsfood2 six|fade [S]   먹이 스텝 일치의 나머지 길 (192², 시드 1). S 를 주지 않으면 먼저 한 번 돌려 닿은 시각·떨어진 시각만 찍는다
                  six   줄지 않는 먹이 여섯(60° 간격, 거리 30)을 먹는다 → 스텝 S, S+1, S+10
                  fade  금방 떨어지는 먹이 셋(양 20, 유인장이 사라지는 시간 1) → 스텝 S, S+1, S+10, S+120 (유인장의 세기가 1e-4 아래에서 멈춘 뒤까지)
@@ -35,7 +36,8 @@ GA = dict(N=192, T=400, dt=0.1, seed=1,
 TRI = dict(tri_k=2 * np.pi / 100, tri_P=96, tri_T=80.0, tri_v=0.24)
 # 규칙 8 의 값: 5차 기준 먹이 실행(Y3_tri96d)의 것 + spec 의 "쉬는 두께의 90% 이상 차 있을 때만" (res_gate)
 FOOD = dict(reservoir=1, eat=0.05, gain=1.0, food_M=1200.0, food_fade=10.0, h_res=4.0, res_acc=2, res_tau=30.0, res_gate=0.9, food_sigma=25.0, food_amp=1.0, food_r=5.0)
-GB = dict(GA, **TRI, vsave=1, gm_every=20.0)
+# crumb_dry=1: 규칙 6 의 외톨이 셀 말리기 (2026-11-20 spec 반영, 계획 C). 이 줄 이전에 돌린 관문 B 기록(results/b)은 이 규칙 없이 돈 것이다
+GB = dict(GA, **TRI, vsave=1, gm_every=20.0, crumb_dry=1)
 SCN = {
     'mig': dict(T=400),                                                          # 굶은 이주: GA 의 유인원 하나 (27°, 70셀)
     'dir0': dict(foods=[[0, 70]], T=500, stop_touch=1), 'dir13': dict(foods=[[13, 70]], T=500, stop_touch=1), 'dir27': dict(foods=[[27, 70]], T=500, stop_touch=1),
@@ -103,6 +105,13 @@ def main():
         steps = tuple(s + d for s in s0 for d in (0, 1, 10, 50))
         over = dict(GB); over.update(SCN['food3']); over.update(seed=1, T=(max(steps) + 2) * GA['dt'], vsave=0, gm_every=1e9, dump_dir=PUB, dump_state_steps=steps, dump_food=1, dump_tag='foodstate', check_every=0)
         R.run('dumpsfood', over)
+    elif part == 'dumpscrumb':
+        # 외톨이 셀 말리기의 스텝 일치용 (계획 C): 지금 규칙으로 S 스텝까지 돌려 외딴 음수 셀이 있는 상태를 만들고, S 부터 규칙을 켠다
+        S = int(sys.argv[2]) if len(sys.argv) > 2 else 3790
+        steps = tuple(S + d for d in (0, 1, 10, 50))
+        over = dict(GB); over.update(SCN['food3']); over.update(seed=1, crumb_dry=1, crumb_from=S, T=(max(steps) + 2) * GA['dt'], vsave=0, gm_every=1e9,
+                                                           dump_dir=PUB, dump_state_steps=steps, dump_food=1, dump_tag='foodcrumbstate', check_every=0)
+        m = R.run('dumpscrumb', over); print('V_crumb', m.get('V_crumb'), 'crumb_cells', m.get('crumb_cells'))
     elif part == 'dumpsfood2':
         case = sys.argv[2]; S = int(sys.argv[3]) if len(sys.argv) > 3 else None
         extra = {'six': dict(foods=[[a, 30] for a in range(0, 360, 60)], food_M=0.0), 'fade': dict(foods=[[20, 40], [140, 40], [260, 40]], food_M=20.0, food_fade=1.0)}[case]

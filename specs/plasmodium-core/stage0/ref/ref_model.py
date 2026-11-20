@@ -39,6 +39,14 @@ DEF = dict(
     # --- N3 ---
     foods=[], food_sigma=25.0, food_amp=1.0, food_r=4.0, reservoir=0, eat=0.0, gain=0.0, food_M=0.0, food_fade=10.0,
     bridge_keep=0, bridge_break=1.0, tube_keep=0.0, h_res=1.0,
+    fan_comp=0,                  # [R4] 1: front competition (Kuroda 2015: after a branching one of the two fronts stops extending and disappears). Off by default
+    fan_young=10.0, fan_new=2.0, # [R4] a front = 8-connected cluster of cells younger than fan_young; its vigour = cells younger than fan_new in it
+    fan_frac=0.5, fan_tau=40.0,  # [R4] a front whose vigour stays below fan_frac x the strongest front's for fan_tau stops: it wets no more cells
+    fan_age=4.0, fan_min=10, fan_every=1.0,   # [R4] stopped cells age (1 + fan_age) times faster; clusters smaller than fan_min cells are not fronts; update every fan_every
+    crumb_from=0,  # [stage0 C] first step at which crumb_dry acts (parity dumps switch it on in a state that still holds isolated cells)
+    crumb_dry=0,   # [split] 1: a drying cell with no wet neighbour left dries too (its volume is dropped and booked in V_crumb) - no stuck isolated cells
+    neg_fill=0,   # [split] 1: with neg_dry, a kept bridge cell (bridge_keep) whose thickness went negative is not dried; its deficit is shared among its neighbours in proportion to their thickness
+    bridge_mem=0.0, bridge_mem_tau=1e9,   # [split] >0: a bridge cell is also kept while its remembered peak conductance (max of Cn, forgetting with time constant bridge_mem_tau) is >= bridge_mem: strands that were real veins outlive the flow that made them
     gm_every=20.0, nsnap=5, log_every=50,
     # --- N2 (front isotropy) ---
     wet_rho=0.0, curv='n8', curv_sigma=1.5, curv_ref=0.33, curv_gain=8.0, curv_cap=99.0, stop_touch=0,
@@ -54,6 +62,7 @@ DEF = dict(
     res_acc=0, res_tau=30.0,     # 1: rest thickness on food grows by what the cell has eaten (cap h_res); 2: ramps toward h_res with time constant res_tau; 0: jumps to h_res on contact
     limit_net=0,                 # positivity limiter on NET outflow: only cells that would go negative scale down their outgoing edge fluxes
     stiff_h=0.0, stiff_pow=2.0,  # thin cells are stiffer: kappa_i = kappa*max(1,(stiff_h/h_i)^stiff_pow); 0 = off
+    sat_scent=0.0,               # [split] see the yield threshold: >0 limits the satiety term to scent-free ground
     sat_k=0.0, sat_tau=10.0,     # satiety: yield threshold += sat_k*S, S low-passed indicator of live food being covered
     c_lat=0.0,                   # lateral spreading of conductance to parallel neighbour edges (fraction per unit time)
     mech_rel=0.0, mech_gmax=0.5,     # [H1] accommodation feedback on the phase: dtheta/dt += clip(mech_rel*(h-hbar)/hbar, +-mech_gmax*omega)*sin(theta); <0: an over-filled cell is pulled toward its relaxed (thick) phase
@@ -120,6 +129,28 @@ def _dump(P, tag, step, t, fields, extra=None):
     json.dump(man, open(mp, 'w'), indent=1)
 
 
+def _torus_label(mask):
+    """8-connected labels on the torus (components that touch across the edges are merged)"""
+    from scipy import ndimage as _ndi
+    N_ = mask.shape[0]
+    lab, n = _ndi.label(mask, structure=np.ones((3, 3)))
+    if n == 0: return lab
+    parent = np.arange(n + 1)
+    def f(a):
+        while parent[a] != a:
+            parent[a] = parent[parent[a]]; a = parent[a]
+        return a
+    for i in range(N_):
+        for d in (-1, 0, 1):
+            for a, b in ((lab[i, 0], lab[(i + d) % N_, N_ - 1]), (lab[0, i], lab[N_ - 1, (i + d) % N_])):
+                if a and b:
+                    a, b = f(a), f(b)
+                    if a != b: parent[b] = a
+    root = np.array([f(k) for k in range(n + 1)])
+    _, comp = np.unique(root, return_inverse=True)
+    return comp[lab]
+
+
 def run(name, over):
     P = dict(DEF); P.update(BASE); P.update(over)
     out = os.path.join(HERE, 'runs', name); os.makedirs(out, exist_ok=True)
@@ -157,7 +188,7 @@ def run(name, over):
             for sy in (-N, 0, N): g += np.exp(-((X - fx - sx) ** 2 + (Y - fy - sy) ** 2) / (2 * P['food_sigma'] ** 2))
         cfield.append(P['food_amp'] * g); fdisc.append(np.hypot(mimg(X - fx), mimg(Y - fy)) < P['food_r'])
     fM = np.full(nf, float(P['food_M']) if P['food_M'] > 0 else np.inf, dtype=float); famp = np.ones(nf); t_exh = np.full(nf, np.nan); t_touch = np.full(nf, np.nan); t_cover = np.full(nf, np.nan)
-    Vinj = 0.0
+    Vinj = 0.0; V_crumb = 0.0; ncrumb = 0
 
     def food_now():
         f = np.zeros((N, N))
@@ -177,6 +208,8 @@ def run(name, over):
     wet = dist < P['R_init']
     h = np.where(wet, P['h_init'], 0.0)
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
+    Cpk = np.zeros((N, N))
+    stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
     elif P['slime0'] == 'all': slime[~wet] = 1.0
     C = [np.zeros((N, N)) for _ in DIRS]; eage = [np.zeros((N, N)) for _ in DIRS]
@@ -206,7 +239,7 @@ def run(name, over):
     negrec = []
     hmin_end = 0.0; neg_end_cellsteps = 0
     hfood_ser = []; ph_ser = []
-    nbridge_kept = 0; ntube_kept = 0; nlim_steps = 0; nlim_cells = 0; lim_cut_max = 0.0; hpre_min = 0.0; neg_cellsteps = 0; S_sat = 0.0
+    nbridge_kept = 0; ntube_kept = 0; nneg_fill = 0; nlim_steps = 0; nlim_cells = 0; lim_cut_max = 0.0; hpre_min = 0.0; neg_cellsteps = 0; S_sat = 0.0
 
     def node_C():
         Cn = np.zeros((N, N))
@@ -327,6 +360,7 @@ def run(name, over):
             theta = np.where(wet, wv * t, 0.0)
         # ---- rest thickness ----
         Cn = node_C()
+        if P['bridge_mem'] > 0: Cpk = np.maximum(Cn, Cpk * np.exp(-dt / P['bridge_mem_tau']))
         if P['res_acc'] == 2:      # ramp: on live food the stored-mass factor relaxes toward h_res with time constant res_tau (demand builds gradually, mass is drawn from the body)
             gate_ = (h >= P['res_gate'] * hbar_prev) if P['res_gate'] > 0 else 1.0     # the stored-mass target grows only while the cell is filled to its current rest thickness (demand follows supply)
             Hres = Hres + dt * resmask * wet * gate_ * (P['h_res'] - Hres) / P['res_tau']
@@ -453,6 +487,27 @@ def run(name, over):
             C[k] = np.clip(C[k] + dt * rt * (f - C[k]), 0.0, P['Cmax']) * act[k]
         age = np.where(wet, age + dt, 0.0)
         sage = np.where(wet, sage + dt * (1.0 - resmask), 0.0)
+        if P['fan_comp']:
+            fan_k = max(1, int(round(P['fan_every'] / dt)))
+            if step % fan_k == 0:
+                lab_ = _torus_label(wet & (age < P['fan_young']))
+                nl_ = int(lab_.max())
+                if nl_ > 0:
+                    size_ = np.bincount(lab_.ravel(), minlength=nl_ + 1)
+                    vig_ = np.bincount(lab_.ravel(), weights=(wet & (age < P['fan_new'])).ravel().astype(float), minlength=nl_ + 1)
+                    fronts_ = [k_ for k_ in range(1, nl_ + 1) if size_[k_] >= P['fan_min']]
+                    if len(fronts_) >= 2:
+                        vmax_ = max(vig_[k_] for k_ in fronts_)
+                        weak_ = np.zeros(nl_ + 1, bool); strong_ = np.zeros(nl_ + 1, bool)
+                        for k_ in fronts_:
+                            if vig_[k_] < P['fan_frac'] * vmax_: weak_[k_] = True
+                            else: strong_[k_] = True
+                        stall = np.where(weak_[lab_], stall + fan_k * dt, np.where(strong_[lab_], np.maximum(stall - fan_k * dt, 0.0), stall))
+                    if step % (fan_k * 10) == 0:
+                        fan_log.append([round(t, 2), len(fronts_), int((wet & (stall > P['fan_tau'])).sum())] + sorted([int(vig_[k_]) for k_ in fronts_], reverse=True)[:4])
+            stopped_ = wet & (stall > P['fan_tau'])
+            sage = np.where(stopped_, sage + dt * P['fan_age'], sage)
+            stall = np.where(wet, stall, 0.0)
         if P['slime_tau'] < 1e8: slime *= np.exp(-dt / P['slime_tau'])
         # ---- rolling statistics ----
         hmax_w = np.maximum(hmax_w, h); hmin_w = np.minimum(hmin_w, h); hsum_w += h; wet_w &= wet; cnt_w += 1
@@ -467,20 +522,31 @@ def run(name, over):
             cnt_q = 0
         # ---- drying ----
         Dm = wet & (h < P['h_min']) & (age > P['grace'])
-        if Dm.any():
+        negm = (wet & (h < 0)) if P['neg_dry'] else None; prot = None
+        if Dm.any() or (P['neg_fill'] and negm is not None and negm.any()):
             if P['tube_keep'] > 0:
                 keep = Dm & (Cn > P['tube_keep']); ntube_kept += int(keep.sum()); Dm &= ~keep
             if P['bridge_keep']:
                 xb = [~nb(wet, d) for d in RING]
                 Nc = np.zeros((N, N), np.int8)
                 for q in (0, 2, 4, 6): Nc += xb[q].astype(np.int8) - (xb[q] & xb[q + 1] & xb[(q + 2) % 8]).astype(np.int8)
-                ok = ((Nc <= 1) | (Cn < P['bridge_break'])) & (colour == step % 4)
-                nbridge_kept += int((Dm & (Nc > 1) & (Cn >= P['bridge_break'])).sum()); Dm &= ok
-        if P['neg_dry']: Dm = Dm | (wet & (h < 0))
+                strong = (Cn >= P['bridge_break']) | ((Cpk >= P['bridge_mem']) if P['bridge_mem'] > 0 else False)
+                ok = ((Nc <= 1) | ~strong) & (colour == step % 4)
+                nbridge_kept += int((Dm & (Nc > 1) & strong).sum()); Dm &= ok
+                prot = (Nc > 1) & strong
+        fill = None
+        if P['neg_dry']:
+            if P['neg_fill'] and prot is not None:     # a kept strand that went negative is not dried: its deficit is taken from its neighbours (below)
+                fill = negm & prot; negm = negm & ~prot
+            Dm = Dm | negm
         if Dm.any():
             stay = wet & ~Dm; ns = np.zeros((N, N))
             for d in ALL: ns += nb(stay, d)
-            Dm &= ns > 0
+            if P['crumb_dry'] and step >= P['crumb_from']:      # a drying cell with no staying neighbour has nowhere to hand its volume: it dries anyway and the (tiny) volume is dropped and booked
+                lone = Dm & (ns <= 0)
+                if lone.any(): V_crumb += float(h[lone].sum()); ncrumb += int(lone.sum()); h[lone] = 0.0
+            else:
+                Dm &= ns > 0
             stay = wet & ~Dm; ns[:] = 0
             for d in ALL: ns += nb(stay, d)
             if P['dry_weight'] == 'h':        # share the drying cell's volume (or deficit, if negative) among staying neighbours in proportion to their thickness
@@ -493,10 +559,18 @@ def run(name, over):
             else:
                 give = np.where(Dm, h / np.maximum(ns, 1), 0.0)
                 for d in ALL: h += np.where(stay, nb(give, d), 0.0)
-            h[Dm] = 0.0; wet = stay; slime[Dm] = 1.0; age[Dm] = 0.0; sage[Dm] = 0.0; p[Dm] = 0.0; pm[Dm] = 0.0; Hres[Dm] = 1.0
+            h[Dm] = 0.0; wet = stay; slime[Dm] = 1.0; age[Dm] = 0.0; sage[Dm] = 0.0; p[Dm] = 0.0; pm[Dm] = 0.0; Hres[Dm] = 1.0; Cpk[Dm] = 0.0
             ser_dry[step] = int(Dm.sum())
+        if fill is not None and fill.any():
+            fill &= wet
+            giver = wet & ~fill; hpos = np.where(giver, np.maximum(h, 0.0), 0.0); sh = np.zeros((N, N))
+            for d in ALL: sh += nb(hpos, d)
+            fok = fill & (sh > 0); gf = np.where(fok, h / np.maximum(sh, 1e-30), 0.0); addf = np.zeros((N, N))
+            for d in ALL: addf += np.where(giver, nb(gf, d) * hpos, 0.0)
+            h += addf; h[fok] = 0.0; nneg_fill += int(fok.sum())
         # ---- wetting (thickness yield) ----
         pw = np.where(wet, (h - tube) if P['tube_yield'] else h, -np.inf)
+        if P['fan_comp']: pw = np.where(wet & (stall > P['fan_tau']), -np.inf, pw)     # [R4] a stopped front wets no more cells
         pmax = np.full((N, N), -np.inf); arg = np.zeros((N, N), np.int8); nw = np.zeros((N, N))
         for q, d in enumerate(ALL):
             v = nb(pw, d); better = v > pmax
@@ -510,11 +584,13 @@ def run(name, over):
         if P['sat_k'] > 0:
             feeding = 1.0 if (nf and any((fM[k_] > 0) and bool((fdisc[k_] & wet).any()) for k_ in range(nf))) else 0.0
             S_sat += (dt / P['sat_tau']) * (feeding - S_sat)
-        yld = P['hy0'] * (1 + P['y_sigma'] * eta) + curv + P['y_s'] * slime - P['y_c'] * food + P['sat_k'] * S_sat
+        # [split] sat_scent > 0: satiety holds back only the fronts with no food scent (attractant below sat_scent * food_amp); toward a food the front advances as usual
+        sat_w = np.clip(1.0 - food / (P['sat_scent'] * P['food_amp']), 0.0, 1.0) if (P['sat_k'] > 0 and P['sat_scent'] > 0) else 1.0
+        yld = P['hy0'] * (1 + P['y_sigma'] * eta) + curv + P['y_s'] * slime - P['y_c'] * food + P['sat_k'] * S_sat * sat_w
         # N2: donor thickness seen by the dry cell
         if P['wet_rho'] > 0:                          # sample the wet-masked thickness at distance wet_rho along the diagonals (bilinear, renormalised over wet cells)
             a_ = min(1.0, P['wet_rho'] / np.sqrt(2.0)); wA = a_ * (1 - a_); wD = a_ * a_
-            hz = np.where(wet, pw, 0.0); wz = wet.astype(float)
+            don_ = wet & np.isfinite(pw); hz = np.where(don_, pw, 0.0); wz = don_.astype(float)
             ptest = np.full((N, N), -np.inf)
             for d in ((1, 0), (0, 1), (-1, 0), (0, -1)): ptest = np.maximum(ptest, nb(pw, d))
             for d in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
@@ -532,7 +608,7 @@ def run(name, over):
             amt = np.minimum(P['h_fill'], 0.5 * np.maximum(h[sy, sx], 0.0) / cnt)
             np.subtract.at(h, (sy, sx), amt)
             h[ys, xs] = amt; wet[ys, xs] = True; age[ys, xs] = 0.0; sage[ys, xs] = 0.0; twet[ys, xs] = t; Hres[ys, xs] = 1.0
-            p[ys, xs] = p[sy, sx]; pm[ys, xs] = pm[sy, sx]; theta[ys, xs] = theta[sy, sx]
+            p[ys, xs] = p[sy, sx]; pm[ys, xs] = pm[sy, sx]; theta[ys, xs] = theta[sy, sx]; stall[ys, xs] = stall[sy, sx]
             ser_new[step] = ys.size; ser_newl[step] = int((xs < c0).sum())
             if nf:                                             # direction of new wetting relative to the food(s), seen from the centroid
                 vx = mimg(xs - cen_u[0]); vy = mimg(ys - cen_u[1]); vn = np.maximum(np.hypot(vx, vy), 1e-9); best = np.full(xs.size, -2.0)
@@ -551,7 +627,7 @@ def run(name, over):
             if hm_end < 0: neg_end_cellsteps += int((wet & (h < 0)).sum()); neg_end_steps += 1
         ser_area[step] = int(wet.sum()); ser_vol[step] = h.sum()
         if nf: hfood_ser.append([float(h[fdisc[k_]].sum() / max(int(fdisc[k_].sum()), 1)) for k_ in range(nf)] + [float(np.angle(np.exp(1j * theta[fdisc[k_] & wet]).sum())) if (fdisc[k_] & wet).any() else np.nan for k_ in range(nf)])
-        mass_err_max = max(mass_err_max, abs(float((h.sum() - V0 - Vinj) / V0)))
+        mass_err_max = max(mass_err_max, abs(float((h.sum() - V0 - Vinj + V_crumb) / V0)))
         if step % P['ph_every'] == 0 and mode == 'osc':
             z_ = np.exp(1j * theta); sh_ = wet & (age > 5.0)
             mx_ = sh_ & nb(sh_, (1, 0)); my_ = sh_ & nb(sh_, (0, 1))
@@ -605,7 +681,7 @@ def run(name, over):
                area_end=int(wet.sum()), foods=[[round(a, 2), round(b, 2)] for a, b in fpos],
                t_touch=[None if np.isnan(v) else round(float(v), 1) for v in t_touch], t_cover=[None if np.isnan(v) else round(float(v), 1) for v in t_cover],
                t_exh=[None if np.isnan(v) else round(float(v), 1) for v in t_exh], fM_end=[None if np.isinf(v) else round(float(v), 2) for v in fM],
-               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), traj=traj,
+               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), traj=traj,
                mg_err=([float(np.median([e[1] for e in mg_err])), float(np.percentile([e[1] for e in mg_err], 90)), float(max(e[1] for e in mg_err)), float(np.median([e[2] for e in mg_err]))] if mg_err else None), mg_err_n=len(mg_err),
                h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), neg_end_steps=int(neg_end_steps), steps_done=int(nstep), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
     wm = hmean_last > 0

@@ -1,0 +1,17 @@
+{
+ "run": "b_dir27_s1_pk4",
+ "origin": "numpy",
+ "N": 192,
+ "seed": 1,
+ "angle": 27,
+ "t_touch": [
+  244.9
+ ],
+ "stop": "touched",
+ "complete": true,
+ "nan": false,
+ "mass_err": 2.006604514735515e-16,
+ "neg_end": 0,
+ "h_min_in": -0.0017047795317138232,
+ "scn": "dir27"
+}

@@ -1,0 +1,52 @@
+# 본 검증의 실행 목록: 같은 시드로 지금 규칙(v0)과 묶음 후보(vpk). 한 줄 = SCN SEED TAG [키=값 ...]
+# 앞의 넷은 짧은 실행(속도를 재고 채점 도구를 먼저 시험하려고). 그 뒤는 긴 것부터.
+food3 21 v0
+food3 21 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+mig 21 v0
+mig 21 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+long 21 v0
+long 21 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food4 21 v0
+food4 21 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food4 22 v0
+food4 22 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+long 22 v0
+long 22 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food4 23 v0
+food4 23 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+long 23 v0
+long 23 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food4 24 v0
+food4 24 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food4 25 v0
+food4 25 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food4 26 v0
+food4 26 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food3_256 21 v0
+food3_256 21 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food3_256 22 v0
+food3_256 22 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food3_256 23 v0
+food3_256 23 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+mig 22 v0
+mig 22 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+mig 23 v0
+mig 23 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+mig 24 v0
+mig 24 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food3 22 v0
+food3 22 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food3 23 v0
+food3 23 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food3 24 v0
+food3 24 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food3 25 v0
+food3 25 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+food3 26 v0
+food3 26 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+asym3 21 v0
+asym3 21 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+asym3 22 v0
+asym3 22 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
+asym3 23 v0
+asym3 23 vpk bridge_mem=50 sat_k=0.4 sat_scent=0.5 crumb_dry=1
