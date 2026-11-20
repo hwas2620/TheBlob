@@ -1,0 +1,3200 @@
+{
+ "long_decomp": [
+  {
+   "seed": 21,
+   "tag": "v0",
+   "label": "v0",
+   "T": 2000,
+   "out": 0.4896,
+   "strip_max": 0.48946669994355907,
+   "frac_out": 0.32,
+   "frac_strip": 0.32,
+   "area_end": 3333,
+   "thin_end": 3,
+   "mem_end": 3,
+   "vthin_end": 0.0002228677705357011,
+   "disc_wet_frac": 0.19753086419753085,
+   "neg_end": 0,
+   "turnover": 0.057,
+   "ever_wet": 36719,
+   "new": [
+    5064.0,
+    4689.0,
+    8214.0,
+    7591.0,
+    7231.0,
+    3482.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": null,
+   "bnC_med": null,
+   "n_nominal": 0,
+   "V_crumb": 0.0,
+   "crumb_cells": 0,
+   "veinT": 0.838,
+   "sheet_amp": 0.072,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.834,
+     "strahler": 5.0,
+     "rad_ratio": 3.088,
+     "sheet_amp": 0.071,
+     "gross_net": 3.769,
+     "out_frac": 0.0088,
+     "area": 3021
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.91,
+     "strahler": 5.0,
+     "rad_ratio": 2.556,
+     "sheet_amp": 0.075,
+     "gross_net": 4.359,
+     "out_frac": 0.0147,
+     "area": 3055
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.834,
+     "strahler": 5.0,
+     "rad_ratio": 2.549,
+     "sheet_amp": 0.075,
+     "gross_net": 4.671,
+     "out_frac": 0.1696,
+     "area": 3071
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.527,
+     "strahler": 5.0,
+     "rad_ratio": 2.53,
+     "sheet_amp": 0.072,
+     "gross_net": 4.211,
+     "out_frac": 0.4896,
+     "area": 3020
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.92,
+     "strahler": 5.0,
+     "rad_ratio": 2.723,
+     "sheet_amp": 0.063,
+     "gross_net": 5.537,
+     "out_frac": 0.3535,
+     "area": 3185
+    }
+   ],
+   "last_new": 1840.4,
+   "last_dry": 1823.6000000000001,
+   "still_for": 159.5999999999999
+  },
+  {
+   "seed": 21,
+   "tag": "vpk",
+   "label": "vpk",
+   "T": 2000,
+   "out": 0.0314,
+   "strip_max": 0.5060076678855472,
+   "frac_out": 0.0,
+   "frac_strip": 0.26,
+   "area_end": 4465,
+   "thin_end": 1416,
+   "mem_end": 1416,
+   "vthin_end": 0.09503810370545143,
+   "disc_wet_frac": 1.0,
+   "neg_end": 0,
+   "turnover": 0.086,
+   "ever_wet": 35877,
+   "new": [
+    5055.0,
+    4608.0,
+    8278.0,
+    7500.0,
+    5958.0,
+    4030.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 1.6124004168901213e-05,
+   "bnC_med": 0.012355007231235504,
+   "n_nominal": 26,
+   "V_crumb": 0.2927133680477566,
+   "crumb_cells": 5,
+   "veinT": 0.891,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.861,
+     "strahler": 5.0,
+     "rad_ratio": 2.936,
+     "sheet_amp": 0.071,
+     "gross_net": 3.483,
+     "out_frac": 0.0061,
+     "area": 3024
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.898,
+     "strahler": 5.0,
+     "rad_ratio": 2.571,
+     "sheet_amp": 0.076,
+     "gross_net": 4.965,
+     "out_frac": 0.0117,
+     "area": 3258
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.493,
+     "strahler": 5.0,
+     "rad_ratio": 2.622,
+     "sheet_amp": 0.075,
+     "gross_net": 4.107,
+     "out_frac": 0.0191,
+     "area": 3517
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.686,
+     "strahler": 5.0,
+     "rad_ratio": 2.741,
+     "sheet_amp": 0.071,
+     "gross_net": 3.536,
+     "out_frac": 0.0253,
+     "area": 3742
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.961,
+     "strahler": 5.0,
+     "rad_ratio": 2.824,
+     "sheet_amp": 0.07,
+     "gross_net": 4.552,
+     "out_frac": 0.0314,
+     "area": 4308
+    }
+   ],
+   "last_new": 2000.0,
+   "last_dry": 1999.8000000000002,
+   "still_for": 0.0
+  },
+  {
+   "seed": 21,
+   "tag": "vbm",
+   "label": "vbm",
+   "T": 2000,
+   "out": 0.252,
+   "strip_max": 0.5338674027447301,
+   "frac_out": 0.13,
+   "frac_strip": 0.25,
+   "area_end": 4224,
+   "thin_end": 0,
+   "mem_end": 0,
+   "vthin_end": 0.0,
+   "disc_wet_frac": 1.0,
+   "neg_end": 0,
+   "turnover": 0.001,
+   "ever_wet": 35218,
+   "new": [
+    5055.0,
+    4608.0,
+    8279.0,
+    7579.0,
+    7018.0,
+    2231.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 2.3723655925304705e-06,
+   "bnC_med": 0.0008461262623313814,
+   "n_nominal": 12,
+   "V_crumb": 0.1531279314756942,
+   "crumb_cells": 3,
+   "veinT": 0.891,
+   "sheet_amp": 0.074,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.861,
+     "strahler": 5.0,
+     "rad_ratio": 2.936,
+     "sheet_amp": 0.071,
+     "gross_net": 3.483,
+     "out_frac": 0.0061,
+     "area": 3024
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.898,
+     "strahler": 5.0,
+     "rad_ratio": 2.571,
+     "sheet_amp": 0.076,
+     "gross_net": 4.965,
+     "out_frac": 0.0117,
+     "area": 3258
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.899,
+     "strahler": 5.0,
+     "rad_ratio": 2.603,
+     "sheet_amp": 0.078,
+     "gross_net": 4.767,
+     "out_frac": 0.0148,
+     "area": 3514
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.712,
+     "strahler": 5.0,
+     "rad_ratio": 2.609,
+     "sheet_amp": 0.074,
+     "gross_net": 3.573,
+     "out_frac": 0.252,
+     "area": 3720
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.966,
+     "strahler": 5.0,
+     "rad_ratio": 2.744,
+     "sheet_amp": 0.065,
+     "gross_net": 3.005,
+     "out_frac": 0.252,
+     "area": 4224
+    }
+   ],
+   "last_new": 1796.9,
+   "last_dry": 1772.4,
+   "still_for": 203.0999999999999
+  },
+  {
+   "seed": 21,
+   "tag": "vsat",
+   "label": "vsat",
+   "T": 2000,
+   "out": 0.6209,
+   "strip_max": 0.6209079971482121,
+   "frac_out": 0.27,
+   "frac_strip": 0.27,
+   "area_end": 3156,
+   "thin_end": 0,
+   "mem_end": 0,
+   "vthin_end": 0.0,
+   "disc_wet_frac": 0.19753086419753085,
+   "neg_end": 0,
+   "turnover": 0.002,
+   "ever_wet": 36644,
+   "new": [
+    5064.0,
+    4689.0,
+    8214.0,
+    7893.0,
+    7469.0,
+    2867.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": null,
+   "bnC_med": null,
+   "n_nominal": 0,
+   "V_crumb": 0.32752855595071717,
+   "crumb_cells": 3,
+   "veinT": 0.849,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.834,
+     "strahler": 5.0,
+     "rad_ratio": 3.088,
+     "sheet_amp": 0.071,
+     "gross_net": 3.769,
+     "out_frac": 0.0088,
+     "area": 3020
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.91,
+     "strahler": 5.0,
+     "rad_ratio": 2.556,
+     "sheet_amp": 0.075,
+     "gross_net": 4.361,
+     "out_frac": 0.0147,
+     "area": 3054
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.812,
+     "strahler": 5.0,
+     "rad_ratio": 2.594,
+     "sheet_amp": 0.077,
+     "gross_net": 4.125,
+     "out_frac": 0.1739,
+     "area": 3076
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.401,
+     "strahler": 5.0,
+     "rad_ratio": 2.58,
+     "sheet_amp": 0.073,
+     "gross_net": 4.172,
+     "out_frac": 0.6209,
+     "area": 3010
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.94,
+     "strahler": 5.0,
+     "rad_ratio": 2.608,
+     "sheet_amp": 0.054,
+     "gross_net": 4.773,
+     "out_frac": 0.0206,
+     "area": 3156
+    }
+   ],
+   "last_new": 1786.3000000000002,
+   "last_dry": 1777.0,
+   "still_for": 213.69999999999982
+  },
+  {
+   "seed": 22,
+   "tag": "v0",
+   "label": "v0",
+   "T": 2000,
+   "out": 0.5062,
+   "strip_max": 0.5061076576854953,
+   "frac_out": 0.17,
+   "frac_strip": 0.17,
+   "area_end": 4470,
+   "thin_end": 2,
+   "mem_end": 2,
+   "vthin_end": 0.00016826829701667377,
+   "disc_wet_frac": 0.037037037037037035,
+   "neg_end": 0,
+   "turnover": 0.048,
+   "ever_wet": 36768,
+   "new": [
+    5068.0,
+    4641.0,
+    8402.0,
+    7604.0,
+    7538.0,
+    3068.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": null,
+   "bnC_med": null,
+   "n_nominal": 0,
+   "V_crumb": 0.0,
+   "crumb_cells": 0,
+   "veinT": 0.869,
+   "sheet_amp": 0.074,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.805,
+     "strahler": 5.0,
+     "rad_ratio": 2.984,
+     "sheet_amp": 0.074,
+     "gross_net": 3.718,
+     "out_frac": 0.0101,
+     "area": 3018
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.889,
+     "strahler": 5.0,
+     "rad_ratio": 2.549,
+     "sheet_amp": 0.075,
+     "gross_net": 4.878,
+     "out_frac": 0.0165,
+     "area": 3093
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.9,
+     "strahler": 5.0,
+     "rad_ratio": 2.614,
+     "sheet_amp": 0.074,
+     "gross_net": 4.295,
+     "out_frac": 0.0203,
+     "area": 3042
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.507,
+     "strahler": 5.0,
+     "rad_ratio": 2.44,
+     "sheet_amp": 0.075,
+     "gross_net": 4.256,
+     "out_frac": 0.5062,
+     "area": 3012
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.959,
+     "strahler": 5.0,
+     "rad_ratio": 3.002,
+     "sheet_amp": 0.07,
+     "gross_net": 3.254,
+     "out_frac": 0.505,
+     "area": 3639
+    }
+   ],
+   "last_new": 1948.2,
+   "last_dry": 1928.3000000000002,
+   "still_for": 51.799999999999955
+  },
+  {
+   "seed": 22,
+   "tag": "vpk",
+   "label": "vpk",
+   "T": 2000,
+   "out": 0.4848,
+   "strip_max": 0.4876338332294655,
+   "frac_out": 0.07,
+   "frac_strip": 0.29,
+   "area_end": 4352,
+   "thin_end": 4,
+   "mem_end": 4,
+   "vthin_end": 0.0001397139022330696,
+   "disc_wet_frac": 0.037037037037037035,
+   "neg_end": 1,
+   "turnover": 0.027,
+   "ever_wet": 36346,
+   "new": [
+    5072.0,
+    4623.0,
+    8514.0,
+    7782.0,
+    6960.0,
+    2947.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 1.136454447456309e-05,
+   "bnC_med": 0.008052716497331858,
+   "n_nominal": 22,
+   "V_crumb": 0.2714588089425951,
+   "crumb_cells": 3,
+   "veinT": 0.804,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.826,
+     "strahler": 5.0,
+     "rad_ratio": 2.864,
+     "sheet_amp": 0.074,
+     "gross_net": 3.527,
+     "out_frac": 0.0104,
+     "area": 3041
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.823,
+     "strahler": 5.0,
+     "rad_ratio": 2.576,
+     "sheet_amp": 0.073,
+     "gross_net": 4.657,
+     "out_frac": 0.0164,
+     "area": 3146
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.801,
+     "strahler": 5.0,
+     "rad_ratio": 2.665,
+     "sheet_amp": 0.078,
+     "gross_net": 4.859,
+     "out_frac": 0.0224,
+     "area": 3372
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.518,
+     "strahler": 5.0,
+     "rad_ratio": 2.568,
+     "sheet_amp": 0.074,
+     "gross_net": 3.561,
+     "out_frac": 0.4848,
+     "area": 3661
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.962,
+     "strahler": 5.0,
+     "rad_ratio": 2.688,
+     "sheet_amp": 0.067,
+     "gross_net": 4.183,
+     "out_frac": 0.0308,
+     "area": 4255
+    }
+   ],
+   "last_new": 1827.5,
+   "last_dry": 1827.7,
+   "still_for": 172.29999999999995
+  },
+  {
+   "seed": 22,
+   "tag": "vbm",
+   "label": "vbm",
+   "T": 2000,
+   "out": 0.4848,
+   "strip_max": 0.4876338332294655,
+   "frac_out": 0.07,
+   "frac_strip": 0.29,
+   "area_end": 4352,
+   "thin_end": 4,
+   "mem_end": 4,
+   "vthin_end": 0.0001397139022330696,
+   "disc_wet_frac": 0.037037037037037035,
+   "neg_end": 1,
+   "turnover": 0.027,
+   "ever_wet": 36346,
+   "new": [
+    5072.0,
+    4623.0,
+    8514.0,
+    7782.0,
+    6960.0,
+    2947.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 1.136454447456309e-05,
+   "bnC_med": 0.008052716497331858,
+   "n_nominal": 22,
+   "V_crumb": 0.2714588089425951,
+   "crumb_cells": 3,
+   "veinT": 0.804,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.826,
+     "strahler": 5.0,
+     "rad_ratio": 2.864,
+     "sheet_amp": 0.074,
+     "gross_net": 3.527,
+     "out_frac": 0.0104,
+     "area": 3041
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.823,
+     "strahler": 5.0,
+     "rad_ratio": 2.576,
+     "sheet_amp": 0.073,
+     "gross_net": 4.657,
+     "out_frac": 0.0164,
+     "area": 3146
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.801,
+     "strahler": 5.0,
+     "rad_ratio": 2.665,
+     "sheet_amp": 0.078,
+     "gross_net": 4.859,
+     "out_frac": 0.0224,
+     "area": 3372
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.518,
+     "strahler": 5.0,
+     "rad_ratio": 2.568,
+     "sheet_amp": 0.074,
+     "gross_net": 3.561,
+     "out_frac": 0.4848,
+     "area": 3661
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.962,
+     "strahler": 5.0,
+     "rad_ratio": 2.688,
+     "sheet_amp": 0.067,
+     "gross_net": 4.183,
+     "out_frac": 0.0308,
+     "area": 4255
+    }
+   ],
+   "last_new": 1827.5,
+   "last_dry": 1827.7,
+   "still_for": 172.29999999999995
+  },
+  {
+   "seed": 22,
+   "tag": "vsat",
+   "label": "vsat",
+   "T": 2000,
+   "out": 0.5138,
+   "strip_max": 0.513783237077452,
+   "frac_out": 0.13,
+   "frac_strip": 0.13,
+   "area_end": 3268,
+   "thin_end": 0,
+   "mem_end": 0,
+   "vthin_end": 0.0,
+   "disc_wet_frac": 0.037037037037037035,
+   "neg_end": 0,
+   "turnover": 0.015,
+   "ever_wet": 36335,
+   "new": [
+    5068.0,
+    4641.0,
+    8406.0,
+    7804.0,
+    7188.0,
+    2780.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": null,
+   "bnC_med": null,
+   "n_nominal": 0,
+   "V_crumb": 0.547986219306893,
+   "crumb_cells": 5,
+   "veinT": 0.873,
+   "sheet_amp": 0.071,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.805,
+     "strahler": 5.0,
+     "rad_ratio": 2.984,
+     "sheet_amp": 0.074,
+     "gross_net": 3.718,
+     "out_frac": 0.0099,
+     "area": 3016
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.885,
+     "strahler": 5.0,
+     "rad_ratio": 2.55,
+     "sheet_amp": 0.075,
+     "gross_net": 4.599,
+     "out_frac": 0.0194,
+     "area": 3091
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.469,
+     "strahler": 5.0,
+     "rad_ratio": 2.639,
+     "sheet_amp": 0.072,
+     "gross_net": 4.152,
+     "out_frac": 0.5137,
+     "area": 3037
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.896,
+     "strahler": 5.0,
+     "rad_ratio": 2.598,
+     "sheet_amp": 0.07,
+     "gross_net": 2.766,
+     "out_frac": 0.5138,
+     "area": 2993
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.962,
+     "strahler": 5.0,
+     "rad_ratio": 2.614,
+     "sheet_amp": 0.058,
+     "gross_net": 3.397,
+     "out_frac": 0.0917,
+     "area": 3268
+    }
+   ],
+   "last_new": 1803.3000000000002,
+   "last_dry": 1806.1000000000001,
+   "still_for": 193.89999999999986
+  },
+  {
+   "seed": 23,
+   "tag": "v0",
+   "label": "v0",
+   "T": 2000,
+   "out": 0.3236,
+   "strip_max": 0.3234599727809415,
+   "frac_out": 0.37,
+   "frac_strip": 0.37,
+   "area_end": 3349,
+   "thin_end": 3,
+   "mem_end": 3,
+   "vthin_end": 0.0002876846395872285,
+   "disc_wet_frac": 0.1728395061728395,
+   "neg_end": 0,
+   "turnover": 0.011,
+   "ever_wet": 36150,
+   "new": [
+    5045.0,
+    4667.0,
+    8266.0,
+    7575.0,
+    7380.0,
+    2769.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": null,
+   "bnC_med": null,
+   "n_nominal": 0,
+   "V_crumb": 0.0,
+   "crumb_cells": 0,
+   "veinT": 0.791,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.859,
+     "strahler": 5.0,
+     "rad_ratio": 2.879,
+     "sheet_amp": 0.07,
+     "gross_net": 3.906,
+     "out_frac": 0.0113,
+     "area": 3014
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.914,
+     "strahler": 5.0,
+     "rad_ratio": 2.558,
+     "sheet_amp": 0.076,
+     "gross_net": 4.749,
+     "out_frac": 0.0156,
+     "area": 3065
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.773,
+     "strahler": 5.0,
+     "rad_ratio": 2.513,
+     "sheet_amp": 0.076,
+     "gross_net": 4.526,
+     "out_frac": 0.2159,
+     "area": 3038
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.698,
+     "strahler": 5.0,
+     "rad_ratio": 2.593,
+     "sheet_amp": 0.073,
+     "gross_net": 4.071,
+     "out_frac": 0.3223,
+     "area": 3053
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.961,
+     "strahler": 5.0,
+     "rad_ratio": 2.63,
+     "sheet_amp": 0.058,
+     "gross_net": 5.989,
+     "out_frac": 0.3236,
+     "area": 3349
+    }
+   ],
+   "last_new": 1794.1000000000001,
+   "last_dry": 1790.9,
+   "still_for": 205.89999999999986
+  },
+  {
+   "seed": 23,
+   "tag": "vpk",
+   "label": "vpk",
+   "T": 2000,
+   "out": 0.034,
+   "strip_max": 0.49990758113917166,
+   "frac_out": 0.0,
+   "frac_strip": 0.09,
+   "area_end": 4891,
+   "thin_end": 1604,
+   "mem_end": 1604,
+   "vthin_end": 0.10916613368455075,
+   "disc_wet_frac": 1.0,
+   "neg_end": 0,
+   "turnover": 0.093,
+   "ever_wet": 35289,
+   "new": [
+    5034.0,
+    4668.0,
+    8222.0,
+    7290.0,
+    5562.0,
+    4065.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 3.747968448189044e-06,
+   "bnC_med": 0.00231840368360281,
+   "n_nominal": 9,
+   "V_crumb": 0.08647159241173057,
+   "crumb_cells": 1,
+   "veinT": 0.903,
+   "sheet_amp": 0.071,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.864,
+     "strahler": 5.0,
+     "rad_ratio": 2.845,
+     "sheet_amp": 0.071,
+     "gross_net": 3.904,
+     "out_frac": 0.0114,
+     "area": 3027
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.889,
+     "strahler": 5.0,
+     "rad_ratio": 2.564,
+     "sheet_amp": 0.076,
+     "gross_net": 5.037,
+     "out_frac": 0.0148,
+     "area": 3168
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.855,
+     "strahler": 5.0,
+     "rad_ratio": 2.55,
+     "sheet_amp": 0.075,
+     "gross_net": 3.843,
+     "out_frac": 0.0179,
+     "area": 3515
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.909,
+     "strahler": 5.0,
+     "rad_ratio": 2.585,
+     "sheet_amp": 0.071,
+     "gross_net": 3.088,
+     "out_frac": 0.0207,
+     "area": 3942
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.952,
+     "strahler": 5.0,
+     "rad_ratio": 2.705,
+     "sheet_amp": 0.066,
+     "gross_net": 4.065,
+     "out_frac": 0.034,
+     "area": 4347
+    }
+   ],
+   "last_new": 2000.0,
+   "last_dry": 1994.8000000000002,
+   "still_for": 0.0
+  },
+  {
+   "seed": 23,
+   "tag": "vbm",
+   "label": "vbm",
+   "T": 2000,
+   "out": 0.0204,
+   "strip_max": 0.2875506069317372,
+   "frac_out": 0.0,
+   "frac_strip": 0.13,
+   "area_end": 4687,
+   "thin_end": 189,
+   "mem_end": 189,
+   "vthin_end": 0.008514337723332885,
+   "disc_wet_frac": 1.0,
+   "neg_end": 0,
+   "turnover": 0.049,
+   "ever_wet": 36790,
+   "new": [
+    5034.0,
+    4668.0,
+    8222.0,
+    7653.0,
+    7186.0,
+    3579.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 3.5178276208773007e-06,
+   "bnC_med": 0.0008780895732343197,
+   "n_nominal": 13,
+   "V_crumb": 0.13451223061629233,
+   "crumb_cells": 1,
+   "veinT": 0.897,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.864,
+     "strahler": 5.0,
+     "rad_ratio": 2.845,
+     "sheet_amp": 0.071,
+     "gross_net": 3.904,
+     "out_frac": 0.0114,
+     "area": 3027
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.889,
+     "strahler": 5.0,
+     "rad_ratio": 2.564,
+     "sheet_amp": 0.076,
+     "gross_net": 5.037,
+     "out_frac": 0.0148,
+     "area": 3168
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.874,
+     "strahler": 5.0,
+     "rad_ratio": 2.547,
+     "sheet_amp": 0.074,
+     "gross_net": 4.317,
+     "out_frac": 0.0177,
+     "area": 3506
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.872,
+     "strahler": 5.0,
+     "rad_ratio": 2.78,
+     "sheet_amp": 0.072,
+     "gross_net": 3.87,
+     "out_frac": 0.0197,
+     "area": 3817
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.949,
+     "strahler": 5.0,
+     "rad_ratio": 2.722,
+     "sheet_amp": 0.069,
+     "gross_net": 3.415,
+     "out_frac": 0.0204,
+     "area": 4241
+    }
+   ],
+   "last_new": 1879.9,
+   "last_dry": 1962.9,
+   "still_for": 37.09999999999991
+  }
+ ],
+ "long_sens": [
+  {
+   "seed": 21,
+   "tag": "vbm25",
+   "label": "bridge_mem=25",
+   "T": 2000,
+   "out": 0.0252,
+   "strip_max": 0.4922513146983333,
+   "frac_out": 0.0,
+   "frac_strip": 0.09,
+   "area_end": 5292,
+   "thin_end": 2099,
+   "mem_end": 2099,
+   "vthin_end": 0.12764195802116718,
+   "disc_wet_frac": 1.0,
+   "neg_end": 1,
+   "turnover": 0.082,
+   "ever_wet": 35296,
+   "new": [
+    5057.0,
+    4618.0,
+    8349.0,
+    7345.0,
+    5392.0,
+    4087.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 1.2085272033587127e-05,
+   "bnC_med": 0.012693142518401146,
+   "n_nominal": 9,
+   "V_crumb": 0.12455197608763782,
+   "crumb_cells": 3,
+   "veinT": 0.901,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.86,
+     "strahler": 5.0,
+     "rad_ratio": 3.001,
+     "sheet_amp": 0.073,
+     "gross_net": 3.469,
+     "out_frac": 0.0078,
+     "area": 3081
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.901,
+     "strahler": 5.0,
+     "rad_ratio": 2.534,
+     "sheet_amp": 0.077,
+     "gross_net": 4.783,
+     "out_frac": 0.0151,
+     "area": 3293
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.897,
+     "strahler": 5.0,
+     "rad_ratio": 2.66,
+     "sheet_amp": 0.074,
+     "gross_net": 4.379,
+     "out_frac": 0.0173,
+     "area": 3734
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.918,
+     "strahler": 5.0,
+     "rad_ratio": 2.669,
+     "sheet_amp": 0.072,
+     "gross_net": 3.237,
+     "out_frac": 0.0193,
+     "area": 4373
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.943,
+     "strahler": 5.0,
+     "rad_ratio": 2.922,
+     "sheet_amp": 0.068,
+     "gross_net": 4.233,
+     "out_frac": 0.0252,
+     "area": 4905
+    }
+   ],
+   "last_new": 1998.0,
+   "last_dry": 1993.9,
+   "still_for": 2.0
+  },
+  {
+   "seed": 21,
+   "tag": "vpk",
+   "label": "bridge_mem=50 (후보)",
+   "T": 2000,
+   "out": 0.0314,
+   "strip_max": 0.5060076678855472,
+   "frac_out": 0.0,
+   "frac_strip": 0.26,
+   "area_end": 4465,
+   "thin_end": 1416,
+   "mem_end": 1416,
+   "vthin_end": 0.09503810370545143,
+   "disc_wet_frac": 1.0,
+   "neg_end": 0,
+   "turnover": 0.086,
+   "ever_wet": 35877,
+   "new": [
+    5055.0,
+    4608.0,
+    8278.0,
+    7500.0,
+    5958.0,
+    4030.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 1.6124004168901213e-05,
+   "bnC_med": 0.012355007231235504,
+   "n_nominal": 26,
+   "V_crumb": 0.2927133680477566,
+   "crumb_cells": 5,
+   "veinT": 0.891,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.861,
+     "strahler": 5.0,
+     "rad_ratio": 2.936,
+     "sheet_amp": 0.071,
+     "gross_net": 3.483,
+     "out_frac": 0.0061,
+     "area": 3024
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.898,
+     "strahler": 5.0,
+     "rad_ratio": 2.571,
+     "sheet_amp": 0.076,
+     "gross_net": 4.965,
+     "out_frac": 0.0117,
+     "area": 3258
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.493,
+     "strahler": 5.0,
+     "rad_ratio": 2.622,
+     "sheet_amp": 0.075,
+     "gross_net": 4.107,
+     "out_frac": 0.0191,
+     "area": 3517
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.686,
+     "strahler": 5.0,
+     "rad_ratio": 2.741,
+     "sheet_amp": 0.071,
+     "gross_net": 3.536,
+     "out_frac": 0.0253,
+     "area": 3742
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.961,
+     "strahler": 5.0,
+     "rad_ratio": 2.824,
+     "sheet_amp": 0.07,
+     "gross_net": 4.552,
+     "out_frac": 0.0314,
+     "area": 4308
+    }
+   ],
+   "last_new": 2000.0,
+   "last_dry": 1999.8000000000002,
+   "still_for": 0.0
+  },
+  {
+   "seed": 21,
+   "tag": "vbm100",
+   "label": "bridge_mem=100",
+   "T": 2000,
+   "out": 0.0333,
+   "strip_max": 0.5328720029238354,
+   "frac_out": 0.0,
+   "frac_strip": 0.28,
+   "area_end": 4141,
+   "thin_end": 9,
+   "mem_end": 9,
+   "vthin_end": 0.0007932898948235126,
+   "disc_wet_frac": 0.20987654320987653,
+   "neg_end": 0,
+   "turnover": 0.055,
+   "ever_wet": 36374,
+   "new": [
+    5067.0,
+    4625.0,
+    8472.0,
+    7474.0,
+    7255.0,
+    3033.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 5.810285200909171e-06,
+   "bnC_med": 0.001713128644041717,
+   "n_nominal": 28,
+   "V_crumb": 0.43858348866018004,
+   "crumb_cells": 4,
+   "veinT": 0.786,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.844,
+     "strahler": 5.0,
+     "rad_ratio": 2.977,
+     "sheet_amp": 0.071,
+     "gross_net": 3.707,
+     "out_frac": 0.0056,
+     "area": 3041
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.882,
+     "strahler": 5.0,
+     "rad_ratio": 2.593,
+     "sheet_amp": 0.076,
+     "gross_net": 5.018,
+     "out_frac": 0.0122,
+     "area": 3198
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.686,
+     "strahler": 5.0,
+     "rad_ratio": 2.531,
+     "sheet_amp": 0.076,
+     "gross_net": 4.476,
+     "out_frac": 0.0257,
+     "area": 3456
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.443,
+     "strahler": 5.0,
+     "rad_ratio": 2.604,
+     "sheet_amp": 0.073,
+     "gross_net": 4.177,
+     "out_frac": 0.0333,
+     "area": 3775
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.942,
+     "strahler": 5.0,
+     "rad_ratio": 2.582,
+     "sheet_amp": 0.069,
+     "gross_net": 3.659,
+     "out_frac": 0.0332,
+     "area": 4076
+    }
+   ],
+   "last_new": 1826.8000000000002,
+   "last_dry": 1823.8000000000002,
+   "still_for": 173.19999999999982
+  },
+  {
+   "seed": 22,
+   "tag": "vbm25",
+   "label": "bridge_mem=25",
+   "T": 2000,
+   "out": 0.0206,
+   "strip_max": 0.4404940929046236,
+   "frac_out": 0.0,
+   "frac_strip": 0.24,
+   "area_end": 4854,
+   "thin_end": 367,
+   "mem_end": 365,
+   "vthin_end": 0.00906619022323251,
+   "disc_wet_frac": 0.037037037037037035,
+   "neg_end": 1,
+   "turnover": 0.093,
+   "ever_wet": 36622,
+   "new": [
+    5059.0,
+    4686.0,
+    8402.0,
+    7536.0,
+    6875.0,
+    3616.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 4.381308581457363e-06,
+   "bnC_med": 0.0064709431026130915,
+   "n_nominal": 24,
+   "V_crumb": 0.2949490428658411,
+   "crumb_cells": 5,
+   "veinT": 0.805,
+   "sheet_amp": 0.074,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.812,
+     "strahler": 5.0,
+     "rad_ratio": 2.904,
+     "sheet_amp": 0.074,
+     "gross_net": 3.547,
+     "out_frac": 0.0106,
+     "area": 3077
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.876,
+     "strahler": 5.0,
+     "rad_ratio": 2.51,
+     "sheet_amp": 0.076,
+     "gross_net": 4.697,
+     "out_frac": 0.0189,
+     "area": 3221
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.532,
+     "strahler": 5.0,
+     "rad_ratio": 2.601,
+     "sheet_amp": 0.075,
+     "gross_net": 4.333,
+     "out_frac": 0.0206,
+     "area": 3590
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.662,
+     "strahler": 5.0,
+     "rad_ratio": 2.586,
+     "sheet_amp": 0.074,
+     "gross_net": 4.028,
+     "out_frac": 0.0195,
+     "area": 3988
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.937,
+     "strahler": 5.0,
+     "rad_ratio": 2.662,
+     "sheet_amp": 0.071,
+     "gross_net": 4.124,
+     "out_frac": 0.0171,
+     "area": 4692
+    }
+   ],
+   "last_new": 1863.1000000000001,
+   "last_dry": 1890.4,
+   "still_for": 109.59999999999991
+  },
+  {
+   "seed": 22,
+   "tag": "vpk",
+   "label": "bridge_mem=50 (후보)",
+   "T": 2000,
+   "out": 0.4848,
+   "strip_max": 0.4876338332294655,
+   "frac_out": 0.07,
+   "frac_strip": 0.29,
+   "area_end": 4352,
+   "thin_end": 4,
+   "mem_end": 4,
+   "vthin_end": 0.0001397139022330696,
+   "disc_wet_frac": 0.037037037037037035,
+   "neg_end": 1,
+   "turnover": 0.027,
+   "ever_wet": 36346,
+   "new": [
+    5072.0,
+    4623.0,
+    8514.0,
+    7782.0,
+    6960.0,
+    2947.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 1.136454447456309e-05,
+   "bnC_med": 0.008052716497331858,
+   "n_nominal": 22,
+   "V_crumb": 0.2714588089425951,
+   "crumb_cells": 3,
+   "veinT": 0.804,
+   "sheet_amp": 0.073,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.826,
+     "strahler": 5.0,
+     "rad_ratio": 2.864,
+     "sheet_amp": 0.074,
+     "gross_net": 3.527,
+     "out_frac": 0.0104,
+     "area": 3041
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.823,
+     "strahler": 5.0,
+     "rad_ratio": 2.576,
+     "sheet_amp": 0.073,
+     "gross_net": 4.657,
+     "out_frac": 0.0164,
+     "area": 3146
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.801,
+     "strahler": 5.0,
+     "rad_ratio": 2.665,
+     "sheet_amp": 0.078,
+     "gross_net": 4.859,
+     "out_frac": 0.0224,
+     "area": 3372
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.518,
+     "strahler": 5.0,
+     "rad_ratio": 2.568,
+     "sheet_amp": 0.074,
+     "gross_net": 3.561,
+     "out_frac": 0.4848,
+     "area": 3661
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.962,
+     "strahler": 5.0,
+     "rad_ratio": 2.688,
+     "sheet_amp": 0.067,
+     "gross_net": 4.183,
+     "out_frac": 0.0308,
+     "area": 4255
+    }
+   ],
+   "last_new": 1827.5,
+   "last_dry": 1827.7,
+   "still_for": 172.29999999999995
+  },
+  {
+   "seed": 22,
+   "tag": "vbm100",
+   "label": "bridge_mem=100",
+   "T": 2000,
+   "out": 0.0465,
+   "strip_max": 0.480142844343748,
+   "frac_out": 0.0,
+   "frac_strip": 0.02,
+   "area_end": 3933,
+   "thin_end": 188,
+   "mem_end": 188,
+   "vthin_end": 0.017255963467385886,
+   "disc_wet_frac": 0.037037037037037035,
+   "neg_end": 0,
+   "turnover": 0.145,
+   "ever_wet": 36769,
+   "new": [
+    5068.0,
+    4608.0,
+    8533.0,
+    7550.0,
+    6100.0,
+    4462.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000
+   ],
+   "carry_med": 0.0001882747852685042,
+   "bnC_med": 0.5465386211872101,
+   "n_nominal": 2,
+   "V_crumb": 0.25238878297321077,
+   "crumb_cells": 2,
+   "veinT": 0.893,
+   "sheet_amp": 0.072,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.81,
+     "strahler": 5.0,
+     "rad_ratio": 2.941,
+     "sheet_amp": 0.073,
+     "gross_net": 3.499,
+     "out_frac": 0.0105,
+     "area": 3029
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.862,
+     "strahler": 5.0,
+     "rad_ratio": 2.592,
+     "sheet_amp": 0.074,
+     "gross_net": 4.903,
+     "out_frac": 0.0171,
+     "area": 3135
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.921,
+     "strahler": 5.0,
+     "rad_ratio": 2.515,
+     "sheet_amp": 0.074,
+     "gross_net": 4.221,
+     "out_frac": 0.0215,
+     "area": 3242
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.923,
+     "strahler": 5.0,
+     "rad_ratio": 2.558,
+     "sheet_amp": 0.07,
+     "gross_net": 2.552,
+     "out_frac": 0.0449,
+     "area": 3333
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.924,
+     "strahler": 5.0,
+     "rad_ratio": 2.766,
+     "sheet_amp": 0.065,
+     "gross_net": 3.603,
+     "out_frac": 0.0465,
+     "area": 3716
+    }
+   ],
+   "last_new": 1887.0,
+   "last_dry": 1952.1000000000001,
+   "still_for": 47.899999999999864
+  }
+ ],
+ "long_T4000": [
+  {
+   "seed": 21,
+   "tag": "v0T4",
+   "label": "지금 규칙 T=4000",
+   "T": 4000.0,
+   "out": 0.4896,
+   "strip_max": 0.48946669994355907,
+   "frac_out": 0.16,
+   "frac_strip": 0.16,
+   "area_end": 3333,
+   "thin_end": 3,
+   "mem_end": 3,
+   "vthin_end": 0.00022286777042697826,
+   "disc_wet_frac": 0.08839779005524862,
+   "neg_end": 0,
+   "turnover": 0.0,
+   "ever_wet": 36719,
+   "new": [
+    5064.0,
+    4689.0,
+    8214.0,
+    7591.0,
+    7231.0,
+    3482.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000,
+    2400,
+    2800,
+    3200,
+    3600,
+    4000
+   ],
+   "carry_med": null,
+   "bnC_med": null,
+   "n_nominal": 0,
+   "V_crumb": 0.0,
+   "crumb_cells": 0,
+   "veinT": 0.995,
+   "sheet_amp": 0.049,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.834,
+     "strahler": 5.0,
+     "rad_ratio": 3.088,
+     "sheet_amp": 0.071,
+     "gross_net": 3.769,
+     "out_frac": 0.0088,
+     "area": 3021
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.91,
+     "strahler": 5.0,
+     "rad_ratio": 2.556,
+     "sheet_amp": 0.075,
+     "gross_net": 4.359,
+     "out_frac": 0.0147,
+     "area": 3055
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.834,
+     "strahler": 5.0,
+     "rad_ratio": 2.549,
+     "sheet_amp": 0.075,
+     "gross_net": 4.671,
+     "out_frac": 0.1696,
+     "area": 3071
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.527,
+     "strahler": 5.0,
+     "rad_ratio": 2.53,
+     "sheet_amp": 0.072,
+     "gross_net": 4.211,
+     "out_frac": 0.4896,
+     "area": 3020
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.92,
+     "strahler": 5.0,
+     "rad_ratio": 2.723,
+     "sheet_amp": 0.063,
+     "gross_net": 5.537,
+     "out_frac": 0.3535,
+     "area": 3185
+    }
+   ],
+   "last_new": 1840.4,
+   "last_dry": 1823.6000000000001,
+   "still_for": 2159.6
+  },
+  {
+   "seed": 21,
+   "tag": "v0T4st",
+   "label": "지금 규칙 T=4000 st",
+   "T": 4000.0,
+   "out": 0.6627,
+   "strip_max": 0.6627172747919646,
+   "frac_out": 0.2,
+   "frac_strip": 0.2,
+   "area_end": 3246,
+   "thin_end": 154,
+   "mem_end": 6,
+   "vthin_end": 0.012879280557629207,
+   "disc_wet_frac": 0.3259668508287293,
+   "neg_end": 0,
+   "turnover": 0.244,
+   "ever_wet": 36858,
+   "new": [
+    5064.0,
+    4689.0,
+    8214.0,
+    7658.0,
+    7597.0,
+    7155.0,
+    8545.0,
+    7969.0,
+    7652.0,
+    7605.0,
+    7876.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000,
+    2400,
+    2800,
+    3200,
+    3600,
+    4000
+   ],
+   "carry_med": null,
+   "bnC_med": null,
+   "n_nominal": 0,
+   "V_crumb": 0.0,
+   "crumb_cells": 0,
+   "veinT": 0.874,
+   "sheet_amp": 0.074,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.834,
+     "strahler": 5.0,
+     "rad_ratio": 3.088,
+     "sheet_amp": 0.071,
+     "gross_net": 3.769,
+     "out_frac": 0.0088,
+     "area": 3021
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.91,
+     "strahler": 5.0,
+     "rad_ratio": 2.556,
+     "sheet_amp": 0.075,
+     "gross_net": 4.359,
+     "out_frac": 0.0147,
+     "area": 3055
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.834,
+     "strahler": 5.0,
+     "rad_ratio": 2.549,
+     "sheet_amp": 0.075,
+     "gross_net": 4.589,
+     "out_frac": 0.1692,
+     "area": 3074
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.474,
+     "strahler": 4.5,
+     "rad_ratio": 2.569,
+     "sheet_amp": 0.074,
+     "gross_net": 4.42,
+     "out_frac": 0.6627,
+     "area": 3021
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.923,
+     "strahler": 5.0,
+     "rad_ratio": 2.61,
+     "sheet_amp": 0.071,
+     "gross_net": 3.537,
+     "out_frac": 0.0245,
+     "area": 2957
+    }
+   ],
+   "last_new": 4000.0,
+   "last_dry": 4000.0,
+   "still_for": 0.0
+  },
+  {
+   "seed": 21,
+   "tag": "vpkT4st",
+   "label": "후보 T=4000 st",
+   "T": 4000.0,
+   "out": 0.3153,
+   "strip_max": 0.6322272333494787,
+   "frac_out": 0.22,
+   "frac_strip": 0.575,
+   "area_end": 3827,
+   "thin_end": 976,
+   "mem_end": 778,
+   "vthin_end": 0.05236589553111998,
+   "disc_wet_frac": 0.9558011049723757,
+   "neg_end": 12,
+   "turnover": 0.18,
+   "ever_wet": 29780,
+   "new": [
+    5055.0,
+    4608.0,
+    8278.0,
+    7540.0,
+    7368.0,
+    7357.0,
+    7021.0,
+    6326.0,
+    6589.0,
+    6918.0,
+    7056.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000,
+    2400,
+    2800,
+    3200,
+    3600,
+    4000
+   ],
+   "carry_med": 8.226935170559565e-06,
+   "bnC_med": 0.0031159648206084967,
+   "n_nominal": 71,
+   "V_crumb": 0.37472716473634543,
+   "crumb_cells": 14,
+   "veinT": 0.762,
+   "sheet_amp": 0.075,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.861,
+     "strahler": 5.0,
+     "rad_ratio": 2.936,
+     "sheet_amp": 0.071,
+     "gross_net": 3.483,
+     "out_frac": 0.0061,
+     "area": 3024
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.898,
+     "strahler": 5.0,
+     "rad_ratio": 2.571,
+     "sheet_amp": 0.076,
+     "gross_net": 4.965,
+     "out_frac": 0.0117,
+     "area": 3258
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.493,
+     "strahler": 5.0,
+     "rad_ratio": 2.654,
+     "sheet_amp": 0.077,
+     "gross_net": 3.927,
+     "out_frac": 0.018,
+     "area": 3509
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.697,
+     "strahler": 5.0,
+     "rad_ratio": 2.629,
+     "sheet_amp": 0.076,
+     "gross_net": 3.546,
+     "out_frac": 0.0307,
+     "area": 3658
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.794,
+     "strahler": 5.0,
+     "rad_ratio": 2.598,
+     "sheet_amp": 0.075,
+     "gross_net": 4.147,
+     "out_frac": 0.1533,
+     "area": 3692
+    }
+   ],
+   "last_new": 3999.8,
+   "last_dry": 4000.0,
+   "still_for": 0.0
+  },
+  {
+   "seed": 22,
+   "tag": "v0T4st",
+   "label": "지금 규칙 T=4000 st",
+   "T": 4000.0,
+   "out": 0.612,
+   "strip_max": 0.6118333734797129,
+   "frac_out": 0.405,
+   "frac_strip": 0.41,
+   "area_end": 3295,
+   "thin_end": 167,
+   "mem_end": 11,
+   "vthin_end": 0.013191894202830835,
+   "disc_wet_frac": 0.292817679558011,
+   "neg_end": 0,
+   "turnover": 0.236,
+   "ever_wet": 35463,
+   "new": [
+    5068.0,
+    4641.0,
+    8402.0,
+    7660.0,
+    7870.0,
+    7986.0,
+    7756.0,
+    7662.0,
+    7544.0,
+    7176.0,
+    7805.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000,
+    2400,
+    2800,
+    3200,
+    3600,
+    4000
+   ],
+   "carry_med": 0.00010910886781701538,
+   "bnC_med": 0.34568849205970764,
+   "n_nominal": 1,
+   "V_crumb": 0.0,
+   "crumb_cells": 0,
+   "veinT": 0.817,
+   "sheet_amp": 0.074,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.805,
+     "strahler": 5.0,
+     "rad_ratio": 2.984,
+     "sheet_amp": 0.074,
+     "gross_net": 3.718,
+     "out_frac": 0.0101,
+     "area": 3018
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.889,
+     "strahler": 5.0,
+     "rad_ratio": 2.549,
+     "sheet_amp": 0.075,
+     "gross_net": 4.878,
+     "out_frac": 0.0165,
+     "area": 3093
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.899,
+     "strahler": 5.0,
+     "rad_ratio": 2.614,
+     "sheet_amp": 0.074,
+     "gross_net": 4.463,
+     "out_frac": 0.0202,
+     "area": 3042
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.487,
+     "strahler": 5.0,
+     "rad_ratio": 2.511,
+     "sheet_amp": 0.075,
+     "gross_net": 4.418,
+     "out_frac": 0.5113,
+     "area": 3056
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.903,
+     "strahler": 5.0,
+     "rad_ratio": 2.605,
+     "sheet_amp": 0.074,
+     "gross_net": 3.253,
+     "out_frac": 0.5134,
+     "area": 3136
+    }
+   ],
+   "last_new": 4000.0,
+   "last_dry": 4000.0,
+   "still_for": 0.0
+  },
+  {
+   "seed": 22,
+   "tag": "vpkT4st",
+   "label": "후보 T=4000 st",
+   "T": 4000.0,
+   "out": 0.4847,
+   "strip_max": 0.7082833028753621,
+   "frac_out": 0.31,
+   "frac_strip": 0.69,
+   "area_end": 3856,
+   "thin_end": 841,
+   "mem_end": 753,
+   "vthin_end": 0.040036503317884234,
+   "disc_wet_frac": 0.2430939226519337,
+   "neg_end": 10,
+   "turnover": 0.181,
+   "ever_wet": 35695,
+   "new": [
+    5072.0,
+    4623.0,
+    8514.0,
+    7812.0,
+    7420.0,
+    7531.0,
+    5774.0,
+    6666.0,
+    7005.0,
+    7097.0,
+    7052.0
+   ],
+   "new_edges": [
+    0,
+    200,
+    400,
+    800,
+    1200,
+    1600,
+    2000,
+    2400,
+    2800,
+    3200,
+    3600,
+    4000
+   ],
+   "carry_med": 1.5935080556472625e-06,
+   "bnC_med": 0.00023116219381336123,
+   "n_nominal": 76,
+   "V_crumb": 1.135073686660781,
+   "crumb_cells": 22,
+   "veinT": 0.674,
+   "sheet_amp": 0.074,
+   "segs": [
+    {
+     "t": [
+      200,
+      400
+     ],
+     "veinT": 0.826,
+     "strahler": 5.0,
+     "rad_ratio": 2.864,
+     "sheet_amp": 0.074,
+     "gross_net": 3.527,
+     "out_frac": 0.0104,
+     "area": 3041
+    },
+    {
+     "t": [
+      400,
+      800
+     ],
+     "veinT": 0.823,
+     "strahler": 5.0,
+     "rad_ratio": 2.576,
+     "sheet_amp": 0.073,
+     "gross_net": 4.657,
+     "out_frac": 0.0164,
+     "area": 3146
+    },
+    {
+     "t": [
+      800,
+      1200
+     ],
+     "veinT": 0.706,
+     "strahler": 5.0,
+     "rad_ratio": 2.668,
+     "sheet_amp": 0.077,
+     "gross_net": 4.437,
+     "out_frac": 0.0246,
+     "area": 3379
+    },
+    {
+     "t": [
+      1200,
+      1600
+     ],
+     "veinT": 0.604,
+     "strahler": 5.0,
+     "rad_ratio": 2.525,
+     "sheet_amp": 0.073,
+     "gross_net": 3.45,
+     "out_frac": 0.4847,
+     "area": 3668
+    },
+    {
+     "t": [
+      1600,
+      2000
+     ],
+     "veinT": 0.765,
+     "strahler": 5.0,
+     "rad_ratio": 2.668,
+     "sheet_amp": 0.073,
+     "gross_net": 3.462,
+     "out_frac": 0.2181,
+     "area": 3913
+    }
+   ],
+   "last_new": 3998.7000000000003,
+   "last_dry": 3999.3,
+   "still_for": 0.6999999999998181
+  }
+ ],
+ "T4000_s21_v0T4": {
+  "area": [
+   2825.8,
+   3055.1,
+   3073.05,
+   3015.75,
+   3161.6,
+   3333.0,
+   3333.0,
+   3333.0,
+   3333.0,
+   3333.0
+  ],
+  "thin": [
+   90.05,
+   157.2,
+   125.15,
+   96.15,
+   25.25,
+   3.0,
+   3.0,
+   3.0,
+   3.0,
+   3.0
+  ],
+  "vthin": [
+   0.0072638085730924425,
+   0.01232472212697372,
+   0.010558492867797985,
+   0.00836199286341313,
+   0.0022993583104789915,
+   0.0002228677705261878,
+   0.00022286777051420365,
+   0.000222867770534095,
+   0.00022286777046367218,
+   0.00022286777054299044
+  ],
+  "out": [
+   0.008827500307134306,
+   0.014714254699819684,
+   0.48799603966153504,
+   0.4896362080625539,
+   0.353498568936632,
+   0.020882662499738913,
+   0.020882662541514496,
+   0.02088266252721216,
+   0.02088266249737114,
+   0.020882662507763716
+  ],
+  "out_strip": [
+   0.008994500584421528,
+   0.014651262892593109,
+   0.48798573594228245,
+   0.48946669994355907,
+   0.3533934446774206,
+   0.020664400157804685,
+   0.02066440019973237,
+   0.020664400185344545,
+   0.02066440015569293,
+   0.020664400166095054
+  ],
+  "new": [
+   5064.0,
+   4689.0,
+   8214.0,
+   7591.0,
+   7231.0,
+   3482.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "out_frac": 0.4896
+ },
+ "T4000_s21_v0T4st": {
+  "area": [
+   2825.8,
+   3055.1,
+   3074.35,
+   3023.35,
+   2944.05,
+   3069.0,
+   3153.7,
+   3091.95,
+   3100.1,
+   3237.05
+  ],
+  "thin": [
+   90.05,
+   157.2,
+   132.8,
+   116.3,
+   63.55,
+   148.7,
+   173.45,
+   105.75,
+   98.05,
+   160.3
+  ],
+  "vthin": [
+   0.0072638085730924425,
+   0.01232472212697372,
+   0.011099541901069319,
+   0.00999536441404606,
+   0.005820109321121385,
+   0.011792408877783041,
+   0.014036895029849833,
+   0.009275813639492316,
+   0.00852700801080501,
+   0.012946502761435177
+  ],
+  "out": [
+   0.008827500307134306,
+   0.014714254699819684,
+   0.1692420636206896,
+   0.6627175457700224,
+   0.02450586202550986,
+   0.03113698108080054,
+   0.031195434444973635,
+   0.5043867473802138,
+   0.36293205162148057,
+   0.04502758898386072
+  ],
+  "out_strip": [
+   0.008994500584421528,
+   0.014651262892593109,
+   0.4833209833194597,
+   0.6627172747919646,
+   0.024303134031112172,
+   0.030978558024295277,
+   0.031038755115307515,
+   0.5043628713511981,
+   0.36278546637465126,
+   0.04457203536541887
+  ],
+  "new": [
+   5064.0,
+   4689.0,
+   8214.0,
+   7658.0,
+   7597.0,
+   7155.0,
+   8545.0,
+   7969.0,
+   7652.0,
+   7605.0,
+   7876.0
+  ],
+  "out_frac": 0.6627
+ },
+ "T4000_s21_vpkT4st": {
+  "area": [
+   2836.2,
+   3265.65,
+   3528.9,
+   3666.8,
+   3693.3,
+   3675.0,
+   3659.0,
+   3670.5,
+   3779.95,
+   3873.65
+  ],
+  "thin": [
+   111.15,
+   383.1,
+   628.25,
+   804.25,
+   788.75,
+   758.6,
+   752.0,
+   716.95,
+   799.6,
+   936.85
+  ],
+  "vthin": [
+   0.008306211229892991,
+   0.01949709594382356,
+   0.02383544786024106,
+   0.03243751459575055,
+   0.03558103273457644,
+   0.03560857753906597,
+   0.03622525548613882,
+   0.03174241098715041,
+   0.03202709609916796,
+   0.043518910995112424
+  ],
+  "out": [
+   0.00709337273406585,
+   0.01211910760814816,
+   0.01963932195403928,
+   0.030720501960455393,
+   0.15326148736629874,
+   0.18524782460852995,
+   0.3152594030825747,
+   0.20063655453888263,
+   0.057996326964924516,
+   0.06036772518403266
+  ],
+  "out_strip": [
+   0.00709337273406585,
+   0.012172972447832886,
+   0.5035640883397328,
+   0.2884828449853464,
+   0.288428648206403,
+   0.3225885922483893,
+   0.6322272333494787,
+   0.5026147304878426,
+   0.21663579360613228,
+   0.4528177173306839
+  ],
+  "new": [
+   5055.0,
+   4608.0,
+   8278.0,
+   7540.0,
+   7368.0,
+   7357.0,
+   7021.0,
+   6326.0,
+   6589.0,
+   6918.0,
+   7056.0
+  ],
+  "out_frac": 0.3153
+ },
+ "T4000_s22_v0T4st": {
+  "area": [
+   2820.9,
+   3095.85,
+   3040.15,
+   3055.05,
+   3129.7,
+   3177.85,
+   3180.15,
+   3251.15,
+   3177.45,
+   3203.85
+  ],
+  "thin": [
+   80.05,
+   168.55,
+   107.15,
+   122.95,
+   119.7,
+   119.85,
+   93.3,
+   110.9,
+   87.0,
+   115.0
+  ],
+  "vthin": [
+   0.006555438584127468,
+   0.013410176548036506,
+   0.009128348935040572,
+   0.010208256189570835,
+   0.010057491054791586,
+   0.010178002368364228,
+   0.008034173162332875,
+   0.009322177330327863,
+   0.007485203851170676,
+   0.00944805975989749
+  ],
+  "out": [
+   0.010080103456838074,
+   0.01746703357890189,
+   0.02020272041139881,
+   0.5113372203662209,
+   0.5133844508759026,
+   0.612022706075928,
+   0.3038163979336609,
+   0.25685682319555825,
+   0.45640508115867084,
+   0.4706497709568398
+  ],
+  "out_strip": [
+   0.009918626495066807,
+   0.017301676605377292,
+   0.020046607769582225,
+   0.5112549793407063,
+   0.5134145163043867,
+   0.6118333734797129,
+   0.3036131981623186,
+   0.25655305097300674,
+   0.45636285078107175,
+   0.4704926018608713
+  ],
+  "new": [
+   5068.0,
+   4641.0,
+   8402.0,
+   7660.0,
+   7870.0,
+   7986.0,
+   7756.0,
+   7662.0,
+   7544.0,
+   7176.0,
+   7805.0
+  ],
+  "out_frac": 0.612
+ },
+ "T4000_s22_vpkT4st": {
+  "area": [
+   2842.5,
+   3166.85,
+   3413.85,
+   3674.8,
+   3898.65,
+   3756.95,
+   3879.6,
+   4232.75,
+   4222.85,
+   3981.25
+  ],
+  "thin": [
+   103.3,
+   232.55,
+   489.9,
+   751.65,
+   888.7,
+   790.3,
+   982.55,
+   1327.8,
+   1369.15,
+   1038.1
+  ],
+  "vthin": [
+   0.007566195181751716,
+   0.015816333942465604,
+   0.02132764132280557,
+   0.030942967567471374,
+   0.04261406635671343,
+   0.04602781453120662,
+   0.04861690321183636,
+   0.05854938667632435,
+   0.06511513766883695,
+   0.04785284750599535
+  ],
+  "out": [
+   0.010767027986918865,
+   0.01641643821764538,
+   0.02577031566321264,
+   0.48468078731993514,
+   0.21810029291754474,
+   0.23919896242148597,
+   0.22681270672344422,
+   0.07055437016719035,
+   0.3772160243868411,
+   0.3587270665798421
+  ],
+  "out_strip": [
+   0.010772890386108624,
+   0.01661226933114246,
+   0.48724924753871224,
+   0.4879134501228176,
+   0.21557090762101982,
+   0.6116952235287145,
+   0.5916746915436578,
+   0.7082833028753621,
+   0.34614735171454303,
+   0.3410231019080453
+  ],
+  "new": [
+   5072.0,
+   4623.0,
+   8514.0,
+   7812.0,
+   7420.0,
+   7531.0,
+   5774.0,
+   6666.0,
+   7005.0,
+   7097.0,
+   7052.0
+  ],
+  "out_frac": 0.4847
+ },
+ "mig256": [
+  {
+   "seed": 21,
+   "tag": "v0",
+   "disp300": 56.06,
+   "veinT": 0.856,
+   "vein4": 0.86,
+   "gross_net": 3.76,
+   "out": 0.0101,
+   "area": 2963,
+   "new": [
+    2649.0,
+    2286.0,
+    2242.0,
+    2297.0
+   ],
+   "t_touch": 228.8
+  },
+  {
+   "seed": 21,
+   "tag": "vpk",
+   "disp300": 56.2,
+   "veinT": 0.857,
+   "vein4": 0.865,
+   "gross_net": 4.033,
+   "out": 0.0085,
+   "area": 3121,
+   "new": [
+    2649.0,
+    2288.0,
+    2246.0,
+    2270.0
+   ],
+   "t_touch": 228.8
+  },
+  {
+   "seed": 22,
+   "tag": "v0",
+   "disp300": 56.88,
+   "veinT": 0.842,
+   "vein4": 0.871,
+   "gross_net": 4.475,
+   "out": 0.0082,
+   "area": 3115,
+   "new": [
+    2595.0,
+    2309.0,
+    2365.0,
+    2253.0
+   ],
+   "t_touch": 224.2
+  },
+  {
+   "seed": 22,
+   "tag": "vpk",
+   "disp300": 56.81,
+   "veinT": 0.868,
+   "vein4": 0.872,
+   "gross_net": 4.606,
+   "out": 0.0094,
+   "area": 3174,
+   "new": [
+    2595.0,
+    2293.0,
+    2369.0,
+    2273.0
+   ],
+   "t_touch": 224.2
+  },
+  {
+   "seed": 23,
+   "tag": "v0",
+   "disp300": 59.17,
+   "veinT": 0.852,
+   "vein4": 0.856,
+   "gross_net": 4.155,
+   "out": 0.0099,
+   "area": 2993,
+   "new": [
+    2645.0,
+    2288.0,
+    2236.0,
+    2185.0
+   ],
+   "t_touch": 228.0
+  },
+  {
+   "seed": 23,
+   "tag": "vpk",
+   "disp300": 59.34,
+   "veinT": 0.836,
+   "vein4": 0.847,
+   "gross_net": 3.88,
+   "out": 0.0081,
+   "area": 3000,
+   "new": [
+    2645.0,
+    2284.0,
+    2233.0,
+    2176.0
+   ],
+   "t_touch": 228.0
+  }
+ ],
+ "food4_sens": [
+  {
+   "seed": 21,
+   "tag": "v0",
+   "reached": false,
+   "out": 0.2154,
+   "thick": 0,
+   "passed": false,
+   "end_by_body": [
+    true,
+    false,
+    true,
+    true
+   ],
+   "vinj": 2431.129999999626,
+   "neg_end": 5735
+  },
+  {
+   "seed": 21,
+   "tag": "vsk03",
+   "reached": true,
+   "out": 0.0874,
+   "thick": 3,
+   "passed": false,
+   "end_by_body": [
+    true,
+    false,
+    true,
+    true
+   ],
+   "vinj": 2527.5459999995883,
+   "neg_end": 2
+  },
+  {
+   "seed": 21,
+   "tag": "vpk",
+   "reached": true,
+   "out": 0.1436,
+   "thick": 3,
+   "passed": false,
+   "end_by_body": [
+    true,
+    false,
+    true,
+    true
+   ],
+   "vinj": 2563.391999999566,
+   "neg_end": 3
+  },
+  {
+   "seed": 21,
+   "tag": "vsk05",
+   "reached": true,
+   "out": 0.1422,
+   "thick": 3,
+   "passed": false,
+   "end_by_body": [
+    true,
+    false,
+    true,
+    true
+   ],
+   "vinj": 2550.2639999995667,
+   "neg_end": 3
+  },
+  {
+   "seed": 22,
+   "tag": "v0",
+   "reached": true,
+   "out": 0.265,
+   "thick": 1,
+   "passed": false,
+   "end_by_body": [
+    true,
+    false,
+    true,
+    true
+   ],
+   "vinj": 2555.3559999995923,
+   "neg_end": 5095
+  },
+  {
+   "seed": 22,
+   "tag": "vsk03",
+   "reached": true,
+   "out": 0.0449,
+   "thick": 3,
+   "passed": false,
+   "end_by_body": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "vinj": 2706.463999999485,
+   "neg_end": 5
+  },
+  {
+   "seed": 22,
+   "tag": "vpk",
+   "reached": true,
+   "out": 0.1931,
+   "thick": 3,
+   "passed": false,
+   "end_by_body": [
+    true,
+    false,
+    true,
+    true
+   ],
+   "vinj": 2723.13999999948,
+   "neg_end": 5
+  },
+  {
+   "seed": 22,
+   "tag": "vsk05",
+   "reached": true,
+   "out": 0.0486,
+   "thick": 6,
+   "passed": false,
+   "end_by_body": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "vinj": 2740.6499999994653,
+   "neg_end": 5
+  },
+  {
+   "seed": 23,
+   "tag": "v0",
+   "reached": true,
+   "out": 0.1211,
+   "thick": 1,
+   "passed": false,
+   "end_by_body": [
+    true,
+    true,
+    false,
+    true
+   ],
+   "vinj": 2210.597999999827,
+   "neg_end": 5777
+  },
+  {
+   "seed": 23,
+   "tag": "vsk03",
+   "reached": true,
+   "out": 0.3067,
+   "thick": 3,
+   "passed": false,
+   "end_by_body": [
+    true,
+    false,
+    true,
+    true
+   ],
+   "vinj": 2622.4719999995436,
+   "neg_end": 8
+  },
+  {
+   "seed": 23,
+   "tag": "vpk",
+   "reached": true,
+   "out": 0.2867,
+   "thick": 3,
+   "passed": false,
+   "end_by_body": [
+    true,
+    false,
+    true,
+    true
+   ],
+   "vinj": 2654.5499999995195,
+   "neg_end": 8
+  },
+  {
+   "seed": 23,
+   "tag": "vsk05",
+   "reached": true,
+   "out": 0.2679,
+   "thick": 1,
+   "passed": false,
+   "end_by_body": [
+    true,
+    false,
+    true,
+    true
+   ],
+   "vinj": 2671.1599999995096,
+   "neg_end": 8
+  }
+ ]
+}
