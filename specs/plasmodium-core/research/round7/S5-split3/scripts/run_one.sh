@@ -11,6 +11,8 @@ case "$tag" in
   s5rd) extra="rate_down=0.01";;                                     # 관이 가늘어지는 빠르기 1/5
   s5w)  extra="wall_tau=300";;                                       # 관 벽이 굵기를 기억 (300 시간)
   s5nk) extra="neck_keep=1";;                                        # 두 덩어리를 잇는 마지막 길은 관으로 지킨다
+  s5cvu) extra="curv_gain=16 fan_comp=1 fan_gain=3 fan_slow=0.5 fan_up=0.001";;   # 표면 장력 두 배 + 오르막 면제 앞머리 경쟁
+  s5cv24) extra="curv_gain=24";;                                    # 표면 장력 세 배
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1
