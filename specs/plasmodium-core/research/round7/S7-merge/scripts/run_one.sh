@@ -4,7 +4,9 @@ D=/home/user/TheBlob/specs/plasmodium-core/research/round7/S7-merge
 REF=/home/user/TheBlob/specs/plasmodium-core/stage0/ref
 scn=$1; seed=$2; tag=$3
 case "$tag" in
-  s6c)   extra="ncyc=3";;                     # 대조 (S6과 같음)
+  s6c)   extra="ncyc=3";;                     # 거르기 대조 (S6과 같음)
+  s7c)   extra="";;                           # 결승 대조: 지금 모델 그대로 (관문 B 설정, 2사이클)
+  s7k)   extra="sup_age=100";;                # 결승 후보: 지금 모델 + 흐름으로 정하는 부채 경쟁
   s7b20)  extra="ncyc=3 sup_age=20";;         # 2차: 경계 흐름으로 잰 규칙, 보통
   s7b100) extra="ncyc=3 sup_age=100";;        # 2차: 같은 규칙, 세게
   *) echo "bad tag $tag"; exit 2;;
