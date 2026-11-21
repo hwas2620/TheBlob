@@ -1,0 +1,62 @@
+{
+ "run": "b_food4_s95_s5c",
+ "origin": "numpy",
+ "N": 256,
+ "seed": 95,
+ "steps": 7001,
+ "expected_steps": 7001,
+ "complete": true,
+ "nan": false,
+ "n_states": 35,
+ "stop": "",
+ "mass_err": 8.864866512816488e-14,
+ "neg_end": 0,
+ "neg_end_cellsteps": 0,
+ "h_min_end": 0.0,
+ "h_min_in": 0.0,
+ "flux_err": [
+  0.029560603330321768,
+  0.07443769503625434,
+  0.18344487163624829,
+  0.02997335573409101
+ ],
+ "t_touch": [
+  73.0,
+  null,
+  463.6,
+  50.3
+ ],
+ "t_exh": [
+  null,
+  null,
+  null,
+  null
+ ],
+ "area_end": 6675,
+ "out_frac": 0.2465,
+ "t_touch_v": [
+  72.9,
+  null,
+  463.5,
+  50.2
+ ],
+ "window": [
+  1000000000.0,
+  1000000000.0,
+  0
+ ],
+ "pathminC": {},
+ "vein_medC": null,
+ "same4": {},
+ "body_min": null,
+ "body_min_all": 0.753,
+ "vein4": null,
+ "note": "모든 먹이에 닿지 못함",
+ "reached": false,
+ "pairs": 6,
+ "thick": 0,
+ "ratio": {},
+ "same_ok": 0,
+ "pass": false,
+ "scn": "food4"
+}
