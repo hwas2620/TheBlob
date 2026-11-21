@@ -46,6 +46,8 @@ DEF = dict(
     fan_age=4.0, fan_min=10, fan_every=1.0,   # [R4] stopped cells age (1 + fan_age) times faster; clusters smaller than fan_min cells are not fronts; update every fan_every
     fan_gain=0.0,                # [R4b] >0: no threshold. Every front but the strongest stalls at rate min(1, fan_gain*(1 - vigour/strongest)); 0 = the R4 threshold rule (fan_frac)
     fan_slow=0.0,                # [R4b] >0: a partly stalled front wets less readily: its donor thickness counts fan_slow*h0*min(1, stall/fan_tau) less (the loser slows before it stops)
+    fan_up=0.0,                  # [S5] >0: a front climbing the scent (mean food field of its newest cells exceeds that of its older cells by more than fan_up*food_amp) is exempt: it never stalls
+    wall_tau=0.0,                # [S5] >0: the tube wall remembers its conductance: tube thickness uses Cwall = max(Cn, Cwall*exp(-dt/wall_tau)) (a vein's wall outlives a drop of its flow); 0 = off
     fan_food=0.0, fan_scent=0.01,   # [R4b] >0: a newly wet cell counts 1 + fan_food*min(1, c/(fan_scent*food_amp)) in its front's vigour (c: food field) - fronts in a food's scent are not out-competed
     crumb_from=0,  # [stage0 C] first step at which crumb_dry acts (parity dumps switch it on in a state that still holds isolated cells)
     crumb_dry=0,   # [split] 1: a drying cell with no wet neighbour left dries too (its volume is dropped and booked in V_crumb) - no stuck isolated cells
@@ -213,6 +215,7 @@ def run(name, over):
     h = np.where(wet, P['h_init'], 0.0)
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
+    Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
     elif P['slime0'] == 'all': slime[~wet] = 1.0
@@ -371,7 +374,8 @@ def run(name, over):
         Hfac = Hres if P['res_acc'] else (1.0 + (P['h_res'] - 1.0) * resmask)
         hstar = P['h_old'] + (P['h0'] * Hfac - P['h_old']) * np.exp(-sage / P['tau_a'])   # h_res>1: thick reservoir on live food (N3 variant)
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))   # new cell inflates gradually
-        tube = np.minimum(P['beta'] * np.sqrt(Cn), P['cap'])
+        if P['wall_tau'] > 0: Cwall = np.where(wet, np.maximum(Cn, Cwall * np.exp(-dt / P['wall_tau'])), 0.0)
+        tube = np.minimum(P['beta'] * np.sqrt(np.maximum(Cn, Cwall) if P['wall_tau'] > 0 else Cn), P['cap'])
         hbar_prev = hstar + tube          # unmodulated mean rest thickness (stretch reference for the mechanical phase feedback)
         if eps > 0:
             th_eff = theta
@@ -505,22 +509,28 @@ def run(name, over):
                     if P['fan_food'] > 0: w_new_ = w_new_ * (1.0 + P['fan_food'] * np.clip(food / (P['fan_scent'] * P['food_amp']), 0.0, 1.0))
                     vig_ = np.bincount(lab_.ravel(), weights=w_new_.ravel(), minlength=nl_ + 1)
                     fronts_ = [k_ for k_ in range(1, nl_ + 1) if size_[k_] >= P['fan_min']]
+                    up_ = np.zeros(nl_ + 1, bool)
+                    if P['fan_up'] > 0:     # [S5] scent climbing: newest cells (age < fan_new) vs the older cells of the same front
+                        yn_ = (wet & (age < P['fan_new'])).ravel().astype(float); yo_ = (wet & (age >= P['fan_new'])).ravel().astype(float); fr_ = food.ravel(); lr_ = lab_.ravel()
+                        cnew_ = np.bincount(lr_, weights=fr_ * yn_, minlength=nl_ + 1) / np.maximum(np.bincount(lr_, weights=yn_, minlength=nl_ + 1), 1.0)
+                        cold_ = np.bincount(lr_, weights=fr_ * yo_, minlength=nl_ + 1) / np.maximum(np.bincount(lr_, weights=yo_, minlength=nl_ + 1), 1.0)
+                        up_ = (cnew_ - cold_) > P['fan_up'] * P['food_amp']; up_[0] = False
                     if len(fronts_) >= 2 and P['fan_gain'] > 0:     # [R4b] no threshold: the strongest recovers, the others stall in proportion to how far behind they are
                         vmax_ = max(vig_[k_] for k_ in fronts_)
                         rate_ = np.zeros(nl_ + 1)
                         for k_ in fronts_:
-                            rate_[k_] = -1.0 if vig_[k_] >= vmax_ else min(1.0, P['fan_gain'] * (1.0 - vig_[k_] / max(vmax_, 1e-12)))
+                            rate_[k_] = -1.0 if (vig_[k_] >= vmax_ or up_[k_]) else min(1.0, P['fan_gain'] * (1.0 - vig_[k_] / max(vmax_, 1e-12)))
                         rl_ = rate_[lab_]
                         stall = np.where(rl_ > 0, stall + rl_ * fan_k * dt, np.where(rl_ < 0, np.maximum(stall - fan_k * dt, 0.0), stall))
                     elif len(fronts_) >= 2:
                         vmax_ = max(vig_[k_] for k_ in fronts_)
                         weak_ = np.zeros(nl_ + 1, bool); strong_ = np.zeros(nl_ + 1, bool)
                         for k_ in fronts_:
-                            if vig_[k_] < P['fan_frac'] * vmax_: weak_[k_] = True
+                            if vig_[k_] < P['fan_frac'] * vmax_ and not up_[k_]: weak_[k_] = True
                             else: strong_[k_] = True
                         stall = np.where(weak_[lab_], stall + fan_k * dt, np.where(strong_[lab_], np.maximum(stall - fan_k * dt, 0.0), stall))
                     if step % (fan_k * 10) == 0:
-                        fan_log.append([round(t, 2), len(fronts_), int((wet & (stall > P['fan_tau'])).sum())] + sorted([int(vig_[k_]) for k_ in fronts_], reverse=True)[:4])
+                        fan_log.append([round(t, 2), len(fronts_), int((wet & (stall > P['fan_tau'])).sum()), int(sum(up_[k_] for k_ in fronts_))] + sorted([int(vig_[k_]) for k_ in fronts_], reverse=True)[:4])
             stopped_ = wet & (stall > P['fan_tau'])
             sage = np.where(stopped_, sage + dt * P['fan_age'], sage)
             stall = np.where(wet, stall, 0.0)
@@ -575,7 +585,7 @@ def run(name, over):
             else:
                 give = np.where(Dm, h / np.maximum(ns, 1), 0.0)
                 for d in ALL: h += np.where(stay, nb(give, d), 0.0)
-            h[Dm] = 0.0; wet = stay; slime[Dm] = 1.0; age[Dm] = 0.0; sage[Dm] = 0.0; p[Dm] = 0.0; pm[Dm] = 0.0; Hres[Dm] = 1.0; Cpk[Dm] = 0.0
+            h[Dm] = 0.0; wet = stay; slime[Dm] = 1.0; age[Dm] = 0.0; sage[Dm] = 0.0; p[Dm] = 0.0; pm[Dm] = 0.0; Hres[Dm] = 1.0; Cpk[Dm] = 0.0; Cwall[Dm] = 0.0
             ser_dry[step] = int(Dm.sum())
         if fill is not None and fill.any():
             fill &= wet
