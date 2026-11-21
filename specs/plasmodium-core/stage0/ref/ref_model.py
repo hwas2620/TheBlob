@@ -44,6 +44,9 @@ DEF = dict(
     fan_young=10.0, fan_new=2.0, # [R4] a front = 8-connected cluster of cells younger than fan_young; its vigour = cells younger than fan_new in it
     fan_frac=0.5, fan_tau=40.0,  # [R4] a front whose vigour stays below fan_frac x the strongest front's for fan_tau stops: it wets no more cells
     fan_age=4.0, fan_min=10, fan_every=1.0,   # [R4] stopped cells age (1 + fan_age) times faster; clusters smaller than fan_min cells are not fronts; update every fan_every
+    fan_gain=0.0,                # [R4b] >0: no threshold. Every front but the strongest stalls at rate min(1, fan_gain*(1 - vigour/strongest)); 0 = the R4 threshold rule (fan_frac)
+    fan_slow=0.0,                # [R4b] >0: a partly stalled front wets less readily: its donor thickness counts fan_slow*h0*min(1, stall/fan_tau) less (the loser slows before it stops)
+    fan_food=0.0, fan_scent=0.01,   # [R4b] >0: a newly wet cell counts 1 + fan_food*min(1, c/(fan_scent*food_amp)) in its front's vigour (c: food field) - fronts in a food's scent are not out-competed
     crumb_from=0,  # [stage0 C] first step at which crumb_dry acts (parity dumps switch it on in a state that still holds isolated cells)
     crumb_dry=0,   # [split] 1: a drying cell with no wet neighbour left dries too (its volume is dropped and booked in V_crumb) - no stuck isolated cells
     neg_fill=0,   # [split] 1: with neg_dry, a kept bridge cell (bridge_keep) whose thickness went negative is not dried; its deficit is shared among its neighbours in proportion to their thickness
@@ -498,9 +501,18 @@ def run(name, over):
                 nl_ = int(lab_.max())
                 if nl_ > 0:
                     size_ = np.bincount(lab_.ravel(), minlength=nl_ + 1)
-                    vig_ = np.bincount(lab_.ravel(), weights=(wet & (age < P['fan_new'])).ravel().astype(float), minlength=nl_ + 1)
+                    w_new_ = (wet & (age < P['fan_new'])).astype(float)
+                    if P['fan_food'] > 0: w_new_ = w_new_ * (1.0 + P['fan_food'] * np.clip(food / (P['fan_scent'] * P['food_amp']), 0.0, 1.0))
+                    vig_ = np.bincount(lab_.ravel(), weights=w_new_.ravel(), minlength=nl_ + 1)
                     fronts_ = [k_ for k_ in range(1, nl_ + 1) if size_[k_] >= P['fan_min']]
-                    if len(fronts_) >= 2:
+                    if len(fronts_) >= 2 and P['fan_gain'] > 0:     # [R4b] no threshold: the strongest recovers, the others stall in proportion to how far behind they are
+                        vmax_ = max(vig_[k_] for k_ in fronts_)
+                        rate_ = np.zeros(nl_ + 1)
+                        for k_ in fronts_:
+                            rate_[k_] = -1.0 if vig_[k_] >= vmax_ else min(1.0, P['fan_gain'] * (1.0 - vig_[k_] / max(vmax_, 1e-12)))
+                        rl_ = rate_[lab_]
+                        stall = np.where(rl_ > 0, stall + rl_ * fan_k * dt, np.where(rl_ < 0, np.maximum(stall - fan_k * dt, 0.0), stall))
+                    elif len(fronts_) >= 2:
                         vmax_ = max(vig_[k_] for k_ in fronts_)
                         weak_ = np.zeros(nl_ + 1, bool); strong_ = np.zeros(nl_ + 1, bool)
                         for k_ in fronts_:
@@ -574,6 +586,7 @@ def run(name, over):
             h += addf; h[fok] = 0.0; nneg_fill += int(fok.sum())
         # ---- wetting (thickness yield) ----
         pw = np.where(wet, (h - tube) if P['tube_yield'] else h, -np.inf)
+        if P['fan_comp'] and P['fan_slow'] > 0: pw = pw - P['fan_slow'] * P['h0'] * np.clip(stall / P['fan_tau'], 0.0, 1.0)   # [R4b] a partly stalled front slows
         if P['fan_comp']: pw = np.where(wet & (stall > P['fan_tau']), -np.inf, pw)     # [R4] a stopped front wets no more cells
         pmax = np.full((N, N), -np.inf); arg = np.zeros((N, N), np.int8); nw = np.zeros((N, N))
         for q, d in enumerate(ALL):
