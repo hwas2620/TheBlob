@@ -1,0 +1,560 @@
+b_long_s111_s6c t=1000 nbig=2 same=1 vA=0.49 vB=0.30 sideB=0.36 link=   4 net=+0.476 |Qg|=0.899 Ccut= 17.5 dphase=-0.98 drainB/20t=+0.020
+b_long_s111_s6c t=1200 nbig=2 same=1 vA=0.41 vB=0.33 sideB=0.39 link=   2 net=-0.148 |Qg|=0.897 Ccut= 44.7 dphase=+1.73 drainB/20t=-0.006
+b_long_s111_s6c t=1220 nbig=2 same=1 vA=0.39 vB=0.33 sideB=0.40 link=  41 net=-0.031 |Qg|=0.250 Ccut= 25.5 dphase=+1.49 drainB/20t=-0.001
+b_long_s111_s6c t=1240 nbig=2 same=1 vA=0.40 vB=0.33 sideB=0.39 link=  46 net=+0.193 |Qg|=0.195 Ccut= 12.8 dphase=+1.46 drainB/20t=+0.007
+b_long_s111_s6c t=1260 nbig=2 same=1 vA=0.40 vB=0.33 sideB=0.39 link=  54 net=+0.055 |Qg|=0.177 Ccut=  7.0 dphase=+1.54 drainB/20t=+0.002
+b_long_s111_s6c t=1280 nbig=2 same=1 vA=0.41 vB=0.34 sideB=0.39 link=  62 net=+0.009 |Qg|=0.009 Ccut=  0.1 dphase=+1.48 drainB/20t=+0.000
+b_long_s111_s6c t=1300 nbig=2 same=0 vA=0.40 vB=0.34 sideB=0.39 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.06 drainB/20t=+0.000
+b_long_s111_s6c t=1320 nbig=2 same=0 vA=0.40 vB=0.33 sideB=0.39 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.82 drainB/20t=+0.000
+b_long_s111_s6c t=1340 nbig=2 same=0 vA=0.39 vB=0.33 sideB=0.39 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.97 drainB/20t=+0.000
+b_long_s111_s6c t=1360 nbig=2 same=0 vA=0.38 vB=0.33 sideB=0.39 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.04 drainB/20t=+0.000
+b_long_s111_s6c t=1380 nbig=2 same=0 vA=0.38 vB=0.33 sideB=0.39 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.06 drainB/20t=+0.000
+b_long_s111_s6c t=1400 nbig=2 same=0 vA=0.39 vB=0.33 sideB=0.39 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.97 drainB/20t=+0.000
+b_long_s111_s6c t=1420 nbig=2 same=0 vA=0.39 vB=0.33 sideB=0.39 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.76 drainB/20t=+0.000
+b_long_s111_s6c t=1440 nbig=2 same=0 vA=0.39 vB=0.33 sideB=0.39 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.81 drainB/20t=+0.000
+b_long_s112_s6c t= 900 nbig=2 same=1 vA=0.59 vB=0.24 sideB=0.28 link=  11 net=-0.398 |Qg|=0.417 Ccut= 30.2 dphase=+0.07 drainB/20t=-0.021
+b_long_s112_s6c t= 920 nbig=2 same=1 vA=0.56 vB=0.23 sideB=0.28 link=  44 net=+0.044 |Qg|=0.101 Ccut= 12.7 dphase=+0.01 drainB/20t=+0.002
+b_long_s112_s6c t= 940 nbig=2 same=1 vA=0.60 vB=0.24 sideB=0.28 link=  57 net=-0.001 |Qg|=0.002 Ccut=  0.0 dphase=+0.06 drainB/20t=-0.000
+b_long_s112_s6c t= 960 nbig=2 same=1 vA=0.60 vB=0.23 sideB=0.27 link=  76 net=-0.009 |Qg|=0.029 Ccut=  3.2 dphase=+0.07 drainB/20t=-0.000
+b_long_s112_s6c t= 980 nbig=2 same=0 vA=0.59 vB=0.23 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.01 drainB/20t=+0.000
+b_long_s112_s6c t=1000 nbig=2 same=0 vA=0.59 vB=0.22 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.01 drainB/20t=+0.000
+b_long_s112_s6c t=1020 nbig=2 same=0 vA=0.60 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.07 drainB/20t=+0.000
+b_long_s112_s6c t=1040 nbig=2 same=0 vA=0.61 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.05 drainB/20t=+0.000
+b_long_s112_s6c t=1060 nbig=2 same=0 vA=0.61 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.05 drainB/20t=+0.000
+b_long_s112_s6c t=1080 nbig=2 same=0 vA=0.52 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.05 drainB/20t=+0.000
+b_long_s112_s6c t=1100 nbig=2 same=0 vA=0.53 vB=0.24 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.07 drainB/20t=+0.000
+b_long_s112_s6c t=1120 nbig=2 same=0 vA=0.54 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.14 drainB/20t=+0.000
+b_long_s112_s6c t=1140 nbig=2 same=0 vA=0.60 vB=0.24 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.25 drainB/20t=+0.000
+b_long_s112_s6c t=1160 nbig=2 same=0 vA=0.53 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.26 drainB/20t=+0.000
+b_long_s112_s6c t=1180 nbig=2 same=0 vA=0.53 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.25 drainB/20t=+0.000
+b_long_s112_s6c t=1200 nbig=2 same=0 vA=0.54 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.20 drainB/20t=+0.000
+b_long_s112_s6c t=1220 nbig=2 same=0 vA=0.54 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.02 drainB/20t=+0.000
+b_long_s112_s6c t=1240 nbig=2 same=0 vA=0.53 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.00 drainB/20t=+0.000
+b_long_s112_s6c t=1260 nbig=2 same=0 vA=0.54 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.08 drainB/20t=+0.000
+b_long_s112_s6c t=1280 nbig=2 same=0 vA=0.55 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.34 drainB/20t=+0.000
+b_long_s112_s6c t=1300 nbig=2 same=0 vA=0.54 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.59 drainB/20t=+0.000
+b_long_s112_s6c t=1320 nbig=2 same=0 vA=0.52 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.56 drainB/20t=+0.000
+b_long_s112_s6c t=1340 nbig=2 same=0 vA=0.53 vB=0.24 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.71 drainB/20t=+0.000
+b_long_s112_s6c t=1540 nbig=2 same=1 vA=0.47 vB=0.35 sideB=0.40 link=   6 net=-0.423 |Qg|=0.475 Ccut= 27.9 dphase=+0.15 drainB/20t=-0.016
+b_long_s112_s6c t=1580 nbig=2 same=1 vA=0.47 vB=0.35 sideB=0.40 link=  31 net=-0.381 |Qg|=0.404 Ccut= 31.5 dphase=+0.15 drainB/20t=-0.014
+b_long_s112_s6c t=1600 nbig=2 same=1 vA=0.47 vB=0.35 sideB=0.41 link=  82 net=-0.160 |Qg|=0.165 Ccut= 14.1 dphase=+0.11 drainB/20t=-0.006
+b_long_s112_s6c t=1620 nbig=2 same=1 vA=0.46 vB=0.35 sideB=0.41 link=  76 net=-0.130 |Qg|=0.131 Ccut=  8.2 dphase=+0.04 drainB/20t=-0.005
+b_long_s112_s6c t=1640 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.04 drainB/20t=+0.000
+b_long_s112_s6c t=1660 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.04 drainB/20t=+0.000
+b_long_s112_s6c t=1680 nbig=2 same=0 vA=0.46 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.07 drainB/20t=+0.000
+b_long_s113_s6c t= 860 nbig=2 same=1 vA=0.46 vB=0.34 sideB=0.40 link=   3 net=+0.209 |Qg|=0.558 Ccut= 47.7 dphase=-0.70 drainB/20t=+0.008
+b_long_s113_s6c t= 880 nbig=2 same=1 vA=0.48 vB=0.34 sideB=0.40 link=   3 net=-0.173 |Qg|=0.491 Ccut= 25.1 dphase=-0.60 drainB/20t=-0.006
+b_long_s113_s6c t= 920 nbig=2 same=1 vA=0.44 vB=0.38 sideB=0.44 link=   3 net=-0.495 |Qg|=1.506 Ccut= 13.1 dphase=-0.57 drainB/20t=-0.017
+b_long_s113_s6c t=1300 nbig=2 same=1 vA=0.46 vB=0.36 sideB=0.42 link=  46 net=-0.096 |Qg|=0.630 Ccut= 46.7 dphase=+0.80 drainB/20t=-0.003
+b_long_s113_s6c t=1320 nbig=2 same=1 vA=0.46 vB=0.35 sideB=0.42 link=  68 net=-0.016 |Qg|=0.206 Ccut= 14.8 dphase=+0.94 drainB/20t=-0.001
+b_long_s113_s6c t=1340 nbig=2 same=1 vA=0.46 vB=0.35 sideB=0.42 link=  70 net=+0.066 |Qg|=0.109 Ccut=  7.6 dphase=+1.06 drainB/20t=+0.002
+b_long_s113_s6c t=1360 nbig=2 same=1 vA=0.47 vB=0.34 sideB=0.42 link=  91 net=+0.034 |Qg|=0.037 Ccut=  2.9 dphase=+1.26 drainB/20t=+0.001
+b_long_s113_s6c t=1380 nbig=2 same=1 vA=0.48 vB=0.37 sideB=0.42 link=  90 net=-0.009 |Qg|=0.015 Ccut=  1.2 dphase=+1.28 drainB/20t=-0.000
+b_long_s113_s6c t=1400 nbig=2 same=0 vA=0.48 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.28 drainB/20t=+0.000
+b_long_s113_s6c t=1420 nbig=2 same=0 vA=0.47 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.13 drainB/20t=+0.000
+b_long_s113_s6c t=1440 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.93 drainB/20t=+0.000
+b_long_s113_s6c t=1460 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.93 drainB/20t=+0.000
+b_long_s113_s6c t=1480 nbig=2 same=0 vA=0.48 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.00 drainB/20t=+0.000
+b_long_s113_s6c t=1500 nbig=2 same=0 vA=0.48 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.12 drainB/20t=+0.000
+b_long_s113_s6c t=1520 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.15 drainB/20t=+0.000
+b_long_s113_s6c t=1540 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.12 drainB/20t=+0.000
+b_long_s113_s6c t=1560 nbig=2 same=0 vA=0.46 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.95 drainB/20t=+0.000
+b_long_s113_s6c t=1580 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.98 drainB/20t=+0.000
+b_long_s113_s6c t=1600 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.92 drainB/20t=+0.000
+b_long_s113_s6c t=1620 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.89 drainB/20t=+0.000
+b_long_s114_s6c t= 960 nbig=2 same=1 vA=0.53 vB=0.29 sideB=0.34 link=   2 net=+0.068 |Qg|=0.533 Ccut= 18.5 dphase=+0.70 drainB/20t=+0.003
+b_long_s114_s6c t=1100 nbig=2 same=1 vA=0.60 vB=0.22 sideB=0.25 link=   5 net=-0.110 |Qg|=0.778 Ccut= 19.7 dphase=+1.78 drainB/20t=-0.006
+b_long_s114_s6c t=1120 nbig=2 same=1 vA=0.46 vB=0.35 sideB=0.41 link=   9 net=-0.285 |Qg|=0.405 Ccut= 35.5 dphase=+1.13 drainB/20t=-0.010
+b_long_s114_s6c t=1180 nbig=2 same=1 vA=0.49 vB=0.35 sideB=0.41 link=  10 net=+0.256 |Qg|=0.398 Ccut= 32.4 dphase=+2.62 drainB/20t=+0.009
+b_long_s114_s6c t=1200 nbig=2 same=1 vA=0.48 vB=0.34 sideB=0.41 link=  39 net=-0.044 |Qg|=0.429 Ccut= 23.9 dphase=+2.76 drainB/20t=-0.002
+b_long_s114_s6c t=1220 nbig=2 same=1 vA=0.48 vB=0.34 sideB=0.41 link=  59 net=+0.002 |Qg|=0.240 Ccut= 12.1 dphase=+2.81 drainB/20t=+0.000
+b_long_s114_s6c t=1240 nbig=2 same=1 vA=0.49 vB=0.36 sideB=0.41 link=  61 net=-0.009 |Qg|=0.147 Ccut=  7.0 dphase=+2.55 drainB/20t=-0.000
+b_long_s114_s6c t=1260 nbig=2 same=1 vA=0.48 vB=0.36 sideB=0.41 link=  66 net=-0.003 |Qg|=0.004 Ccut=  0.0 dphase=+2.06 drainB/20t=-0.000
+b_long_s114_s6c t=1280 nbig=2 same=0 vA=0.48 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.88 drainB/20t=+0.000
+b_long_s114_s6c t=1300 nbig=2 same=0 vA=0.49 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.69 drainB/20t=+0.000
+b_long_s114_s6c t=1320 nbig=2 same=0 vA=0.49 vB=0.27 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.49 drainB/20t=+0.000
+b_long_s114_s6c t=1340 nbig=2 same=0 vA=0.49 vB=0.27 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.52 drainB/20t=+0.000
+b_long_s114_s6c t=1360 nbig=2 same=0 vA=0.48 vB=0.26 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.66 drainB/20t=+0.000
+b_long_s114_s6c t=1380 nbig=2 same=1 vA=0.56 vB=0.26 sideB=0.31 link= 102 net=-0.120 |Qg|=0.122 Ccut=  5.8 dphase=+1.32 drainB/20t=-0.006
+b_long_s114_s6c t=1400 nbig=2 same=1 vA=0.57 vB=0.27 sideB=0.31 link= 107 net=-0.008 |Qg|=0.010 Ccut=  2.2 dphase=+1.38 drainB/20t=-0.000
+b_long_s114_s6c t=1420 nbig=2 same=0 vA=0.49 vB=0.26 sideB=0.31 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.44 drainB/20t=+0.000
+b_long_s114_s6c t=1440 nbig=2 same=0 vA=0.48 vB=0.26 sideB=0.31 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.36 drainB/20t=+0.000
+b_long_s114_s6c t=1460 nbig=2 same=0 vA=0.48 vB=0.26 sideB=0.31 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.28 drainB/20t=+0.000
+b_long_s115_s6c t= 400 nbig=2 same=1 vA=0.65 vB=0.19 sideB=0.23 link=   2 net=+0.395 |Qg|=2.080 Ccut= 42.6 dphase=-1.44 drainB/20t=+0.025
+b_long_s115_s6c t= 920 nbig=2 same=1 vA=0.53 vB=0.29 sideB=0.34 link=   3 net=-0.171 |Qg|=1.428 Ccut= 45.1 dphase=-0.37 drainB/20t=-0.008
+b_long_s115_s6c t= 940 nbig=2 same=1 vA=0.54 vB=0.29 sideB=0.34 link=   2 net=+0.365 |Qg|=0.546 Ccut= 27.4 dphase=-0.36 drainB/20t=+0.016
+b_long_s115_s6c t= 960 nbig=2 same=1 vA=0.53 vB=0.28 sideB=0.33 link=   2 net=-0.156 |Qg|=1.500 Ccut= 56.6 dphase=-0.27 drainB/20t=-0.007
+b_long_s115_s6c t=1000 nbig=2 same=1 vA=0.51 vB=0.30 sideB=0.36 link=  38 net=+0.015 |Qg|=0.986 Ccut= 54.7 dphase=-0.08 drainB/20t=+0.001
+b_long_s115_s6c t=1020 nbig=2 same=1 vA=0.52 vB=0.29 sideB=0.35 link=  46 net=+0.052 |Qg|=0.192 Ccut= 21.8 dphase=+0.15 drainB/20t=+0.002
+b_long_s115_s6c t=1040 nbig=2 same=1 vA=0.52 vB=0.29 sideB=0.35 link=  40 net=-0.079 |Qg|=0.288 Ccut= 14.2 dphase=+0.37 drainB/20t=-0.003
+b_long_s115_s6c t=1060 nbig=2 same=1 vA=0.51 vB=0.30 sideB=0.35 link=  43 net=-0.145 |Qg|=0.150 Ccut=  8.0 dphase=+0.53 drainB/20t=-0.006
+b_long_s115_s6c t=1080 nbig=2 same=1 vA=0.51 vB=0.30 sideB=0.35 link=  51 net=-0.044 |Qg|=0.067 Ccut=  3.7 dphase=+0.64 drainB/20t=-0.002
+b_long_s115_s6c t=1100 nbig=2 same=1 vA=0.52 vB=0.30 sideB=0.35 link=  64 net=-0.022 |Qg|=0.022 Ccut=  1.5 dphase=+0.55 drainB/20t=-0.001
+b_long_s115_s6c t=1120 nbig=2 same=0 vA=0.52 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.45 drainB/20t=+0.000
+b_long_s115_s6c t=1140 nbig=2 same=0 vA=0.53 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.52 drainB/20t=+0.000
+b_long_s115_s6c t=1160 nbig=2 same=0 vA=0.52 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.38 drainB/20t=+0.000
+b_long_s115_s6c t=1180 nbig=2 same=0 vA=0.53 vB=0.29 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.28 drainB/20t=+0.000
+b_long_s115_s6c t=1200 nbig=2 same=0 vA=0.53 vB=0.29 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.20 drainB/20t=+0.000
+b_long_s115_s6c t=1220 nbig=2 same=0 vA=0.53 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.26 drainB/20t=+0.000
+b_long_s115_s6c t=1240 nbig=2 same=0 vA=0.53 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.29 drainB/20t=+0.000
+b_long_s115_s6c t=1260 nbig=2 same=0 vA=0.49 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.31 drainB/20t=+0.000
+b_long_s115_s6c t=1280 nbig=2 same=0 vA=0.52 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.40 drainB/20t=+0.000
+b_long_s115_s6c t=1300 nbig=2 same=0 vA=0.52 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.46 drainB/20t=+0.000
+b_long_s115_s6c t=1320 nbig=2 same=0 vA=0.52 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.48 drainB/20t=+0.000
+b_long_s115_s6c t=1340 nbig=2 same=0 vA=0.52 vB=0.29 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.24 drainB/20t=+0.000
+b_long_s115_s6c t=1360 nbig=2 same=0 vA=0.53 vB=0.29 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.02 drainB/20t=+0.000
+b_long_s115_s6c t=1380 nbig=2 same=0 vA=0.54 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.18 drainB/20t=+0.000
+b_long_s115_s6c t=1400 nbig=2 same=0 vA=0.53 vB=0.30 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.32 drainB/20t=+0.000
+b_long_s115_s6c t=1420 nbig=2 same=0 vA=0.53 vB=0.29 sideB=0.35 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.61 drainB/20t=+0.000
+b_long_s115_s6c t=1600 nbig=2 same=1 vA=0.51 vB=0.30 sideB=0.35 link=  12 net=-0.132 |Qg|=0.270 Ccut= 16.8 dphase=-1.04 drainB/20t=-0.006
+b_long_s115_s6c t=1620 nbig=2 same=1 vA=0.51 vB=0.29 sideB=0.35 link=  35 net=-0.195 |Qg|=0.398 Ccut= 21.3 dphase=-1.11 drainB/20t=-0.008
+b_long_s115_s6c t=1660 nbig=2 same=1 vA=0.56 vB=0.24 sideB=0.28 link=   6 net=-0.510 |Qg|=1.263 Ccut= 11.5 dphase=-0.54 drainB/20t=-0.027
+b_long_s116_s6c t= 980 nbig=2 same=1 vA=0.48 vB=0.34 sideB=0.41 link=   7 net=-0.477 |Qg|=0.527 Ccut= 35.0 dphase=+0.01 drainB/20t=-0.018
+b_long_s116_s6c t=1000 nbig=2 same=1 vA=0.47 vB=0.35 sideB=0.41 link=  36 net=-0.118 |Qg|=0.404 Ccut= 25.6 dphase=-0.06 drainB/20t=-0.004
+b_long_s116_s6c t=1020 nbig=2 same=1 vA=0.47 vB=0.36 sideB=0.41 link=  38 net=-0.099 |Qg|=0.313 Ccut= 19.5 dphase=-0.10 drainB/20t=-0.004
+b_long_s116_s6c t=1040 nbig=2 same=1 vA=0.48 vB=0.36 sideB=0.41 link=  47 net=-0.119 |Qg|=0.199 Ccut= 11.9 dphase=-0.12 drainB/20t=-0.004
+b_long_s116_s6c t=1060 nbig=2 same=1 vA=0.46 vB=0.36 sideB=0.42 link=  77 net=-0.212 |Qg|=0.237 Ccut= 10.4 dphase=-0.37 drainB/20t=-0.008
+b_long_s116_s6c t=1080 nbig=2 same=1 vA=0.46 vB=0.36 sideB=0.42 link=  77 net=+0.026 |Qg|=0.091 Ccut=  5.0 dphase=-0.73 drainB/20t=+0.001
+b_long_s116_s6c t=1100 nbig=2 same=1 vA=0.47 vB=0.31 sideB=0.42 link=  97 net=+0.004 |Qg|=0.005 Ccut=  1.2 dphase=-1.00 drainB/20t=+0.000
+b_long_s116_s6c t=1120 nbig=2 same=0 vA=0.45 vB=0.31 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.17 drainB/20t=+0.000
+b_long_s116_s6c t=1140 nbig=2 same=0 vA=0.45 vB=0.33 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.91 drainB/20t=+0.000
+b_long_s116_s6c t=1160 nbig=2 same=0 vA=0.45 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.62 drainB/20t=+0.000
+b_long_s116_s6c t=1180 nbig=2 same=0 vA=0.44 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.62 drainB/20t=+0.000
+b_long_s116_s6c t=1200 nbig=2 same=0 vA=0.44 vB=0.34 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.76 drainB/20t=+0.000
+b_long_s116_s6c t=1220 nbig=2 same=0 vA=0.46 vB=0.32 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.99 drainB/20t=+0.000
+b_long_s116_s6c t=1240 nbig=2 same=0 vA=0.48 vB=0.34 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.28 drainB/20t=+0.000
+b_long_s116_s6c t=1260 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.43 drainB/20t=+0.000
+b_long_s116_s6c t=1280 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.48 drainB/20t=+0.000
+b_long_s116_s6c t=1300 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.40 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.47 drainB/20t=+0.000
+b_long_s116_s6c t=1320 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.40 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.63 drainB/20t=+0.000
+b_long_s116_s6c t=1340 nbig=2 same=0 vA=0.47 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.72 drainB/20t=+0.000
+b_long_s116_s6c t=1360 nbig=2 same=0 vA=0.47 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.69 drainB/20t=+0.000
+b_long_s116_s6c t=1380 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.70 drainB/20t=+0.000
+b_long_s116_s6c t=1400 nbig=2 same=0 vA=0.47 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.70 drainB/20t=+0.000
+b_long_s116_s6c t=1420 nbig=2 same=0 vA=0.47 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.77 drainB/20t=+0.000
+b_long_s116_s6c t=1500 nbig=2 same=1 vA=0.58 vB=0.21 sideB=0.25 link=  31 net=-0.087 |Qg|=0.491 Ccut= 31.4 dphase=-1.98 drainB/20t=-0.005
+b_long_s116_s6c t=1520 nbig=2 same=1 vA=0.58 vB=0.21 sideB=0.25 link=  48 net=-0.151 |Qg|=0.164 Ccut= 15.3 dphase=-1.97 drainB/20t=-0.009
+b_long_s116_s6c t=1540 nbig=2 same=1 vA=0.59 vB=0.22 sideB=0.25 link=  51 net=-0.122 |Qg|=0.155 Ccut=  8.0 dphase=-2.36 drainB/20t=-0.007
+b_long_s116_s6c t=1560 nbig=2 same=1 vA=0.59 vB=0.21 sideB=0.25 link=  66 net=+0.000 |Qg|=0.001 Ccut=  0.0 dphase=-2.70 drainB/20t=+0.000
+b_long_s116_s6c t=1580 nbig=2 same=1 vA=0.59 vB=0.19 sideB=0.25 link=  81 net=-0.003 |Qg|=0.013 Ccut=  1.7 dphase=-2.76 drainB/20t=-0.000
+b_long_s116_s6c t=1600 nbig=2 same=0 vA=0.61 vB=0.21 sideB=0.25 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.76 drainB/20t=+0.000
+b_long_s116_s6c t=1620 nbig=2 same=0 vA=0.60 vB=0.21 sideB=0.25 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.57 drainB/20t=+0.000
+b_long_s116_s6c t=1640 nbig=2 same=0 vA=0.61 vB=0.22 sideB=0.25 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.58 drainB/20t=+0.000
+b_long_s116_s6c t=1660 nbig=2 same=0 vA=0.60 vB=0.21 sideB=0.25 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.83 drainB/20t=+0.000
+b_long_s116_s6c t=1720 nbig=2 same=1 vA=0.62 vB=0.20 sideB=0.23 link=   8 net=-0.325 |Qg|=0.341 Ccut= 32.9 dphase=-2.75 drainB/20t=-0.021
+b_long_s116_s6c t=1740 nbig=2 same=1 vA=0.58 vB=0.22 sideB=0.26 link=   5 net=-0.423 |Qg|=0.423 Ccut= 34.0 dphase=-2.48 drainB/20t=-0.025
+b_long_s117_s6c t= 900 nbig=2 same=1 vA=0.61 vB=0.21 sideB=0.25 link=   3 net=-0.401 |Qg|=0.406 Ccut= 37.7 dphase=+0.03 drainB/20t=-0.024
+b_long_s117_s6c t= 920 nbig=3 same=1 vA=0.40 vB=0.22 sideB=0.39 link=  90 net=-1.100 |Qg|=6.904 Ccut=461.8 dphase=-0.08 drainB/20t=-0.042
+b_long_s117_s6c t= 940 nbig=3 same=1 vA=0.41 vB=0.21 sideB=0.26 link=  87 net=+0.116 |Qg|=5.318 Ccut=403.5 dphase=-0.16 drainB/20t=+0.007
+b_long_s117_s6c t= 960 nbig=3 same=1 vA=0.40 vB=0.21 sideB=0.42 link= 114 net=-0.227 |Qg|=1.191 Ccut=182.4 dphase=-0.26 drainB/20t=-0.008
+b_long_s117_s6c t= 980 nbig=3 same=1 vA=0.39 vB=0.21 sideB=0.50 link=  41 net=+0.136 |Qg|=0.239 Ccut= 12.4 dphase=-0.55 drainB/20t=+0.004
+b_long_s117_s6c t=1000 nbig=3 same=1 vA=0.40 vB=0.21 sideB=0.43 link= 127 net=+0.119 |Qg|=5.914 Ccut=233.4 dphase=-0.31 drainB/20t=+0.004
+b_long_s117_s6c t=1020 nbig=3 same=0 vA=0.40 vB=0.22 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.33 drainB/20t=+0.000
+b_long_s117_s6c t=1040 nbig=3 same=0 vA=0.40 vB=0.22 sideB=0.25 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.46 drainB/20t=+0.000
+b_long_s117_s6c t=1060 nbig=3 same=0 vA=0.41 vB=0.23 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.62 drainB/20t=+0.000
+b_long_s117_s6c t=1080 nbig=2 same=0 vA=0.42 vB=0.42 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.08 drainB/20t=+0.000
+b_long_s117_s6c t=1100 nbig=2 same=0 vA=0.43 vB=0.42 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.30 drainB/20t=+0.000
+b_long_s117_s6c t=1120 nbig=2 same=0 vA=0.42 vB=0.41 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.54 drainB/20t=+0.000
+b_long_s117_s6c t=1140 nbig=3 same=0 vA=0.41 vB=0.26 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.16 drainB/20t=+0.000
+b_long_s117_s6c t=1160 nbig=2 same=0 vA=0.42 vB=0.42 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.67 drainB/20t=+0.000
+b_long_s117_s6c t=1180 nbig=3 same=0 vA=0.40 vB=0.28 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.95 drainB/20t=+0.000
+b_long_s117_s6c t=1200 nbig=3 same=0 vA=0.40 vB=0.28 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.88 drainB/20t=+0.000
+b_long_s117_s6c t=1220 nbig=3 same=0 vA=0.40 vB=0.28 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.98 drainB/20t=+0.000
+b_long_s117_s6c t=1240 nbig=3 same=0 vA=0.39 vB=0.28 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.13 drainB/20t=+0.000
+b_long_s117_s6c t=1260 nbig=3 same=0 vA=0.39 vB=0.28 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.26 drainB/20t=+0.000
+b_long_s117_s6c t=1280 nbig=3 same=0 vA=0.40 vB=0.28 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.21 drainB/20t=+0.000
+b_long_s117_s6c t=1300 nbig=3 same=0 vA=0.41 vB=0.28 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.99 drainB/20t=+0.000
+b_long_s117_s6c t=1320 nbig=3 same=0 vA=0.41 vB=0.29 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.02 drainB/20t=+0.000
+b_long_s117_s6c t=1340 nbig=3 same=0 vA=0.41 vB=0.28 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.04 drainB/20t=+0.000
+b_long_s117_s6c t=1360 nbig=3 same=0 vA=0.41 vB=0.28 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.95 drainB/20t=+0.000
+b_long_s117_s6c t=1380 nbig=3 same=0 vA=0.40 vB=0.28 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.13 drainB/20t=+0.000
+b_long_s117_s6c t=1400 nbig=3 same=0 vA=0.41 vB=0.29 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.40 drainB/20t=+0.000
+b_long_s117_s6c t=1420 nbig=2 same=0 vA=0.54 vB=0.28 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.06 drainB/20t=+0.000
+b_long_s117_s6c t=1440 nbig=2 same=0 vA=0.54 vB=0.27 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.04 drainB/20t=+0.000
+b_long_s117_s6c t=1460 nbig=2 same=0 vA=0.54 vB=0.28 sideB=0.33 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.94 drainB/20t=+0.000
+b_long_s117_s6c t=1600 nbig=2 same=1 vA=0.63 vB=0.17 sideB=0.21 link=  22 net=-0.280 |Qg|=0.287 Ccut= 16.6 dphase=-1.59 drainB/20t=-0.020
+b_long_s117_s6c t=1620 nbig=2 same=1 vA=0.62 vB=0.18 sideB=0.22 link=  60 net=-0.240 |Qg|=0.244 Ccut= 11.7 dphase=-1.78 drainB/20t=-0.016
+b_long_s118_s6c t= 680 nbig=2 same=1 vA=0.43 vB=0.42 sideB=0.48 link=   7 net=-0.152 |Qg|=0.820 Ccut= 36.5 dphase=+0.44 drainB/20t=-0.005
+b_long_s118_s6c t= 700 nbig=2 same=1 vA=0.40 vB=0.38 sideB=0.52 link=   6 net=-0.717 |Qg|=1.015 Ccut= 33.4 dphase=-0.28 drainB/20t=-0.021
+b_long_s118_s6c t= 720 nbig=2 same=1 vA=0.41 vB=0.38 sideB=0.52 link=  16 net=+0.064 |Qg|=0.402 Ccut= 16.9 dphase=-0.23 drainB/20t=+0.002
+b_long_s118_s6c t= 740 nbig=2 same=1 vA=0.45 vB=0.41 sideB=0.47 link=  16 net=-0.019 |Qg|=0.341 Ccut= 12.0 dphase=+0.32 drainB/20t=-0.001
+b_long_s118_s6c t= 760 nbig=2 same=1 vA=0.43 vB=0.42 sideB=0.47 link=  27 net=+0.005 |Qg|=0.008 Ccut=  2.4 dphase=+0.22 drainB/20t=+0.000
+b_long_s118_s6c t= 780 nbig=2 same=0 vA=0.41 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.11 drainB/20t=+0.000
+b_long_s118_s6c t= 800 nbig=2 same=0 vA=0.42 vB=0.38 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.30 drainB/20t=+0.000
+b_long_s118_s6c t= 820 nbig=2 same=1 vA=0.44 vB=0.39 sideB=0.46 link=  10 net=-0.347 |Qg|=0.756 Ccut= 35.1 dphase=+0.41 drainB/20t=-0.011
+b_long_s118_s6c t=1060 nbig=2 same=1 vA=0.50 vB=0.31 sideB=0.36 link=  43 net=-0.320 |Qg|=0.587 Ccut= 41.5 dphase=+0.92 drainB/20t=-0.013
+b_long_s118_s6c t=1080 nbig=2 same=1 vA=0.51 vB=0.31 sideB=0.37 link=  58 net=-0.245 |Qg|=0.381 Ccut= 32.6 dphase=+0.81 drainB/20t=-0.010
+b_long_s118_s6c t=1100 nbig=2 same=1 vA=0.51 vB=0.31 sideB=0.37 link=  72 net=-0.029 |Qg|=0.293 Ccut= 17.8 dphase=+0.68 drainB/20t=-0.001
+b_long_s118_s6c t=1120 nbig=2 same=1 vA=0.51 vB=0.31 sideB=0.37 link=  77 net=+0.001 |Qg|=0.164 Ccut= 10.0 dphase=+0.48 drainB/20t=+0.000
+b_long_s118_s6c t=1140 nbig=2 same=1 vA=0.52 vB=0.31 sideB=0.37 link= 104 net=+0.020 |Qg|=0.056 Ccut=  4.3 dphase=+0.37 drainB/20t=+0.001
+b_long_s118_s6c t=1160 nbig=2 same=1 vA=0.52 vB=0.31 sideB=0.37 link=  94 net=+0.020 |Qg|=0.030 Ccut=  2.0 dphase=+0.39 drainB/20t=+0.001
+b_long_s118_s6c t=1180 nbig=2 same=0 vA=0.49 vB=0.32 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.46 drainB/20t=+0.000
+b_long_s118_s6c t=1200 nbig=2 same=0 vA=0.50 vB=0.31 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.47 drainB/20t=+0.000
+b_long_s118_s6c t=1220 nbig=2 same=0 vA=0.54 vB=0.31 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.27 drainB/20t=+0.000
+b_long_s118_s6c t=1240 nbig=2 same=0 vA=0.52 vB=0.31 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.21 drainB/20t=+0.000
+b_long_s118_s6c t=1260 nbig=2 same=0 vA=0.51 vB=0.30 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.19 drainB/20t=+0.000
+b_long_s118_s6c t=1280 nbig=2 same=0 vA=0.51 vB=0.31 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.07 drainB/20t=+0.000
+b_long_s118_s6c t=1300 nbig=2 same=0 vA=0.50 vB=0.31 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.19 drainB/20t=+0.000
+b_long_s118_s6c t=1320 nbig=2 same=0 vA=0.50 vB=0.32 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.27 drainB/20t=+0.000
+b_long_s118_s6c t=1340 nbig=2 same=0 vA=0.50 vB=0.31 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.38 drainB/20t=+0.000
+b_long_s118_s6c t=1380 nbig=2 same=1 vA=0.68 vB=0.16 sideB=0.18 link=   8 net=-0.140 |Qg|=0.353 Ccut= 32.1 dphase=-1.09 drainB/20t=-0.011
+b_long_s118_s6c t=1400 nbig=2 same=1 vA=0.66 vB=0.17 sideB=0.19 link=   4 net=-0.477 |Qg|=0.500 Ccut= 29.5 dphase=-0.93 drainB/20t=-0.037
+b_long_s118_s6c t=1520 nbig=2 same=1 vA=0.60 vB=0.22 sideB=0.26 link=  31 net=-0.252 |Qg|=0.260 Ccut= 20.2 dphase=-0.87 drainB/20t=-0.015
+b_long_s118_s6c t=1540 nbig=2 same=1 vA=0.59 vB=0.22 sideB=0.27 link=  39 net=-0.330 |Qg|=0.330 Ccut= 14.6 dphase=-0.77 drainB/20t=-0.019
+b_long_s118_s6c t=1560 nbig=2 same=1 vA=0.57 vB=0.22 sideB=0.27 link=  97 net=-0.178 |Qg|=0.183 Ccut=  8.8 dphase=-0.98 drainB/20t=-0.010
+b_long_s118_s6c t=1580 nbig=2 same=1 vA=0.58 vB=0.22 sideB=0.27 link=  99 net=-0.024 |Qg|=0.047 Ccut=  3.6 dphase=-1.47 drainB/20t=-0.001
+b_long_s118_s6c t=1600 nbig=2 same=1 vA=0.60 vB=0.22 sideB=0.27 link= 118 net=-0.005 |Qg|=0.018 Ccut=  1.5 dphase=-1.77 drainB/20t=-0.000
+b_long_s118_s6c t=1620 nbig=2 same=0 vA=0.60 vB=0.22 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.75 drainB/20t=+0.000
+b_long_s118_s6c t=1640 nbig=2 same=0 vA=0.61 vB=0.23 sideB=0.26 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.54 drainB/20t=+0.000
+b_long_s119_s6c t= 400 nbig=2 same=1 vA=0.71 vB=0.12 sideB=0.15 link=   4 net=+0.165 |Qg|=0.830 Ccut=  9.0 dphase=-0.57 drainB/20t=+0.016
+b_long_s119_s6c t=1040 nbig=2 same=1 vA=0.46 vB=0.36 sideB=0.42 link=   4 net=+0.118 |Qg|=0.315 Ccut= 35.1 dphase=-0.38 drainB/20t=+0.004
+b_long_s119_s6c t=1060 nbig=2 same=1 vA=0.44 vB=0.33 sideB=0.42 link=  70 net=+0.424 |Qg|=0.499 Ccut= 37.7 dphase=-0.52 drainB/20t=+0.015
+b_long_s119_s6c t=1080 nbig=2 same=1 vA=0.46 vB=0.34 sideB=0.42 link=  80 net=+0.059 |Qg|=0.212 Ccut= 18.9 dphase=-0.36 drainB/20t=+0.002
+b_long_s119_s6c t=1100 nbig=2 same=1 vA=0.46 vB=0.35 sideB=0.42 link=  72 net=+0.019 |Qg|=0.115 Ccut=  9.2 dphase=-0.25 drainB/20t=+0.001
+b_long_s119_s6c t=1120 nbig=2 same=1 vA=0.46 vB=0.35 sideB=0.42 link=  58 net=+0.021 |Qg|=0.131 Ccut=  7.6 dphase=-0.30 drainB/20t=+0.001
+b_long_s119_s6c t=1140 nbig=2 same=0 vA=0.47 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.38 drainB/20t=+0.000
+b_long_s119_s6c t=1160 nbig=2 same=0 vA=0.47 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.44 drainB/20t=+0.000
+b_long_s119_s6c t=1180 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.29 drainB/20t=+0.000
+b_long_s119_s6c t=1200 nbig=2 same=0 vA=0.46 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.27 drainB/20t=+0.000
+b_long_s119_s6c t=1220 nbig=2 same=0 vA=0.46 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.42 drainB/20t=+0.000
+b_long_s119_s6c t=1240 nbig=2 same=0 vA=0.47 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.44 drainB/20t=+0.000
+b_long_s119_s6c t=1260 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.40 drainB/20t=+0.000
+b_long_s119_s6c t=1280 nbig=2 same=0 vA=0.47 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.30 drainB/20t=+0.000
+b_long_s119_s6c t=1300 nbig=2 same=0 vA=0.47 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.22 drainB/20t=+0.000
+b_long_s119_s6c t=1320 nbig=2 same=0 vA=0.47 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.16 drainB/20t=+0.000
+b_long_s119_s6c t=1340 nbig=2 same=0 vA=0.48 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.17 drainB/20t=+0.000
+b_long_s119_s6c t=1360 nbig=2 same=0 vA=0.47 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.39 drainB/20t=+0.000
+b_long_s119_s6c t=1440 nbig=2 same=1 vA=0.52 vB=0.31 sideB=0.36 link=  59 net=+0.002 |Qg|=0.728 Ccut= 59.4 dphase=+0.85 drainB/20t=+0.000
+b_long_s119_s6c t=1460 nbig=2 same=1 vA=0.52 vB=0.31 sideB=0.36 link=  60 net=-0.274 |Qg|=0.417 Ccut= 37.1 dphase=+0.85 drainB/20t=-0.011
+b_long_s119_s6c t=1480 nbig=2 same=1 vA=0.52 vB=0.32 sideB=0.36 link=  47 net=-0.281 |Qg|=0.325 Ccut= 23.7 dphase=+0.83 drainB/20t=-0.011
+b_long_s119_s6c t=1500 nbig=2 same=1 vA=0.51 vB=0.31 sideB=0.37 link=  71 net=-0.097 |Qg|=0.124 Ccut= 12.0 dphase=+0.63 drainB/20t=-0.004
+b_long_s119_s6c t=1520 nbig=2 same=0 vA=0.51 vB=0.30 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.44 drainB/20t=+0.000
+b_long_s119_s6c t=1540 nbig=2 same=0 vA=0.52 vB=0.30 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.44 drainB/20t=+0.000
+b_long_s119_s6c t=1560 nbig=2 same=0 vA=0.51 vB=0.31 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.50 drainB/20t=+0.000
+b_long_s119_s6c t=1580 nbig=2 same=0 vA=0.52 vB=0.31 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.45 drainB/20t=+0.000
+b_long_s119_s6c t=1600 nbig=2 same=0 vA=0.52 vB=0.30 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.41 drainB/20t=+0.000
+b_long_s119_s6c t=1620 nbig=2 same=0 vA=0.52 vB=0.30 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.36 drainB/20t=+0.000
+b_long_s120_s6c t= 840 nbig=2 same=1 vA=0.44 vB=0.36 sideB=0.43 link=   3 net=-0.044 |Qg|=0.631 Ccut= 41.2 dphase=-0.58 drainB/20t=-0.002
+b_long_s120_s6c t= 900 nbig=2 same=1 vA=0.62 vB=0.17 sideB=0.21 link=   2 net=+0.638 |Qg|=1.163 Ccut= 20.3 dphase=+0.33 drainB/20t=+0.045
+b_long_s120_s6c t= 920 nbig=2 same=1 vA=0.64 vB=0.16 sideB=0.20 link=  15 net=+1.020 |Qg|=1.123 Ccut= 47.5 dphase=+0.13 drainB/20t=+0.075
+b_long_s120_s6c t= 940 nbig=2 same=1 vA=0.66 vB=0.15 sideB=0.19 link=  23 net=+0.553 |Qg|=0.643 Ccut= 11.6 dphase=+0.06 drainB/20t=+0.043
+b_long_s120_s6c t= 960 nbig=2 same=1 vA=0.67 vB=0.14 sideB=0.18 link=  22 net=+0.449 |Qg|=0.463 Ccut= 10.8 dphase=-0.17 drainB/20t=+0.037
+b_long_s120_s6c t= 980 nbig=3 same=1 vA=0.37 vB=0.28 sideB=0.34 link=  27 net=-0.133 |Qg|=0.265 Ccut= 22.6 dphase=-0.18 drainB/20t=-0.006
+b_long_s120_s6c t=1000 nbig=3 same=1 vA=0.36 vB=0.28 sideB=0.34 link=  20 net=-0.291 |Qg|=0.532 Ccut= 26.1 dphase=-0.27 drainB/20t=-0.013
+b_long_s120_s6c t=1020 nbig=3 same=1 vA=0.37 vB=0.28 sideB=0.34 link=  57 net=-0.187 |Qg|=0.367 Ccut= 24.7 dphase=-0.33 drainB/20t=-0.008
+b_long_s120_s6c t=1040 nbig=3 same=1 vA=0.37 vB=0.29 sideB=0.34 link=  73 net=-0.013 |Qg|=0.101 Ccut= 10.9 dphase=-0.42 drainB/20t=-0.001
+b_long_s120_s6c t=1060 nbig=3 same=1 vA=0.39 vB=0.30 sideB=0.34 link=  72 net=-0.027 |Qg|=0.028 Ccut=  4.5 dphase=-0.12 drainB/20t=-0.001
+b_long_s120_s6c t=1080 nbig=3 same=1 vA=0.39 vB=0.30 sideB=0.34 link=  73 net=-0.002 |Qg|=0.010 Ccut=  1.7 dphase=+0.08 drainB/20t=-0.000
+b_long_s120_s6c t=1100 nbig=3 same=0 vA=0.37 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.11 drainB/20t=+0.000
+b_long_s120_s6c t=1120 nbig=3 same=0 vA=0.39 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.16 drainB/20t=+0.000
+b_long_s120_s6c t=1140 nbig=3 same=0 vA=0.39 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.01 drainB/20t=+0.000
+b_long_s120_s6c t=1160 nbig=3 same=0 vA=0.37 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.16 drainB/20t=+0.000
+b_long_s120_s6c t=1180 nbig=3 same=0 vA=0.38 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.48 drainB/20t=+0.000
+b_long_s120_s6c t=1200 nbig=3 same=0 vA=0.39 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.82 drainB/20t=+0.000
+b_long_s120_s6c t=1220 nbig=3 same=0 vA=0.38 vB=0.27 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.93 drainB/20t=+0.000
+b_long_s120_s6c t=1240 nbig=3 same=0 vA=0.37 vB=0.28 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.54 drainB/20t=+0.000
+b_long_s120_s6c t=1260 nbig=3 same=0 vA=0.38 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.09 drainB/20t=+0.000
+b_long_s120_s6c t=1280 nbig=3 same=0 vA=0.38 vB=0.30 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.32 drainB/20t=+0.000
+b_long_s120_s6c t=1300 nbig=3 same=0 vA=0.38 vB=0.30 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.24 drainB/20t=+0.000
+b_long_s120_s6c t=1320 nbig=3 same=0 vA=0.38 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.05 drainB/20t=+0.000
+b_long_s120_s6c t=1340 nbig=3 same=0 vA=0.38 vB=0.28 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.04 drainB/20t=+0.000
+b_long_s120_s6c t=1360 nbig=3 same=0 vA=0.38 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.11 drainB/20t=+0.000
+b_long_s120_s6c t=1380 nbig=3 same=0 vA=0.38 vB=0.30 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.65 drainB/20t=+0.000
+b_long_s120_s6c t=1400 nbig=3 same=0 vA=0.38 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.42 drainB/20t=+0.000
+b_long_s120_s6c t=1420 nbig=3 same=0 vA=0.39 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.71 drainB/20t=+0.000
+b_long_s120_s6c t=1440 nbig=3 same=0 vA=0.39 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.96 drainB/20t=+0.000
+b_long_s120_s6c t=1460 nbig=3 same=0 vA=0.39 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.41 drainB/20t=+0.000
+b_long_s120_s6c t=1480 nbig=3 same=0 vA=0.38 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.86 drainB/20t=+0.000
+b_long_s120_s6c t=1500 nbig=3 same=0 vA=0.39 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-3.06 drainB/20t=+0.000
+b_long_s120_s6c t=1520 nbig=3 same=0 vA=0.37 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.91 drainB/20t=+0.000
+b_long_s120_s6c t=1540 nbig=3 same=0 vA=0.37 vB=0.30 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.68 drainB/20t=+0.000
+b_long_s120_s6c t=1560 nbig=3 same=0 vA=0.36 vB=0.30 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.99 drainB/20t=+0.000
+b_long_s120_s6c t=1580 nbig=3 same=0 vA=0.37 vB=0.30 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+2.72 drainB/20t=+0.000
+b_long_s120_s6c t=1600 nbig=3 same=0 vA=0.36 vB=0.28 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+2.59 drainB/20t=+0.000
+b_long_s120_s6c t=1620 nbig=3 same=0 vA=0.35 vB=0.29 sideB=0.34 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+2.35 drainB/20t=+0.000
+b_long_s120_s6c t=1640 nbig=2 same=0 vA=0.57 vB=0.15 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.26 drainB/20t=+0.000
+b_long_s120_s6c t=1660 nbig=2 same=0 vA=0.57 vB=0.15 sideB=0.17 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.13 drainB/20t=+0.000
+b_long_s101_vc t= 740 nbig=2 same=1 vA=0.47 vB=0.36 sideB=0.42 link=   3 net=+0.125 |Qg|=0.559 Ccut=  5.6 dphase=-0.05 drainB/20t=+0.004
+b_long_s101_vc t= 860 nbig=2 same=1 vA=0.68 vB=0.16 sideB=0.19 link=   7 net=+0.248 |Qg|=0.329 Ccut=  8.1 dphase=+0.48 drainB/20t=+0.020
+b_long_s101_vc t= 880 nbig=2 same=1 vA=0.68 vB=0.15 sideB=0.18 link=  10 net=+0.119 |Qg|=0.161 Ccut=  3.8 dphase=+0.38 drainB/20t=+0.010
+b_long_s101_vc t= 900 nbig=2 same=1 vA=0.67 vB=0.15 sideB=0.18 link=  16 net=+0.038 |Qg|=0.120 Ccut=  2.0 dphase=+0.27 drainB/20t=+0.003
+b_long_s101_vc t= 920 nbig=2 same=1 vA=0.67 vB=0.15 sideB=0.18 link=  20 net=+0.064 |Qg|=0.082 Ccut=  2.2 dphase=+0.26 drainB/20t=+0.005
+b_long_s101_vc t= 940 nbig=2 same=0 vA=0.68 vB=0.16 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.30 drainB/20t=+0.000
+b_long_s101_vc t= 960 nbig=2 same=0 vA=0.68 vB=0.16 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.29 drainB/20t=+0.000
+b_long_s101_vc t= 980 nbig=2 same=0 vA=0.67 vB=0.16 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.35 drainB/20t=+0.000
+b_long_s101_vc t=1000 nbig=2 same=0 vA=0.60 vB=0.16 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.25 drainB/20t=+0.000
+b_long_s101_vc t=1020 nbig=2 same=0 vA=0.59 vB=0.16 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.16 drainB/20t=+0.000
+b_long_s101_vc t=1040 nbig=2 same=0 vA=0.58 vB=0.16 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.03 drainB/20t=+0.000
+b_long_s101_vc t=1060 nbig=2 same=0 vA=0.66 vB=0.15 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.06 drainB/20t=+0.000
+b_long_s101_vc t=1080 nbig=2 same=0 vA=0.66 vB=0.15 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.06 drainB/20t=+0.000
+b_long_s101_vc t=1100 nbig=2 same=0 vA=0.67 vB=0.16 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.33 drainB/20t=+0.000
+b_long_s101_vc t=1120 nbig=2 same=0 vA=0.66 vB=0.15 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.56 drainB/20t=+0.000
+b_long_s101_vc t=1140 nbig=2 same=0 vA=0.66 vB=0.15 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.78 drainB/20t=+0.000
+b_long_s101_vc t=1160 nbig=2 same=0 vA=0.67 vB=0.14 sideB=0.18 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.96 drainB/20t=+0.000
+b_long_s101_vc t=1180 nbig=3 same=1 vA=0.34 vB=0.34 sideB=0.40 link=  29 net=-0.315 |Qg|=0.428 Ccut= 31.2 dphase=+1.39 drainB/20t=-0.012
+b_long_s101_vc t=1200 nbig=3 same=1 vA=0.34 vB=0.32 sideB=0.37 link=  66 net=-0.257 |Qg|=0.650 Ccut= 53.5 dphase=-1.64 drainB/20t=-0.010
+b_long_s101_vc t=1220 nbig=3 same=1 vA=0.34 vB=0.32 sideB=0.38 link=  86 net=-0.023 |Qg|=0.047 Ccut=  4.8 dphase=-1.43 drainB/20t=-0.001
+b_long_s101_vc t=1240 nbig=3 same=1 vA=0.34 vB=0.33 sideB=0.38 link= 120 net=-0.004 |Qg|=0.016 Ccut=  2.0 dphase=-1.05 drainB/20t=-0.000
+b_long_s101_vc t=1260 nbig=3 same=0 vA=0.34 vB=0.32 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.74 drainB/20t=+0.000
+b_long_s101_vc t=1280 nbig=3 same=0 vA=0.34 vB=0.32 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.64 drainB/20t=+0.000
+b_long_s101_vc t=1300 nbig=3 same=0 vA=0.32 vB=0.32 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.77 drainB/20t=+0.000
+b_long_s101_vc t=1320 nbig=3 same=0 vA=0.35 vB=0.32 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.58 drainB/20t=+0.000
+b_long_s101_vc t=1340 nbig=3 same=0 vA=0.34 vB=0.32 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.40 drainB/20t=+0.000
+b_long_s101_vc t=1360 nbig=3 same=0 vA=0.34 vB=0.32 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.24 drainB/20t=+0.000
+b_long_s101_vc t=1380 nbig=4 same=0 vA=0.33 vB=0.20 sideB=0.40 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.34 drainB/20t=+0.000
+b_long_s101_vc t=1400 nbig=4 same=0 vA=0.32 vB=0.20 sideB=0.40 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.22 drainB/20t=+0.000
+b_long_s101_vc t=1420 nbig=3 same=0 vA=0.34 vB=0.32 sideB=0.37 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.08 drainB/20t=+0.000
+b_long_s101_vc t=1440 nbig=4 same=0 vA=0.32 vB=0.17 sideB=0.40 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.12 drainB/20t=+0.000
+b_long_s101_vc t=1460 nbig=4 same=0 vA=0.32 vB=0.17 sideB=0.40 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.02 drainB/20t=+0.000
+b_long_s101_vc t=1480 nbig=4 same=0 vA=0.33 vB=0.18 sideB=0.40 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.28 drainB/20t=+0.000
+b_long_s101_vc t=1500 nbig=4 same=0 vA=0.33 vB=0.18 sideB=0.40 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.66 drainB/20t=+0.000
+b_long_s101_vc t=1520 nbig=4 same=0 vA=0.33 vB=0.18 sideB=0.40 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.89 drainB/20t=+0.000
+b_long_s101_vc t=1540 nbig=3 same=1 vA=0.49 vB=0.18 sideB=0.21 link=  49 net=+0.017 |Qg|=0.184 Ccut=  8.9 dphase=-0.67 drainB/20t=+0.001
+b_long_s101_vc t=1560 nbig=3 same=0 vA=0.49 vB=0.18 sideB=0.21 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.73 drainB/20t=+0.000
+b_long_s101_vc t=1580 nbig=3 same=0 vA=0.48 vB=0.18 sideB=0.21 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.72 drainB/20t=+0.000
+b_long_s101_vc t=1600 nbig=3 same=0 vA=0.47 vB=0.18 sideB=0.21 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.73 drainB/20t=+0.000
+b_long_s101_vc t=1620 nbig=3 same=0 vA=0.48 vB=0.18 sideB=0.21 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.90 drainB/20t=+0.000
+b_long_s101_vc t=1640 nbig=2 same=0 vA=0.48 vB=0.33 sideB=0.39 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.02 drainB/20t=+0.000
+b_long_s102_vc t= 920 nbig=2 same=1 vA=0.42 vB=0.41 sideB=0.47 link=  12 net=-0.307 |Qg|=1.217 Ccut= 26.5 dphase=-0.22 drainB/20t=-0.010
+b_long_s102_vc t= 940 nbig=2 same=1 vA=0.42 vB=0.41 sideB=0.47 link=  15 net=+0.181 |Qg|=0.720 Ccut= 27.6 dphase=-0.21 drainB/20t=+0.006
+b_long_s102_vc t= 960 nbig=2 same=1 vA=0.43 vB=0.40 sideB=0.47 link=  29 net=-0.052 |Qg|=0.361 Ccut= 13.3 dphase=-0.16 drainB/20t=-0.002
+b_long_s102_vc t= 980 nbig=2 same=1 vA=0.43 vB=0.40 sideB=0.47 link=  36 net=-0.207 |Qg|=0.301 Ccut= 16.2 dphase=-0.20 drainB/20t=-0.007
+b_long_s102_vc t=1000 nbig=2 same=1 vA=0.43 vB=0.38 sideB=0.47 link=  60 net=-0.098 |Qg|=0.299 Ccut= 15.5 dphase=-0.34 drainB/20t=-0.003
+b_long_s102_vc t=1020 nbig=2 same=0 vA=0.44 vB=0.39 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.42 drainB/20t=+0.000
+b_long_s102_vc t=1040 nbig=2 same=0 vA=0.44 vB=0.39 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.44 drainB/20t=+0.000
+b_long_s102_vc t=1060 nbig=2 same=0 vA=0.43 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.34 drainB/20t=+0.000
+b_long_s102_vc t=1080 nbig=2 same=0 vA=0.43 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.28 drainB/20t=+0.000
+b_long_s102_vc t=1100 nbig=2 same=0 vA=0.42 vB=0.41 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.20 drainB/20t=+0.000
+b_long_s102_vc t=1120 nbig=2 same=0 vA=0.43 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.26 drainB/20t=+0.000
+b_long_s102_vc t=1140 nbig=2 same=0 vA=0.44 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.47 drainB/20t=+0.000
+b_long_s102_vc t=1160 nbig=2 same=0 vA=0.44 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.52 drainB/20t=+0.000
+b_long_s102_vc t=1180 nbig=2 same=0 vA=0.44 vB=0.42 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.47 drainB/20t=+0.000
+b_long_s102_vc t=1200 nbig=2 same=0 vA=0.43 vB=0.42 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.48 drainB/20t=+0.000
+b_long_s102_vc t=1220 nbig=2 same=0 vA=0.43 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.42 drainB/20t=+0.000
+b_long_s102_vc t=1240 nbig=2 same=0 vA=0.42 vB=0.41 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.43 drainB/20t=+0.000
+b_long_s102_vc t=1260 nbig=2 same=0 vA=0.43 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.48 drainB/20t=+0.000
+b_long_s102_vc t=1280 nbig=2 same=0 vA=0.44 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.44 drainB/20t=+0.000
+b_long_s102_vc t=1300 nbig=2 same=0 vA=0.44 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.37 drainB/20t=+0.000
+b_long_s102_vc t=1320 nbig=2 same=0 vA=0.42 vB=0.41 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.32 drainB/20t=+0.000
+b_long_s102_vc t=1340 nbig=2 same=0 vA=0.42 vB=0.41 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.39 drainB/20t=+0.000
+b_long_s102_vc t=1360 nbig=2 same=0 vA=0.43 vB=0.41 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.44 drainB/20t=+0.000
+b_long_s102_vc t=1380 nbig=2 same=0 vA=0.43 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.42 drainB/20t=+0.000
+b_long_s102_vc t=1400 nbig=2 same=0 vA=0.44 vB=0.41 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.37 drainB/20t=+0.000
+b_long_s102_vc t=1520 nbig=2 same=1 vA=0.48 vB=0.35 sideB=0.41 link=  59 net=-0.170 |Qg|=0.357 Ccut= 32.2 dphase=+0.56 drainB/20t=-0.006
+b_long_s102_vc t=1540 nbig=2 same=1 vA=0.49 vB=0.35 sideB=0.42 link=  77 net=-0.143 |Qg|=0.144 Ccut= 14.5 dphase=+0.45 drainB/20t=-0.005
+b_long_s102_vc t=1560 nbig=2 same=1 vA=0.48 vB=0.36 sideB=0.42 link=  90 net=-0.110 |Qg|=0.110 Ccut=  6.8 dphase=+0.51 drainB/20t=-0.004
+b_long_s102_vc t=1580 nbig=2 same=1 vA=0.47 vB=0.35 sideB=0.42 link=  96 net=-0.002 |Qg|=0.002 Ccut=  0.0 dphase=+0.61 drainB/20t=-0.000
+b_long_s102_vc t=1600 nbig=2 same=1 vA=0.46 vB=0.35 sideB=0.42 link= 105 net=-0.007 |Qg|=0.007 Ccut=  1.2 dphase=+0.67 drainB/20t=-0.000
+b_long_s102_vc t=1620 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.58 drainB/20t=+0.000
+b_long_s103_vc t= 860 nbig=2 same=1 vA=0.64 vB=0.19 sideB=0.23 link=   2 net=-0.107 |Qg|=1.719 Ccut= 12.5 dphase=+0.16 drainB/20t=-0.007
+b_long_s103_vc t= 880 nbig=2 same=1 vA=0.63 vB=0.20 sideB=0.24 link=   4 net=-0.186 |Qg|=1.226 Ccut= 16.8 dphase=+0.01 drainB/20t=-0.012
+b_long_s103_vc t= 900 nbig=2 same=1 vA=0.52 vB=0.31 sideB=0.37 link=   4 net=-0.055 |Qg|=0.601 Ccut=  8.1 dphase=-0.29 drainB/20t=-0.002
+b_long_s103_vc t= 920 nbig=2 same=1 vA=0.52 vB=0.30 sideB=0.37 link=  18 net=+0.127 |Qg|=0.523 Ccut= 14.9 dphase=-0.56 drainB/20t=+0.005
+b_long_s103_vc t= 940 nbig=2 same=1 vA=0.53 vB=0.30 sideB=0.35 link=   5 net=+0.210 |Qg|=0.550 Ccut= 18.5 dphase=-0.82 drainB/20t=+0.009
+b_long_s103_vc t=1120 nbig=2 same=1 vA=0.63 vB=0.19 sideB=0.22 link=   7 net=+0.003 |Qg|=0.476 Ccut= 26.5 dphase=-1.73 drainB/20t=+0.000
+b_long_s103_vc t=1160 nbig=2 same=1 vA=0.71 vB=0.10 sideB=0.11 link=  15 net=-0.133 |Qg|=0.402 Ccut= 23.8 dphase=-1.99 drainB/20t=-0.017
+b_long_s103_vc t=1180 nbig=2 same=1 vA=0.71 vB=0.10 sideB=0.12 link=  30 net=-0.080 |Qg|=0.171 Ccut= 13.2 dphase=-2.10 drainB/20t=-0.010
+b_long_s104_vc t= 920 nbig=2 same=1 vA=0.56 vB=0.27 sideB=0.31 link=  13 net=-0.225 |Qg|=0.454 Ccut= 40.0 dphase=-0.03 drainB/20t=-0.011
+b_long_s104_vc t= 960 nbig=2 same=1 vA=0.57 vB=0.26 sideB=0.31 link=  24 net=+0.052 |Qg|=0.485 Ccut= 34.0 dphase=-0.01 drainB/20t=+0.003
+b_long_s104_vc t= 980 nbig=2 same=1 vA=0.55 vB=0.26 sideB=0.31 link=  37 net=-0.369 |Qg|=0.391 Ccut= 29.4 dphase=+0.13 drainB/20t=-0.018
+b_long_s104_vc t=1000 nbig=2 same=1 vA=0.53 vB=0.27 sideB=0.32 link=  81 net=-0.199 |Qg|=0.250 Ccut= 15.6 dphase=+0.10 drainB/20t=-0.009
+b_long_s104_vc t=1020 nbig=2 same=0 vA=0.54 vB=0.27 sideB=0.31 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.06 drainB/20t=+0.000
+b_long_s104_vc t=1040 nbig=2 same=0 vA=0.55 vB=0.27 sideB=0.31 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.13 drainB/20t=+0.000
+b_long_s104_vc t=1060 nbig=2 same=0 vA=0.55 vB=0.27 sideB=0.31 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.12 drainB/20t=+0.000
+b_long_s104_vc t=1080 nbig=2 same=0 vA=0.55 vB=0.27 sideB=0.31 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.10 drainB/20t=+0.000
+b_long_s104_vc t=1100 nbig=2 same=0 vA=0.55 vB=0.26 sideB=0.31 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.05 drainB/20t=+0.000
+b_long_s104_vc t=1120 nbig=2 same=0 vA=0.56 vB=0.26 sideB=0.31 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.12 drainB/20t=+0.000
+b_long_s104_vc t=1140 nbig=2 same=0 vA=0.56 vB=0.27 sideB=0.32 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.13 drainB/20t=+0.000
+b_long_s104_vc t=1160 nbig=2 same=0 vA=0.55 vB=0.27 sideB=0.32 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.43 drainB/20t=+0.000
+b_long_s104_vc t=1180 nbig=2 same=0 vA=0.56 vB=0.28 sideB=0.32 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.91 drainB/20t=+0.000
+b_long_s104_vc t=1200 nbig=2 same=0 vA=0.56 vB=0.26 sideB=0.32 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.14 drainB/20t=+0.000
+b_long_s104_vc t=1220 nbig=2 same=0 vA=0.56 vB=0.26 sideB=0.32 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.99 drainB/20t=+0.000
+b_long_s104_vc t=1240 nbig=2 same=0 vA=0.56 vB=0.27 sideB=0.32 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.78 drainB/20t=+0.000
+b_long_s104_vc t=1260 nbig=2 same=0 vA=0.56 vB=0.27 sideB=0.32 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.76 drainB/20t=+0.000
+b_long_s104_vc t=1280 nbig=2 same=0 vA=0.56 vB=0.27 sideB=0.32 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.77 drainB/20t=+0.000
+b_long_s105_vc t= 720 nbig=2 same=1 vA=0.43 vB=0.39 sideB=0.47 link=  21 net=-0.106 |Qg|=0.384 Ccut= 24.9 dphase=-0.27 drainB/20t=-0.003
+b_long_s105_vc t= 740 nbig=2 same=1 vA=0.43 vB=0.40 sideB=0.47 link=  42 net=-0.048 |Qg|=0.353 Ccut= 20.2 dphase=-0.28 drainB/20t=-0.001
+b_long_s105_vc t= 760 nbig=2 same=1 vA=0.43 vB=0.41 sideB=0.47 link=  47 net=+0.006 |Qg|=0.301 Ccut= 15.5 dphase=-0.29 drainB/20t=+0.000
+b_long_s105_vc t= 780 nbig=2 same=1 vA=0.42 vB=0.40 sideB=0.47 link=  59 net=+0.038 |Qg|=0.218 Ccut= 11.1 dphase=-0.22 drainB/20t=+0.001
+b_long_s105_vc t= 800 nbig=2 same=1 vA=0.42 vB=0.41 sideB=0.47 link=  59 net=+0.018 |Qg|=0.178 Ccut=  8.4 dphase=-0.07 drainB/20t=+0.001
+b_long_s105_vc t= 820 nbig=2 same=0 vA=0.43 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.09 drainB/20t=+0.000
+b_long_s105_vc t= 840 nbig=2 same=0 vA=0.41 vB=0.40 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.11 drainB/20t=+0.000
+b_long_s105_vc t= 860 nbig=2 same=0 vA=0.43 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.14 drainB/20t=+0.000
+b_long_s105_vc t= 880 nbig=2 same=0 vA=0.43 vB=0.41 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.12 drainB/20t=+0.000
+b_long_s105_vc t= 900 nbig=2 same=0 vA=0.42 vB=0.39 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.02 drainB/20t=+0.000
+b_long_s105_vc t= 920 nbig=2 same=0 vA=0.42 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.05 drainB/20t=+0.000
+b_long_s105_vc t= 940 nbig=2 same=0 vA=0.42 vB=0.40 sideB=0.47 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.02 drainB/20t=+0.000
+b_long_s105_vc t= 960 nbig=3 same=0 vA=0.39 vB=0.23 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.52 drainB/20t=+0.000
+b_long_s105_vc t= 980 nbig=3 same=0 vA=0.40 vB=0.23 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.51 drainB/20t=+0.000
+b_long_s105_vc t=1000 nbig=3 same=0 vA=0.41 vB=0.24 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.37 drainB/20t=+0.000
+b_long_s105_vc t=1020 nbig=3 same=0 vA=0.42 vB=0.23 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.13 drainB/20t=+0.000
+b_long_s105_vc t=1040 nbig=3 same=0 vA=0.41 vB=0.23 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.19 drainB/20t=+0.000
+b_long_s105_vc t=1060 nbig=3 same=0 vA=0.41 vB=0.23 sideB=0.50 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.47 drainB/20t=+0.000
+b_long_s105_vc t=1080 nbig=3 same=0 vA=0.40 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.50 drainB/20t=+0.000
+b_long_s105_vc t=1100 nbig=3 same=0 vA=0.40 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.49 drainB/20t=+0.000
+b_long_s105_vc t=1120 nbig=2 same=0 vA=0.58 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.54 drainB/20t=+0.000
+b_long_s105_vc t=1140 nbig=2 same=0 vA=0.59 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.42 drainB/20t=+0.000
+b_long_s105_vc t=1160 nbig=2 same=0 vA=0.58 vB=0.24 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.47 drainB/20t=+0.000
+b_long_s105_vc t=1180 nbig=2 same=0 vA=0.59 vB=0.24 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.36 drainB/20t=+0.000
+b_long_s105_vc t=1200 nbig=2 same=0 vA=0.58 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.00 drainB/20t=+0.000
+b_long_s105_vc t=1220 nbig=2 same=0 vA=0.59 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.78 drainB/20t=+0.000
+b_long_s105_vc t=1240 nbig=2 same=0 vA=0.59 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.56 drainB/20t=+0.000
+b_long_s105_vc t=1260 nbig=3 same=0 vA=0.47 vB=0.24 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.41 drainB/20t=+0.000
+b_long_s105_vc t=1280 nbig=3 same=0 vA=0.46 vB=0.22 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.40 drainB/20t=+0.000
+b_long_s105_vc t=1300 nbig=3 same=0 vA=0.48 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.34 drainB/20t=+0.000
+b_long_s105_vc t=1320 nbig=3 same=0 vA=0.49 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.20 drainB/20t=+0.000
+b_long_s105_vc t=1340 nbig=3 same=0 vA=0.48 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.01 drainB/20t=+0.000
+b_long_s105_vc t=1360 nbig=3 same=0 vA=0.47 vB=0.23 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.14 drainB/20t=+0.000
+b_long_s105_vc t=1380 nbig=3 same=0 vA=0.48 vB=0.24 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.32 drainB/20t=+0.000
+b_long_s105_vc t=1400 nbig=3 same=0 vA=0.49 vB=0.20 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.17 drainB/20t=+0.000
+b_long_s105_vc t=1420 nbig=3 same=0 vA=0.49 vB=0.14 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.29 drainB/20t=+0.000
+b_long_s105_vc t=1440 nbig=3 same=0 vA=0.48 vB=0.13 sideB=0.27 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.31 drainB/20t=+0.000
+b_long_s105_vc t=1460 nbig=2 same=1 vA=0.61 vB=0.20 sideB=0.23 link=  59 net=+0.083 |Qg|=0.115 Ccut=  7.7 dphase=+0.12 drainB/20t=+0.005
+b_long_s105_vc t=1480 nbig=2 same=0 vA=0.61 vB=0.19 sideB=0.23 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.02 drainB/20t=+0.000
+b_long_s105_vc t=1500 nbig=2 same=0 vA=0.61 vB=0.20 sideB=0.23 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.17 drainB/20t=+0.000
+b_long_s105_vc t=1520 nbig=2 same=0 vA=0.61 vB=0.19 sideB=0.23 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.24 drainB/20t=+0.000
+b_long_s105_vc t=1540 nbig=2 same=0 vA=0.61 vB=0.19 sideB=0.23 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.22 drainB/20t=+0.000
+b_long_s105_vc t=1560 nbig=2 same=0 vA=0.62 vB=0.19 sideB=0.23 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.13 drainB/20t=+0.000
+b_long_s105_vc t=1580 nbig=2 same=0 vA=0.62 vB=0.19 sideB=0.23 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.11 drainB/20t=+0.000
+b_long_s105_vc t=1600 nbig=2 same=0 vA=0.62 vB=0.20 sideB=0.23 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.17 drainB/20t=+0.000
+b_long_s105_vc t=1620 nbig=2 same=0 vA=0.62 vB=0.20 sideB=0.23 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.10 drainB/20t=+0.000
+b_long_s105_vc t=1640 nbig=2 same=0 vA=0.63 vB=0.19 sideB=0.23 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.10 drainB/20t=+0.000
+b_long_s106_vc t=1060 nbig=2 same=1 vA=0.59 vB=0.23 sideB=0.28 link=  24 net=+0.112 |Qg|=0.204 Ccut= 31.5 dphase=-0.11 drainB/20t=+0.006
+b_long_s106_vc t=1080 nbig=2 same=1 vA=0.59 vB=0.24 sideB=0.28 link=  28 net=-0.146 |Qg|=0.213 Ccut= 17.3 dphase=-0.06 drainB/20t=-0.008
+b_long_s106_vc t=1100 nbig=2 same=1 vA=0.60 vB=0.24 sideB=0.29 link=  32 net=-0.200 |Qg|=0.229 Ccut= 15.9 dphase=+0.10 drainB/20t=-0.010
+b_long_s106_vc t=1120 nbig=3 same=1 vA=0.47 vB=0.24 sideB=0.29 link=  35 net=-0.157 |Qg|=0.328 Ccut= 16.8 dphase=-0.10 drainB/20t=-0.008
+b_long_s106_vc t=1140 nbig=3 same=1 vA=0.47 vB=0.25 sideB=0.29 link=  42 net=-0.022 |Qg|=0.132 Ccut=  6.4 dphase=-0.09 drainB/20t=-0.001
+b_long_s106_vc t=1160 nbig=3 same=1 vA=0.47 vB=0.25 sideB=0.29 link=  55 net=-0.007 |Qg|=0.077 Ccut=  3.7 dphase=-0.01 drainB/20t=-0.000
+b_long_s106_vc t=1180 nbig=3 same=0 vA=0.48 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.09 drainB/20t=+0.000
+b_long_s106_vc t=1200 nbig=3 same=0 vA=0.48 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.08 drainB/20t=+0.000
+b_long_s106_vc t=1220 nbig=3 same=0 vA=0.48 vB=0.24 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.30 drainB/20t=+0.000
+b_long_s106_vc t=1240 nbig=3 same=0 vA=0.47 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.62 drainB/20t=+0.000
+b_long_s106_vc t=1260 nbig=3 same=0 vA=0.47 vB=0.24 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.77 drainB/20t=+0.000
+b_long_s106_vc t=1280 nbig=3 same=0 vA=0.47 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.91 drainB/20t=+0.000
+b_long_s106_vc t=1300 nbig=3 same=0 vA=0.47 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.98 drainB/20t=+0.000
+b_long_s106_vc t=1320 nbig=3 same=0 vA=0.47 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.09 drainB/20t=+0.000
+b_long_s106_vc t=1340 nbig=3 same=0 vA=0.47 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.21 drainB/20t=+0.000
+b_long_s106_vc t=1360 nbig=3 same=0 vA=0.47 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.20 drainB/20t=+0.000
+b_long_s106_vc t=1380 nbig=3 same=0 vA=0.47 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.24 drainB/20t=+0.000
+b_long_s106_vc t=1400 nbig=3 same=0 vA=0.48 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.30 drainB/20t=+0.000
+b_long_s106_vc t=1420 nbig=3 same=0 vA=0.47 vB=0.25 sideB=0.29 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.38 drainB/20t=+0.000
+b_long_s106_vc t=1440 nbig=2 same=0 vA=0.72 vB=0.11 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-3.06 drainB/20t=+0.000
+b_long_s106_vc t=1460 nbig=2 same=0 vA=0.73 vB=0.12 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-3.05 drainB/20t=+0.000
+b_long_s106_vc t=1480 nbig=2 same=0 vA=0.73 vB=0.12 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.93 drainB/20t=+0.000
+b_long_s106_vc t=1500 nbig=2 same=0 vA=0.71 vB=0.11 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.89 drainB/20t=+0.000
+b_long_s106_vc t=1520 nbig=2 same=0 vA=0.69 vB=0.11 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.87 drainB/20t=+0.000
+b_long_s106_vc t=1540 nbig=2 same=0 vA=0.69 vB=0.11 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-2.51 drainB/20t=+0.000
+b_long_s107_vc t= 980 nbig=2 same=1 vA=0.57 vB=0.14 sideB=0.17 link=  32 net=-0.101 |Qg|=0.674 Ccut= 46.5 dphase=-1.34 drainB/20t=-0.009
+b_long_s107_vc t=1100 nbig=2 same=1 vA=0.59 vB=0.24 sideB=0.28 link=  13 net=+0.121 |Qg|=0.372 Ccut= 19.2 dphase=-1.42 drainB/20t=+0.006
+b_long_s107_vc t=1120 nbig=2 same=1 vA=0.58 vB=0.24 sideB=0.28 link=  42 net=-0.007 |Qg|=0.330 Ccut= 16.3 dphase=-1.33 drainB/20t=-0.000
+b_long_s107_vc t=1140 nbig=2 same=1 vA=0.58 vB=0.23 sideB=0.28 link=  61 net=-0.281 |Qg|=0.356 Ccut= 19.4 dphase=-1.33 drainB/20t=-0.015
+b_long_s107_vc t=1160 nbig=2 same=1 vA=0.57 vB=0.23 sideB=0.28 link=  80 net=-0.094 |Qg|=0.294 Ccut= 13.8 dphase=-1.37 drainB/20t=-0.005
+b_long_s107_vc t=1180 nbig=2 same=1 vA=0.58 vB=0.24 sideB=0.28 link=  84 net=+0.000 |Qg|=0.049 Ccut=  5.2 dphase=-1.39 drainB/20t=+0.000
+b_long_s107_vc t=1200 nbig=2 same=1 vA=0.59 vB=0.23 sideB=0.28 link=  84 net=-0.002 |Qg|=0.011 Ccut=  2.0 dphase=-1.33 drainB/20t=-0.000
+b_long_s107_vc t=1220 nbig=2 same=0 vA=0.58 vB=0.24 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.27 drainB/20t=+0.000
+b_long_s107_vc t=1240 nbig=2 same=0 vA=0.58 vB=0.24 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.22 drainB/20t=+0.000
+b_long_s107_vc t=1260 nbig=2 same=0 vA=0.60 vB=0.25 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.40 drainB/20t=+0.000
+b_long_s107_vc t=1280 nbig=2 same=0 vA=0.59 vB=0.24 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.68 drainB/20t=+0.000
+b_long_s107_vc t=1300 nbig=2 same=0 vA=0.59 vB=0.23 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.72 drainB/20t=+0.000
+b_long_s107_vc t=1320 nbig=2 same=0 vA=0.59 vB=0.24 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.75 drainB/20t=+0.000
+b_long_s107_vc t=1340 nbig=2 same=0 vA=0.58 vB=0.24 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.76 drainB/20t=+0.000
+b_long_s107_vc t=1360 nbig=2 same=0 vA=0.59 vB=0.24 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.76 drainB/20t=+0.000
+b_long_s107_vc t=1380 nbig=2 same=0 vA=0.60 vB=0.23 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.88 drainB/20t=+0.000
+b_long_s107_vc t=1400 nbig=3 same=0 vA=0.46 vB=0.24 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.76 drainB/20t=+0.000
+b_long_s107_vc t=1420 nbig=3 same=0 vA=0.46 vB=0.24 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.67 drainB/20t=+0.000
+b_long_s107_vc t=1440 nbig=3 same=0 vA=0.47 vB=0.24 sideB=0.28 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.76 drainB/20t=+0.000
+b_long_s107_vc t=1460 nbig=2 same=1 vA=0.73 vB=0.11 sideB=0.14 link=  84 net=-0.009 |Qg|=0.009 Ccut=  1.9 dphase=+2.63 drainB/20t=-0.001
+b_long_s107_vc t=1500 nbig=2 same=0 vA=0.71 vB=0.12 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+2.80 drainB/20t=+0.000
+b_long_s107_vc t=1520 nbig=2 same=0 vA=0.66 vB=0.12 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+2.92 drainB/20t=+0.000
+b_long_s107_vc t=1540 nbig=2 same=0 vA=0.64 vB=0.12 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+2.83 drainB/20t=+0.000
+b_long_s107_vc t=1560 nbig=2 same=0 vA=0.65 vB=0.12 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+2.00 drainB/20t=+0.000
+b_long_s107_vc t=1580 nbig=2 same=0 vA=0.66 vB=0.12 sideB=0.14 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.31 drainB/20t=+0.000
+b_long_s108_vc t=1020 nbig=2 same=1 vA=0.47 vB=0.37 sideB=0.43 link=   5 net=+0.301 |Qg|=0.514 Ccut= 18.7 dphase=+0.44 drainB/20t=+0.011
+b_long_s108_vc t=1040 nbig=2 same=1 vA=0.44 vB=0.34 sideB=0.40 link=  10 net=-0.114 |Qg|=0.239 Ccut= 30.7 dphase=+0.41 drainB/20t=-0.004
+b_long_s108_vc t=1060 nbig=2 same=1 vA=0.49 vB=0.36 sideB=0.41 link=  11 net=-0.818 |Qg|=0.825 Ccut= 43.5 dphase=+0.64 drainB/20t=-0.030
+b_long_s108_vc t=1080 nbig=2 same=1 vA=0.41 vB=0.37 sideB=0.42 link=  20 net=-0.056 |Qg|=0.675 Ccut= 32.0 dphase=+0.55 drainB/20t=-0.002
+b_long_s108_vc t=1100 nbig=2 same=1 vA=0.42 vB=0.36 sideB=0.41 link=  53 net=+0.217 |Qg|=0.687 Ccut= 45.4 dphase=+0.44 drainB/20t=+0.008
+b_long_s108_vc t=1120 nbig=2 same=1 vA=0.42 vB=0.35 sideB=0.41 link=  65 net=-0.023 |Qg|=0.131 Ccut= 16.6 dphase=+0.54 drainB/20t=-0.001
+b_long_s108_vc t=1140 nbig=2 same=1 vA=0.48 vB=0.34 sideB=0.41 link=  73 net=-0.301 |Qg|=0.301 Ccut= 13.4 dphase=+0.93 drainB/20t=-0.011
+b_long_s108_vc t=1160 nbig=2 same=1 vA=0.46 vB=0.35 sideB=0.42 link=  73 net=-0.306 |Qg|=0.306 Ccut= 13.0 dphase=+1.14 drainB/20t=-0.011
+b_long_s108_vc t=1180 nbig=2 same=1 vA=0.47 vB=0.32 sideB=0.42 link=  74 net=-0.080 |Qg|=0.107 Ccut=  7.2 dphase=+1.17 drainB/20t=-0.003
+b_long_s108_vc t=1200 nbig=2 same=1 vA=0.47 vB=0.35 sideB=0.42 link=  84 net=+0.004 |Qg|=0.016 Ccut=  3.2 dphase=+0.85 drainB/20t=+0.000
+b_long_s108_vc t=1220 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.65 drainB/20t=+0.000
+b_long_s108_vc t=1240 nbig=2 same=0 vA=0.48 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.57 drainB/20t=+0.000
+b_long_s108_vc t=1260 nbig=2 same=0 vA=0.48 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.61 drainB/20t=+0.000
+b_long_s108_vc t=1280 nbig=2 same=0 vA=0.40 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.68 drainB/20t=+0.000
+b_long_s108_vc t=1300 nbig=2 same=0 vA=0.41 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.76 drainB/20t=+0.000
+b_long_s108_vc t=1320 nbig=2 same=0 vA=0.42 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.84 drainB/20t=+0.000
+b_long_s108_vc t=1340 nbig=2 same=0 vA=0.41 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.04 drainB/20t=+0.000
+b_long_s108_vc t=1360 nbig=2 same=0 vA=0.41 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.98 drainB/20t=+0.000
+b_long_s108_vc t=1380 nbig=2 same=0 vA=0.41 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.92 drainB/20t=+0.000
+b_long_s108_vc t=1400 nbig=3 same=0 vA=0.41 vB=0.23 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+1.35 drainB/20t=+0.000
+b_long_s108_vc t=1420 nbig=2 same=0 vA=0.40 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=+0.77 drainB/20t=+0.000
+b_long_s108_vc t=1540 nbig=2 same=1 vA=0.55 vB=0.27 sideB=0.32 link=   7 net=+0.043 |Qg|=0.257 Ccut= 26.6 dphase=+1.28 drainB/20t=+0.002
+b_long_s108_vc t=1560 nbig=2 same=1 vA=0.54 vB=0.27 sideB=0.32 link=  31 net=-0.263 |Qg|=0.452 Ccut= 32.7 dphase=+1.53 drainB/20t=-0.012
+b_long_s108_vc t=1580 nbig=2 same=1 vA=0.55 vB=0.27 sideB=0.33 link=  22 net=-0.253 |Qg|=0.513 Ccut= 25.7 dphase=+2.04 drainB/20t=-0.012
+b_long_s108_vc t=1600 nbig=2 same=1 vA=0.53 vB=0.29 sideB=0.34 link=  90 net=-0.407 |Qg|=0.411 Ccut= 24.5 dphase=+2.35 drainB/20t=-0.018
+b_long_s108_vc t=1620 nbig=2 same=1 vA=0.52 vB=0.30 sideB=0.34 link=  88 net=-0.299 |Qg|=0.299 Ccut= 17.4 dphase=+2.08 drainB/20t=-0.013
+b_long_s108_vc t=1640 nbig=2 same=1 vA=0.52 vB=0.29 sideB=0.35 link= 101 net=-0.136 |Qg|=0.136 Ccut=  9.1 dphase=+1.58 drainB/20t=-0.006
+b_long_s109_vc t=1000 nbig=2 same=1 vA=0.47 vB=0.36 sideB=0.42 link=  16 net=+0.064 |Qg|=0.798 Ccut= 22.6 dphase=+0.11 drainB/20t=+0.002
+b_long_s109_vc t=1020 nbig=2 same=1 vA=0.49 vB=0.37 sideB=0.42 link=  16 net=+0.328 |Qg|=0.466 Ccut= 15.6 dphase=-0.08 drainB/20t=+0.012
+b_long_s109_vc t=1040 nbig=2 same=1 vA=0.47 vB=0.35 sideB=0.42 link=  37 net=-0.089 |Qg|=0.344 Ccut= 24.6 dphase=-0.22 drainB/20t=-0.003
+b_long_s109_vc t=1060 nbig=2 same=1 vA=0.47 vB=0.35 sideB=0.42 link=  37 net=-0.145 |Qg|=0.232 Ccut= 15.0 dphase=-0.56 drainB/20t=-0.005
+b_long_s109_vc t=1080 nbig=2 same=1 vA=0.46 vB=0.36 sideB=0.42 link=  45 net=-0.073 |Qg|=0.078 Ccut=  2.7 dphase=-0.88 drainB/20t=-0.003
+b_long_s109_vc t=1100 nbig=2 same=0 vA=0.45 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-1.13 drainB/20t=+0.000
+b_long_s109_vc t=1120 nbig=2 same=0 vA=0.46 vB=0.34 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.92 drainB/20t=+0.000
+b_long_s109_vc t=1140 nbig=2 same=0 vA=0.44 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.72 drainB/20t=+0.000
+b_long_s109_vc t=1160 nbig=2 same=0 vA=0.45 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.54 drainB/20t=+0.000
+b_long_s109_vc t=1180 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.66 drainB/20t=+0.000
+b_long_s109_vc t=1200 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.70 drainB/20t=+0.000
+b_long_s109_vc t=1220 nbig=2 same=0 vA=0.46 vB=0.36 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.57 drainB/20t=+0.000
+b_long_s109_vc t=1240 nbig=2 same=0 vA=0.46 vB=0.37 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.41 drainB/20t=+0.000
+b_long_s109_vc t=1260 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.43 drainB/20t=+0.000
+b_long_s109_vc t=1280 nbig=2 same=0 vA=0.45 vB=0.35 sideB=0.42 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.37 drainB/20t=+0.000
+b_long_s109_vc t=1300 nbig=2 same=0 vA=0.45 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.20 drainB/20t=+0.000
+b_long_s109_vc t=1320 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.28 drainB/20t=+0.000
+b_long_s109_vc t=1340 nbig=2 same=0 vA=0.45 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.35 drainB/20t=+0.000
+b_long_s109_vc t=1360 nbig=2 same=0 vA=0.46 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.36 drainB/20t=+0.000
+b_long_s109_vc t=1380 nbig=2 same=0 vA=0.45 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.42 drainB/20t=+0.000
+b_long_s109_vc t=1400 nbig=2 same=0 vA=0.45 vB=0.37 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.61 drainB/20t=+0.000
+b_long_s109_vc t=1420 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.77 drainB/20t=+0.000
+b_long_s109_vc t=1680 nbig=2 same=1 vA=0.49 vB=0.31 sideB=0.37 link=  37 net=+0.030 |Qg|=0.592 Ccut= 49.0 dphase=-1.41 drainB/20t=+0.001
+b_long_s110_vc t= 860 nbig=2 same=1 vA=0.43 vB=0.40 sideB=0.48 link=   3 net=+0.396 |Qg|=1.730 Ccut= 31.6 dphase=-0.47 drainB/20t=+0.012
+b_long_s110_vc t= 880 nbig=2 same=1 vA=0.42 vB=0.39 sideB=0.48 link=   5 net=-0.429 |Qg|=0.864 Ccut= 16.3 dphase=-0.60 drainB/20t=-0.013
+b_long_s110_vc t= 940 nbig=2 same=1 vA=0.49 vB=0.35 sideB=0.41 link=   4 net=-0.190 |Qg|=0.934 Ccut= 14.7 dphase=-0.55 drainB/20t=-0.007
+b_long_s110_vc t= 960 nbig=2 same=1 vA=0.48 vB=0.36 sideB=0.41 link=  10 net=-0.293 |Qg|=0.400 Ccut=  5.5 dphase=-0.58 drainB/20t=-0.011
+b_long_s110_vc t= 980 nbig=2 same=1 vA=0.48 vB=0.35 sideB=0.41 link=   8 net=+0.216 |Qg|=0.451 Ccut=  9.9 dphase=-0.78 drainB/20t=+0.008
+b_long_s110_vc t=1000 nbig=2 same=1 vA=0.48 vB=0.35 sideB=0.41 link=  16 net=-0.069 |Qg|=0.491 Ccut=  9.8 dphase=-0.88 drainB/20t=-0.003
+b_long_s110_vc t=1020 nbig=2 same=1 vA=0.49 vB=0.34 sideB=0.41 link=  21 net=+0.012 |Qg|=0.353 Ccut=  8.5 dphase=-1.03 drainB/20t=+0.000
+b_long_s110_vc t=1040 nbig=2 same=1 vA=0.47 vB=0.34 sideB=0.41 link=  30 net=-0.019 |Qg|=0.557 Ccut= 25.0 dphase=-1.02 drainB/20t=-0.001
+b_long_s110_vc t=1060 nbig=2 same=1 vA=0.49 vB=0.33 sideB=0.41 link=  31 net=+0.163 |Qg|=0.261 Ccut= 14.3 dphase=-1.02 drainB/20t=+0.006
+b_long_s110_vc t=1080 nbig=2 same=1 vA=0.49 vB=0.35 sideB=0.41 link=  35 net=+0.005 |Qg|=0.076 Ccut=  6.2 dphase=-1.04 drainB/20t=+0.000
+b_long_s110_vc t=1100 nbig=2 same=1 vA=0.49 vB=0.35 sideB=0.41 link=  33 net=+0.008 |Qg|=0.012 Ccut=  2.6 dphase=-0.88 drainB/20t=+0.000
+b_long_s110_vc t=1120 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.83 drainB/20t=+0.000
+b_long_s110_vc t=1140 nbig=2 same=0 vA=0.47 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.82 drainB/20t=+0.000
+b_long_s110_vc t=1160 nbig=2 same=0 vA=0.46 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.75 drainB/20t=+0.000
+b_long_s110_vc t=1180 nbig=2 same=0 vA=0.47 vB=0.34 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.79 drainB/20t=+0.000
+b_long_s110_vc t=1200 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.77 drainB/20t=+0.000
+b_long_s110_vc t=1220 nbig=2 same=0 vA=0.49 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.71 drainB/20t=+0.000
+b_long_s110_vc t=1240 nbig=2 same=0 vA=0.49 vB=0.34 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.49 drainB/20t=+0.000
+b_long_s110_vc t=1260 nbig=2 same=0 vA=0.49 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.28 drainB/20t=+0.000
+b_long_s110_vc t=1280 nbig=2 same=0 vA=0.49 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.16 drainB/20t=+0.000
+b_long_s110_vc t=1300 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.12 drainB/20t=+0.000
+b_long_s110_vc t=1320 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.19 drainB/20t=+0.000
+b_long_s110_vc t=1340 nbig=2 same=0 vA=0.47 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.20 drainB/20t=+0.000
+b_long_s110_vc t=1360 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.27 drainB/20t=+0.000
+b_long_s110_vc t=1380 nbig=2 same=0 vA=0.48 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.37 drainB/20t=+0.000
+b_long_s110_vc t=1400 nbig=2 same=0 vA=0.49 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.46 drainB/20t=+0.000
+b_long_s110_vc t=1420 nbig=2 same=0 vA=0.48 vB=0.34 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.42 drainB/20t=+0.000
+b_long_s110_vc t=1440 nbig=2 same=0 vA=0.49 vB=0.34 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.35 drainB/20t=+0.000
+b_long_s110_vc t=1460 nbig=2 same=0 vA=0.49 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.35 drainB/20t=+0.000
+b_long_s110_vc t=1480 nbig=2 same=0 vA=0.49 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.47 drainB/20t=+0.000
+b_long_s110_vc t=1500 nbig=2 same=0 vA=0.47 vB=0.34 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.47 drainB/20t=+0.000
+b_long_s110_vc t=1520 nbig=2 same=0 vA=0.48 vB=0.35 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.45 drainB/20t=+0.000
+b_long_s110_vc t=1540 nbig=2 same=0 vA=0.48 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.43 drainB/20t=+0.000
+b_long_s110_vc t=1560 nbig=2 same=0 vA=0.49 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.43 drainB/20t=+0.000
+b_long_s110_vc t=1580 nbig=2 same=0 vA=0.48 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.34 drainB/20t=+0.000
+b_long_s110_vc t=1600 nbig=2 same=0 vA=0.48 vB=0.36 sideB=0.41 link=  -1 net=+0.000 |Qg|=0.000 Ccut=  0.0 dphase=-0.22 drainB/20t=+0.000
+왕복 흐름(Qgross) 경계 합: 중앙 0.327, 사분위 0.142 ~ 0.516. 두 덩어리의 위상차 |Δθ| 중앙 0.56 rad
+
+요약: 이어진 상태 192개. 작은 쪽 → 큰 쪽 순 흐름이 + 인 몫 0.35. 20 시간에 작은 쪽 부피가 빠져나가는 비율: 중앙 -0.001, 사분위 -0.008 ~ +0.001. 순/총 중앙 -1.00
