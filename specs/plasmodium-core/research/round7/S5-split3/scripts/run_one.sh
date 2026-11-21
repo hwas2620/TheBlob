@@ -10,6 +10,7 @@ case "$tag" in
   s5b)  extra="beta=0.1";;                                           # 관 벽 두께 두 배
   s5rd) extra="rate_down=0.01";;                                     # 관이 가늘어지는 빠르기 1/5
   s5w)  extra="wall_tau=300";;                                       # 관 벽이 굵기를 기억 (300 시간)
+  s5nk) extra="neck_keep=1";;                                        # 두 덩어리를 잇는 마지막 길은 관으로 지킨다
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1
