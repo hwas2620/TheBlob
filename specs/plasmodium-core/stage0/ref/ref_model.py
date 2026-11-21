@@ -466,7 +466,7 @@ def run(name, over):
                 for q_ in o_:
                     y_, x_ = ys_[q_], xs_[q_]
                     negrec.append((step, h[y_, x_], h[y_, x_] + dt * div[y_, x_], hstar[y_, x_], p[y_, x_], sage[y_, x_], age[y_, x_], Cn[y_, x_], float(resmask[y_, x_]), tube[y_, x_], nw_[y_, x_],
-                                   float(min(np.hypot(mimg(x_ - fx), mimg(y_ - fy)) for fx, fy in fpos)) if nf else -1.0, int(ng.sum())))
+                                   float(min(np.hypot(mimg(x_ - fx), mimg(y_ - fy)) for fx, fy in fpos)) if nf else -1.0, int(ng.sum()), float(neck[y_, x_]), float(neckp[y_, x_]), float(div[y_, x_])))
         # ---- eating / injection (N3 I) ----
         if nf:
             changed = False
