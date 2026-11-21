@@ -5,8 +5,8 @@ REF=/home/user/TheBlob/specs/plasmodium-core/stage0/ref
 scn=$1; seed=$2; tag=$3
 case "$tag" in
   s6c)   extra="ncyc=3";;                     # 대조 (S6과 같음)
-  s7g5)  extra="ncyc=3 sup_age=5";;           # 몸을 내보내는 덩어리가 빨리 늙음, 약하게
-  s7g20) extra="ncyc=3 sup_age=20";;          # 같은 규칙, 세게
+  s7b20)  extra="ncyc=3 sup_age=20";;         # 2차: 경계 흐름으로 잰 규칙, 보통
+  s7b100) extra="ncyc=3 sup_age=100";;        # 2차: 같은 규칙, 세게
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1

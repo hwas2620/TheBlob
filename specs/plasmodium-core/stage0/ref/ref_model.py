@@ -50,7 +50,7 @@ DEF = dict(
     neck_keep=0, neck_h=0.3, neck_min=0.1, neck_C=20.0, neck_every=1.0,   # [S5] 1: when the thick body (h >= neck_h) falls into two or more big parts (volume >= neck_min of the body) that are still joined by thin wet cells,
                                  #      the shortest wet path between them is kept as a tube: its thin cells do not dry, their rest thickness is at least neck_h, and the conductance of its edges is at least neck_C
     sup_age=0.0, sup_h=0.3, sup_min=0.1, sup_tau=8.0, sup_every=1.0,   # [S7] >0: when the thick body (h >= sup_h) is in two or more big parts (volume >= sup_min of the body), every wet cell goes to its nearest
-                                 #      big part (distance along wet cells, no limit); a part whose net outflow (EMA of div over sup_tau, summed over its cells) is e per unit volume and time
+                                 #      big part (distance along wet cells, no limit); a part whose net outflow across its borders with the other parts (edge flux EMA over sup_tau) is e per unit volume and time
                                  #      ages faster: sage rate x (1 + sup_age * max(0, e) * tau_a). A part that gives its body away stiffens, pushes more out and drains into the other (fan competition by flow)
     wall_tau=0.0,                # [S5] >0: the tube wall remembers its conductance: tube thickness uses Cwall = max(Cn, Cwall*exp(-dt/wall_tau)) (a vein's wall outlives a drop of its flow); 0 = off
     fan_food=0.0, fan_scent=0.01,   # [R4b] >0: a newly wet cell counts 1 + fan_food*min(1, c/(fan_scent*food_amp)) in its front's vigour (c: food field) - fronts in a food's scent are not out-competed
@@ -221,7 +221,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    dema = np.zeros((N, N)); supm = np.ones((N, N)); sup_steps = 0; sup_log = []   # [S7] EMA of net outflow per cell, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); sup_steps = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -460,7 +460,9 @@ def run(name, over):
                     Q[k] = ql; div += Q[k] - rev(Q[k], d)
                 nlim_steps += 1; nlim_cells += int(hneg.sum()); lim_cut_max = max(lim_cut_max, cut / max(tot, 1e-300))
         h = h - dt * div
-        if P['sup_age'] > 0: dema = np.where(wet, dema + min(1.0, dt / P['sup_tau']) * (div - dema), 0.0)   # [S7]
+        if P['sup_age'] > 0:                                                   # [S7] edge flux EMA (edges with a dry end are reset)
+            a_s = min(1.0, dt / P['sup_tau'])
+            for k, d in enumerate(DIRS): Qema[k] = np.where(wet & nb(wet, d), Qema[k] + a_s * (Q[k] - Qema[k]), 0.0)
         hmin_seen = min(hmin_seen, float(h[wet].min()) if wet.any() else 0.0)
         if wet.any() and float(h[wet].min()) < 0:
             ng = wet & (h < 0); neg_cellsteps += int(ng.sum())
@@ -581,9 +583,12 @@ def run(name, over):
                             cand_ = nb(rg_, d_) * nb(fr_, d_)
                             new_ = np.where((new_ == 0) & (cand_ > 0), cand_, new_)
                         new_ = np.where(wet & (rg_ == 0), new_, 0); fr_ = new_ > 0; rg_ += new_
+                    dx_ = np.zeros((N, N))                                # net outflow across the borders between parts only (inner edges cancel, dried cells leave no bias)
+                    for k, d in enumerate(DIRS):
+                        qx_ = np.where((rg_ > 0) & (nb(rg_, d) > 0) & (rg_ != nb(rg_, d)), Qema[k], 0.0); dx_ += qx_ - rev(qx_, d)
                     ex_ = []
                     for j_ in range(1, len(bg_) + 1):
-                        m_ = rg_ == j_; V_ = float(h[m_].sum()); e_ = float(dema[m_].sum()) / max(V_, 1e-12)
+                        m_ = rg_ == j_; V_ = float(h[m_].sum()); e_ = float(dx_[m_].sum()) / max(V_, 1e-12)
                         ex_.append(e_)
                         if e_ > 0: supm[m_] = 1.0 + P['sup_age'] * e_ * P['tau_a']
                     sup_steps += 1
