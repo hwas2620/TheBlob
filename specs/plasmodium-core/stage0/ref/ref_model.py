@@ -49,6 +49,9 @@ DEF = dict(
     fan_up=0.0,                  # [S5] >0: a front climbing the scent (mean food field of its newest cells exceeds that of its older cells by more than fan_up*food_amp) is exempt: it never stalls
     neck_keep=0, neck_h=0.3, neck_min=0.1, neck_C=20.0, neck_every=1.0,   # [S5] 1: when the thick body (h >= neck_h) falls into two or more big parts (volume >= neck_min of the body) that are still joined by thin wet cells,
                                  #      the shortest wet path between them is kept as a tube: its thin cells do not dry, their rest thickness is at least neck_h, and the conductance of its edges is at least neck_C
+    sup_age=0.0, sup_h=0.3, sup_min=0.1, sup_tau=8.0, sup_every=1.0,   # [S7] >0: when the thick body (h >= sup_h) is in two or more big parts (volume >= sup_min of the body), every wet cell goes to its nearest
+                                 #      big part (distance along wet cells, no limit); a part whose net outflow (EMA of div over sup_tau, summed over its cells) is e per unit volume and time
+                                 #      ages faster: sage rate x (1 + sup_age * max(0, e) * tau_a). A part that gives its body away stiffens, pushes more out and drains into the other (fan competition by flow)
     wall_tau=0.0,                # [S5] >0: the tube wall remembers its conductance: tube thickness uses Cwall = max(Cn, Cwall*exp(-dt/wall_tau)) (a vein's wall outlives a drop of its flow); 0 = off
     fan_food=0.0, fan_scent=0.01,   # [R4b] >0: a newly wet cell counts 1 + fan_food*min(1, c/(fan_scent*food_amp)) in its front's vigour (c: food field) - fronts in a food's scent are not out-competed
     crumb_from=0,  # [stage0 C] first step at which crumb_dry acts (parity dumps switch it on in a state that still holds isolated cells)
@@ -218,6 +221,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
+    dema = np.zeros((N, N)); supm = np.ones((N, N)); sup_steps = 0; sup_log = []   # [S7] EMA of net outflow per cell, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -456,6 +460,7 @@ def run(name, over):
                     Q[k] = ql; div += Q[k] - rev(Q[k], d)
                 nlim_steps += 1; nlim_cells += int(hneg.sum()); lim_cut_max = max(lim_cut_max, cut / max(tot, 1e-300))
         h = h - dt * div
+        if P['sup_age'] > 0: dema = np.where(wet, dema + min(1.0, dt / P['sup_tau']) * (div - dema), 0.0)   # [S7]
         hmin_seen = min(hmin_seen, float(h[wet].min()) if wet.any() else 0.0)
         if wet.any() and float(h[wet].min()) < 0:
             ng = wet & (h < 0); neg_cellsteps += int(ng.sum())
@@ -502,7 +507,7 @@ def run(name, over):
             C[k] = np.clip(C[k] + dt * rt * (f - C[k]), 0.0, P['Cmax']) * act[k]
             if P['neck_keep'] and neckp.any(): C[k] = np.where(act[k] & neckp & nb(neckp, DIRS[k]), np.maximum(C[k], P['neck_C']), C[k])
         age = np.where(wet, age + dt, 0.0)
-        sage = np.where(wet, sage + dt * (1.0 - resmask), 0.0)
+        sage = np.where(wet, sage + dt * (1.0 - resmask) * (supm if P['sup_age'] > 0 else 1.0), 0.0)
         if P['fan_comp']:
             fan_k = max(1, int(round(P['fan_every'] / dt)))
             if step % fan_k == 0:
@@ -560,6 +565,29 @@ def run(name, over):
                         path_ = wet & (sm_ <= np.min(sm_[wet]) + 1)
                         neckp |= path_; neck |= path_ & ~thick_
             if neck.any(): neck_steps += 1; neck_cells += int(neck.sum())
+        if P['sup_age'] > 0 and step % max(1, int(round(P['sup_every'] / dt))) == 0:     # [S7] which big thick part gives its body away
+            supm[:] = 1.0
+            thk_ = wet & (h >= P['sup_h']); ls_ = _torus_label(thk_); ns_ = int(ls_.max())
+            if ns_ >= 2:
+                vs_ = np.bincount(ls_.ravel(), weights=np.where(thk_, h, 0.0).ravel(), minlength=ns_ + 1); vs_[0] = 0.0
+                bg_ = [k_ for k_ in np.argsort(vs_)[::-1] if vs_[k_] >= P['sup_min'] * float(h[wet].sum())]
+                if len(bg_) >= 2:
+                    rg_ = np.zeros((N, N), np.int32)
+                    for j_, k_ in enumerate(bg_): rg_[ls_ == k_] = j_ + 1
+                    fr_ = rg_ > 0
+                    while fr_.any():                                      # grow all parts at once along wet cells (nearest part wins, no distance limit)
+                        new_ = np.zeros((N, N), np.int32)
+                        for d_ in ALL:
+                            cand_ = nb(rg_, d_) * nb(fr_, d_)
+                            new_ = np.where((new_ == 0) & (cand_ > 0), cand_, new_)
+                        new_ = np.where(wet & (rg_ == 0), new_, 0); fr_ = new_ > 0; rg_ += new_
+                    ex_ = []
+                    for j_ in range(1, len(bg_) + 1):
+                        m_ = rg_ == j_; V_ = float(h[m_].sum()); e_ = float(dema[m_].sum()) / max(V_, 1e-12)
+                        ex_.append(e_)
+                        if e_ > 0: supm[m_] = 1.0 + P['sup_age'] * e_ * P['tau_a']
+                    sup_steps += 1
+                    if len(sup_log) < 20000: sup_log.append((round(t, 2), [round(float(vs_[k_]) / float(h[wet].sum()), 4) for k_ in bg_], [round(e_, 6) for e_ in ex_]))
         if P['slime_tau'] < 1e8: slime *= np.exp(-dt / P['slime_tau'])
         # ---- rolling statistics ----
         hmax_w = np.maximum(hmax_w, h); hmin_w = np.minimum(hmin_w, h); hsum_w += h; wet_w &= wet; cnt_w += 1
@@ -735,7 +763,7 @@ def run(name, over):
                area_end=int(wet.sum()), foods=[[round(a, 2), round(b, 2)] for a, b in fpos],
                t_touch=[None if np.isnan(v) else round(float(v), 1) for v in t_touch], t_cover=[None if np.isnan(v) else round(float(v), 1) for v in t_cover],
                t_exh=[None if np.isnan(v) else round(float(v), 1) for v in t_exh], fM_end=[None if np.isinf(v) else round(float(v), 2) for v in fM],
-               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), V_crumb=float(V_crumb), crumb_cells=int(ncrumb), traj=traj,
+               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), sup_updates=int(sup_steps), sup_log=sup_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), traj=traj,
                mg_err=([float(np.median([e[1] for e in mg_err])), float(np.percentile([e[1] for e in mg_err], 90)), float(max(e[1] for e in mg_err)), float(np.median([e[2] for e in mg_err]))] if mg_err else None), mg_err_n=len(mg_err),
                h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), neg_end_steps=int(neg_end_steps), steps_done=int(nstep), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
     wm = hmean_last > 0
