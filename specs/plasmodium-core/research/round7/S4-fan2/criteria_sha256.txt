@@ -1,0 +1,2 @@
+974fc3c0d8b4a0b949470cc864327c3c75719be0635d7d121b3b0e8051513c84  specs/plasmodium-core/research/round7/S4-fan2/CRITERIA.md
+8b5d1f95d6f9c9df31805c2dfc6d3952ff26ee527d2fe99f0db5ece49b36d09d  specs/plasmodium-core/research/round7/S4-fan2/scripts/judge_s4.py

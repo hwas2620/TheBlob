@@ -1,0 +1,59 @@
+{
+ "run": "b_asym3_s62_vs4k",
+ "origin": "numpy",
+ "N": 192,
+ "seed": 62,
+ "steps": 4801,
+ "expected_steps": 4801,
+ "complete": true,
+ "nan": false,
+ "n_states": 24,
+ "stop": "",
+ "mass_err": 9.000207986294602e-14,
+ "neg_end": 0,
+ "neg_end_cellsteps": 0,
+ "h_min_end": 0.0,
+ "h_min_in": 0.0,
+ "flux_err": [
+  0.048844275582136595,
+  0.10317115572822984,
+  0.43684305195247913,
+  0.048143191143699485
+ ],
+ "t_touch": [
+  42.5,
+  73.5,
+  null
+ ],
+ "t_exh": [
+  357.3,
+  395.0,
+  null
+ ],
+ "area_end": 8079,
+ "out_frac": 0.0357,
+ "t_touch_v": [
+  42.400000000000006,
+  73.4,
+  null
+ ],
+ "window": [
+  1000000000.0,
+  357.3,
+  0
+ ],
+ "pathminC": {},
+ "vein_medC": null,
+ "same4": {},
+ "body_min": null,
+ "body_min_all": 0.964,
+ "vein4": null,
+ "note": "모든 먹이에 닿지 못함",
+ "reached": false,
+ "pairs": 3,
+ "thick": 0,
+ "ratio": {},
+ "same_ok": 0,
+ "pass": false,
+ "scn": "asym3"
+}
