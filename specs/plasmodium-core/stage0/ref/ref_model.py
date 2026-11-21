@@ -546,7 +546,7 @@ def run(name, over):
                 vt_ = np.bincount(lt_.ravel(), weights=np.where(thick_, h, 0.0).ravel(), minlength=nt_ + 1); vt_[0] = 0.0
                 big_ = [k_ for k_ in np.argsort(vt_)[::-1] if vt_[k_] >= P['neck_min'] * float(h[wet].sum())]
                 if len(big_) >= 2:
-                    def _geo(src_):
+                    def _geo(src_):     # [S6 검증] 결함: N 걸음에서 멈춰, N보다 긴 이음은 양 끝이 지켜지지 않는다(verify/REPORT.md 1번). 규칙을 넣지 않아 그대로 둔다
                         dist_ = np.where(src_, 0.0, np.inf); fr_ = src_.copy(); seen_ = src_.copy(); it_ = 0
                         while fr_.any() and it_ < N:
                             it_ += 1; nbm_ = np.zeros((N, N), bool)

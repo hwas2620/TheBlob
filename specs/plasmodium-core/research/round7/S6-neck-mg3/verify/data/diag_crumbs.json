@@ -1,0 +1,122 @@
+{
+ "b_long_s101_vc": {
+  "crumb_late": 0.0523,
+  "crumb_max": 0.0538,
+  "pieces_late": 116.2,
+  "states_link_gt_N": 0
+ },
+ "b_long_s102_vc": {
+  "crumb_late": 0.0427,
+  "crumb_max": 0.0526,
+  "pieces_late": 115.7,
+  "states_link_gt_N": 0
+ },
+ "b_long_s103_vc": {
+  "crumb_late": 0.046,
+  "crumb_max": 0.0495,
+  "pieces_late": 116.0,
+  "states_link_gt_N": 0
+ },
+ "b_long_s104_vc": {
+  "crumb_late": 0.0738,
+  "crumb_max": 0.076,
+  "pieces_late": 170.2,
+  "states_link_gt_N": 0
+ },
+ "b_long_s105_vc": {
+  "crumb_late": 0.0504,
+  "crumb_max": 0.0526,
+  "pieces_late": 112.5,
+  "states_link_gt_N": 0
+ },
+ "b_long_s106_vc": {
+  "crumb_late": 0.0569,
+  "crumb_max": 0.0784,
+  "pieces_late": 118.2,
+  "states_link_gt_N": 0
+ },
+ "b_long_s107_vc": {
+  "crumb_late": 0.0762,
+  "crumb_max": 0.0925,
+  "pieces_late": 143.8,
+  "states_link_gt_N": 0
+ },
+ "b_long_s108_vc": {
+  "crumb_late": 0.0433,
+  "crumb_max": 0.0479,
+  "pieces_late": 106.9,
+  "states_link_gt_N": 0
+ },
+ "b_long_s109_vc": {
+  "crumb_late": 0.065,
+  "crumb_max": 0.0708,
+  "pieces_late": 132.7,
+  "states_link_gt_N": 0
+ },
+ "b_long_s110_vc": {
+  "crumb_late": 0.0553,
+  "crumb_max": 0.0776,
+  "pieces_late": 135.2,
+  "states_link_gt_N": 0
+ },
+ "b_long_s101_vnk": {
+  "crumb_late": 0.0532,
+  "crumb_max": 0.0564,
+  "pieces_late": 124.9,
+  "states_link_gt_N": 0
+ },
+ "b_long_s102_vnk": {
+  "crumb_late": 0.0623,
+  "crumb_max": 0.0695,
+  "pieces_late": 131.2,
+  "states_link_gt_N": 0
+ },
+ "b_long_s103_vnk": {
+  "crumb_late": 0.0508,
+  "crumb_max": 0.0546,
+  "pieces_late": 108.7,
+  "states_link_gt_N": 0
+ },
+ "b_long_s104_vnk": {
+  "crumb_late": 0.0756,
+  "crumb_max": 0.0788,
+  "pieces_late": 121.6,
+  "states_link_gt_N": 0
+ },
+ "b_long_s105_vnk": {
+  "crumb_late": 0.0476,
+  "crumb_max": 0.0501,
+  "pieces_late": 89.0,
+  "states_link_gt_N": 6
+ },
+ "b_long_s106_vnk": {
+  "crumb_late": 0.0633,
+  "crumb_max": 0.0805,
+  "pieces_late": 123.9,
+  "states_link_gt_N": 0
+ },
+ "b_long_s107_vnk": {
+  "crumb_late": 0.087,
+  "crumb_max": 0.1118,
+  "pieces_late": 136.7,
+  "states_link_gt_N": 0
+ },
+ "b_long_s108_vnk": {
+  "crumb_late": 0.0454,
+  "crumb_max": 0.0552,
+  "pieces_late": 121.7,
+  "states_link_gt_N": 0
+ },
+ "b_long_s109_vnk": {
+  "crumb_late": 0.0642,
+  "crumb_max": 0.0801,
+  "pieces_late": 119.9,
+  "states_link_gt_N": 8
+ },
+ "b_long_s110_vnk": {
+  "crumb_late": 0.0562,
+  "crumb_max": 0.0725,
+  "pieces_late": 106.0,
+  "states_link_gt_N": 0
+ }
+}

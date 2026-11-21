@@ -1,0 +1,155 @@
+판정 (vjudge.py). 문턱 파일 thresholds.json, 갈라짐 문턱 0.1
+불러온 실행 수: {'asym3': 20, 'mig': 20, 'food3': 20, 'food4': 40, 'long': 20}
+
+== long: 쌍 10 / 10 빠짐: []
+   {'seed': 101, 'S_ctrl': 36, 'S_cand': 14, 'max_ctrl': 0.6015, 'max_cand': 0.1426, 'streak_ctrl': 36, 'streak_cand': 14, 'neck_frac': 0.332}
+   {'seed': 102, 'S_ctrl': 21, 'S_cand': 0, 'max_ctrl': 0.4981, 'max_cand': 0.0695, 'streak_ctrl': 20, 'streak_cand': 0, 'neck_frac': 0.304}
+   {'seed': 103, 'S_ctrl': 11, 'S_cand': 0, 'max_ctrl': 0.1393, 'max_cand': 0.0546, 'streak_ctrl': 11, 'streak_cand': 0, 'neck_frac': 0.32}
+   {'seed': 104, 'S_ctrl': 14, 'S_cand': 4, 'max_ctrl': 0.3554, 'max_cand': 0.1717, 'streak_ctrl': 14, 'streak_cand': 4, 'neck_frac': 0.211}
+   {'seed': 105, 'S_ctrl': 41, 'S_cand': 4, 'max_ctrl': 0.5296, 'max_cand': 0.2662, 'streak_ctrl': 32, 'streak_cand': 4, 'neck_frac': 0.337}
+   {'seed': 106, 'S_ctrl': 29, 'S_cand': 20, 'max_ctrl': 0.4521, 'max_cand': 0.1481, 'streak_ctrl': 19, 'streak_cand': 11, 'neck_frac': 0.196}
+   {'seed': 107, 'S_ctrl': 18, 'S_cand': 12, 'max_ctrl': 0.3197, 'max_cand': 0.1341, 'streak_ctrl': 12, 'streak_cand': 12, 'neck_frac': 0.24}
+   {'seed': 108, 'S_ctrl': 11, 'S_cand': 0, 'max_ctrl': 0.5261, 'max_cand': 0.0552, 'streak_ctrl': 11, 'streak_cand': 0, 'neck_frac': 0.321}
+   {'seed': 109, 'S_ctrl': 17, 'S_cand': 6, 'max_ctrl': 0.4622, 'max_cand': 0.4879, 'streak_ctrl': 17, 'streak_cand': 6, 'neck_frac': 0.292}
+   {'seed': 110, 'S_ctrl': 25, 'S_cand': 0, 'max_ctrl': 0.443, 'max_cand': 0.0725, 'streak_ctrl': 25, 'streak_cand': 0, 'neck_frac': 0.286}
+C1: 갈라진 상태 수 합 대조 223 / 후보 60 (비 0.27), 나아진 시드 10, 나빠진 시드 0 -> 확인
+C2: 바깥 몫 최대 < 0.1 인 후보 실행 4/10 (대조 0/10) -> 반박
+W2: 후보 (시드, 가장 긴 연속 갈라짐[저장 상태], 갈라진 상태 수) = [(101, 14, 14), (102, 0, 0), (103, 0, 0), (104, 4, 4), (105, 4, 4), (106, 11, 20), (107, 12, 12), (108, 0, 0), (109, 6, 6), (110, 0, 0)] -> 확인 (걱정이 맞다)
+   {'seed': 101, 'A_late_ctrl': 3480.0, 'A_late_cand': 3542.0, 'thin_ctrl': 1305.0, 'thin_cand': 1821.0, 'area_end_ctrl': 3709, 'area_end_cand': 3879}
+   {'seed': 102, 'A_late_ctrl': 3187.0, 'A_late_cand': 3340.0, 'thin_ctrl': 1193.0, 'thin_cand': 1455.0, 'area_end_ctrl': 3334, 'area_end_cand': 3588}
+   {'seed': 103, 'A_late_ctrl': 3350.0, 'A_late_cand': 3901.0, 'thin_ctrl': 1429.0, 'thin_cand': 2497.0, 'area_end_ctrl': 3571, 'area_end_cand': 4683}
+   {'seed': 104, 'A_late_ctrl': 3180.0, 'A_late_cand': 3249.0, 'thin_ctrl': 1043.0, 'thin_cand': 1146.0, 'area_end_ctrl': 3181, 'area_end_cand': 3238}
+   {'seed': 105, 'A_late_ctrl': 3206.0, 'A_late_cand': 3459.0, 'thin_ctrl': 917.0, 'thin_cand': 1737.0, 'area_end_ctrl': 3290, 'area_end_cand': 3887}
+   {'seed': 106, 'A_late_ctrl': 3566.0, 'A_late_cand': 3506.0, 'thin_ctrl': 1844.0, 'thin_cand': 1717.0, 'area_end_ctrl': 3812, 'area_end_cand': 3631}
+   {'seed': 107, 'A_late_ctrl': 3365.0, 'A_late_cand': 3628.0, 'thin_ctrl': 1512.0, 'thin_cand': 2000.0, 'area_end_ctrl': 3668, 'area_end_cand': 3820}
+   {'seed': 108, 'A_late_ctrl': 3082.0, 'A_late_cand': 3164.0, 'thin_ctrl': 953.0, 'thin_cand': 1079.0, 'area_end_ctrl': 3105, 'area_end_cand': 3207}
+   {'seed': 109, 'A_late_ctrl': 3360.0, 'A_late_cand': 3318.0, 'thin_ctrl': 1411.0, 'thin_cand': 1477.0, 'area_end_ctrl': 3663, 'area_end_cand': 3589}
+   {'seed': 110, 'A_late_ctrl': 3253.0, 'A_late_cand': 3303.0, 'thin_ctrl': 1485.0, 'thin_cand': 1440.0, 'area_end_ctrl': 3505, 'area_end_cand': 3588}
+C7: 늦은 넓이 비의 중앙 1.024, 얇은 넓이 합의 비 1.250, (참고) t=2000 넓이 비의 중앙 1.037 -> 확인
+
+== W3: 후보 long 의 이음 (실행마다)
+   {'seed': 101, 'n_neck_states': 31, 'pin': 0.373, 'R_same': 0.712, 'R_vein': 0.723, 'link_len_med': 96.0, 'h_neck_med': 0.276, 'C_link_med': 21.3, 'Qm_over_Qg': 0.19, 'thread_streak': 24, 'neck_frac': 0.332}
+   {'seed': 102, 'n_neck_states': 31, 'pin': 0.578, 'R_same': 0.599, 'R_vein': 0.597, 'link_len_med': 101.0, 'h_neck_med': 0.268, 'C_link_med': 20.0, 'Qm_over_Qg': 0.162, 'thread_streak': 24, 'neck_frac': 0.304}
+   {'seed': 103, 'n_neck_states': 30, 'pin': 0.332, 'R_same': 0.903, 'R_vein': 0.834, 'link_len_med': 92.5, 'h_neck_med': 0.273, 'C_link_med': 22.1, 'Qm_over_Qg': 0.186, 'thread_streak': 26, 'neck_frac': 0.32}
+   {'seed': 104, 'n_neck_states': 20, 'pin': 0.392, 'R_same': 0.833, 'R_vein': 0.806, 'link_len_med': 65.0, 'h_neck_med': 0.271, 'C_link_med': 21.2, 'Qm_over_Qg': 0.254, 'thread_streak': 20, 'neck_frac': 0.211}
+   {'seed': 105, 'n_neck_states': 33, 'pin': 0.329, 'R_same': 0.866, 'R_vein': 0.85, 'link_len_med': 93.0, 'h_neck_med': 0.272, 'C_link_med': 22.0, 'Qm_over_Qg': 0.157, 'thread_streak': 18, 'neck_frac': 0.337}
+   {'seed': 106, 'n_neck_states': 20, 'pin': 0.329, 'R_same': 0.892, 'R_vein': 0.887, 'link_len_med': 46.0, 'h_neck_med': 0.285, 'C_link_med': 22.2, 'Qm_over_Qg': 0.249, 'thread_streak': 20, 'neck_frac': 0.196}
+   {'seed': 107, 'n_neck_states': 24, 'pin': 0.405, 'R_same': 0.839, 'R_vein': 0.842, 'link_len_med': 101.5, 'h_neck_med': 0.28, 'C_link_med': 22.0, 'Qm_over_Qg': 0.145, 'thread_streak': 20, 'neck_frac': 0.24}
+   {'seed': 108, 'n_neck_states': 32, 'pin': 0.431, 'R_same': 0.824, 'R_vein': 0.799, 'link_len_med': 74.5, 'h_neck_med': 0.27, 'C_link_med': 21.2, 'Qm_over_Qg': 0.211, 'thread_streak': 17, 'neck_frac': 0.321}
+   {'seed': 109, 'n_neck_states': 30, 'pin': 0.533, 'R_same': 0.734, 'R_vein': 0.627, 'link_len_med': 80.5, 'h_neck_med': 0.263, 'C_link_med': 20.0, 'Qm_over_Qg': 0.265, 'thread_streak': 26, 'neck_frac': 0.292}
+   {'seed': 110, 'n_neck_states': 26, 'pin': 0.349, 'R_same': 0.851, 'R_vein': 0.907, 'link_len_med': 61.0, 'h_neck_med': 0.275, 'C_link_med': 21.5, 'Qm_over_Qg': 0.255, 'thread_streak': 14, 'neck_frac': 0.286}
+W3: 이음 상태 277개, 쓴 실행 10, pin 중앙 0.383, R_same 중앙 0.836, 길고 가는 실(>= 10 저장 상태) 실행 10 -> 반박 (걱정이 아니다: 나르는 관)
+   (탐색) 대조 long 에서 같은 방법으로 찾은 "이음이 될 뻔한 곳":
+     {'seed': 101, 'n_neck_states': 10, 'pin': 0.892, 'R_same': 0.906, 'R_vein': 0.303, 'link_len_med': 24.5, 'h_neck_med': 0.209, 'C_link_med': 6.3, 'Qm_over_Qg': 0.531, 'thread_streak': 4, 'neck_frac': None}
+     {'seed': 102, 'n_neck_states': 10, 'pin': 0.833, 'R_same': 0.704, 'R_vein': 0.45, 'link_len_med': 59.5, 'h_neck_med': 0.215, 'C_link_med': 8.6, 'Qm_over_Qg': 0.375, 'thread_streak': 5, 'neck_frac': None}
+     {'seed': 103, 'n_neck_states': 8, 'pin': 0.886, 'R_same': 1.111, 'R_vein': 0.3, 'link_len_med': 6.0, 'h_neck_med': 0.23, 'C_link_med': 9.2, 'Qm_over_Qg': 0.255, 'thread_streak': 1, 'neck_frac': None}
+     {'seed': 104, 'n_neck_states': 4, 'pin': 0.213, 'R_same': 0.656, 'R_vein': 0.969, 'link_len_med': 30.5, 'h_neck_med': 0.276, 'C_link_med': 28.7, 'Qm_over_Qg': 0.612, 'thread_streak': 3, 'neck_frac': None}
+     {'seed': 105, 'n_neck_states': 10, 'pin': 0.761, 'R_same': 0.746, 'R_vein': 0.591, 'link_len_med': 57.0, 'h_neck_med': 0.189, 'C_link_med': 12.7, 'Qm_over_Qg': 0.319, 'thread_streak': 5, 'neck_frac': None}
+     {'seed': 106, 'n_neck_states': 9, 'pin': 0.798, 'R_same': 0.647, 'R_vein': 0.448, 'link_len_med': 30.0, 'h_neck_med': 0.193, 'C_link_med': 10.6, 'Qm_over_Qg': 0.222, 'thread_streak': 4, 'neck_frac': None}
+     {'seed': 107, 'n_neck_states': 11, 'pin': 0.652, 'R_same': 0.664, 'R_vein': 0.718, 'link_len_med': 61.0, 'h_neck_med': 0.218, 'C_link_med': 15.5, 'Qm_over_Qg': 0.34, 'thread_streak': 5, 'neck_frac': None}
+     {'seed': 108, 'n_neck_states': 16, 'pin': 0.475, 'R_same': 0.716, 'R_vein': 0.683, 'link_len_med': 59.0, 'h_neck_med': 0.252, 'C_link_med': 20.9, 'Qm_over_Qg': 0.531, 'thread_streak': 7, 'neck_frac': None}
+     {'seed': 109, 'n_neck_states': 6, 'pin': 0.825, 'R_same': 0.539, 'R_vein': 0.36, 'link_len_med': 37.0, 'h_neck_med': 0.216, 'C_link_med': 10.5, 'Qm_over_Qg': 0.405, 'thread_streak': 3, 'neck_frac': None}
+     {'seed': 110, 'n_neck_states': 11, 'pin': 0.951, 'R_same': 0.99, 'R_vein': 0.106, 'link_len_med': 16.0, 'h_neck_med': 0.211, 'C_link_med': 2.8, 'Qm_over_Qg': 0.288, 'thread_streak': 5, 'neck_frac': None}
+   (탐색) 대조: 이음 상태 95개, pin(C<=20 비율) 중앙 0.811, R_same 중앙 0.71, 길고 가는 실 실행 0
+
+== mig: 쌍 10 / 10 빠짐: []
+   {'seed': 101, 'disp_c': 51.37, 'disp_k': 51.37, 'ang_c': 5.7, 'ang_k': 5.7, 'veinT_c': 0.825, 'veinT_k': 0.825, 'area_c': 3070, 'area_k': 3070, 'neck_updates': 0, 'identical': True}
+   {'seed': 102, 'disp_c': 51.16, 'disp_k': 51.16, 'ang_c': 4.3, 'ang_k': 4.3, 'veinT_c': 0.865, 'veinT_k': 0.865, 'area_c': 3122, 'area_k': 3122, 'neck_updates': 0, 'identical': True}
+   {'seed': 103, 'disp_c': 50.71, 'disp_k': 50.71, 'ang_c': 1.7, 'ang_k': 1.7, 'veinT_c': 0.855, 'veinT_k': 0.855, 'area_c': 3010, 'area_k': 3010, 'neck_updates': 0, 'identical': True}
+   {'seed': 104, 'disp_c': 50.74, 'disp_k': 50.74, 'ang_c': 5.2, 'ang_k': 5.2, 'veinT_c': 0.853, 'veinT_k': 0.853, 'area_c': 3049, 'area_k': 3049, 'neck_updates': 0, 'identical': True}
+   {'seed': 105, 'disp_c': 50.82, 'disp_k': 50.82, 'ang_c': 0.6, 'ang_k': 0.6, 'veinT_c': 0.853, 'veinT_k': 0.853, 'area_c': 3014, 'area_k': 3014, 'neck_updates': 0, 'identical': True}
+   {'seed': 106, 'disp_c': 51.05, 'disp_k': 51.05, 'ang_c': 0.6, 'ang_k': 0.6, 'veinT_c': 0.872, 'veinT_k': 0.872, 'area_c': 3128, 'area_k': 3128, 'neck_updates': 0, 'identical': True}
+   {'seed': 107, 'disp_c': 51.56, 'disp_k': 51.56, 'ang_c': 6.1, 'ang_k': 6.1, 'veinT_c': 0.819, 'veinT_k': 0.819, 'area_c': 3051, 'area_k': 3051, 'neck_updates': 0, 'identical': True}
+   {'seed': 108, 'disp_c': 48.74, 'disp_k': 48.74, 'ang_c': 4.4, 'ang_k': 4.4, 'veinT_c': 0.869, 'veinT_k': 0.869, 'area_c': 3032, 'area_k': 3032, 'neck_updates': 0, 'identical': True}
+   {'seed': 109, 'disp_c': 51.18, 'disp_k': 51.18, 'ang_c': 10.2, 'ang_k': 10.2, 'veinT_c': 0.835, 'veinT_k': 0.835, 'area_c': 3063, 'area_k': 3063, 'neck_updates': 0, 'identical': True}
+   {'seed': 110, 'disp_c': 50.38, 'disp_k': 50.38, 'ang_c': 2.0, 'ang_k': 2.0, 'veinT_c': 0.874, 'veinT_k': 0.874, 'area_c': 3066, 'area_k': 3066, 'neck_updates': 0, 'identical': True}
+C3: 한 방향 이주 대조 10 후보 10; disp300 중앙 50.935 -> 50.935; 각 중앙 4.35 -> 4.35; veinT 중앙 0.854 -> 0.854; area_end 중앙 3057.0 -> 3057.0; 이음 작동 횟수 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; 끝 상태 같음 10/10 -> 확인 (이음이 한 번도 작동하지 않아 끝 상태가 비트 단위로 같다)
+
+== food3: 쌍 10 / 10 빠짐: []
+   {'seed': 101, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [64.6, 75.7, 58.8], 't_touch_k': [64.6, 75.7, 58.8], 'tall_c': 75.7, 'tall_k': 75.7, 'neck_frac': 0.002, 'same_c': 3, 'same_k': 3, 'body_c': 0.968, 'body_k': 0.968}
+   {'seed': 102, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [68.9, 75.6, 58.9], 't_touch_k': [68.9, 75.6, 58.9], 'tall_c': 75.6, 'tall_k': 75.6, 'neck_frac': 0.002, 'same_c': 3, 'same_k': 3, 'body_c': 0.99, 'body_k': 0.99}
+   {'seed': 103, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [77.3, 75.5, 58.9], 't_touch_k': [77.3, 75.5, 58.9], 'tall_c': 77.3, 'tall_k': 77.3, 'neck_frac': 0.002, 'same_c': 3, 'same_k': 3, 'body_c': 0.979, 'body_k': 0.979}
+   {'seed': 104, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [64.5, 75.3, 58.9], 't_touch_k': [64.5, 75.3, 58.9], 'tall_c': 75.3, 'tall_k': 75.3, 'neck_frac': 0.0, 'same_c': 3, 'same_k': 3, 'body_c': 0.97, 'body_k': 0.97}
+   {'seed': 105, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [68.4, 75.6, 58.7], 't_touch_k': [68.4, 75.6, 58.7], 'tall_c': 75.6, 'tall_k': 75.6, 'neck_frac': 0.004, 'same_c': 3, 'same_k': 3, 'body_c': 0.994, 'body_k': 0.994}
+   {'seed': 106, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [114.5, 75.7, 58.7], 't_touch_k': [114.5, 75.7, 58.7], 'tall_c': 114.5, 'tall_k': 114.5, 'neck_frac': 0.002, 'same_c': 3, 'same_k': 3, 'body_c': 0.988, 'body_k': 0.988}
+   {'seed': 107, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [61.3, 75.6, 58.8], 't_touch_k': [61.3, 75.6, 58.8], 'tall_c': 75.6, 'tall_k': 75.6, 'neck_frac': 0.008, 'same_c': 3, 'same_k': 3, 'body_c': 0.995, 'body_k': 0.995}
+   {'seed': 108, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [64.6, 75.6, 59.0], 't_touch_k': [64.6, 75.6, 59.0], 'tall_c': 75.6, 'tall_k': 75.6, 'neck_frac': 0.004, 'same_c': 3, 'same_k': 3, 'body_c': 0.987, 'body_k': 0.987}
+   {'seed': 109, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [84.9, 75.6, 58.9], 't_touch_k': [84.9, 75.6, 58.9], 'tall_c': 84.9, 'tall_k': 84.9, 'neck_frac': 0.002, 'same_c': 3, 'same_k': 3, 'body_c': 0.981, 'body_k': 0.99}
+   {'seed': 110, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [64.8, 75.8, 58.9], 't_touch_k': [64.8, 75.8, 58.9], 'tall_c': 75.8, 'tall_k': 75.8, 'neck_frac': 0.015, 'same_c': 3, 'same_k': 3, 'body_c': 0.974, 'body_k': 0.974}
+   합: {'n': 10, 'reach_c': 10, 'reach_k': 10, 'pass_c': 10, 'pass_k': 10, 'thick_c': 30, 'thick_k': 30, 'tall_c': 75.65, 'tall_k': 75.65}
+   food3: t_all 중앙 차 0.0 (OK 문턱 15.0, 나쁨 문턱 30.0) -> ok
+
+== asym3: 쌍 10 / 10 빠짐: []
+   {'seed': 101, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [39.1, 80.7, 65.5], 't_touch_k': [39.1, 80.7, 65.5], 'tall_c': 80.7, 'tall_k': 80.7, 'neck_frac': 0.015, 'same_c': 3, 'same_k': 3, 'body_c': 0.997, 'body_k': 0.997}
+   {'seed': 102, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [42.6, 80.6, 65.5], 't_touch_k': [42.6, 80.6, 65.5], 'tall_c': 80.6, 'tall_k': 80.6, 'neck_frac': 0.0, 'same_c': 3, 'same_k': 3, 'body_c': 0.998, 'body_k': 0.998}
+   {'seed': 103, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [39.0, 77.8, 61.9], 't_touch_k': [39.0, 77.8, 61.9], 'tall_c': 77.8, 'tall_k': 77.8, 'neck_frac': 0.0, 'same_c': 3, 'same_k': 3, 'body_c': 0.996, 'body_k': 0.996}
+   {'seed': 104, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [38.9, 77.8, 65.5], 't_touch_k': [38.9, 77.8, 65.5], 'tall_c': 77.8, 'tall_k': 77.8, 'neck_frac': 0.0, 'same_c': 3, 'same_k': 3, 'body_c': 0.997, 'body_k': 0.997}
+   {'seed': 105, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [39.0, 77.7, 65.3], 't_touch_k': [39.0, 77.7, 65.3], 'tall_c': 77.7, 'tall_k': 77.7, 'neck_frac': 0.006, 'same_c': 3, 'same_k': 3, 'body_c': 0.997, 'body_k': 0.997}
+   {'seed': 106, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [39.0, 77.2, 65.4], 't_touch_k': [39.0, 77.2, 65.4], 'tall_c': 77.2, 'tall_k': 77.2, 'neck_frac': 0.002, 'same_c': 1, 'same_k': 1, 'body_c': 0.998, 'body_k': 0.998}
+   {'seed': 107, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [39.1, 77.6, 65.5], 't_touch_k': [39.1, 77.6, 65.5], 'tall_c': 77.6, 'tall_k': 77.6, 'neck_frac': 0.0, 'same_c': 1, 'same_k': 1, 'body_c': 0.996, 'body_k': 0.996}
+   {'seed': 108, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [39.1, 80.8, 65.1], 't_touch_k': [39.1, 80.8, 65.1], 'tall_c': 80.8, 'tall_k': 80.8, 'neck_frac': 0.0, 'same_c': 3, 'same_k': 3, 'body_c': 0.997, 'body_k': 0.997}
+   {'seed': 109, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [39.0, 80.9, 61.7], 't_touch_k': [39.0, 80.9, 61.7], 'tall_c': 80.9, 'tall_k': 80.9, 'neck_frac': 0.015, 'same_c': 3, 'same_k': 3, 'body_c': 0.997, 'body_k': 0.997}
+   {'seed': 110, 'reach_c': True, 'reach_k': True, 'pass_c': True, 'pass_k': True, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [39.1, 80.9, 72.2], 't_touch_k': [39.1, 80.9, 72.2], 'tall_c': 80.9, 'tall_k': 80.9, 'neck_frac': 0.004, 'same_c': 3, 'same_k': 3, 'body_c': 0.998, 'body_k': 0.998}
+   합: {'n': 10, 'reach_c': 10, 'reach_k': 10, 'pass_c': 8, 'pass_k': 8, 'thick_c': 30, 'thick_k': 30, 'tall_c': 79.19999999999999, 'tall_k': 79.19999999999999}
+   asym3: t_all 중앙 차 0.0 (OK 문턱 15.0, 나쁨 문턱 30.0) -> ok
+C4 -> 확인
+
+== food4: 쌍 20 / 20 빠짐: []
+   {'seed': 101, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [71.8, 543.9, 544.6, 53.5], 't_touch_k': [71.8, 544.3, 540.7, 53.5], 'tall_c': 544.6, 'tall_k': 544.3, 'neck_frac': 0.023, 'same_c': 3, 'same_k': 3, 'body_c': 0.72, 'body_k': 0.766}
+   {'seed': 102, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 1, 't_touch_c': [72.7, 531.6, 286.0, 50.3], 't_touch_k': [72.7, 529.3, 286.0, 50.3], 'tall_c': 531.6, 'tall_k': 529.3, 'neck_frac': 0.086, 'same_c': 1, 'same_k': 1, 'body_c': 0.716, 'body_k': 0.73}
+   {'seed': 103, 'reach_c': False, 'reach_k': False, 'pass_c': False, 'pass_k': False, 'thick_c': 0, 'thick_k': 0, 't_touch_c': [72.9, None, 248.5, 50.3], 't_touch_k': [72.9, None, 248.5, 50.3], 'tall_c': None, 'tall_k': None, 'neck_frac': 0.061, 'same_c': 0, 'same_k': 0, 'body_c': None, 'body_k': None}
+   {'seed': 104, 'reach_c': False, 'reach_k': False, 'pass_c': False, 'pass_k': False, 'thick_c': 0, 'thick_k': 0, 't_touch_c': [72.3, None, 248.5, 50.1], 't_touch_k': [72.3, None, 248.5, 50.1], 'tall_c': None, 'tall_k': None, 'neck_frac': 0.027, 'same_c': 0, 'same_k': 0, 'body_c': None, 'body_k': None}
+   {'seed': 105, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 1, 't_touch_c': [72.5, 649.6, 544.0, 50.2], 't_touch_k': [72.5, 649.6, 541.0, 50.2], 'tall_c': 649.6, 'tall_k': 649.6, 'neck_frac': 0.01, 'same_c': 1, 'same_k': 1, 'body_c': 0.781, 'body_k': 0.78}
+   {'seed': 106, 'reach_c': False, 'reach_k': False, 'pass_c': False, 'pass_k': False, 'thick_c': 0, 'thick_k': 0, 't_touch_c': [72.4, None, 238.0, 50.0], 't_touch_k': [72.4, None, 238.0, 50.0], 'tall_c': None, 'tall_k': None, 'neck_frac': 0.021, 'same_c': 0, 'same_k': 0, 'body_c': None, 'body_k': None}
+   {'seed': 107, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [68.3, 540.9, 412.0, 53.6], 't_touch_k': [68.3, 530.9, 423.3, 53.6], 'tall_c': 540.9, 'tall_k': 530.9, 'neck_frac': 0.123, 'same_c': 3, 'same_k': 3, 'body_c': 0.7, 'body_k': 0.896}
+   {'seed': 108, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 1, 't_touch_c': [69.3, 547.4, 484.0, 51.6], 't_touch_k': [69.3, 547.8, 484.0, 51.6], 'tall_c': 547.4, 'tall_k': 547.8, 'neck_frac': 0.053, 'same_c': 1, 'same_k': 1, 'body_c': 0.697, 'body_k': 0.68}
+   {'seed': 109, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 1, 't_touch_c': [68.6, 663.3, 390.3, 49.4], 't_touch_k': [68.6, 662.4, 390.3, 49.4], 'tall_c': 663.3, 'tall_k': 662.4, 'neck_frac': 0.004, 'same_c': 3, 'same_k': 1, 'body_c': 0.732, 'body_k': 0.726}
+   {'seed': 110, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [72.2, 510.6, 332.1, 51.0], 't_touch_k': [72.2, 510.6, 332.1, 51.0], 'tall_c': 510.6, 'tall_k': 510.6, 'neck_frac': 0.0, 'same_c': 1, 'same_k': 1, 'body_c': 0.795, 'body_k': 0.795}
+   {'seed': 121, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 1, 't_touch_c': [72.4, 507.6, 558.3, 49.7], 't_touch_k': [72.4, 508.8, 574.6, 49.7], 'tall_c': 558.3, 'tall_k': 574.6, 'neck_frac': 0.086, 'same_c': 3, 'same_k': 3, 'body_c': 0.799, 'body_k': 0.835}
+   {'seed': 122, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 3, 't_touch_c': [72.2, 570.3, 515.6, 50.1], 't_touch_k': [72.2, 567.5, 516.0, 50.1], 'tall_c': 570.3, 'tall_k': 567.5, 'neck_frac': 0.134, 'same_c': 3, 'same_k': 3, 'body_c': 0.609, 'body_k': 0.814}
+   {'seed': 123, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 3, 'thick_k': 3, 't_touch_c': [68.8, 582.8, 255.7, 49.9], 't_touch_k': [68.8, 584.9, 255.8, 49.9], 'tall_c': 582.8, 'tall_k': 584.9, 'neck_frac': 0.073, 'same_c': 3, 'same_k': 3, 'body_c': 0.861, 'body_k': 0.887}
+   {'seed': 124, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 1, 't_touch_c': [72.2, 539.8, 294.5, 49.6], 't_touch_k': [72.2, 543.8, 294.3, 49.6], 'tall_c': 539.8, 'tall_k': 543.8, 'neck_frac': 0.119, 'same_c': 1, 'same_k': 1, 'body_c': 0.746, 'body_k': 0.834}
+   {'seed': 125, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 1, 't_touch_c': [72.3, 621.8, 302.6, 49.7], 't_touch_k': [72.3, 623.8, 302.6, 49.7], 'tall_c': 621.8, 'tall_k': 623.8, 'neck_frac': 0.021, 'same_c': 1, 'same_k': 1, 'body_c': 0.716, 'body_k': 0.794}
+   {'seed': 126, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 1, 't_touch_c': [72.0, 570.5, 639.4, 49.4], 't_touch_k': [72.0, 570.1, 631.4, 49.4], 'tall_c': 639.4, 'tall_k': 631.4, 'neck_frac': 0.009, 'same_c': 3, 'same_k': 3, 'body_c': 0.878, 'body_k': 0.851}
+   {'seed': 127, 'reach_c': False, 'reach_k': False, 'pass_c': False, 'pass_k': False, 'thick_c': 0, 'thick_k': 0, 't_touch_c': [72.6, None, 453.6, 50.4], 't_touch_k': [72.6, None, 453.7, 50.4], 'tall_c': None, 'tall_k': None, 'neck_frac': 0.021, 'same_c': 0, 'same_k': 0, 'body_c': None, 'body_k': None}
+   {'seed': 128, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 1, 'thick_k': 3, 't_touch_c': [72.9, 587.0, 321.9, 49.8], 't_touch_k': [72.9, 623.2, 321.9, 49.8], 'tall_c': 587.0, 'tall_k': 623.2, 'neck_frac': 0.123, 'same_c': 1, 'same_k': 3, 'body_c': 0.648, 'body_k': 0.91}
+   {'seed': 129, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 3, 'thick_k': 1, 't_touch_c': [72.2, 678.0, 446.0, 53.6], 't_touch_k': [72.2, 658.5, 444.1, 53.6], 'tall_c': 678.0, 'tall_k': 658.5, 'neck_frac': 0.017, 'same_c': 3, 'same_k': 3, 'body_c': 0.856, 'body_k': 0.834}
+   {'seed': 130, 'reach_c': True, 'reach_k': True, 'pass_c': False, 'pass_k': False, 'thick_c': 2, 'thick_k': 2, 't_touch_c': [72.8, 595.6, 443.0, 53.5], 't_touch_k': [72.8, 588.0, 442.9, 53.5], 'tall_c': 595.6, 'tall_k': 588.0, 'neck_frac': 0.064, 'same_c': 3, 'same_k': 6, 'body_c': 0.74, 'body_k': 0.872}
+   합: {'n': 20, 'reach_c': 16, 'reach_k': 16, 'pass_c': 0, 'pass_k': 0, 'thick_c': 27, 'thick_k': 29, 'tall_c': 576.55, 'tall_k': 579.75}
+C5: 네 먹이 모두 닿음 대조 16 후보 16; 통과 0 -> 0; 굵은 쌍 27 -> 29; 먹이별 닿은 시드 [대조, 후보] [[20, 20], [16, 16], [20, 20], [20, 20]] -> 확인
+W1: 가장 먼 먹이(1번) 놓침 대조 4/20 후보 4/20; b(후보만 놓침)=0 c(대조만 놓침)=0 p=1.000; 둘 다 닿은 16쌍의 시각 차 중앙 0.0 -> 반박 (걱정이 아니다)
+   (탐색) 후보에서 가장 먼 먹이를 놓친 시드의 이음 작동 몫: [(103, 0.061), (104, 0.027), (106, 0.021), (127, 0.021)]  닿은 시드: [(101, 0.023), (102, 0.086), (105, 0.01), (107, 0.123), (108, 0.053), (109, 0.004), (110, 0.0), (121, 0.086), (122, 0.134), (123, 0.073), (124, 0.119), (125, 0.021), (126, 0.009), (128, 0.123), (129, 0.017), (130, 0.064)]
+   C6 long: {'neg_cellsteps_ctrl': 0, 'neg_cellsteps_cand': 0, 'state': 'ok', 'mass_err_max': [9.762362875759004e-16, 8.1891338948076555e-16], 'h_min_seen': [0.0, 0.0], 'pairs': 10, 'seeds_cand_more': 0, 'neg_end_ctrl': 0, 'neg_end_cand': 0}
+   C6 food4: {'neg_cellsteps_ctrl': 3565, 'neg_cellsteps_cand': 3570, 'state': 'ok', 'mass_err_max': [2.327873343823566e-13, 2.3414074911713775e-13], 'h_min_seen': [-0.13536178106733693, -0.14474433989436808], 'pairs': 20, 'seeds_cand_more': 10, 'neg_end_ctrl': 0, 'neg_end_cand': 0}
+   C6 food3: {'neg_cellsteps_ctrl': 5, 'neg_cellsteps_cand': 4, 'state': 'ok', 'mass_err_max': [1.3829828899144683e-13, 1.3829828899144683e-13], 'h_min_seen': [-0.010856641464941502, -0.015045378399170611], 'pairs': 10, 'seeds_cand_more': 3, 'neg_end_ctrl': 0, 'neg_end_cand': 0}
+   C6 asym3: {'neg_cellsteps_ctrl': 0, 'neg_cellsteps_cand': 0, 'state': 'ok', 'mass_err_max': [1.1876214297704532e-13, 1.1876214297704532e-13], 'h_min_seen': [0.0, 0.0], 'pairs': 10, 'seeds_cand_more': 0, 'neg_end_ctrl': 0, 'neg_end_cand': 0}
+   C6 mig: {'neg_cellsteps_ctrl': 0, 'neg_cellsteps_cand': 0, 'state': 'ok', 'mass_err_max': [3.383536836952858e-16, 3.383536836952858e-16], 'h_min_seen': [0.0, 0.0], 'pairs': 10, 'seeds_cand_more': 0, 'neg_end_ctrl': 0, 'neg_end_cand': 0}
+C6: 끝 음수·부피 어김 [] -> 확인
+
+== 탐색 (판정에 쓰지 않음)
+  이음 작동 시간 몫 long: 중앙 0.298, 최대 0.337, 0 인 실행 0/10
+  이음 작동 시간 몫 food4: 중앙 0.040, 최대 0.134, 0 인 실행 1/20
+  이음 작동 시간 몫 food3: 중앙 0.002, 최대 0.015, 0 인 실행 1/10
+  이음 작동 시간 몫 asym3: 중앙 0.001, 최대 0.015, 0 인 실행 5/10
+  이음 작동 시간 몫 mig: 중앙 0.000, 최대 0.000, 0 인 실행 10/10
+  long turnover: 대조 중앙 0.109, 후보 중앙 0.121
+  long sheet_amp: 대조 중앙 0.072, 후보 중앙 0.072
+  long veinT: 대조 중앙 0.888, 후보 중앙 0.913
+  long strahler: 대조 중앙 5.0, 후보 중앙 5.0
+  long gross_net: 대조 중앙 4.22, 후보 중앙 4.208
+  long area_end: 대조 중앙 3538.0, 후보 중앙 3610.0
+  long 구간별 바깥 몫 최대의 중앙 (대조, 후보): {'(200, 400)': (0.012, 0.012), '(400, 800)': (0.026, 0.025), '(800, 1200)': (0.334, 0.032), '(1200, 1600)': (0.448, 0.047), '(1600, 2000)': (0.117, 0.076)}
+  (탐색) 두꺼운 몸이 큰 덩어리 둘 이상인 상태의 몫 (시드, 대조, 후보): [(101, 0.43, 0.32), (102, 0.32, 0.32), (103, 0.08, 0.31), (104, 0.19, 0.21), (105, 0.49, 0.39), (106, 0.26, 0.21), (107, 0.26, 0.25), (108, 0.28, 0.33), (109, 0.24, 0.38), (110, 0.38, 0.27)]
+  (탐색) 그 몫의 평균: 대조 0.293, 후보 0.299
+
+== 요약
+C1: 확인
+C2: 반박
+C3: 확인 (이음이 한 번도 작동하지 않아 끝 상태가 비트 단위로 같다)
+C4: 확인
+C5: 확인
+C6: 확인
+C7: 확인
+W1: 반박 (걱정이 아니다)
+W2: 확인 (걱정이 맞다)
+W3: 반박 (걱정이 아니다: 나르는 관)

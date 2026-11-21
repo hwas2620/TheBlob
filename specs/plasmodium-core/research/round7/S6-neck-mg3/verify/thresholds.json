@@ -1,0 +1,17 @@
+{
+ "split_thr": 0.10,
+ "min_complete_frac": 0.70,
+ "C1": {"min_ctrl_split_states": 10, "confirm_max_ratio": 0.5, "confirm_min_better": 3, "confirm_better_over_worse": 2.0, "refute_min_ratio": 0.9},
+ "C2": {"confirm_min_runs": 7, "refute_max_runs": 5},
+ "C3": {"pass_drop_ok": 1, "pass_drop_bad": 3, "disp_rel_ok": 0.15, "disp_rel_bad": 0.30, "angle_ok": 10.0, "angle_bad": 20.0, "veinT_ok": 0.10, "area_rel_ok": 0.15, "area_rel_bad": 0.30, "mig_disp_min": 20.0, "mig_angle_max": 30.0},
+ "C4": {"reach_drop_ok": 1, "reach_drop_bad": 3, "pass_drop_ok": 1, "pass_drop_bad": 3, "thick_drop_ok": 2, "thick_drop_bad": 5, "tall_abs_ok": 15.0, "tall_rel_ok": 0.10, "tall_abs_bad": 30.0, "tall_rel_bad": 0.25},
+ "C5": {"reach_drop_ok": 2, "reach_drop_bad": 4, "pass_drop_ok": 2, "pass_drop_bad": 4, "thick_ratio_ok": 0.85, "thick_ratio_bad": 0.70},
+ "C6": {"mass_err_max": 1e-10, "neg_ok_mult": 1.25, "neg_ok_add": 50, "neg_bad_mult": 2.0, "neg_bad_add": 200},
+ "C7": {"late_t0": 1600, "late_t1": 2000, "thin_h": 0.3, "rA_ok": 1.15, "rA_bad": 1.30, "rthin_ok": 1.30, "rthin_bad": 1.60},
+ "W1": {"far_food_index": 1, "diff_confirm": 3, "p_confirm": 0.10, "diff_refute": 1, "delay_flag": 40.0},
+ "W2": {"streak_confirm": 5, "refute_max_S": 2},
+ "W3": {"t_min": 100, "neck_h": 0.3, "neck_min": 0.1, "neck_C": 20.0, "pin_eps": 0.001, "comp_lo": 0.5, "comp_hi": 2.0, "comp_min_n": 10, "vein_C": 4.0,
+        "min_states_per_run": 3, "min_runs": 3, "min_states_total": 15,
+        "pin_confirm": 0.5, "Rsame_confirm_max": 0.5, "Rsame_refute_min": 0.6,
+        "thread_len": 20, "thread_streak": 10, "thread_gap": 1}
+}

@@ -1,0 +1,4 @@
+# 판정 기준 고정 기록 (실행을 띄우기 전에 썼다)
+fixed_at_utc: 2026-11-21T20:00:36Z
+735d3f5f450918f922a29b5837fb78fc8a482af804f37aa70e5c0c71083ab47c  CRITERIA.md
+dde88737812c3469f393226155e3fb4b3d348e7eb8d4989a289b5678e67b97b8  thresholds.json
