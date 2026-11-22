@@ -8,7 +8,11 @@ case "$tag" in
   s16c)  extra="";;                       # 지금 모델
   s16k)  extra="$K";;                     # S15 후보 그대로
   s16h)  extra="$K sup_h=0.6";;           # S7이 굵은 덩이를 h >= 0.6으로 본다 (관 두께 상한 0.5 위: 실은 굵다에 들지 않는다)
+  s16k0) extra="keep_conn=2 ret_h=100 ret_glob=1";;   # S7 없이 찢어지지 않음 + 오그라듦만 (S15의 s15k)
   s16hc) extra="sup_age=100 sup_cap=1 keep_conn=2 ret_h=100 ret_glob=1 sup_h=0.6";;   # s16h에서 S7의 늙는 배율을 2배까지로 (경쟁을 약하게)
+  s16hr) extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1 sup_h=0.6";;   # s16h + 고리 풀기 (keep_conn=3)
+  s16kr) extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1";;              # S15 후보 + 고리 풀기
+  s16k0r) extra="keep_conn=3 ret_h=100 ret_glob=1";;                                  # S7 없이 + 고리 풀기
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1

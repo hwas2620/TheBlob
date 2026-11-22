@@ -1,0 +1,14 @@
+long 231 s16hr
+long 231 s16kr
+long 233 s16hr
+long 233 s16kr
+long 239 s16hr
+long 239 s16kr
+food4 231 s16k0r
+food4 231 s16kr
+food4 232 s16k0r
+food4 232 s16kr
+food4 233 s16k0r
+food4 233 s16kr
+food4 234 s16k0r
+food4 234 s16kr

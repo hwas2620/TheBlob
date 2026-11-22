@@ -58,6 +58,8 @@ DEF = dict(
     crumb_dry=0,   # [split] 1: a drying cell with no wet neighbour left dries too (its volume is dropped and booked in V_crumb) - no stuck isolated cells
     neg_fill=0,   # [split] 1: with neg_dry, a kept bridge cell (bridge_keep) whose thickness went negative is not dried; its deficit is shared among its neighbours in proportion to their thickness
     edge_t=0.0,    # [S9] >0: edge tension - a wet cell's rest thickness is lowered by edge_t * (dry 8-neighbours)/8: the rim is pushed inward (tips more than straight edges), a detached piece draws itself in
+                   # [S16] 3: as 2, and each step one kept run (taken in turn) is tested alone - all other kept runs stay - and dries if the body stays whole without it.
+                   #      Under 2 a loop never opens: its cells dry together, each looks like the cut between the others, and all are kept
     keep_conn=0,   # [S15] 2: as 1, but a run of drying cells is judged as a whole (two neighbouring drying cells could otherwise each see one side and cut a thread)
                    # [S12] 1: the body never tears - a drying cell whose staying wet 8-neighbours would end up in two or more separate wet pieces (global torus labelling) does not dry;
                    #      if it went negative its deficit is taken from its neighbours (as neg_fill). Loops of the network still open, branches then draw back from their free ends
@@ -211,7 +213,7 @@ def run(name, over):
             for sy in (-N, 0, N): g += np.exp(-((X - fx - sx) ** 2 + (Y - fy - sy) ** 2) / (2 * P['food_sigma'] ** 2))
         cfield.append(P['food_amp'] * g); fdisc.append(np.hypot(mimg(X - fx), mimg(Y - fy)) < P['food_r'])
     fM = np.full(nf, float(P['food_M']) if P['food_M'] > 0 else np.inf, dtype=float); famp = np.ones(nf); t_exh = np.full(nf, np.nan); t_touch = np.full(nf, np.nan); t_cover = np.full(nf, np.nan)
-    Vinj = 0.0; V_crumb = 0.0; ncrumb = 0; nret = 0; nconn = 0
+    Vinj = 0.0; V_crumb = 0.0; ncrumb = 0; nret = 0; nconn = 0; nrel = 0
 
     def food_now():
         f = np.zeros((N, N))
@@ -669,6 +671,12 @@ def run(name, over):
                 np.minimum.at(cmn_, cl_[sel_], mn_[sel_]); np.maximum.at(cmx_, cl_[sel_], mx_[sel_])
                 badc_ = (cmx_ > 0) & (cmx_ != cmn_); badc_[0] = False
                 bad_ = Dm & badc_[cl_]
+                if P['keep_conn'] >= 3 and bad_.any():      # [S16] release one kept run per step if the body stays whole without it alone
+                    ids_ = np.nonzero(badc_)[0]; r_ = int(ids_[step % len(ids_)]); R_ = cl_ == r_
+                    labR_ = _torus_label(wet & ~(Dm & ~bad_) & ~R_)
+                    nbl_ = np.zeros(0, np.int64)
+                    for d in ALL: nbl_ = np.union1d(nbl_, nb(labR_, d)[R_])
+                    if int((nbl_ > 0).sum()) <= 1: bad_ &= ~R_; nrel += int(R_.sum())
             else:
                 bad_ = Dm & (mx_ > 0) & (mx_ != mn_)
             if bad_.any():
@@ -818,7 +826,7 @@ def run(name, over):
                area_end=int(wet.sum()), foods=[[round(a, 2), round(b, 2)] for a, b in fpos],
                t_touch=[None if np.isnan(v) else round(float(v), 1) for v in t_touch], t_cover=[None if np.isnan(v) else round(float(v), 1) for v in t_cover],
                t_exh=[None if np.isnan(v) else round(float(v), 1) for v in t_exh], fM_end=[None if np.isinf(v) else round(float(v), 2) for v in fM],
-               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), sup_updates=int(sup_steps), sup_log=sup_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), ret_cellsteps=int(nret), conn_kept_cellsteps=int(nconn), traj=traj,
+               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), sup_updates=int(sup_steps), sup_log=sup_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), ret_cellsteps=int(nret), conn_kept_cellsteps=int(nconn), conn_released_cells=int(nrel), traj=traj,
                mg_err=([float(np.median([e[1] for e in mg_err])), float(np.percentile([e[1] for e in mg_err], 90)), float(max(e[1] for e in mg_err)), float(np.median([e[2] for e in mg_err]))] if mg_err else None), mg_err_n=len(mg_err),
                h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), neg_end_steps=int(neg_end_steps), steps_done=int(nstep), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
     wm = hmean_last > 0

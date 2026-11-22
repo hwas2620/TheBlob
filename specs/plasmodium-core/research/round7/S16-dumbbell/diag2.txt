@@ -1,0 +1,35 @@
+== food4: 늦음 = 대조가 닿은 먹이에 50 넘게 늦거나 못 닿음 (10 시드 x 먹이 4)
+s15c   모두닿음 6  놓침(먹이별) [0, 4, 0, 0]  늦음 0  평균차(먹이별) [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0)]
+s15dc  모두닿음 6  놓침(먹이별) [0, 4, 0, 0]  늦음 2  평균차(먹이별) [np.float64(0.0), np.float64(-25.1), np.float64(-8.0), np.float64(0.0)]
+       (239, 2, 638.9, None)
+       (240, 3, 361.9, 533.8)
+s16h   모두닿음 4  놓침(먹이별) [0, 2, 4, 0]  늦음 10  평균차(먹이별) [np.float64(0.0), np.float64(-34.7), np.float64(85.1), np.float64(0.0)]
+       (231, 3, 374.1, 494.0)
+       (232, 2, 641.3, None)
+       (233, 3, 544.6, None)
+       (234, 3, 277.8, 577.2)
+       (236, 3, 336.1, None)
+       (237, 3, 313.7, None)
+       (238, 2, 518.3, 596.5)
+       (238, 3, 643.9, None)
+       (239, 2, 638.9, None)
+       (240, 3, 361.9, 436.6)
+s16hc  모두닿음 5  놓침(먹이별) [0, 1, 4, 0]  늦음 8  평균차(먹이별) [np.float64(0.0), np.float64(-64.4), np.float64(50.0), np.float64(0.0)]
+       (231, 3, 374.1, 528.6)
+       (232, 2, 641.3, None)
+       (232, 3, 370.1, 440.4)
+       (233, 3, 544.6, None)
+       (234, 3, 277.8, None)
+       (236, 3, 336.1, None)
+       (237, 3, 313.7, None)
+       (240, 3, 361.9, 583.8)
+== long: big2_06 (t>=100), 늦은 얇은 칸(t>=1600, h<0.3), 끝 줄 칸, 끝 넓이, 끝 조각, 가장 큰 조각 안 줄 칸(t 1000~1500 평균)
+s15c   n=10 big2_06 0.396  thin_late 1212  line_end 709  area_end 3429  pieces_end 122.0  line_main_mid 517
+       big2_06 by seed [np.float64(0.34), np.float64(0.41), np.float64(0.39), np.float64(0.45), np.float64(0.53), np.float64(0.45), np.float64(0.35), np.float64(0.32), np.float64(0.24), np.float64(0.48)]
+       line_end by seed [785, 582, 652, 645, 672, 794, 747, 705, 794, 710]
+s15dc  n=10 big2_06 0.324  thin_late 218  line_end 464  area_end 1636  pieces_end 1.0  line_main_mid 713
+       big2_06 by seed [np.float64(0.39), np.float64(0.22), np.float64(0.23), np.float64(0.26), np.float64(0.35), np.float64(0.39), np.float64(0.24), np.float64(0.33), np.float64(0.48), np.float64(0.35)]
+       line_end by seed [214, 601, 918, 273, 309, 384, 777, 346, 275, 545]
+s16h   n=10 big2_06 0.147  thin_late 334  line_end 831  area_end 1813  pieces_end 1.0  line_main_mid 868
+       big2_06 by seed [np.float64(0.19), np.float64(0.16), np.float64(0.18), np.float64(0.12), np.float64(0.21), np.float64(0.11), np.float64(0.17), np.float64(0.12), np.float64(0.1), np.float64(0.1)]
+       line_end by seed [1109, 562, 844, 810, 951, 367, 991, 818, 1203, 656]
