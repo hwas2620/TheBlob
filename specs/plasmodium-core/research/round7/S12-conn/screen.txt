@@ -1,0 +1,40 @@
+s8c    split_frac=0.253 nbig2=0.34 piece_max=0.373 det_late=0.0501 thin_late=1.11e+03 out_late=0.056 area_end=3.32e+03 pieces_end=119 thread_end=213 V_crumb=0.000361 neg_end=0 mass_err=7.9e-16
+   s181 split_frac=0.33 nbig2=0.385 piece_max=0.424 det_late=0.0374 thin_late=899 out_late=0.0386 area_end=3.1e+03 pieces_end=98 thread_end=143
+   s182 split_frac=0.27 nbig2=0.344 piece_max=0.272 det_late=0.0728 thin_late=1.44e+03 out_late=0.0734 area_end=3.63e+03 pieces_end=152 thread_end=357
+   s183 split_frac=0.16 nbig2=0.292 piece_max=0.422 det_late=0.0401 thin_late=996 out_late=0.056 area_end=3.24e+03 pieces_end=107 thread_end=140
+s10r   split_frac=0 nbig2=0.00347 piece_max=0.00857 det_late=0.00359 thin_late=651 out_late=0.0604 area_end=2.63e+03 pieces_end=69 thread_end=342 V_crumb=0.00158 neg_end=0 mass_err=9.13e-16
+   s181 split_frac=0 nbig2=0 piece_max=0.00292 det_late=0.00351 thin_late=708 out_late=0.0532 area_end=2.72e+03 pieces_end=66 thread_end=477
+   s182 split_frac=0 nbig2=0.0104 piece_max=0.00611 det_late=0.00289 thin_late=680 out_late=0.064 area_end=2.65e+03 pieces_end=78 thread_end=498
+   s183 split_frac=0 nbig2=0 piece_max=0.0167 det_late=0.00436 thin_late=564 out_late=0.064 area_end=2.53e+03 pieces_end=63 thread_end=52
+s11h   split_frac=0 nbig2=0.00347 piece_max=0.00949 det_late=0.00337 thin_late=679 out_late=0.0422 area_end=2.57e+03 pieces_end=25.3 thread_end=564 V_crumb=0.0101 neg_end=2 mass_err=9.52e-16
+   s181 split_frac=0 nbig2=0.0104 piece_max=0.0136 det_late=0.000544 thin_late=632 out_late=0.0342 area_end=2.6e+03 pieces_end=16 thread_end=638
+   s182 split_frac=0 nbig2=0 piece_max=0.0103 det_late=0.004 thin_late=713 out_late=0.0461 area_end=2.56e+03 pieces_end=25 thread_end=543
+   s183 split_frac=0 nbig2=0 piece_max=0.00455 det_late=0.00555 thin_late=694 out_late=0.0463 area_end=2.55e+03 pieces_end=35 thread_end=511
+s12h   split_frac=0 nbig2=0.00694 piece_max=0 det_late=0 thin_late=1.27e+03 out_late=0 area_end=3.15e+03 pieces_end=0 thread_end=1.18e+03 V_crumb=0 neg_end=0 mass_err=6.77e-16
+   s181 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=1.16e+03 out_late=0 area_end=2.99e+03 pieces_end=0 thread_end=1.02e+03
+   s182 split_frac=0 nbig2=0.0104 piece_max=0 det_late=0 thin_late=1.51e+03 out_late=0 area_end=3.32e+03 pieces_end=0 thread_end=1.44e+03
+   s183 split_frac=0 nbig2=0.0104 piece_max=0 det_late=0 thin_late=1.15e+03 out_late=0 area_end=3.14e+03 pieces_end=0 thread_end=1.07e+03
+s12r   split_frac=0 nbig2=0.00694 piece_max=0 det_late=0 thin_late=1.21e+03 out_late=0 area_end=2.99e+03 pieces_end=0 thread_end=1.11e+03 V_crumb=0 neg_end=0 mass_err=6.77e-16
+   s181 split_frac=0 nbig2=0.0104 piece_max=0 det_late=0 thin_late=1.16e+03 out_late=0 area_end=2.97e+03 pieces_end=0 thread_end=1.18e+03
+   s182 split_frac=0 nbig2=0.0104 piece_max=0 det_late=0 thin_late=1.26e+03 out_late=0 area_end=3.03e+03 pieces_end=0 thread_end=1.1e+03
+   s183 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=1.22e+03 out_late=0 area_end=2.98e+03 pieces_end=0 thread_end=1.06e+03
+s12n   split_frac=0 nbig2=0.111 piece_max=0 det_late=0 thin_late=1.31e+03 out_late=0 area_end=3.14e+03 pieces_end=0 thread_end=1.28e+03 V_crumb=0 neg_end=0 mass_err=5.08e-16
+   s181 split_frac=0 nbig2=0.312 piece_max=0 det_late=0 thin_late=1.14e+03 out_late=0 area_end=2.89e+03 pieces_end=0 thread_end=1.14e+03
+   s182 split_frac=0 nbig2=0.0104 piece_max=0 det_late=0 thin_late=1.38e+03 out_late=0 area_end=3.2e+03 pieces_end=0 thread_end=1.34e+03
+   s183 split_frac=0 nbig2=0.0104 piece_max=0 det_late=0 thin_late=1.39e+03 out_late=0 area_end=3.32e+03 pieces_end=0 thread_end=1.35e+03
+s12g   split_frac=0 nbig2=0.33 piece_max=0 det_late=0 thin_late=2.48e+03 out_late=0 area_end=4.47e+03 pieces_end=0 thread_end=1.06e+03 V_crumb=0 neg_end=0 mass_err=1.02e-15
+   s181 split_frac=0 nbig2=0.333 piece_max=0 det_late=0 thin_late=2.54e+03 out_late=0 area_end=4.45e+03 pieces_end=0 thread_end=1.26e+03
+   s182 split_frac=0 nbig2=0.281 piece_max=0 det_late=0 thin_late=2.19e+03 out_late=0 area_end=4.07e+03 pieces_end=0 thread_end=573
+   s183 split_frac=0 nbig2=0.375 piece_max=0 det_late=0 thin_late=2.71e+03 out_late=0 area_end=4.89e+03 pieces_end=0 thread_end=1.35e+03
+
+s12h (기준 s8c): 1 몸 밖 부피 절반 이하 True (0.000 vs 0.056) | 2 얇은 칸 지금 이하 False (1275 vs 1111) | 3 갈라짐 절반 이하 True (0.000/0.007 vs 0.253/0.340) | 4 음수·부피·버린 부피 True (음수 0, 버린 부피 최대 0) → 탈락  [관문 아님: 끝 넓이 0.95배, 끝 조각 수 0 (지금 119), 끝 실 칸 1176 (지금 213)]
+s12r (기준 s8c): 1 몸 밖 부피 절반 이하 True (0.000 vs 0.056) | 2 얇은 칸 지금 이하 False (1215 vs 1111) | 3 갈라짐 절반 이하 True (0.000/0.007 vs 0.253/0.340) | 4 음수·부피·버린 부피 True (음수 0, 버린 부피 최대 0) → 탈락  [관문 아님: 끝 넓이 0.90배, 끝 조각 수 0 (지금 119), 끝 실 칸 1111 (지금 213)]
+s12n (기준 s8c): 1 몸 밖 부피 절반 이하 True (0.000 vs 0.056) | 2 얇은 칸 지금 이하 False (1305 vs 1111) | 3 갈라짐 절반 이하 True (0.000/0.111 vs 0.253/0.340) | 4 음수·부피·버린 부피 True (음수 0, 버린 부피 최대 0) → 탈락  [관문 아님: 끝 넓이 0.94배, 끝 조각 수 0 (지금 119), 끝 실 칸 1276 (지금 213)]
+s12g (기준 s8c): 1 몸 밖 부피 절반 이하 True (0.000 vs 0.056) | 2 얇은 칸 지금 이하 False (2480 vs 1111) | 3 갈라짐 절반 이하 False (0.000/0.330 vs 0.253/0.340) | 4 음수·부피·버린 부피 True (음수 0, 버린 부피 최대 0) → 탈락  [관문 아님: 끝 넓이 1.35배, 끝 조각 수 0 (지금 119), 끝 실 칸 1061 (지금 213)]
+
+mig 181 (관문 아님)
+  s12h   disp=84.31 path_len=93.02 area_end=2876 neg_end=0 ret=2183 conn=495
+  s12r   disp=82.28 path_len=91.8 area_end=2981 neg_end=0 ret=2067 conn=10043
+  s12n   disp=84.31 path_len=93.02 area_end=2876 neg_end=0 ret=2183 conn=495
+  s12g   disp=72.92 path_len=83.83 area_end=3104 neg_end=0 ret=0 conn=1395
+  (S11: s11h disp=84.46 area_end=2839; S10: s10r disp=82.51 area_end=2953; S9: s9c(지금 모델) disp=74.99 area_end=3095)
