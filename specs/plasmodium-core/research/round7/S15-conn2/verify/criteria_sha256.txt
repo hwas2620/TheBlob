@@ -1,0 +1,7 @@
+# sha256 (실행 전에 찍음)
+33f2326d0b25e549a1be7c7a2af213e46dfc36fb7e63d703a024e0a86be64307  CRITERIA.md
+dc3032dc873f1ef6a50c8b6e339032e2d5100b91c8a175ad638d8cff1b0b20c5  scripts/judge.py
+55ddb8d0d26c6ad68e03f344cd6a5cc9fc40beceba14bc5ada4f50729f817e7e  scripts/measure.py
+919cdc9ceb1cf47e8c0f4ca649eba9d52cac0317372157711f6baffd69231054  scripts/monitor.py
+48d862fb9227c3b2c9cebecb0097dd38c5256fb96f0767c4bfe82c99a3d3a850  scripts/vrun.py
+UTC 2026-11-22T12:01:55Z
