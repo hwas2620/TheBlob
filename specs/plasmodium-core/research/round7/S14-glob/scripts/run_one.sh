@@ -10,6 +10,8 @@ case "$tag" in
   s14g1) extra="sup_age=100 dry_edge=1 edge_t=0.3 edge_iso=1 keep_conn=1 ret_h=1.0 ret_glob=1";;   # 같은 것, 오그라듦 두께 한도 1.0
   s14gn) extra="dry_edge=1 edge_t=0.3 edge_iso=1 keep_conn=1 ret_h=100 ret_glob=1";;               # s14g에서 S7을 뺌 (줄이기 시험)
   s14gd) extra="sup_age=100 keep_conn=1 ret_h=100 ret_glob=1";;                                    # s14g에서 S9 막 규칙(가장자리만 마름, 장력)을 뺌 (줄이기 시험)
+  s14k)  extra="keep_conn=1 ret_h=100 ret_glob=1";;                                                # [결승 뒤 진단] s14gd에서 S7을 뺌
+  s14s)  extra="sup_age=100";;                                                                     # [결승 뒤 진단] S7만
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1
