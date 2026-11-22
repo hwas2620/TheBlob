@@ -11,6 +11,9 @@ case "$tag" in
   s9t)   extra="$B edge_t=0.3";;                          # + 가장자리 장력 0.3
   s9et)  extra="$B dry_edge=1 edge_t=0.3";;               # + 둘 다
   s9et6) extra="$B dry_edge=1 edge_t=0.6";;               # + 둘 다, 장력 0.6
+  s9ti)  extra="$B edge_t=0.3 edge_iso=1";;               # + 가장자리 장력 0.3, 방향을 타지 않는 가장자리 재기 (바꾼 것 1)
+  s9eti) extra="$B dry_edge=1 edge_t=0.3 edge_iso=1";;    # + 둘 다 (방향 안 탐)
+  s9eti6) extra="$B dry_edge=1 edge_t=0.6 edge_iso=1";;   # + 둘 다, 장력 0.6 (방향 안 탐)
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1

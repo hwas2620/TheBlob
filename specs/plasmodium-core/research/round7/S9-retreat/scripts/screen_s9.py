@@ -45,7 +45,7 @@ def stats(tag, s):
 
 
 M = {}
-for tag in ['s8c', 's8k', 's8k1', 's9e', 's9t', 's9et', 's9et6']:
+for tag in ['s8c', 's8k', 's8k1', 's9e', 's9t', 's9et', 's9et6', 's9ti', 's9eti', 's9eti6']:
     rs = [stats(tag, s) for s in SEEDS]
     if any(r is None for r in rs): print(tag, '빠짐', [s for s, r in zip(SEEDS, rs) if r is None]); continue
     M[tag] = {k: float(np.mean([r[k] for r in rs])) for k in K}; M[tag]['neg_end'] = int(sum(r['neg_end'] for r in rs)); M[tag]['mass_err'] = max(r['mass_err'] for r in rs)
@@ -53,7 +53,7 @@ for tag in ['s8c', 's8k', 's8k1', 's9e', 's9t', 's9et', 's9et6']:
     for s, r in zip(SEEDS, rs): print(f'   s{s} ' + ' '.join(f'{k}={r[k]:.3g}' for k in K[:7]))
 print()
 y = M.get('s8k'); c = M.get('s8c')
-for tag in ['s9e', 's9t', 's9et', 's9et6']:
+for tag in ['s9e', 's9t', 's9et', 's9et6', 's9ti', 's9eti', 's9eti6']:
     if tag not in M or y is None: continue
     x = M[tag]
     c1 = x['det_late'] <= 0.5 * y['det_late']; c2 = x['thin_late'] <= 0.85 * y['thin_late']
@@ -62,7 +62,7 @@ for tag in ['s9e', 's9t', 's9et', 's9et6']:
           f'| 3 갈라짐 {c3} ({x["split_frac"]:.3f}/{x["nbig2"]:.3f} vs {y["split_frac"]:.3f}/{y["nbig2"]:.3f}) | 4 음수·부피 {c4} → {"넘김" if c1 and c2 and c3 and c4 else "탈락"}'
           + (f'  [관문 아님: 지금 모델 대비 얇은 칸 {x["thin_late"] / c["thin_late"]:.2f}배, 떨어진 조각 {x["det_late"] / c["det_late"]:.2f}배, 끝 넓이 {x["area_end"] / c["area_end"]:.2f}배]' if c else ''))
 print('\nmig 181 (관문 아님, 앞머리가 느려지는지 미리 보기)')
-for tag in ['s9c', 's9b', 's9e', 's9t', 's9et', 's9et6']:
+for tag in ['s9c', 's9b', 's9e', 's9t', 's9et', 's9et6', 's9ti', 's9eti', 's9eti6']:
     f = os.path.join(MODEL_RUNS, f'b_mig_s181_{tag}', 'metrics.json')
     if not os.path.exists(f): print(f'  {tag} 빠짐'); continue
     m = json.load(open(f)); print(f'  {tag:6s} disp={m["disp"]} path_len={m["path_len"]} area_end={m["area_end"]} neg_end={m["neg_end_cellsteps"]} mass_err={m["mass_err_max"]:.1e}')

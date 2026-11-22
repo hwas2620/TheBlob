@@ -58,6 +58,7 @@ DEF = dict(
     crumb_dry=0,   # [split] 1: a drying cell with no wet neighbour left dries too (its volume is dropped and booked in V_crumb) - no stuck isolated cells
     neg_fill=0,   # [split] 1: with neg_dry, a kept bridge cell (bridge_keep) whose thickness went negative is not dried; its deficit is shared among its neighbours in proportion to their thickness
     edge_t=0.0,    # [S9] >0: edge tension - a wet cell's rest thickness is lowered by edge_t * (dry 8-neighbours)/8: the rim is pushed inward (tips more than straight edges), a detached piece draws itself in
+    edge_iso=0,    # [S9] 1: edge tension uses the isotropic edge measure 1 - (Gaussian-weighted wet fraction, sigma curv_sigma) instead of (dry 8-neighbours)/8 (the 8-count favours axis-aligned edges: bodies turn square)
     dry_edge=0,    # [S9] 1: only a wet cell with at least one dry 8-neighbour may dry (negative cells still dry at once): a draining film retreats from its rim, no holes open inside it
     bridge_mem=0.0, bridge_mem_tau=1e9,   # [split] >0: a bridge cell is also kept while its remembered peak conductance (max of Cn, forgetting with time constant bridge_mem_tau) is >= bridge_mem: strands that were real veins outlive the flow that made them
     gm_every=20.0, nsnap=5, log_every=50,
@@ -406,9 +407,13 @@ def run(name, over):
             if P['pulse_tube']: tube = tube * mod
         hstar = hstar + tube
         if P['edge_t'] > 0:      # [S9] edge tension
-            nd_ = np.zeros((N, N))
-            for d in ALL: nd_ += ~nb(wet, d)
-            hstar = np.where(wet, hstar - P['edge_t'] * nd_ / 8.0, hstar)
+            if P['edge_iso']:
+                en_ = np.clip(1.0 - gaussian_filter(wet.astype(float), P['curv_sigma'], mode='wrap', truncate=3.0), 0.0, 1.0)
+            else:
+                en_ = np.zeros((N, N))
+                for d in ALL: en_ += ~nb(wet, d)
+                en_ /= 8.0
+            hstar = np.where(wet, hstar - P['edge_t'] * en_, hstar)
         if P['neck_keep'] and neck.any(): hstar = np.where(neck & wet, np.maximum(hstar, P['neck_h']), hstar)   # [S5] the kept link refills to a tube
         # ---- pressure / flux / volume ----
         W = [act[k] * G[k] * (C[k] + P['r']) / Ls[k] for k in range(4)]
