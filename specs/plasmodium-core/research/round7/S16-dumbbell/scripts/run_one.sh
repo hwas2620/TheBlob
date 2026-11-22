@@ -15,6 +15,7 @@ case "$tag" in
   s16k0r) extra="keep_conn=3 ret_h=100 ret_glob=1";;                                  # S7 없이 + 고리 풀기
   s16g)  extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1 sup_h=0.6 sup_fed=50";;   # s16hr + 굶을 때만 S7 (50 시간 동안 먹은 것이 없을 때)
   s16gf) extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1 sup_h=0.6 sup_fed=50 ret_fed=50";;   # s16g + 오그라듦도 굶을 때만
+  s16cz) extra="f32=1";;                  # 대조 + 매 스텝 float32 반올림 (효과가 없어야 할 작은 흔들림: 잡음 바닥 재기)
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1
