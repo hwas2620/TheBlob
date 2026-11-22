@@ -1,0 +1,16 @@
+mig 181 s12h
+mig 181 s12r
+mig 181 s12n
+mig 181 s12g
+long 181 s12h
+long 181 s12r
+long 181 s12n
+long 181 s12g
+long 182 s12h
+long 182 s12r
+long 182 s12n
+long 182 s12g
+long 183 s12h
+long 183 s12r
+long 183 s12n
+long 183 s12g
