@@ -1,0 +1,36 @@
+s8c    split_frac=0.253 nbig2=0.34 piece_max=0.373 det_late=0.0501 thin_late=1.11e+03 out_late=0.056 area_end=3.32e+03 pieces_end=119 thread_end=213 line_end=684 V_crumb=0.000361 neg_end=0 mass_err=7.9e-16
+   s181 split_frac=0.33 nbig2=0.385 piece_max=0.424 det_late=0.0374 thin_late=899 out_late=0.0386 area_end=3.1e+03 pieces_end=98 thread_end=143 line_end=596
+   s182 split_frac=0.27 nbig2=0.344 piece_max=0.272 det_late=0.0728 thin_late=1.44e+03 out_late=0.0734 area_end=3.63e+03 pieces_end=152 thread_end=357 line_end=780
+   s183 split_frac=0.16 nbig2=0.292 piece_max=0.422 det_late=0.0401 thin_late=996 out_late=0.056 area_end=3.24e+03 pieces_end=107 thread_end=140 line_end=677
+s13ib  split_frac=0 nbig2=0.0139 piece_max=0 det_late=0 thin_late=841 out_late=0 area_end=2.62e+03 pieces_end=0 thread_end=664 line_end=1.48e+03 V_crumb=0 neg_end=0 mass_err=8.46e-16
+   s181 split_frac=0 nbig2=0.0417 piece_max=0 det_late=0 thin_late=543 out_late=0 area_end=2.43e+03 pieces_end=0 thread_end=330 line_end=1.66e+03
+   s182 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=994 out_late=0 area_end=2.6e+03 pieces_end=0 thread_end=754 line_end=1.41e+03
+   s183 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=987 out_late=0 area_end=2.84e+03 pieces_end=0 thread_end=907 line_end=1.36e+03
+s14g   split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=597 out_late=0 area_end=2.21e+03 pieces_end=0 thread_end=396 line_end=794 V_crumb=0 neg_end=0 mass_err=8.46e-16
+   s181 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=871 out_late=0 area_end=2.76e+03 pieces_end=0 thread_end=778 line_end=1.06e+03
+   s182 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=425 out_late=0 area_end=1.72e+03 pieces_end=0 thread_end=158 line_end=635
+   s183 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=495 out_late=0 area_end=2.16e+03 pieces_end=0 thread_end=252 line_end=682
+s14g1  split_frac=0 nbig2=0.00694 piece_max=0 det_late=0 thin_late=732 out_late=0 area_end=2.38e+03 pieces_end=0 thread_end=564 line_end=943 V_crumb=0 neg_end=0 mass_err=8.46e-16
+   s181 split_frac=0 nbig2=0.0208 piece_max=0 det_late=0 thin_late=775 out_late=0 area_end=2.4e+03 pieces_end=0 thread_end=617 line_end=968
+   s182 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=628 out_late=0 area_end=2.24e+03 pieces_end=0 thread_end=420 line_end=849
+   s183 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=793 out_late=0 area_end=2.52e+03 pieces_end=0 thread_end=655 line_end=1.01e+03
+s14gn  split_frac=0 nbig2=0.111 piece_max=0 det_late=0 thin_late=615 out_late=0 area_end=2.08e+03 pieces_end=0 thread_end=365 line_end=837 V_crumb=0 neg_end=0 mass_err=6.77e-16
+   s181 split_frac=0 nbig2=0.333 piece_max=0 det_late=0 thin_late=925 out_late=0 area_end=2.36e+03 pieces_end=0 thread_end=686 line_end=1.19e+03
+   s182 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=425 out_late=0 area_end=1.72e+03 pieces_end=0 thread_end=158 line_end=635
+   s183 split_frac=0 nbig2=0 piece_max=0 det_late=0 thin_late=495 out_late=0 area_end=2.16e+03 pieces_end=0 thread_end=252 line_end=682
+s14gd  split_frac=0 nbig2=0.0556 piece_max=0 det_late=0 thin_late=401 out_late=0 area_end=1.75e+03 pieces_end=0 thread_end=64 line_end=637 V_crumb=0 neg_end=0 mass_err=6.77e-16
+   s181 split_frac=0 nbig2=0.115 piece_max=0 det_late=0 thin_late=407 out_late=0 area_end=1.83e+03 pieces_end=0 thread_end=138 line_end=641
+   s182 split_frac=0 nbig2=0.0312 piece_max=0 det_late=0 thin_late=344 out_late=0 area_end=1.75e+03 pieces_end=0 thread_end=52 line_end=602
+   s183 split_frac=0 nbig2=0.0208 piece_max=0 det_late=0 thin_late=452 out_late=0 area_end=1.68e+03 pieces_end=0 thread_end=2 line_end=667
+
+s14g (기준 s8c): 1 몸 밖 부피 절반 이하 True (0.000 vs 0.056) | 2 얇은 칸 지금 이하 True (597 vs 1111) | 3 갈라짐 절반 이하 True (0.000/0.000 vs 0.253/0.340) | 4 음수·부피·버린 부피 True (음수 0, 버린 부피 최대 0) | 5 줄 칸 지금 이하 False (794 vs 684) → 탈락  [관문 아님: 끝 넓이 0.67배, 끝 조각 수 0 (지금 119), 끝 실 칸 396 (지금 213), 끝 줄 칸 794 (지금 684)]
+s14g1 (기준 s8c): 1 몸 밖 부피 절반 이하 True (0.000 vs 0.056) | 2 얇은 칸 지금 이하 True (732 vs 1111) | 3 갈라짐 절반 이하 True (0.000/0.007 vs 0.253/0.340) | 4 음수·부피·버린 부피 True (음수 0, 버린 부피 최대 0) | 5 줄 칸 지금 이하 False (943 vs 684) → 탈락  [관문 아님: 끝 넓이 0.72배, 끝 조각 수 0 (지금 119), 끝 실 칸 564 (지금 213), 끝 줄 칸 943 (지금 684)]
+s14gn (기준 s8c): 1 몸 밖 부피 절반 이하 True (0.000 vs 0.056) | 2 얇은 칸 지금 이하 True (615 vs 1111) | 3 갈라짐 절반 이하 True (0.000/0.111 vs 0.253/0.340) | 4 음수·부피·버린 부피 True (음수 0, 버린 부피 최대 0) | 5 줄 칸 지금 이하 False (837 vs 684) → 탈락  [관문 아님: 끝 넓이 0.63배, 끝 조각 수 0 (지금 119), 끝 실 칸 365 (지금 213), 끝 줄 칸 837 (지금 684)]
+s14gd (기준 s8c): 1 몸 밖 부피 절반 이하 True (0.000 vs 0.056) | 2 얇은 칸 지금 이하 True (401 vs 1111) | 3 갈라짐 절반 이하 True (0.000/0.056 vs 0.253/0.340) | 4 음수·부피·버린 부피 True (음수 0, 버린 부피 최대 0) | 5 줄 칸 지금 이하 True (637 vs 684) → 넘김  [관문 아님: 끝 넓이 0.53배, 끝 조각 수 0 (지금 119), 끝 실 칸 64 (지금 213), 끝 줄 칸 637 (지금 684)]
+
+mig 181 (관문 아님)
+  s14g   disp=83.96 path_len=93.04 area_end=2568 neg_end=0 ret=2660 conn=1018
+  s14g1  disp=83.96 path_len=93.04 area_end=2568 neg_end=0 ret=2660 conn=1018
+  s14gn  disp=83.96 path_len=93.04 area_end=2568 neg_end=0 ret=2660 conn=1018
+  s14gd  disp=75.5 path_len=86.25 area_end=2911 neg_end=0 ret=1685 conn=1380
+  (S13: s13ib disp=84.83 area_end=2639; S9: s9c(지금 모델) disp=74.99 area_end=3095)
