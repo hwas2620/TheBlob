@@ -1,0 +1,47 @@
+s8c    split_frac=0.253 nbig2=0.34 piece_max=0.373 det_late=0.0501 thin_late=1.11e+03 out_late=0.056 area_end=3.32e+03 V_crumb=0.000248 neg_end=0 mass_err=7.9e-16
+   s181 split_frac=0.33 nbig2=0.385 piece_max=0.424 det_late=0.0374 thin_late=899 out_late=0.0386 area_end=3.1e+03
+   s182 split_frac=0.27 nbig2=0.344 piece_max=0.272 det_late=0.0728 thin_late=1.44e+03 out_late=0.0734 area_end=3.63e+03
+   s183 split_frac=0.16 nbig2=0.292 piece_max=0.422 det_late=0.0401 thin_late=996 out_late=0.056 area_end=3.24e+03
+s8k    split_frac=0.137 nbig2=0.0208 piece_max=0.0467 det_late=0.0914 thin_late=1.54e+03 out_late=0.0934 area_end=3.52e+03 V_crumb=0.000106 neg_end=0 mass_err=6.77e-16
+   s181 split_frac=0.26 nbig2=0.0208 piece_max=0.0297 det_late=0.124 thin_late=1.63e+03 out_late=0.126 area_end=3.69e+03
+   s182 split_frac=0.08 nbig2=0.0104 piece_max=0.0764 det_late=0.0762 thin_late=1.33e+03 out_late=0.0779 area_end=3.41e+03
+   s183 split_frac=0.07 nbig2=0.0312 piece_max=0.0341 det_late=0.0743 thin_late=1.66e+03 out_late=0.0758 area_end=3.47e+03
+s8k1   split_frac=0.02 nbig2=0.00694 piece_max=0.0189 det_late=0.0706 thin_late=1.84e+03 out_late=0.0712 area_end=3.67e+03 V_crumb=0.000243 neg_end=0 mass_err=9.29e-16
+   s181 split_frac=0.06 nbig2=0.0104 piece_max=0.0268 det_late=0.0771 thin_late=1.9e+03 out_late=0.0771 area_end=3.76e+03
+   s182 split_frac=0 nbig2=0 piece_max=0.0187 det_late=0.0644 thin_late=1.88e+03 out_late=0.0656 area_end=3.62e+03
+   s183 split_frac=0 nbig2=0.0104 piece_max=0.0112 det_late=0.0703 thin_late=1.73e+03 out_late=0.0711 area_end=3.64e+03
+s9e    split_frac=0.113 nbig2=0.132 piece_max=0.0449 det_late=0.0685 thin_late=1.71e+03 out_late=0.0871 area_end=3.72e+03 V_crumb=0.000231 neg_end=0 mass_err=7.59e-16
+   s181 split_frac=0 nbig2=0.0104 piece_max=0.0101 det_late=0.0727 thin_late=1.71e+03 out_late=0.0735 area_end=3.69e+03
+   s182 split_frac=0.34 nbig2=0.354 piece_max=0.111 det_late=0.0622 thin_late=1.68e+03 out_late=0.116 area_end=3.77e+03
+   s183 split_frac=0 nbig2=0.0312 piece_max=0.0137 det_late=0.0706 thin_late=1.74e+03 out_late=0.0722 area_end=3.7e+03
+s9t 빠짐 [181, 182, 183]
+s9et 빠짐 [181, 182, 183]
+s9et6 빠짐 [181, 182, 183]
+s9ti   split_frac=0.04 nbig2=0.00347 piece_max=0.00992 det_late=0.0884 thin_late=1.32e+03 out_late=0.0896 area_end=3.13e+03 V_crumb=0.000442 neg_end=0 mass_err=8.59e-16
+   s181 split_frac=0.12 nbig2=0.0104 piece_max=0.00941 det_late=0.0985 thin_late=1.34e+03 out_late=0.0996 area_end=3.19e+03
+   s182 split_frac=0 nbig2=0 piece_max=0.0128 det_late=0.0844 thin_late=1.31e+03 out_late=0.0857 area_end=2.99e+03
+   s183 split_frac=0 nbig2=0 piece_max=0.00756 det_late=0.0822 thin_late=1.3e+03 out_late=0.0835 area_end=3.22e+03
+s9eti  split_frac=0.0367 nbig2=0.00694 piece_max=0.0118 det_late=0.0854 thin_late=1.3e+03 out_late=0.0864 area_end=3.08e+03 V_crumb=0.000417 neg_end=0 mass_err=5.82e-16
+   s181 split_frac=0.07 nbig2=0.0104 piece_max=0.0138 det_late=0.0906 thin_late=1.34e+03 out_late=0.0919 area_end=3.08e+03
+   s182 split_frac=0 nbig2=0.0104 piece_max=0.00577 det_late=0.0693 thin_late=1.21e+03 out_late=0.0701 area_end=3.07e+03
+   s183 split_frac=0.04 nbig2=0 piece_max=0.0157 det_late=0.0963 thin_late=1.35e+03 out_late=0.0973 area_end=3.09e+03
+s9eti6 split_frac=0 nbig2=0 piece_max=0.0038 det_late=0.059 thin_late=824 out_late=0.0613 area_end=2.73e+03 V_crumb=0.000405 neg_end=1 mass_err=1.35e-15
+   s181 split_frac=0 nbig2=0 piece_max=0.00303 det_late=0.0594 thin_late=854 out_late=0.0607 area_end=2.58e+03
+   s182 split_frac=0 nbig2=0 piece_max=0.00443 det_late=0.0617 thin_late=841 out_late=0.0634 area_end=2.83e+03
+   s183 split_frac=0 nbig2=0 piece_max=0.00396 det_late=0.0559 thin_late=777 out_late=0.0597 area_end=2.77e+03
+
+s9e (기준 s8k): 1 떨어진 얇은 조각 절반 이하 False (0.069 vs 0.091) | 2 얇은 칸 0.85배 이하 False (1709 vs 1538) | 3 갈라짐 False (0.113/0.132 vs 0.137/0.021) | 4 음수·부피 True → 탈락  [관문 아님: 지금 모델 대비 얇은 칸 1.54배, 떨어진 조각 1.37배, 끝 넓이 1.12배]
+s9ti (기준 s8k): 1 떨어진 얇은 조각 절반 이하 False (0.088 vs 0.091) | 2 얇은 칸 0.85배 이하 False (1317 vs 1538) | 3 갈라짐 True (0.040/0.003 vs 0.137/0.021) | 4 음수·부피 True → 탈락  [관문 아님: 지금 모델 대비 얇은 칸 1.19배, 떨어진 조각 1.76배, 끝 넓이 0.94배]
+s9eti (기준 s8k): 1 떨어진 얇은 조각 절반 이하 False (0.085 vs 0.091) | 2 얇은 칸 0.85배 이하 True (1298 vs 1538) | 3 갈라짐 True (0.037/0.007 vs 0.137/0.021) | 4 음수·부피 True → 탈락  [관문 아님: 지금 모델 대비 얇은 칸 1.17배, 떨어진 조각 1.70배, 끝 넓이 0.93배]
+s9eti6 (기준 s8k): 1 떨어진 얇은 조각 절반 이하 False (0.059 vs 0.091) | 2 얇은 칸 0.85배 이하 True (824 vs 1538) | 3 갈라짐 True (0.000/0.000 vs 0.137/0.021) | 4 음수·부피 False → 탈락  [관문 아님: 지금 모델 대비 얇은 칸 0.74배, 떨어진 조각 1.18배, 끝 넓이 0.82배]
+
+mig 181 (관문 아님, 앞머리가 느려지는지 미리 보기)
+  s9c    disp=74.99 path_len=85.01 area_end=3095 neg_end=0 mass_err=3.4e-16
+  s9b    disp=75.65 path_len=86.34 area_end=3332 neg_end=0 mass_err=1.9e-16
+  s9e    disp=72.4 path_len=83.08 area_end=3376 neg_end=0 mass_err=3.4e-16
+  s9t    disp=69.47 path_len=87.23 area_end=2787 neg_end=0 mass_err=3.0e-16
+  s9et   disp=63.18 path_len=95.63 area_end=2817 neg_end=0 mass_err=3.2e-16
+  s9et6  disp=88.56 path_len=94.21 area_end=2421 neg_end=1 mass_err=3.8e-16
+  s9ti   disp=80.82 path_len=90.25 area_end=3057 neg_end=0 mass_err=3.4e-16
+  s9eti  disp=83.55 path_len=93.13 area_end=2974 neg_end=0 mass_err=4.1e-16
+  s9eti6 disp=78.76 path_len=85.94 area_end=2490 neg_end=1 mass_err=3.4e-16

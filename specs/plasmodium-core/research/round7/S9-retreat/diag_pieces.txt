@@ -1,0 +1,7 @@
+s8c     pieces/run 115  vol share/run 0.055  cells: median 2, vol-weighted mean 26  mean h (vol-w) 0.179  rim share (vol-w) 1.00  vol in pieces with rim share>0.9: 1.00
+s8k     pieces/run 161  vol share/run 0.108  cells: median 2, vol-weighted mean 66  mean h (vol-w) 0.176  rim share (vol-w) 0.99  vol in pieces with rim share>0.9: 0.98
+s8k1    pieces/run 98  vol share/run 0.087  cells: median 4, vol-weighted mean 44  mean h (vol-w) 0.173  rim share (vol-w) 1.00  vol in pieces with rim share>0.9: 1.00
+s9e     pieces/run 99  vol share/run 0.076  cells: median 4, vol-weighted mean 21  mean h (vol-w) 0.171  rim share (vol-w) 1.00  vol in pieces with rim share>0.9: 1.00
+s9ti    pieces/run 158  vol share/run 0.099  cells: median 2, vol-weighted mean 14  mean h (vol-w) 0.186  rim share (vol-w) 1.00  vol in pieces with rim share>0.9: 1.00
+s9eti   pieces/run 144  vol share/run 0.096  cells: median 2, vol-weighted mean 21  mean h (vol-w) 0.191  rim share (vol-w) 1.00  vol in pieces with rim share>0.9: 1.00
+s9eti6  pieces/run 142  vol share/run 0.065  cells: median 2, vol-weighted mean 7  mean h (vol-w) 0.204  rim share (vol-w) 1.00  vol in pieces with rim share>0.9: 1.00
