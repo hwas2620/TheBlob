@@ -1,0 +1,30 @@
+s8c: pieces 28 (3 runs), detached vol share sum/3 = 0.022
+   detach time (vol-weighted mean) 1348; share detached after t>=1000: 0.73
+   mean h of those cells just before detaching (vol-weighted) 0.154; share that had h>=0.3 cells after detaching: 0.00
+   volume at t=2000 / volume of same cells just before detach (vol-weighted) 1.10
+     piece 0.02 tdet 1720 h_pre 0.167 v2000/vpre 1.0 thick_after False
+     piece 0.003 tdet 1800 h_pre 0.158 v2000/vpre 0.99 thick_after False
+     piece 0.0026 tdet 1800 h_pre 0.17 v2000/vpre 0.96 thick_after False
+     piece 0.0025 tdet 500 h_pre 0.155 v2000/vpre 1.05 thick_after False
+     piece 0.0024 tdet 1580 h_pre 0.157 v2000/vpre 1.08 thick_after False
+     piece 0.0023 tdet 1080 h_pre 0.138 v2000/vpre 1.12 thick_after False
+s8k: pieces 61 (3 runs), detached vol share sum/3 = 0.066
+   detach time (vol-weighted mean) 1490; share detached after t>=1000: 0.89
+   mean h of those cells just before detaching (vol-weighted) 0.161; share that had h>=0.3 cells after detaching: 0.00
+   volume at t=2000 / volume of same cells just before detach (vol-weighted) 1.04
+     piece 0.0341 tdet 1880 h_pre 0.172 v2000/vpre 1.0 thick_after False
+     piece 0.0297 tdet 1500 h_pre 0.165 v2000/vpre 0.99 thick_after False
+     piece 0.0145 tdet 1260 h_pre 0.159 v2000/vpre 1.02 thick_after False
+     piece 0.0068 tdet 1860 h_pre 0.157 v2000/vpre 1.0 thick_after False
+     piece 0.0066 tdet 1900 h_pre 0.154 v2000/vpre 1.0 thick_after False
+     piece 0.0058 tdet 1500 h_pre 0.162 v2000/vpre 0.99 thick_after False
+s8k1: pieces 67 (3 runs), detached vol share sum/3 = 0.054
+   detach time (vol-weighted mean) 1327; share detached after t>=1000: 0.68
+   mean h of those cells just before detaching (vol-weighted) 0.152; share that had h>=0.3 cells after detaching: 0.00
+   volume at t=2000 / volume of same cells just before detach (vol-weighted) 1.12
+     piece 0.0255 tdet 1840 h_pre 0.171 v2000/vpre 1.0 thick_after False
+     piece 0.0187 tdet 1900 h_pre 0.165 v2000/vpre 1.01 thick_after False
+     piece 0.0112 tdet 1580 h_pre 0.161 v2000/vpre 1.0 thick_after False
+     piece 0.0093 tdet 1120 h_pre 0.158 v2000/vpre 1.03 thick_after False
+     piece 0.0045 tdet 1640 h_pre 0.157 v2000/vpre 1.04 thick_after False
+     piece 0.0038 tdet 640 h_pre 0.176 v2000/vpre 1.0 thick_after False
