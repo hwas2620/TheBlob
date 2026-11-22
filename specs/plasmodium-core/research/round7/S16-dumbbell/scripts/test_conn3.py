@@ -6,8 +6,9 @@ import ref_model as R
 src = open(os.path.join(HERE, '..', 'model', 'ref_model.py')).read()
 blk = src[src.index("        if P['keep_conn'] and Dm.any():"):src.index("        if Dm.any():\n            stay = wet & ~Dm")]
 blk = '\n'.join(l[8:] for l in blk.split('\n'))
-def run(kc, wet, Dm, step=0):
-    g = dict(np=np, _torus_label=R._torus_label, nb=R.nb, ALL=R.ALL, N=wet.shape[0], P=dict(keep_conn=kc), wet=wet, Dm=Dm.copy(), negm=None, fill=None, nconn=0, nrel=0, step=step)
+def run(kc, wet, Dm, step=0, rel=1):
+    g = dict(np=np, _torus_label=R._torus_label, nb=R.nb, ALL=R.ALL, N=wet.shape[0], P=dict(R.DEF, keep_conn=kc, conn_rel=rel), wet=wet, Dm=Dm.copy(), negm=None, fill=None, nconn=0, nrel=0, step=step,
+             h=np.where(wet, 0.5, 0.0), t=0.0, t_eat=-1e18, hangm=np.zeros(wet.shape, bool), nhang=0)   # [S16] hang_age 코드도 같은 덩어리에 있다 (끈 채로)
     exec(blk, g); return g['Dm']
 N = 40
 # 1) a blob with a thread loop: the loop leaves the blob at (12,8) and comes back at (12,20); every 3rd loop cell dries this step
@@ -28,3 +29,11 @@ Dm = np.zeros((N, N), bool); Dm[15:20, 8] = True
 for kc in (2, 3):
     for step in range(3):
         out = run(kc, wet, Dm, step); print(f'bridge keep_conn={kc} step={step}: dried {int(out.sum())}/5, pieces after {R._torus_label(wet & ~out).max()}')
+# [S16] conn_rel: 한 스텝에 여러 덩어리를 시험 (고리 하나는 하나만 풀려야 몸이 남는다)
+wet = np.zeros((N, N), bool); wet[5:12, 5:24] = True
+for y, x in loop: wet[y, x] = True
+Dm = np.zeros((N, N), bool)
+for i, (y, x) in enumerate(loop):
+    if i % 3 == 1: Dm[y, x] = True
+for rel in (1, 4, 16):
+    out = run(3, wet, Dm, 0, rel); print(f'loop   keep_conn=3 conn_rel={rel}: dried {int(out.sum())}/{int(Dm.sum())}, pieces {R._torus_label(wet).max()} -> {R._torus_label(wet & ~out).max()}')

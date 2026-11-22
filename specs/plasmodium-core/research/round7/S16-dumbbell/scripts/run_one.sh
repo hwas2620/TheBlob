@@ -18,6 +18,7 @@ case "$tag" in
   s16cz) extra="f32=1";;                  # 대조 + 매 스텝 float32 반올림 (효과가 없어야 할 작은 흔들림: 잡음 바닥 재기)
   s16gh) extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1 sup_h=0.6 sup_fed=50 ret_fed=50 hang_age=4";;   # s16gf + 매달린 조각이 5배 빨리 늙음 (굶을 때만)
   s16gm) extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1 sup_h=0.6 sup_fed=50 ret_fed=50 hang_age=4 sup_min=0.05";;   # s16gh + S7이 몸 부피 5% 이상 덩이도 경쟁에 넣음
+  s16gr) extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1 sup_h=0.6 sup_fed=50 ret_fed=50 hang_age=4 sup_min=0.05 conn_rel=8";;   # s16gm + 한 스텝에 지켜진 덩어리 8개까지 풀기 시험
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1

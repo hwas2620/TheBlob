@@ -69,6 +69,7 @@ DEF = dict(
     ret_tip=0,     # [S13] 1: a thread end (a wet cell with exactly one wet 8-neighbour) that meets the other ret_h conditions retracts whatever its thickness: a blob hanging on a thread rolls back along it
     bridge_h=0.0,  # [S10] >0: with bridge_keep, a bridge cell is also kept while h >= bridge_h whatever its conductance (a thread breaks only once it is nearly empty)
     sup_cap=0.0,   # [S10] >0: the S7 ageing factor is at most 1 + sup_cap
+    conn_rel=1,    # [S16] with keep_conn=3: how many kept runs are tested (one labelling each) per step, taken in turn
     hang_age=0.0,  # [S16] >0 (with keep_conn): a piece that hangs on the body only through kept (would-tear) drying cells - every piece of the staying body but the biggest - ages (1 + hang_age) times faster,
                    #      so a lobe or blob hanging on a dead thread draws back into the main body. Off while fed (ret_fed window). Recomputed each step that has kept cells
     ret_fed=0.0,   # [S16] >0: retraction (ret_h) acts only on a hungry body - nothing eaten for more than ret_fed time units (a fed plasmodium keeps its sheet and spreads)
@@ -678,11 +679,13 @@ def run(name, over):
                 badc_ = (cmx_ > 0) & (cmx_ != cmn_); badc_[0] = False
                 bad_ = Dm & badc_[cl_]
                 if P['keep_conn'] >= 3 and bad_.any():      # [S16] release one kept run per step if the body stays whole without it alone
-                    ids_ = np.nonzero(badc_)[0]; r_ = int(ids_[step % len(ids_)]); R_ = cl_ == r_
-                    labR_ = _torus_label(wet & ~(Dm & ~bad_) & ~R_)
-                    nbl_ = np.zeros(0, np.int64)
-                    for d in ALL: nbl_ = np.union1d(nbl_, nb(labR_, d)[R_])
-                    if int((nbl_ > 0).sum()) <= 1: bad_ &= ~R_; nrel += int(R_.sum())
+                    ids_ = np.nonzero(badc_)[0]; nt_ = min(int(P['conn_rel']), len(ids_))
+                    for j_ in range(nt_):      # conn_rel = 1: exactly the S16 rule (run step % n). Each test sees the runs released before it as drying
+                        r_ = int(ids_[(step * nt_ + j_) % len(ids_)]); R_ = cl_ == r_
+                        labR_ = _torus_label(wet & ~(Dm & ~bad_) & ~R_)
+                        nbl_ = np.zeros(0, np.int64)
+                        for d in ALL: nbl_ = np.union1d(nbl_, nb(labR_, d)[R_])
+                        if int((nbl_ > 0).sum()) <= 1: bad_ &= ~R_; nrel += int(R_.sum())
             else:
                 bad_ = Dm & (mx_ > 0) & (mx_ != mn_)
             if P['hang_age'] > 0:      # [S16] hanging pieces: all staying pieces but the biggest, while some drying cells are kept
