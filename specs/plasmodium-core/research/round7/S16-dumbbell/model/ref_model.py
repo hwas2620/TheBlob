@@ -69,6 +69,8 @@ DEF = dict(
     ret_tip=0,     # [S13] 1: a thread end (a wet cell with exactly one wet 8-neighbour) that meets the other ret_h conditions retracts whatever its thickness: a blob hanging on a thread rolls back along it
     bridge_h=0.0,  # [S10] >0: with bridge_keep, a bridge cell is also kept while h >= bridge_h whatever its conductance (a thread breaks only once it is nearly empty)
     sup_cap=0.0,   # [S10] >0: the S7 ageing factor is at most 1 + sup_cap
+    hang_age=0.0,  # [S16] >0 (with keep_conn): a piece that hangs on the body only through kept (would-tear) drying cells - every piece of the staying body but the biggest - ages (1 + hang_age) times faster,
+                   #      so a lobe or blob hanging on a dead thread draws back into the main body. Off while fed (ret_fed window). Recomputed each step that has kept cells
     ret_fed=0.0,   # [S16] >0: retraction (ret_h) acts only on a hungry body - nothing eaten for more than ret_fed time units (a fed plasmodium keeps its sheet and spreads)
     sup_fed=0.0,   # [S16] >0: S7 acts only on a hungry body - one that has eaten nothing for more than sup_fed time units (a starved plasmodium gathers into one front; a fed one keeps its fronts)
     edge_iso=0,    # [S9] 1: edge tension uses the isotropic edge measure 1 - (Gaussian-weighted wet fraction, sigma curv_sigma) instead of (dry 8-neighbours)/8 (the 8-count favours axis-aligned edges: bodies turn square)
@@ -237,7 +239,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); sup_steps = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; sup_steps = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -534,7 +536,7 @@ def run(name, over):
             C[k] = np.clip(C[k] + dt * rt * (f - C[k]), 0.0, P['Cmax']) * act[k]
             if P['neck_keep'] and neckp.any(): C[k] = np.where(act[k] & neckp & nb(neckp, DIRS[k]), np.maximum(C[k], P['neck_C']), C[k])
         age = np.where(wet, age + dt, 0.0)
-        sage = np.where(wet, sage + dt * (1.0 - resmask) * (supm if P['sup_age'] > 0 else 1.0), 0.0)
+        sage = np.where(wet, sage + dt * (1.0 - resmask) * (supm if P['sup_age'] > 0 else 1.0) * ((1.0 + P['hang_age'] * hangm) if P['hang_age'] > 0 else 1.0), 0.0)
         if P['fan_comp']:
             fan_k = max(1, int(round(P['fan_every'] / dt)))
             if step % fan_k == 0:
@@ -683,6 +685,11 @@ def run(name, over):
                     if int((nbl_ > 0).sum()) <= 1: bad_ &= ~R_; nrel += int(R_.sum())
             else:
                 bad_ = Dm & (mx_ > 0) & (mx_ != mn_)
+            if P['hang_age'] > 0:      # [S16] hanging pieces: all staying pieces but the biggest, while some drying cells are kept
+                hangm[:] = False
+                if bad_.any() and not (P['ret_fed'] > 0 and t - t_eat <= P['ret_fed']):
+                    pv_ = np.bincount(lab_.ravel(), weights=np.where(wet & ~Dm, h, 0.0).ravel()); pv_[0] = -1.0
+                    hangm[:] = (lab_ > 0) & (lab_ != int(np.argmax(pv_))); nhang += int(hangm.sum())
             if bad_.any():
                 nconn += int(bad_.sum())
                 if negm is not None and (bad_ & negm).any(): fill = (bad_ & negm) if fill is None else (fill | (bad_ & negm))
@@ -830,7 +837,7 @@ def run(name, over):
                area_end=int(wet.sum()), foods=[[round(a, 2), round(b, 2)] for a, b in fpos],
                t_touch=[None if np.isnan(v) else round(float(v), 1) for v in t_touch], t_cover=[None if np.isnan(v) else round(float(v), 1) for v in t_cover],
                t_exh=[None if np.isnan(v) else round(float(v), 1) for v in t_exh], fM_end=[None if np.isinf(v) else round(float(v), 2) for v in fM],
-               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), sup_updates=int(sup_steps), sup_log=sup_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), ret_cellsteps=int(nret), conn_kept_cellsteps=int(nconn), conn_released_cells=int(nrel), sup_fed_skips=int(sup_fed_skips), traj=traj,
+               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), sup_updates=int(sup_steps), sup_log=sup_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), ret_cellsteps=int(nret), conn_kept_cellsteps=int(nconn), conn_released_cells=int(nrel), sup_fed_skips=int(sup_fed_skips), hang_cellsteps=int(nhang), traj=traj,
                mg_err=([float(np.median([e[1] for e in mg_err])), float(np.percentile([e[1] for e in mg_err], 90)), float(max(e[1] for e in mg_err)), float(np.median([e[2] for e in mg_err]))] if mg_err else None), mg_err_n=len(mg_err),
                h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), neg_end_steps=int(neg_end_steps), steps_done=int(nstep), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
     wm = hmean_last > 0
