@@ -1,0 +1,16 @@
+mig 181 s10a
+mig 181 s10b
+mig 181 s10r
+mig 181 s10n
+long 181 s10a
+long 181 s10b
+long 181 s10r
+long 181 s10n
+long 182 s10a
+long 182 s10b
+long 182 s10r
+long 182 s10n
+long 183 s10a
+long 183 s10b
+long 183 s10r
+long 183 s10n
