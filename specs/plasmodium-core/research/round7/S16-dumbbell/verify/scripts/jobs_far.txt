@@ -1,0 +1,12 @@
+food3 271 v16c_far
+food3 271 v16gh_far
+food3 272 v16c_far
+food3 272 v16gh_far
+food3 273 v16c_far
+food3 273 v16gh_far
+food3 274 v16c_far
+food3 274 v16gh_far
+food3 275 v16c_far
+food3 275 v16gh_far
+food3 276 v16c_far
+food3 276 v16gh_far
