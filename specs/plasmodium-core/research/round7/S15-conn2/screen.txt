@@ -1,0 +1,48 @@
+s15c   split_frac=0.213 nbig2=0.285 piece_max=0.376 thin_late=1.46e+03 out_late=0.0866 line_end=700 thread_end=230 area_end=3.62e+03 pieces_end=125
+   s221 split_frac=0.25 nbig2=0.333 piece_max=0.416 thin_late=1.46e+03 out_late=0.0663 line_end=661 thread_end=173 area_end=3.63e+03 pieces_end=105
+   s222 split_frac=0.2 nbig2=0.24 piece_max=0.371 thin_late=1.21e+03 out_late=0.0482 line_end=680 thread_end=147 area_end=3.48e+03 pieces_end=146
+   s223 split_frac=0.19 nbig2=0.281 piece_max=0.341 thin_late=1.72e+03 out_late=0.145 line_end=759 thread_end=371 area_end=3.75e+03 pieces_end=124
+s15d   split_frac=0 nbig2=0.0278 piece_max=0 thin_late=186 out_late=0 line_end=516 thread_end=27 area_end=1.64e+03 pieces_end=0
+   s221 split_frac=0 nbig2=0.0521 piece_max=0 thin_late=82.7 out_late=0 line_end=460 thread_end=1 area_end=1.6e+03 pieces_end=0
+   s222 split_frac=0 nbig2=0.0104 piece_max=0 thin_late=322 out_late=0 line_end=615 thread_end=80 area_end=1.72e+03 pieces_end=0
+   s223 split_frac=0 nbig2=0.0208 piece_max=0 thin_late=155 out_late=0 line_end=474 thread_end=0 area_end=1.6e+03 pieces_end=0
+s15k   split_frac=0 nbig2=0.285 piece_max=0 thin_late=417 out_late=0 line_end=749 thread_end=149 area_end=1.86e+03 pieces_end=0
+   s221 split_frac=0 nbig2=0.281 piece_max=0 thin_late=264 out_late=0 line_end=432 thread_end=0 area_end=1.65e+03 pieces_end=0
+   s222 split_frac=0 nbig2=0.292 piece_max=0 thin_late=517 out_late=0 line_end=842 thread_end=329 area_end=1.96e+03 pieces_end=0
+   s223 split_frac=0 nbig2=0.281 piece_max=0 thin_late=470 out_late=0 line_end=972 thread_end=117 area_end=1.98e+03 pieces_end=0
+s15dc  split_frac=0 nbig2=0.0694 piece_max=0 thin_late=98.1 out_late=0 line_end=257 thread_end=0 area_end=1.56e+03 pieces_end=0
+   s221 split_frac=0 nbig2=0.104 piece_max=0 thin_late=136 out_late=0 line_end=260 thread_end=0 area_end=1.6e+03 pieces_end=0
+   s222 split_frac=0 nbig2=0.0833 piece_max=0 thin_late=108 out_late=0 line_end=310 thread_end=0 area_end=1.56e+03 pieces_end=0
+   s223 split_frac=0 nbig2=0.0208 piece_max=0 thin_late=50.6 out_late=0 line_end=200 thread_end=0 area_end=1.52e+03 pieces_end=0
+
+s15d (기준 s15c): 1 갈라짐 True (0.000/0.028 vs 0.213/0.285) | 2 몸 밖 True (0.000 vs 0.087) | 3 얇은 칸 True (186 vs 1460) | 4 줄 칸 True (516 vs 700) | 5 food4 모두 닿음 5 vs 3, 늦음 2 → False | 6 건강 True (덩어리 [1, 1, 1, 1, 1, 1, 1, 1, 1], 음수 0, 부피오차 최대 1.9e-13, 버린 최대 0.0e+00) → 탈락
+   [관문 아님: 끝 넓이 0.45배, 끝 실 칸 27 (대조 230)]
+   food4 s221: 대조 [72.2, None, 454.1, 53.6] 후보 [72.2, 643.2, 483.8, 53.6]
+   food4 s222: 대조 [72.0, 540.8, 298.8, 49.7] 후보 [72.0, 547.8, 322.8, 49.7]
+   food4 s223: 대조 [72.3, 513.9, 548.4, 51.4] 후보 [72.3, 504.4, 647.3, 51.4]
+   food4 s224: 대조 [76.7, None, 430.2, 50.4] 후보 [76.7, 597.7, 500.6, 50.4]
+   food4 s225: 대조 [72.0, None, 263.0, 53.6] 후보 [72.0, None, 266.0, 53.6]
+   food4 s226: 대조 [72.1, 525.2, 442.4, 53.6] 후보 [72.1, 500.7, 473.4, 53.6]
+s15k (기준 s15c): 1 갈라짐 False (0.000/0.285 vs 0.213/0.285) | 2 몸 밖 True (0.000 vs 0.087) | 3 얇은 칸 True (417 vs 1460) | 4 줄 칸 False (749 vs 700) | 5 food4 모두 닿음 5 vs 3, 늦음 3 → False | 6 건강 True (덩어리 [1, 1, 1, 1, 1, 1, 1, 1, 1], 음수 0, 부피오차 최대 1.9e-13, 버린 최대 0.0e+00) → 탈락
+   [관문 아님: 끝 넓이 0.51배, 끝 실 칸 149 (대조 230)]
+   food4 s221: 대조 [72.2, None, 454.1, 53.6] 후보 [72.2, 667.3, 485.4, 53.6]
+   food4 s222: 대조 [72.0, 540.8, 298.8, 49.7] 후보 [72.0, 562.2, 322.8, 49.7]
+   food4 s223: 대조 [72.3, 513.9, 548.4, 51.4] 후보 [72.3, 526.3, 623.7, 51.4]
+   food4 s224: 대조 [76.7, None, 430.2, 50.4] 후보 [76.7, 612.2, 503.1, 50.4]
+   food4 s225: 대조 [72.0, None, 263.0, 53.6] 후보 [72.0, None, 266.0, 53.6]
+   food4 s226: 대조 [72.1, 525.2, 442.4, 53.6] 후보 [72.1, 497.3, 500.6, 53.6]
+s15dc (기준 s15c): 1 갈라짐 True (0.000/0.069 vs 0.213/0.285) | 2 몸 밖 True (0.000 vs 0.087) | 3 얇은 칸 True (98 vs 1460) | 4 줄 칸 True (257 vs 700) | 5 food4 모두 닿음 5 vs 3, 늦음 1 → True | 6 건강 True (덩어리 [1, 1, 1, 1, 1, 1, 1, 1, 1], 음수 0, 부피오차 최대 1.9e-13, 버린 최대 0.0e+00) → 넘김
+   [관문 아님: 끝 넓이 0.43배, 끝 실 칸 0 (대조 230)]
+   food4 s221: 대조 [72.2, None, 454.1, 53.6] 후보 [72.2, 659.5, 484.2, 53.6]
+   food4 s222: 대조 [72.0, 540.8, 298.8, 49.7] 후보 [72.0, 550.1, 322.8, 49.7]
+   food4 s223: 대조 [72.3, 513.9, 548.4, 51.4] 후보 [72.3, 516.0, 595.7, 51.4]
+   food4 s224: 대조 [76.7, None, 430.2, 50.4] 후보 [76.7, 594.5, 503.0, 50.4]
+   food4 s225: 대조 [72.0, None, 263.0, 53.6] 후보 [72.0, None, 266.0, 53.6]
+   food4 s226: 대조 [72.1, 525.2, 442.4, 53.6] 후보 [72.1, 496.9, 465.4, 53.6]
+
+진단 (판정 아님, 이미 쓴 시드)
+  food4 s196 s15d: 닿음 [72.3, None, 463.0, 49.7] 끝 덩어리 1
+  food4 s196 s15dc: 닿음 [72.3, 650.9, 465.8, 49.7] 끝 덩어리 1
+  food4 s197 s15d: 닿음 [72.8, None, 356.7, 51.2] 끝 덩어리 1
+  food4 s197 s15dc: 닿음 [72.8, 620.4, 357.0, 51.2] 끝 덩어리 1
+  food4 s199 s15d: 닿음 [72.4, 543.0, 563.7, 49.6] 끝 덩어리 1
