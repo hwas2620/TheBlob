@@ -1,0 +1,6 @@
+s12h s181: thread cells 1017, h median 0.161 (q90 0.227), share h<0.05 0.14, Cn median 0.124, share Cn>=0.1 0.51 | thread vol 0.1093 | dots: 4 pieces, vol 0.0075
+s12h s182: thread cells 1438, h median 0.092 (q90 0.214), share h<0.05 0.17, Cn median 0.002, share Cn>=0.1 0.31 | thread vol 0.1198 | dots: 7 pieces, vol 0.0115
+s12h s183: thread cells 1072, h median 0.106 (q90 0.235), share h<0.05 0.17, Cn median 0.023, share Cn>=0.1 0.47 | thread vol 0.0945 | dots: 9 pieces, vol 0.0154
+s12r s181: thread cells 1180, h median 0.131 (q90 0.234), share h<0.05 0.11, Cn median 0.260, share Cn>=0.1 0.58 | thread vol 0.1191 | dots: 4 pieces, vol 0.0085
+s12r s182: thread cells 1099, h median 0.152 (q90 0.260), share h<0.05 0.16, Cn median 0.027, share Cn>=0.1 0.41 | thread vol 0.1241 | dots: 8 pieces, vol 0.0147
+s12r s183: thread cells 1055, h median 0.138 (q90 0.254), share h<0.05 0.11, Cn median 0.005, share Cn>=0.1 0.40 | thread vol 0.1107 | dots: 5 pieces, vol 0.0194

@@ -1,0 +1,16 @@
+mig 181 s13t
+mig 181 s13i
+mig 181 s13tb
+mig 181 s13ib
+long 181 s13t
+long 181 s13i
+long 181 s13tb
+long 181 s13ib
+long 182 s13t
+long 182 s13i
+long 182 s13tb
+long 182 s13ib
+long 183 s13t
+long 183 s13i
+long 183 s13tb
+long 183 s13ib
