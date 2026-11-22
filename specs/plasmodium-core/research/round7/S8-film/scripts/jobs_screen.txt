@@ -1,0 +1,15 @@
+long 181 s8c
+long 181 s8k
+long 181 s8k3
+long 181 s8k1
+long 181 s8c3
+long 182 s8c
+long 182 s8k
+long 182 s8k3
+long 182 s8k1
+long 182 s8c3
+long 183 s8c
+long 183 s8k
+long 183 s8k3
+long 183 s8k1
+long 183 s8c3
