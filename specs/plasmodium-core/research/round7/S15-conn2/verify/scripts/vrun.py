@@ -30,7 +30,8 @@ def main():
     dt = over['dt']; every = int(round(20.0 / dt)); rec = []
     orig = graphm.quick
 
-    def hook(S):
+    def hook(S, *a, **kw):
+        if a or kw: return orig(S, *a, **kw)      # graphm.full 이 안에서 quick(S, cthr) 를 부른다: 그대로 넘긴다
         t = float(S['t']); k = int(round(t / dt))
         rec.append(monitor.step_stats(S['wet'], S['h'], t))
         if k % every == 0:
