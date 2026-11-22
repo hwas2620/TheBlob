@@ -1,0 +1,56 @@
+{
+ "worst2": {
+  "seed": 274,
+  "t": 1140.0,
+  "f": 0.6483516483516484,
+  "pairs": [
+   [
+    0.288,
+    0.203,
+    8,
+    13
+   ],
+   [
+    0.288,
+    0.22,
+    1,
+    79
+   ],
+   [
+    0.203,
+    0.22,
+    null,
+    null
+   ]
+  ]
+ },
+ "worst3": {
+  "metric": "late_endline",
+  "seed": 282,
+  "ctrl": 362.15384615384613,
+  "cand": 302.65384615384613,
+  "t": 1660.0
+ },
+ "worst4": {
+  "scn": "food4",
+  "seed": 275,
+  "ctrl": 564.7,
+  "cand": 572.7
+ },
+ "figs": [
+  "c2_dumbbell_paired.png",
+  "c2_dumbbell_time.png",
+  "c3_late_paired.png",
+  "c4_food_paired.png",
+  "worst_c2_long_s274_t1140.png",
+  "worst_c3_long_s282_t1660.png",
+  "worst_c4_food4_s275_t0560.png",
+  "extra_robustness.png",
+  "worst_far_food3_s275_t0320.png"
+ ],
+ "worst_far": {
+  "seed": 275,
+  "ctrl": 312.1,
+  "cand": 476.7
+ }
+}

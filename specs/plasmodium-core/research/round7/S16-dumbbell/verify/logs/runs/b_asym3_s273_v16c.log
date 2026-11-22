@@ -1,0 +1,13 @@
+b_asym3_s273_v16c {"t": 0.0, "area": 548, "V": 1344.0, "Vinj": 0.0, "cx": 95.5015, "cy": 95.4994, "Cmax": 2.5992, "hmax": 3.0415, "young": 548, "elapsed": 0.2}
+b_asym3_s273_v16c {"t": 50.0, "area": 2622, "V": 1350.52, "Vinj": 6.52, "cx": 95.4364, "cy": 100.6529, "Cmax": 1291.7889, "hmax": 1.3444, "young": 154, "elapsed": 9.5}
+b_asym3_s273_v16c {"t": 100.0, "area": 3097, "V": 1607.265, "Vinj": 263.265, "cx": 95.0528, "cy": 103.5424, "Cmax": 1331.5666, "hmax": 3.7171, "young": 175, "elapsed": 19.3}
+b_asym3_s273_v16c {"t": 150.0, "area": 3354, "V": 2190.18, "Vinj": 846.18, "cx": 93.1351, "cy": 106.8388, "Cmax": 2079.2568, "hmax": 4.4676, "young": 207, "elapsed": 30.0}
+b_asym3_s273_v16c {"t": 200.0, "area": 4250, "V": 2782.68, "Vinj": 1438.68, "cx": 89.5637, "cy": 108.9611, "Cmax": 1558.7734, "hmax": 4.673, "young": 262, "elapsed": 40.7}
+b_asym3_s273_v16c {"t": 250.0, "area": 5380, "V": 3375.18, "Vinj": 2031.18, "cx": 87.591, "cy": 111.442, "Cmax": 2163.8439, "hmax": 4.872, "young": 315, "elapsed": 53.1}
+b_asym3_s273_v16c {"t": 300.0, "area": 6717, "V": 3967.68, "Vinj": 2623.68, "cx": 87.1653, "cy": 110.6681, "Cmax": 2131.6575, "hmax": 4.7358, "young": 296, "elapsed": 64.8}
+b_asym3_s273_v16c {"t": 350.0, "area": 8092, "V": 4560.18, "Vinj": 3216.18, "cx": 87.961, "cy": 109.0912, "Cmax": 2679.4656, "hmax": 4.5327, "young": 297, "elapsed": 76.7}
+b_asym3_s273_v16c {"t": 400.0, "area": 9396, "V": 4940.48, "Vinj": 3596.48, "cx": 88.0249, "cy": 109.2369, "Cmax": 2413.8604, "hmax": 4.2822, "young": 372, "elapsed": 89.9}
+b_asym3_s273_v16c {"t": 450.0, "area": 10428, "V": 4944.0, "Vinj": 3600.0, "cx": 91.4473, "cy": 110.9584, "Cmax": 2604.8712, "hmax": 2.2409, "young": 456, "elapsed": 103.2}
+b_asym3_s273_v16c {"t": 480.0, "area": 10191, "V": 4944.0, "Vinj": 3600.0, "cx": 93.398, "cy": 17.1017, "Cmax": 2018.558, "hmax": 1.4928, "young": 373, "elapsed": 111.2}
+b_asym3_s273_v16c MET {"t_end": 480.0, "disp": 78.43, "area_end": 10191, "mass_err_max": 1.1842378929335004e-13, "h_min_seen": 0.0, "t_touch": [39.0, 77.7, 65.5], "t_cover": [56.8, 97.6, 83.9], "t_exh": [355.7, 400.9, 391.1], "Vinj": 3600.000000000053, "runtime": 111.7}
+b_asym3_s273_v16c VEIN {"edges": 2359, "nodes": 2559, "comps": 245, "largest": 0.636, "comps_ge10": 15, "endpoints": 715, "junctions": 273, "cycles": 45, "end_per_junc": 2.619, "C_med": 10.11, "C_p90": 466.6, "C_max": 2008.5, "largest_ws": 0.882, "touch_sheet": 0.902, "sheet_cells": 4454} BODY {"comps": 78, "largest_area": 0.981, "largest_vol": 0.993}
