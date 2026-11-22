@@ -48,7 +48,13 @@ def montage(scn, seed, times, tags=('v7c', 'v7k'), out=None):
         for t in times:
             f = os.path.join(rd, f'vs_t{t:04d}.npz')
             if not os.path.exists(f): row.append(None); continue
-            S = load(f); im = body_rgb(S['wet'], S['h']); d = ImageDraw.Draw(im)
+            S = load(f); sh = centre_shift(S['h']) if scn == 'long' or scn == 'mig' else (0, 0); im = body_rgb(S['wet'], S['h'], shift=sh); d = ImageDraw.Draw(im)
+            P_ = json.load(open(os.path.join(rd, 'params.json')))
+            if P_.get('reservoir'):
+                N_ = P_['N']; c0_ = N_ / 2 - 0.5; sc_ = im.size[0] / N_
+                for k_, (a_, d0_) in enumerate(P_['foods']):
+                    fx = (c0_ + d0_ * np.cos(np.radians(a_)) + sh[1]) % N_; fy = (c0_ + d0_ * np.sin(np.radians(a_)) + sh[0]) % N_; r_ = P_['food_r'] * sc_
+                    d.ellipse([fx * sc_ - r_, fy * sc_ - r_, fx * sc_ + r_, fy * sc_ + r_], outline=(0, 255, 255), width=2); d.text((fx * sc_ + r_, fy * sc_), str(k_), fill=(0, 255, 255))
             V = S['h'].sum(); lt, big, vb = big_parts(S['wet'], S['h'], V)
             d.text((4, 2), f'{tag} s{seed} t={t} big={len(big)} thin={int((S["wet"] & (S["h"] < TH)).sum())}', fill=(255, 255, 255))
             row.append(im)

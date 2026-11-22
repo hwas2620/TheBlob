@@ -359,6 +359,410 @@
     325.7,
     51.1
    ]
+  },
+  "food4_s152": {
+   "updates": 98,
+   "zero_frac": 0.6938775510204082,
+   "big_donor": 0.9666666666666667,
+   "flip": 0.0,
+   "nflip": 23,
+   "mult": [
+    5.73,
+    22.2695,
+    23.174999999999997
+   ],
+   "nz": 30,
+   "first_t": 445.0,
+   "t_touch": [
+    72.4,
+    552.8,
+    310.6,
+    49.7
+   ]
+  },
+  "food4_s153": {
+   "updates": 6,
+   "zero_frac": 0.0,
+   "big_donor": 1.0,
+   "flip": 0.0,
+   "nflip": 1,
+   "mult": [
+    5.045,
+    6.3149999999999995,
+    6.745
+   ],
+   "nz": 6,
+   "first_t": 361.0,
+   "t_touch": [
+    68.8,
+    null,
+    319.0,
+    49.7
+   ]
+  },
+  "food4_s154": {
+   "updates": 51,
+   "zero_frac": 0.0,
+   "big_donor": 0.43137254901960786,
+   "flip": 0.0,
+   "nflip": 29,
+   "mult": [
+    17.29,
+    39.26,
+    66.47500000000001
+   ],
+   "nz": 51,
+   "first_t": 223.0,
+   "t_touch": [
+    72.1,
+    null,
+    302.9,
+    50.2
+   ]
+  },
+  "food4_s155": {
+   "updates": 33,
+   "zero_frac": 0.0,
+   "big_donor": 0.0,
+   "flip": 0.0,
+   "nflip": 28,
+   "mult": [
+    33.11,
+    47.938,
+    54.175000000000004
+   ],
+   "nz": 33,
+   "first_t": 410.0,
+   "t_touch": [
+    72.6,
+    693.0,
+    437.3,
+    49.8
+   ]
+  },
+  "food4_s156": {
+   "updates": 154,
+   "zero_frac": 0.1428571428571429,
+   "big_donor": 0.21212121212121213,
+   "flip": 0.045871559633027525,
+   "nflip": 109,
+   "mult": [
+    6.8075,
+    11.941500000000001,
+    66.835
+   ],
+   "nz": 132,
+   "first_t": 284.0,
+   "t_touch": [
+    72.7,
+    603.0,
+    244.8,
+    51.5
+   ]
+  },
+  "food4_s157": {
+   "updates": 9,
+   "zero_frac": 0.0,
+   "big_donor": 1.0,
+   "flip": 0.0,
+   "nflip": 5,
+   "mult": [
+    11.85,
+    15.157,
+    15.465000000000002
+   ],
+   "nz": 9,
+   "first_t": 371.0,
+   "t_touch": [
+    72.6,
+    null,
+    392.4,
+    49.5
+   ]
+  },
+  "food4_s158": {
+   "updates": 101,
+   "zero_frac": 0.0,
+   "big_donor": 0.9405940594059405,
+   "flip": 0.0,
+   "nflip": 76,
+   "mult": [
+    2.535,
+    19.55,
+    67.66
+   ],
+   "nz": 101,
+   "first_t": 353.0,
+   "t_touch": [
+    71.8,
+    656.5,
+    461.1,
+    50.1
+   ]
+  },
+  "food3_s151": {
+   "updates": 5,
+   "zero_frac": 0.0,
+   "big_donor": 0.8,
+   "flip": 0.0,
+   "nflip": 1,
+   "mult": [
+    8.879999999999999,
+    18.984,
+    24.72
+   ],
+   "nz": 5,
+   "first_t": 153.0,
+   "t_touch": [
+    73.2,
+    75.6,
+    58.7
+   ]
+  },
+  "food3_s152": {
+   "updates": 3,
+   "zero_frac": 0.0,
+   "big_donor": 0.3333333333333333,
+   "flip": null,
+   "nflip": 0,
+   "mult": [
+    16.045,
+    34.241,
+    38.79
+   ],
+   "nz": 3,
+   "first_t": 153.0,
+   "t_touch": [
+    61.0,
+    72.4,
+    58.7
+   ]
+  },
+  "food3_s153": {
+   "updates": 7,
+   "zero_frac": 0.0,
+   "big_donor": 0.8571428571428571,
+   "flip": 0.0,
+   "nflip": 5,
+   "mult": [
+    9.639999999999999,
+    24.98700000000001,
+    42.795
+   ],
+   "nz": 7,
+   "first_t": 180.0,
+   "t_touch": [
+    64.7,
+    75.6,
+    58.8
+   ]
+  },
+  "food3_s154": {
+   "updates": 4,
+   "zero_frac": 0.0,
+   "big_donor": 0.25,
+   "flip": 1.0,
+   "nflip": 1,
+   "mult": [
+    12.7575,
+    22.469500000000004,
+    25.060000000000002
+   ],
+   "nz": 4,
+   "first_t": 256.0,
+   "t_touch": [
+    65.1,
+    75.6,
+    55.0
+   ]
+  },
+  "food3_s155": {
+   "updates": 4,
+   "zero_frac": 0.0,
+   "big_donor": 0.75,
+   "flip": 0.0,
+   "nflip": 1,
+   "mult": [
+    6.7675,
+    18.14,
+    22.909999999999997
+   ],
+   "nz": 4,
+   "first_t": 184.0,
+   "t_touch": [
+    64.4,
+    75.5,
+    58.8
+   ]
+  },
+  "food3_s156": {
+   "updates": 18,
+   "zero_frac": 0.0,
+   "big_donor": 1.0,
+   "flip": 0.0,
+   "nflip": 5,
+   "mult": [
+    6.447500000000001,
+    9.738999999999999,
+    11.835
+   ],
+   "nz": 18,
+   "first_t": 195.0,
+   "t_touch": [
+    64.6,
+    75.3,
+    58.9
+   ]
+  },
+  "asym3_s151": {
+   "updates": 2,
+   "zero_frac": 0.0,
+   "big_donor": 0.0,
+   "flip": null,
+   "nflip": 0,
+   "mult": [
+    11.66,
+    16.884,
+    18.19
+   ],
+   "nz": 2,
+   "first_t": 256.0,
+   "t_touch": [
+    38.9,
+    77.1,
+    65.2
+   ]
+  },
+  "asym3_s152": {
+   "updates": 0,
+   "zero_frac": null,
+   "big_donor": null,
+   "flip": null,
+   "nflip": 0,
+   "mult": null,
+   "nz": 0,
+   "first_t": null,
+   "t_touch": [
+    39.2,
+    77.5,
+    68.6
+   ]
+  },
+  "asym3_s153": {
+   "updates": 11,
+   "zero_frac": 0.0,
+   "big_donor": 0.0,
+   "flip": 0.0,
+   "nflip": 9,
+   "mult": [
+    3.8249999999999997,
+    8.309999999999999,
+    33.44
+   ],
+   "nz": 11,
+   "first_t": 157.0,
+   "t_touch": [
+    39.1,
+    80.7,
+    72.2
+   ]
+  },
+  "asym3_s154": {
+   "updates": 18,
+   "zero_frac": 0.0,
+   "big_donor": 1.0,
+   "flip": 0.0,
+   "nflip": 8,
+   "mult": [
+    5.4975000000000005,
+    12.023,
+    13.97
+   ],
+   "nz": 18,
+   "first_t": 143.0,
+   "t_touch": [
+    39.2,
+    77.7,
+    65.2
+   ]
+  },
+  "mig_s151": {
+   "updates": 0,
+   "zero_frac": null,
+   "big_donor": null,
+   "flip": null,
+   "nflip": 0,
+   "mult": null,
+   "nz": 0,
+   "first_t": null,
+   "t_touch": [
+    245.5
+   ]
+  },
+  "mig_s152": {
+   "updates": 0,
+   "zero_frac": null,
+   "big_donor": null,
+   "flip": null,
+   "nflip": 0,
+   "mult": null,
+   "nz": 0,
+   "first_t": null,
+   "t_touch": [
+    237.2
+   ]
+  },
+  "mig_s153": {
+   "updates": 0,
+   "zero_frac": null,
+   "big_donor": null,
+   "flip": null,
+   "nflip": 0,
+   "mult": null,
+   "nz": 0,
+   "first_t": null,
+   "t_touch": [
+    249.2
+   ]
+  },
+  "mig_s154": {
+   "updates": 0,
+   "zero_frac": null,
+   "big_donor": null,
+   "flip": null,
+   "nflip": 0,
+   "mult": null,
+   "nz": 0,
+   "first_t": null,
+   "t_touch": [
+    241.5
+   ]
+  },
+  "mig_s155": {
+   "updates": 0,
+   "zero_frac": null,
+   "big_donor": null,
+   "flip": null,
+   "nflip": 0,
+   "mult": null,
+   "nz": 0,
+   "first_t": null,
+   "t_touch": [
+    245.2
+   ]
+  },
+  "mig_s156": {
+   "updates": 0,
+   "zero_frac": null,
+   "big_donor": null,
+   "flip": null,
+   "nflip": 0,
+   "mult": null,
+   "nz": 0,
+   "first_t": null,
+   "t_touch": [
+    237.0
+   ]
   }
  },
  "sign": [
