@@ -1,0 +1,12 @@
+food4 181 s14c
+food4 181 s14gd
+food4 182 s14c
+food4 182 s14gd
+food3 181 s14c
+food3 181 s14gd
+mig 181 s14c
+mig 181 s14gd
+food3 182 s14c
+food3 182 s14gd
+mig 182 s14c
+mig 182 s14gd
