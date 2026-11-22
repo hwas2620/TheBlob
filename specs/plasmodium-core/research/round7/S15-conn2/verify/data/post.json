@@ -1,0 +1,362 @@
+{
+ "windows": {
+  "200-500": {
+   "thin": {
+    "control": 995.2,
+    "candidate": 830.5,
+    "ratio": 0.834,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 684.6,
+    "candidate": 569.5,
+    "ratio": 0.832,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "area": {
+    "control": 3033.9,
+    "candidate": 2908.8,
+    "ratio": 0.959,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  },
+  "500-1000": {
+   "thin": {
+    "control": 1078.5,
+    "candidate": 796.0,
+    "ratio": 0.738,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 802.0,
+    "candidate": 618.7,
+    "ratio": 0.771,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "area": {
+    "control": 3087.1,
+    "candidate": 2877.2,
+    "ratio": 0.932,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  },
+  "1000-1500": {
+   "thin": {
+    "control": 1139.2,
+    "candidate": 697.4,
+    "ratio": 0.612,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 786.8,
+    "candidate": 716.5,
+    "ratio": 0.911,
+    "cand_lower": 10,
+    "p": 0.0193
+   },
+   "area": {
+    "control": 3085.9,
+    "candidate": 2801.9,
+    "ratio": 0.908,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  },
+  "1500-1700": {
+   "thin": {
+    "control": 1206.9,
+    "candidate": 636.3,
+    "ratio": 0.527,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 745.2,
+    "candidate": 734.8,
+    "ratio": 0.986,
+    "cand_lower": 6,
+    "p": 0.6128
+   },
+   "area": {
+    "control": 3082.1,
+    "candidate": 2694.2,
+    "ratio": 0.874,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  },
+  "1700-2001": {
+   "thin": {
+    "control": 1032.1,
+    "candidate": 72.6,
+    "ratio": 0.07,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 713.8,
+    "candidate": 571.6,
+    "ratio": 0.801,
+    "cand_lower": 8,
+    "p": 0.1938
+   },
+   "area": {
+    "control": 3247.6,
+    "candidate": 1774.0,
+    "ratio": 0.546,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  },
+  "1500-2001": {
+   "thin": {
+    "control": 1102.0,
+    "candidate": 298.1,
+    "ratio": 0.27,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 726.3,
+    "candidate": 636.9,
+    "ratio": 0.877,
+    "cand_lower": 8,
+    "p": 0.1938
+   },
+   "area": {
+    "control": 3181.5,
+    "candidate": 2142.0,
+    "ratio": 0.673,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  }
+ },
+ "largest": {
+  "200-500": {
+   "thin": {
+    "control": 926.3,
+    "candidate": 834.2,
+    "ratio": 0.901,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 656.1,
+    "candidate": 560.8,
+    "ratio": 0.855,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "area": {
+    "control": 2963.1,
+    "candidate": 2910.3,
+    "ratio": 0.982,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  },
+  "500-1000": {
+   "thin": {
+    "control": 903.1,
+    "candidate": 792.0,
+    "ratio": 0.877,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 735.2,
+    "candidate": 618.4,
+    "ratio": 0.841,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "area": {
+    "control": 2914.5,
+    "candidate": 2877.4,
+    "ratio": 0.987,
+    "cand_lower": 11,
+    "p": 0.0032
+   }
+  },
+  "1000-1500": {
+   "thin": {
+    "control": 640.2,
+    "candidate": 702.6,
+    "ratio": 1.098,
+    "cand_lower": 4,
+    "p": 0.927
+   },
+   "line": {
+    "control": 497.8,
+    "candidate": 714.3,
+    "ratio": 1.435,
+    "cand_lower": 0,
+    "p": 1.0
+   },
+   "area": {
+    "control": 2054.8,
+    "candidate": 2803.7,
+    "ratio": 1.364,
+    "cand_lower": 0,
+    "p": 1.0
+   }
+  },
+  "1500-1700": {
+   "thin": {
+    "control": 772.7,
+    "candidate": 653.9,
+    "ratio": 0.846,
+    "cand_lower": 8,
+    "p": 0.1938
+   },
+   "line": {
+    "control": 528.9,
+    "candidate": 737.8,
+    "ratio": 1.395,
+    "cand_lower": 1,
+    "p": 0.9998
+   },
+   "area": {
+    "control": 2378.7,
+    "candidate": 2712.8,
+    "ratio": 1.14,
+    "cand_lower": 3,
+    "p": 0.9807
+   }
+  },
+  "1700-2001": {
+   "thin": {
+    "control": 679.9,
+    "candidate": 79.3,
+    "ratio": 0.117,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 562.2,
+    "candidate": 570.8,
+    "ratio": 1.015,
+    "cand_lower": 7,
+    "p": 0.3872
+   },
+   "area": {
+    "control": 2892.0,
+    "candidate": 1790.6,
+    "ratio": 0.619,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  },
+  "1500-2001": {
+   "thin": {
+    "control": 715.6,
+    "candidate": 300.3,
+    "ratio": 0.42,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "line": {
+    "control": 549.4,
+    "candidate": 635.0,
+    "ratio": 1.156,
+    "cand_lower": 5,
+    "p": 0.8062
+   },
+   "area": {
+    "control": 2694.6,
+    "candidate": 2145.3,
+    "ratio": 0.796,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  }
+ },
+ "big2": {
+  "big_0.6_0.1": {
+   "0-500": {
+    "control": 0.065,
+    "candidate": 0.069,
+    "cand_lower": 6,
+    "p": 0.6128
+   },
+   "500-1000": {
+    "control": 0.447,
+    "candidate": 0.507,
+    "cand_lower": 5,
+    "p": 0.8062
+   },
+   "1000-1500": {
+    "control": 0.55,
+    "candidate": 0.651,
+    "cand_lower": 4,
+    "p": 0.927
+   },
+   "1500-2001": {
+    "control": 0.275,
+    "candidate": 0.179,
+    "cand_lower": 7,
+    "p": 0.3872
+   }
+  },
+  "big_0.45_0.1": {
+   "0-500": {
+    "control": 0.039,
+    "candidate": 0.024,
+    "cand_lower": 7,
+    "p": 0.3872
+   },
+   "500-1000": {
+    "control": 0.563,
+    "candidate": 0.482,
+    "cand_lower": 7,
+    "p": 0.3872
+   },
+   "1000-1500": {
+    "control": 0.944,
+    "candidate": 0.869,
+    "cand_lower": 8,
+    "p": 0.1133
+   },
+   "1500-2001": {
+    "control": 0.326,
+    "candidate": 0.118,
+    "cand_lower": 12,
+    "p": 0.0002
+   }
+  },
+  "big_0.3_0.1": {
+   "0-500": {
+    "control": 0.0,
+    "candidate": 0.001,
+    "cand_lower": 0,
+    "p": 1.0
+   },
+   "500-1000": {
+    "control": 0.113,
+    "candidate": 0.027,
+    "cand_lower": 9,
+    "p": 0.073
+   },
+   "1000-1500": {
+    "control": 0.88,
+    "candidate": 0.231,
+    "cand_lower": 12,
+    "p": 0.0002
+   },
+   "1500-2001": {
+    "control": 0.273,
+    "candidate": 0.056,
+    "cand_lower": 11,
+    "p": 0.0032
+   }
+  }
+ }
+}

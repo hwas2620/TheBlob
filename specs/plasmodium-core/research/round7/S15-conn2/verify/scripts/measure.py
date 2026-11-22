@@ -8,7 +8,7 @@ import glob, json, os, re, sys
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 MODEL = os.path.normpath(os.path.join(HERE, '..', '..', 'model'))
-METRICS = os.path.normpath(os.path.join(HERE, '..', '..', '..', '..', 'stage0', 'metrics'))
+METRICS = os.path.normpath(os.path.join(HERE, '..', '..', '..', '..', '..', 'stage0', 'metrics'))
 sys.path.insert(0, HERE)
 import monitor
 
