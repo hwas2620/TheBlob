@@ -69,6 +69,7 @@ DEF = dict(
     ret_tip=0,     # [S13] 1: a thread end (a wet cell with exactly one wet 8-neighbour) that meets the other ret_h conditions retracts whatever its thickness: a blob hanging on a thread rolls back along it
     bridge_h=0.0,  # [S10] >0: with bridge_keep, a bridge cell is also kept while h >= bridge_h whatever its conductance (a thread breaks only once it is nearly empty)
     sup_cap=0.0,   # [S10] >0: the S7 ageing factor is at most 1 + sup_cap
+    ret_fed=0.0,   # [S16] >0: retraction (ret_h) acts only on a hungry body - nothing eaten for more than ret_fed time units (a fed plasmodium keeps its sheet and spreads)
     sup_fed=0.0,   # [S16] >0: S7 acts only on a hungry body - one that has eaten nothing for more than sup_fed time units (a starved plasmodium gathers into one front; a fed one keeps its fronts)
     edge_iso=0,    # [S9] 1: edge tension uses the isotropic edge measure 1 - (Gaussian-weighted wet fraction, sigma curv_sigma) instead of (dry 8-neighbours)/8 (the 8-count favours axis-aligned edges: bodies turn square)
     dry_edge=0,    # [S9] 1: only a wet cell with at least one dry 8-neighbour may dry (negative cells still dry at once): a draining film retreats from its rim, no holes open inside it
@@ -638,7 +639,7 @@ def run(name, over):
             for d in ALL: nd_ += ~nb(wet, d)
             Dm &= nd_ > 0
         retm = None
-        if P['ret_h'] > 0:      # [S10] tip/rim retraction (never cuts a bridge: Yokoi <= 1; one colour of the 4-colouring per step, like bridge_keep)
+        if P['ret_h'] > 0 and not (P['ret_fed'] > 0 and t - t_eat <= P['ret_fed']):      # [S16] ret_fed: fed bodies do not retract. [S10] tip/rim retraction (never cuts a bridge: Yokoi <= 1; one colour of the 4-colouring per step, like bridge_keep)
             xr_ = [~nb(wet, d) for d in RING]
             Ncr_ = np.zeros((N, N), np.int8); ndr_ = np.zeros((N, N), np.int8)
             for q in (0, 2, 4, 6): Ncr_ += xr_[q].astype(np.int8) - (xr_[q] & xr_[q + 1] & xr_[(q + 2) % 8]).astype(np.int8)

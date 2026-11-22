@@ -14,6 +14,7 @@ case "$tag" in
   s16kr) extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1";;              # S15 후보 + 고리 풀기
   s16k0r) extra="keep_conn=3 ret_h=100 ret_glob=1";;                                  # S7 없이 + 고리 풀기
   s16g)  extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1 sup_h=0.6 sup_fed=50";;   # s16hr + 굶을 때만 S7 (50 시간 동안 먹은 것이 없을 때)
+  s16gf) extra="sup_age=100 sup_cap=2 keep_conn=3 ret_h=100 ret_glob=1 sup_h=0.6 sup_fed=50 ret_fed=50";;   # s16g + 오그라듦도 굶을 때만
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1
