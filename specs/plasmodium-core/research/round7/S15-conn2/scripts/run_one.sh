@@ -7,7 +7,7 @@ case "$tag" in
   s15c)  extra="";;                                                     # 지금 모델
   s15d)  extra="sup_age=100 keep_conn=2 ret_h=100 ret_glob=1";;         # S14 결승 후보 s14gd + 찢어짐 틈 막기 (마르는 칸 덩어리 단위 판단)
   s15k)  extra="keep_conn=2 ret_h=100 ret_glob=1";;                     # s15d에서 S7(흐름 경쟁)을 뺌
-  s15e1) extra="sup_age=100 keep_conn=1 ret_h=100 ret_glob=1";;         # [확인용] S14 s14gd와 같은 설정 (이 복사본이 keep_conn=1에서 S14와 같은지)
+  s15dc) extra="sup_age=100 sup_cap=2 keep_conn=2 ret_h=100 ret_glob=1";;   # s15d에서 S7의 늙는 배율을 3배까지로 묶음
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1
