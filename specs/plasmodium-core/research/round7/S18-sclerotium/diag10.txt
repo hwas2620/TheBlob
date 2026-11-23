@@ -1,0 +1,8 @@
+351 음수 131 버린 -0.293 스텝 안 최소 -1.5 부피오차 1.1720122227218542e-15 균핵 1685.9 제한 칸 386830
+353 음수 171 버린 -0.231 스텝 안 최소 -2.39 부피오차 1.4419256525395806e-11 균핵 1761.9 제한 칸 374578
+355 음수 135 버린 -0.034 스텝 안 최소 -2.2 부피오차 9.019401078434386e-08 균핵 1715.7 제한 칸 166799
+357 음수 82 버린 -1.137 스텝 안 최소 -0.95 부피오차 2.0825371512155143e-07 균핵 1848.5 제한 칸 254317
+b_long_s351_s18m {"mc_mid": 0.158, "dead_mid": 3.2, "dead3_mid": 0.1, "mc_end": 0.05, "area_end": 921, "peri_end": 10.2, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1685.9, "fission": 0}
+b_long_s353_s18m {"mc_mid": 0.0, "dead_mid": 4.0, "dead3_mid": 0.3, "mc_end": 0.0, "area_end": 1457, "peri_end": 13.8, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1761.9, "fission": 0}
+b_long_s355_s18m {"mc_mid": 0.118, "dead_mid": 4.1, "dead3_mid": 0.1, "mc_end": 0.0, "area_end": 1331, "peri_end": 8.6, "blobs_end": 1.0, "frames_with_piece_lt10": 15, "max_piece_lt10": 0.0916, "t_scl": 1715.7, "fission": 2}
+b_long_s357_s18m {"mc_mid": 0.053, "dead_mid": 6.6, "dead3_mid": 0.2, "mc_end": 0.05, "area_end": 1861, "peri_end": 20.3, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1848.5, "fission": 1}
