@@ -1,0 +1,8 @@
+long 351 s18p
+long 353 s18p
+long 355 s18p
+long 357 s18p
+long 351 s18q
+long 353 s18q
+long 355 s18q
+long 357 s18q

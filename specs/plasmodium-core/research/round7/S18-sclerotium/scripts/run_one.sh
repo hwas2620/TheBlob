@@ -21,6 +21,8 @@ case "$tag" in
   s18m)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=2 scl_lim=8";;   # s18i + 균핵 때 흐름 제한을 음수가 없어질 때까지 (최대 8번)
   s18n)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=5 scl_disc=1 scl_thin=0 sup_scent=2 scl_lim=8";;   # s18m의 균핵 전도도 바닥 20 → 5
   s18o)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=2 scl_disc=1 scl_thin=0 sup_scent=2 scl_lim=8";;   # s18m의 균핵 전도도 바닥 20 → 2
+  s18p)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin_h=0.05 sup_scent=2";;   # 균핵 때 얇은 칸 제한을 끄지 않고 문턱만 0.05로
+  s18q)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin_h=0.02 sup_scent=2";;   # 문턱 0.02
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1

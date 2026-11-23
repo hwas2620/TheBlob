@@ -1,0 +1,16 @@
+s18n 351 음수 101 버린 -0.302 스텝 안 최소 -1.26 부피오차 2.3505045058142786e-10 균핵 1685.9
+s18n 353 음수 73 버린 -2.95 스텝 안 최소 -2.39 부피오차 9.169252658734552e-16 균핵 1761.9
+s18n 355 음수 84 버린 -0.002 스텝 안 최소 -1.02 부피오차 1.0650776205929834e-15 균핵 1715.7
+s18n 357 음수 39 버린 -8.376 스텝 안 최소 -3.12 부피오차 9.555848176237955e-16 균핵 1848.5
+s18o 351 음수 59 버린 -0.333 스텝 안 최소 -2.28 부피오차 1.073298196350793e-15 균핵 1685.9
+s18o 353 음수 112 버린 -1.654 스텝 안 최소 -2.39 부피오차 3.8966295991458925e-08 균핵 1761.9
+s18o 355 음수 76 버린 -0.03 스텝 안 최소 -2.42 부피오차 2.5759554133621998e-11 균핵 1715.7
+s18o 357 음수 25 버린 -4.673 스텝 안 최소 -4.91 부피오차 1.0097742747781185e-15 균핵 1848.5
+b_long_s351_s18n {"mc_mid": 0.158, "dead_mid": 3.2, "dead3_mid": 0.1, "mc_end": 0.05, "area_end": 951, "peri_end": 11.1, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1685.9, "fission": 0}
+b_long_s353_s18n {"mc_mid": 0.0, "dead_mid": 4.0, "dead3_mid": 0.3, "mc_end": 0.0, "area_end": 1495, "peri_end": 15.1, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1761.9, "fission": 0}
+b_long_s355_s18n {"mc_mid": 0.118, "dead_mid": 4.1, "dead3_mid": 0.1, "mc_end": 0.0, "area_end": 1312, "peri_end": 8.9, "blobs_end": 1.0, "frames_with_piece_lt10": 12, "max_piece_lt10": 0.0998, "t_scl": 1715.7, "fission": 2}
+b_long_s357_s18n {"mc_mid": 0.053, "dead_mid": 6.6, "dead3_mid": 0.2, "mc_end": 0.05, "area_end": 1818, "peri_end": 19.0, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1848.5, "fission": 1}
+b_long_s351_s18o {"mc_mid": 0.158, "dead_mid": 3.2, "dead3_mid": 0.1, "mc_end": 0.05, "area_end": 979, "peri_end": 12.0, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1685.9, "fission": 0}
+b_long_s353_s18o {"mc_mid": 0.0, "dead_mid": 4.0, "dead3_mid": 0.3, "mc_end": 0.0, "area_end": 1502, "peri_end": 15.3, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1761.9, "fission": 0}
+b_long_s355_s18o {"mc_mid": 0.118, "dead_mid": 4.1, "dead3_mid": 0.1, "mc_end": 0.0, "area_end": 1209, "peri_end": 8.7, "blobs_end": 1.0, "frames_with_piece_lt10": 6, "max_piece_lt10": 0.0913, "t_scl": 1715.7, "fission": 2}
+b_long_s357_s18o {"mc_mid": 0.053, "dead_mid": 6.6, "dead3_mid": 0.2, "mc_end": 0.05, "area_end": 1837, "peri_end": 19.7, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1848.5, "fission": 1}

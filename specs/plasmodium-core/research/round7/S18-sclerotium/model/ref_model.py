@@ -76,6 +76,7 @@ DEF = dict(
     scl_H=1.0,     # [S18] >1: in the sclerotium state each body's largest thick part (h >= sup_h) is its core: it does not age and its rest thickness is scl_H times larger,
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
+    scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
     scl_lim=0,     # [S18] n>0: the positivity limiter (limit_net) runs (up to n passes, until no cell would go negative) while a sclerotium forms - the strong pumping
                    #      would otherwise empty cells below zero, and one pass can push the deficit onto the neighbours whose inflow it cut
     scl_thin=1,    # [S18] 0: in the sclerotium state the thin-cell conductance limit (thin_h) is off - the contracting body pushes its cytoplasm through emptied paths too
@@ -478,7 +479,8 @@ def run(name, over):
         W = [act[k] * G[k] * (C[k] + P['r']) / Ls[k] for k in range(4)]
         if P['thin_h'] > 0 and not (scl and not P['scl_thin']):      # [S18] scl_thin=0: off while a sclerotium forms. [S3] an edge conducts less when either end is nearly empty: x clip(min(h_i, h_j) / thin_h, 0, 1)^thin_pow (an empty tube is a thin tube)
             hp_ = np.maximum(h, 0.0)
-            W = [W[k] * np.clip(np.minimum(hp_, nb(hp_, d)) / P['thin_h'], 0.0, 1.0) ** P['thin_pow'] for k, d in enumerate(DIRS)]
+            th_h_ = P['scl_thin_h'] if (scl and P['scl_thin_h'] > 0) else P['thin_h']      # [S18]
+            W = [W[k] * np.clip(np.minimum(hp_, nb(hp_, d)) / th_h_, 0.0, 1.0) ** P['thin_pow'] for k, d in enumerate(DIRS)]
         if P['solver'] == 'mg':
             kap_f = kap * np.maximum(1.0, (P['stiff_h'] / np.maximum(h, 1e-3)) ** P['stiff_pow']) if P['stiff_h'] > 0 else kap
             p0 = np.where(wet, p + P['extrap'] * (p - pm), 0.0); pm = p
