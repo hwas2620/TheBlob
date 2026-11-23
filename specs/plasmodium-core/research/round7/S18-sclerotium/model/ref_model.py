@@ -76,7 +76,8 @@ DEF = dict(
     scl_H=1.0,     # [S18] >1: in the sclerotium state each body's largest thick part (h >= sup_h) is its core: it does not age and its rest thickness is scl_H times larger,
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
-    scl_lim=0,     # [S18] 1: the positivity limiter (limit_net) is on while a sclerotium forms (the strong pumping would otherwise empty cells below zero)
+    scl_lim=0,     # [S18] n>0: the positivity limiter (limit_net) runs (up to n passes, until no cell would go negative) while a sclerotium forms - the strong pumping
+                   #      would otherwise empty cells below zero, and one pass can push the deficit onto the neighbours whose inflow it cut
     scl_thin=1,    # [S18] 0: in the sclerotium state the thin-cell conductance limit (thin_h) is off - the contracting body pushes its cytoplasm through emptied paths too
     scl_C=0.0,     # [S18] >0: in the sclerotium state every edge of the body conducts at least scl_C (the contracting body pumps its cytoplasm into the core)
     scl_age=0.0,   #      so it draws the cytoplasm in through the veins; every other cell of the body ages (1 + scl_age) times faster. Each separate body forms its own core
@@ -512,9 +513,11 @@ def run(name, over):
         div = np.zeros((N, N))
         for k, d in enumerate(DIRS):
             Q[k] = W[k] * (p - nb(p, d)); div += Q[k] - rev(Q[k], d)
-        if P['limit_net'] or (scl and P['scl_lim']):      # [S18] scl_lim: on while a sclerotium forms
+        n_lim_ = ((max(1, int(P['scl_lim'])) if (scl and P['scl_lim']) else 1) if (P['limit_net'] or (scl and P['scl_lim'])) else 0)      # [S18] scl_lim=n: up to n passes while a sclerotium forms
+        for it_lim_ in range(n_lim_):
             hneg = wet & (h - dt * div < 0)
-            if hneg.any():
+            if not hneg.any(): break
+            if True:
                 hpre_min = min(hpre_min, float((h - dt * div)[wet].min()))
                 outf = np.zeros((N, N)); inf_ = np.zeros((N, N))
                 for k, d in enumerate(DIRS):

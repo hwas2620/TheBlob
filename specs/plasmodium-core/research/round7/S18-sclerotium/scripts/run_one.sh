@@ -18,6 +18,7 @@ case "$tag" in
   s18i)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=2";;   # s18h + 경쟁 승자를 크기 + 냄새로
   s18j)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=4";;   # s18i의 냄새 세기 4
   s18k)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=2 scl_lim=1";;   # s18i + 균핵 때 음수 막는 흐름 제한
+  s18m)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=2 scl_lim=8";;   # s18i + 균핵 때 흐름 제한을 음수가 없어질 때까지 (최대 8번)
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1

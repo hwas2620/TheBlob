@@ -1,0 +1,8 @@
+351 음수 69 버린 -11.849 스텝 안 최소 -1.98 부피오차 1.0401732385476169e-15 균핵 1685.9
+353 음수 105 버린 -11.378 스텝 안 최소 -6.47 부피오차 6.767073673905716e-16 균핵 1761.9
+355 음수 96 버린 -20.586 스텝 안 최소 -4.86 부피오차 1.1075796364712871e-15 균핵 1715.7
+357 음수 75 버린 -6.483 스텝 안 최소 -2.78 부피오차 9.384027946236442e-16 균핵 1848.5
+b_long_s351_s18k {"mc_mid": 0.158, "dead_mid": 3.2, "dead3_mid": 0.1, "mc_end": 0.05, "area_end": 893, "peri_end": 9.3, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1685.9, "fission": 0}
+b_long_s353_s18k {"mc_mid": 0.0, "dead_mid": 4.0, "dead3_mid": 0.3, "mc_end": 0.0, "area_end": 1427, "peri_end": 12.8, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1761.9, "fission": 0}
+b_long_s355_s18k {"mc_mid": 0.118, "dead_mid": 4.1, "dead3_mid": 0.1, "mc_end": 0.0, "area_end": 1346, "peri_end": 8.9, "blobs_end": 1.0, "frames_with_piece_lt10": 15, "max_piece_lt10": 0.0877, "t_scl": 1715.7, "fission": 2}
+b_long_s357_s18k {"mc_mid": 0.053, "dead_mid": 6.6, "dead3_mid": 0.2, "mc_end": 0.05, "area_end": 1776, "peri_end": 17.7, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1848.5, "fission": 1}
