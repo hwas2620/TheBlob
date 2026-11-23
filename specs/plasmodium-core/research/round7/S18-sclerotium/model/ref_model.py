@@ -73,6 +73,8 @@ DEF = dict(
     scl_tau=30.0,  #      for scl_tau time units is trapped: it stops extending (no new wet cells) and its smaller thick lobes age (1 + scl_size) times faster (S7 parts),
     scl_size=10.0, #      so it draws together into one compact mass. It leaves the state when fresh ground reappears (share > 3 scl_f) or it eats
     scl_H=1.0,     # [S18] >1: in the sclerotium state each body's largest thick part (h >= sup_h) is its core: it does not age and its rest thickness is scl_H times larger,
+    scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
+                   #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_C=0.0,     # [S18] >0: in the sclerotium state every edge of the body conducts at least scl_C (the contracting body pumps its cytoplasm into the core)
     scl_age=0.0,   #      so it draws the cytoplasm in through the veins; every other cell of the body ages (1 + scl_age) times faster. Each separate body forms its own core
     hang_C=0.0,    # [S18] >0: an edge touching a cell kept by keep_conn within the last time unit conducts at least hang_C, so a piece hanging on a dead thread can pump its volume back
@@ -421,6 +423,19 @@ def run(name, over):
                 for k_ in range(1, nt_ + 1):
                     if bid_[k_] not in best_ or tv_[k_] > tv_[best_[bid_[k_]]]: best_[bid_[k_]] = k_
                 sclcore[:] = np.isin(lt_, list(best_.values()))
+                if P['scl_disc']:      # round core: disc at the circular centroid of each body's largest thick part
+                    disc_ = np.zeros((N, N), bool); Vt_ = float(h[wet].sum())
+                    for b_, k_ in best_.items():
+                        if b_ == 0: continue
+                        bm_ = lw_ == b_; Vb_ = float(h[bm_].sum())
+                        if Vb_ < 0.03 * Vt_: continue
+                        pm_ = lt_ == k_; wgt_ = h[pm_]; ys_, xs_ = np.nonzero(pm_)
+                        ang_ = 2 * np.pi / N
+                        cxp_ = (np.arctan2((wgt_ * np.sin(xs_ * ang_)).sum(), (wgt_ * np.cos(xs_ * ang_)).sum()) / ang_) % N
+                        cyp_ = (np.arctan2((wgt_ * np.sin(ys_ * ang_)).sum(), (wgt_ * np.cos(ys_ * ang_)).sum()) / ang_) % N
+                        R_ = np.sqrt(Vb_ / (np.pi * P['h0'] * P['scl_H']))
+                        disc_ |= np.hypot(mimg(X - cxp_), mimg(Y - cyp_)) <= R_
+                    sclcore[:] = disc_
         if scl and P['scl_H'] > 1.0:
             sage = np.where(sclcore & wet, 0.0, sage); hstar = np.where(sclcore & wet, hstar * P['scl_H'], hstar)
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))   # new cell inflates gradually
@@ -820,7 +835,7 @@ def run(name, over):
             if scl and (ff_ema > 3 * P['scl_f'] or not hungry_): scl = False
             if scl: scl_steps += 1
         cand = ~wet & (ptest > yld)
-        if scl: cand[:] = False      # [S18] a sclerotium does not extend
+        if scl: cand &= sclcore if P['scl_disc'] else False      # [S18] a sclerotium does not extend (with scl_disc: only into its round core)
         if cand.any():
             ys, xs = np.nonzero(cand); a = arg[ys, xs]
             dx = np.array([d[0] for d in ALL])[a]; dy = np.array([d[1] for d in ALL])[a]

@@ -11,6 +11,7 @@ case "$tag" in
   s18a)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02";;   # + 갈라짐 문턱 10%, 지켜진 실 전도도 20, 균핵
   s18b)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5";;   # s18a + 균핵 핵(늙지 않고 쉬는 두께 3배) + 나머지 5배 빨리 늙음
   s18d)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20";;   # s18b + 균핵 때 몸 전체 전도도 바닥 20 (원형질을 핵으로 밀어 보냄)
+  s18e)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1";;   # s18d + 둥근 핵 (가장 큰 굵은 덩이 무게중심의 원판)
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1
