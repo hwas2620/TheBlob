@@ -69,6 +69,7 @@ DEF = dict(
     ret_tip=0,     # [S13] 1: a thread end (a wet cell with exactly one wet 8-neighbour) that meets the other ret_h conditions retracts whatever its thickness: a blob hanging on a thread rolls back along it
     bridge_h=0.0,  # [S10] >0: with bridge_keep, a bridge cell is also kept while h >= bridge_h whatever its conductance (a thread breaks only once it is nearly empty)
     sup_cap=0.0,   # [S10] >0: the S7 ageing factor is at most 1 + sup_cap
+    sup_size=0.0,  # [S17] >0: in S7, every big thick part but the biggest also ages (1 + sup_size) times faster - a starving body draws its smaller lobes into the main mass (with sup_fed: only when hungry)
     fis_min=0.15,  # [S17] keep_conn=4: a drying run that would split the body is let go (fission into separate plasmodia) when every piece it touches holds at least fis_min of the wet volume;
                    #      if any touched piece is smaller it is kept as under keep_conn 3 (no debris) and, with hang_age, only the pieces hanging on such kept runs age faster
     neg_fill_global=0,   # [S16] 1: a kept (would-tear) cell that went negative takes its deficit from all positive wet cells of the body in proportion to their thickness, not from its neighbours only.
@@ -624,6 +625,7 @@ def run(name, over):
                         m_ = rg_ == j_; V_ = float(h[m_].sum()); e_ = float(dx_[m_].sum()) / max(V_, 1e-12)
                         ex_.append(e_)
                         if e_ > 0: supm[m_] = 1.0 + (min(P['sup_age'] * e_ * P['tau_a'], P['sup_cap']) if P['sup_cap'] > 0 else P['sup_age'] * e_ * P['tau_a'])
+                        if P['sup_size'] > 0 and j_ >= 2: supm[m_] = supm[m_] * (1.0 + P['sup_size'])      # [S17] smaller lobes withdraw
                     sup_steps += 1
                     if len(sup_log) < 20000: sup_log.append((round(t, 2), [round(float(vs_[k_]) / float(h[wet].sum()), 4) for k_ in bg_], [round(e_, 6) for e_ in ex_]))
         if P['slime_tau'] < 1e8: slime *= np.exp(-dt / P['slime_tau'])
