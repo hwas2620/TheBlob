@@ -77,7 +77,7 @@ DEF = dict(
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
-    scl_bk=0,      # [S18] 1: while a sclerotium forms, bridge_keep is off (its 'strong' test would see the scl_C floor everywhere and keep every emptied cell of a drained sheet); keep_conn still never tears the body
+    scl_bk=0,      # [S18] 1: while a sclerotium forms, bridge_keep is off (its 'strong' test would see the scl_C floor everywhere and keep every emptied cell of a drained sheet); keep_conn still never tears the body. 2: only its protection is off; its 4-colour drying order stays (two neighbours never dry in the same step, so a drying cell always has someone to hand its volume to)
     scl_dlim=0,    # [S18] 1: while a sclerotium forms, a cell sends out at most what it holds in one step: all its outgoing edge fluxes are scaled by max(h, 0) / (dt * outflow) when that is below 1 (one pass, never negative, exact mass)
     scl_lim=0,     # [S18] n>0: the positivity limiter (limit_net) runs (up to n passes, until no cell would go negative) while a sclerotium forms - the strong pumping
                    #      would otherwise empty cells below zero, and one pass can push the deficit onto the neighbours whose inflow it cut
@@ -724,11 +724,12 @@ def run(name, over):
         if Dm.any() or (P['neg_fill'] and negm is not None and negm.any()):
             if P['tube_keep'] > 0:
                 keep = Dm & (Cn > P['tube_keep']); ntube_kept += int(keep.sum()); Dm &= ~keep
-            if P['bridge_keep'] and not (scl and P['scl_bk']):
+            if P['bridge_keep'] and not (scl and P['scl_bk'] == 1):
                 xb = [~nb(wet, d) for d in RING]
                 Nc = np.zeros((N, N), np.int8)
                 for q in (0, 2, 4, 6): Nc += xb[q].astype(np.int8) - (xb[q] & xb[q + 1] & xb[(q + 2) % 8]).astype(np.int8)
                 strong = (Cn >= P['bridge_break']) | ((Cpk >= P['bridge_mem']) if P['bridge_mem'] > 0 else False) | ((h >= P['bridge_h']) if P['bridge_h'] > 0 else False)
+                if scl and P['scl_bk'] >= 2: strong = np.zeros((N, N), bool)      # [S18]
                 ok = ((Nc <= 1) | ~strong) & (colour == step % 4)
                 nbridge_kept += int((Dm & (Nc > 1) & strong).sum()); Dm &= ok
                 prot = (Nc > 1) & strong
