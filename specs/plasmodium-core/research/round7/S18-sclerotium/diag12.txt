@@ -1,0 +1,9 @@
+s18p 351 음수 32 버린 -13.282 스텝 안 최소 -2.69 부피오차 1.896631000401309e-15 균핵 1685.9
+s18p 353 음수 82 버린 -1.39 스텝 안 최소 -9.28 부피오차 8.382844682958399e-16 균핵 1761.9
+s18p 355 음수 49 버린 -0.072 스텝 안 최소 -14.85 부피오차 5.2309244072533735e-15 균핵 1715.7
+s18p 357 음수 25 버린 -0.689 스텝 안 최소 -2.43 부피오차 1.6141188914565148e-15 균핵 1848.5
+b_long_s351_s18p {"mc_mid": 0.158, "dead_mid": 3.2, "dead3_mid": 0.1, "mc_end": 0.05, "area_end": 1944, "peri_end": 30.5, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1685.9, "fission": 0}
+b_long_s353_s18p {"mc_mid": 0.0, "dead_mid": 4.0, "dead3_mid": 0.3, "mc_end": 0.0, "area_end": 2319, "peri_end": 28.7, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1761.9, "fission": 0}
+b_long_s355_s18p {"mc_mid": 0.118, "dead_mid": 4.1, "dead3_mid": 0.1, "mc_end": 0.75, "area_end": 2377, "peri_end": 21.4, "blobs_end": 1.75, "frames_with_piece_lt10": 15, "max_piece_lt10": 0.0997, "t_scl": 1715.7, "fission": 2}
+b_long_s357_s18p {"mc_mid": 0.053, "dead_mid": 6.6, "dead3_mid": 0.2, "mc_end": 0.05, "area_end": 2333, "peri_end": 26.2, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1848.5, "fission": 1}
+s18q(문턱 0.02)는 s18p가 이미 실패해 중간에 멈췄다.

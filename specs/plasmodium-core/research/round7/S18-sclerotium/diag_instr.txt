@@ -1,0 +1,8 @@
+# 기록 실행: s18o 시드 353 (long), 모델 복사본에 단계별 검사를 넣어 돌림. 결과 수치는 원래 실행과 같다(부피 오차 3.8966e-08).
+# 단계: flux(흐름) → mid → dry(마름 나눔) → gfill(몸 전체 메우기) → lfill(이웃 메우기) → end(젖음 뒤)
+negend_steps 59
+negorig {'dry|True': 112}
+mass events by block,scl Counter({('dry', True): 2})
+largest [['dry', 17626, 1762.6, True, 3.795797792485072e-08], ['dry', 17673, 1767.3, True, 1.0083173238161268e-09]]
+dryh [] 0
+

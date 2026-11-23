@@ -77,6 +77,7 @@ DEF = dict(
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
+    scl_dlim=0,    # [S18] 1: while a sclerotium forms, a cell sends out at most what it holds in one step: all its outgoing edge fluxes are scaled by max(h, 0) / (dt * outflow) when that is below 1 (one pass, never negative, exact mass)
     scl_lim=0,     # [S18] n>0: the positivity limiter (limit_net) runs (up to n passes, until no cell would go negative) while a sclerotium forms - the strong pumping
                    #      would otherwise empty cells below zero, and one pass can push the deficit onto the neighbours whose inflow it cut
     scl_thin=1,    # [S18] 0: in the sclerotium state the thin-cell conductance limit (thin_h) is off - the contracting body pushes its cytoplasm through emptied paths too
@@ -533,6 +534,18 @@ def run(name, over):
                     cut += float(np.abs(Q[k] - ql).sum()); tot += float(np.abs(Q[k]).sum())
                     Q[k] = ql; div += Q[k] - rev(Q[k], d)
                 nlim_steps += 1; nlim_cells += int(hneg.sum()); lim_cut_max = max(lim_cut_max, cut / max(tot, 1e-300))
+        if scl and P['scl_dlim']:      # [S18] donor limiter: one pass, h stays >= 0 wherever it was >= 0
+            outf = np.zeros((N, N))
+            for k, d in enumerate(DIRS): outf += np.maximum(Q[k], 0) + rev(np.maximum(-Q[k], 0), d)
+            over_ = wet & (dt * outf > np.maximum(h, 0.0))
+            if over_.any():
+                a_l = np.ones((N, N)); a_l[over_] = (1.0 - 1e-12) * np.maximum(h[over_], 0.0) / (dt * outf[over_])      # a hair below the content, so rounding cannot leave -1e-17
+                cut = 0.0; tot = 0.0; div = np.zeros((N, N))
+                for k, d in enumerate(DIRS):
+                    ql = np.where(Q[k] > 0, Q[k] * a_l, Q[k] * nb(a_l, d))
+                    cut += float(np.abs(Q[k] - ql).sum()); tot += float(np.abs(Q[k]).sum())
+                    Q[k] = ql; div += Q[k] - rev(Q[k], d)
+                nlim_steps += 1; nlim_cells += int(over_.sum()); lim_cut_max = max(lim_cut_max, cut / max(tot, 1e-300))
         h = h - dt * div
         if P['sup_age'] > 0:                                                   # [S7] edge flux EMA (edges with a dry end are reset)
             a_s = min(1.0, dt / P['sup_tau'])
