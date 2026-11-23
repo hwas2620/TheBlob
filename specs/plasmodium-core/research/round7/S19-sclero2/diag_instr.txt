@@ -1,0 +1,3 @@
+# 기록 실행: 검증자 실행 asym3 s413 (S18 후보 설정 = s19w), 모델 복사본 + 단계별 검사
+스텝 끝 음수 스텝 2, 생긴 단계별 칸 수 {'dry|False': 3} (dry = 마름 나눔, False = 균핵 모드 아님), 부피 오차 사건 0
+다시 돌린 metrics: neg_end_cellsteps 3, h_min_end_of_step -0.834 (검증자 값과 같음)
