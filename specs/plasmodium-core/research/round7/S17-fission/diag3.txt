@@ -1,0 +1,4 @@
+b_long_s307_s17fs {"bodies": 1.02, "bodies_end": 1, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.033, "fD2_late": 0.059, "film": 45, "dead": 94, "endline": 154, "fission": 1, "neg_end": 0, "V_crumb": 0.0, "t_touch": [232.7]}
+b_long_s308_s17fs {"bodies": 1.01, "bodies_end": 2, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.022, "fD2_late": 0.0, "film": 95, "dead": 4, "endline": 134, "fission": 1, "neg_end": 0, "V_crumb": 0.0, "t_touch": [224.6]}
+b_long_s315_s17fs {"bodies": 1.2, "bodies_end": 1, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.011, "fD2_late": 0.0, "film": 37, "dead": 5, "endline": 135, "fission": 1, "neg_end": 0, "V_crumb": 0.0, "t_touch": [241.0]}
+b_long_s319_s17fs {"bodies": 1.31, "bodies_end": 2, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.055, "fD2_late": 0.078, "film": 32, "dead": 26, "endline": 115, "fission": 1, "neg_end": 0, "V_crumb": 0.0, "t_touch": [236.1]}

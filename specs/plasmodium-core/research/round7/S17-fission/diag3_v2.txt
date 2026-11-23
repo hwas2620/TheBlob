@@ -1,0 +1,4 @@
+b_long_s307_s17fs {"db_early": 0.0, "db_late": 0.412, "dead_late": 20.5, "tip_late": 250.5, "film_late": 46.8, "torn10": 0.0}
+b_long_s308_s17fs {"db_early": 0.067, "db_late": 0.176, "dead_late": 3.5, "tip_late": 270.5, "film_late": 58.3, "torn10": 0.01}
+b_long_s315_s17fs {"db_early": 0.022, "db_late": 0.333, "dead_late": 2.6, "tip_late": 259.3, "film_late": 58.8, "torn10": 0.0}
+b_long_s319_s17fs {"db_early": 0.022, "db_late": 0.333, "dead_late": 8.9, "tip_late": 237.1, "film_late": 66.8, "torn10": 0.292}
