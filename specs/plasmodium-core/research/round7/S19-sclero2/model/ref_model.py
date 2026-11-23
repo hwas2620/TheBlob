@@ -77,6 +77,8 @@ DEF = dict(
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
+    t_eat0=-1e18,  # [S19] time of the 'last meal' at the start. With t_eat0=0 the plasmodium starts fed: starvation rules (sup_fed, ret_fed) begin only after sup_fed / ret_fed time units
+    sup_climb=0,   # [S19] 1: in the [S7] competition a losing part whose rim is richer in food scent than its inside (it climbs toward a food) is not suppressed
     scl_stay=0,    # [S19] 1: once a sclerotium forms it stays until the body eats again (no waking up because fresh ground shows at the rim)
     scl_rundry=0,  # [S19] 1: while a sclerotium forms, drying is not held to the 4-colour order and each 8-connected run of drying cells hands its whole volume to the staying cells it touches (a thin tail is withdrawn at once into the body; exact mass)
     scl_nofis=0,   # [S19] 1: no fission while a sclerotium forms (also without scl_disc)
@@ -245,7 +247,7 @@ def run(name, over):
             for sy in (-N, 0, N): g += np.exp(-((X - fx - sx) ** 2 + (Y - fy - sy) ** 2) / (2 * P['food_sigma'] ** 2))
         cfield.append(P['food_amp'] * g); fdisc.append(np.hypot(mimg(X - fx), mimg(Y - fy)) < P['food_r'])
     fM = np.full(nf, float(P['food_M']) if P['food_M'] > 0 else np.inf, dtype=float); famp = np.ones(nf); t_exh = np.full(nf, np.nan); t_touch = np.full(nf, np.nan); t_cover = np.full(nf, np.nan)
-    Vinj = 0.0; V_crumb = 0.0; ncrumb = 0; nret = 0; nconn = 0; nrel = 0; nfis = 0; t_eat = -1e18; sup_fed_skips = 0
+    Vinj = 0.0; V_crumb = 0.0; ncrumb = 0; nret = 0; nconn = 0; nrel = 0; nfis = 0; t_eat = P['t_eat0']; sup_fed_skips = 0
 
     def food_now():
         f = np.zeros((N, N))
@@ -267,7 +269,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; sclcore = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; sclcore = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -696,6 +698,10 @@ def run(name, over):
                         if e_ > 0: supm[m_] = 1.0 + (min(P['sup_age'] * e_ * P['tau_a'], P['sup_cap']) if P['sup_cap'] > 0 else P['sup_age'] * e_ * P['tau_a'])
                         if P['sup_size'] > 0 and j_ >= 2: supm[m_] = supm[m_] * (1.0 + P['sup_size'])      # [S17] smaller lobes withdraw
                         if scl and j_ >= 2: supm[m_] = supm[m_] * (1.0 + P['scl_size'])      # [S18] trapped: draw together
+                        if P['sup_climb'] and nf and j_ >= 2:      # [S19] a part that climbs toward a food is spared
+                            rim_ = m_.copy(); rim_[:] = False
+                            for d_ in ALL: rim_ |= m_ & ~nb(wet, d_)
+                            if rim_.any() and float(food[rim_].mean()) > float(food[m_].mean()): supm[m_] = 1.0; sup_spared += 1
                     sup_steps += 1
                     if len(sup_log) < 20000: sup_log.append((round(t, 2), [round(float(vs_[k_]) / float(h[wet].sum()), 4) for k_ in bg_], [round(e_, 6) for e_ in ex_]))
         if P['slime_tau'] < 1e8: slime *= np.exp(-dt / P['slime_tau'])
@@ -971,7 +977,7 @@ def run(name, over):
                area_end=int(wet.sum()), foods=[[round(a, 2), round(b, 2)] for a, b in fpos],
                t_touch=[None if np.isnan(v) else round(float(v), 1) for v in t_touch], t_cover=[None if np.isnan(v) else round(float(v), 1) for v in t_cover],
                t_exh=[None if np.isnan(v) else round(float(v), 1) for v in t_exh], fM_end=[None if np.isinf(v) else round(float(v), 2) for v in fM],
-               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), sup_updates=int(sup_steps), sup_log=sup_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), ret_cellsteps=int(nret), conn_kept_cellsteps=int(nconn), conn_released_cells=int(nrel), sup_fed_skips=int(sup_fed_skips), t_scl=t_scl, scl_steps=int(scl_steps), hang_cellsteps=int(nhang), fission_runs=int(nfis), traj=traj,
+               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), sup_updates=int(sup_steps), sup_spared=int(sup_spared), sup_log=sup_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), ret_cellsteps=int(nret), conn_kept_cellsteps=int(nconn), conn_released_cells=int(nrel), sup_fed_skips=int(sup_fed_skips), t_scl=t_scl, scl_steps=int(scl_steps), hang_cellsteps=int(nhang), fission_runs=int(nfis), traj=traj,
                mg_err=([float(np.median([e[1] for e in mg_err])), float(np.percentile([e[1] for e in mg_err], 90)), float(max(e[1] for e in mg_err)), float(np.median([e[2] for e in mg_err]))] if mg_err else None), mg_err_n=len(mg_err),
                h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), neg_end_steps=int(neg_end_steps), steps_done=int(nstep), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
     wm = hmean_last > 0

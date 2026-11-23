@@ -14,6 +14,8 @@ case "$tag" in
   s19b)   extra="$W scl_stay=1 scl_rundry=1";;                      # + 균핵 때 마르는 줄을 통째로 거둠
   s19d)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1";;           # + 흐름 제한을 늘 켬
   s19e)   extra="${W/scl_disc=1/scl_disc=0} scl_stay=1 scl_rundry=1 dlim_all=1 scl_nofis=1";;   # s19d에서 원반 대신 가장 큰 굵은 덩이 제 모양으로
+  s19f)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 t_eat0=50";;      # s19d + 처음엔 배부름(굶음 규칙은 t 100부터)
+  s19g)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1";;     # s19d + 먹이 쪽으로 오르는 부채는 경쟁에서 아끼기
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}
