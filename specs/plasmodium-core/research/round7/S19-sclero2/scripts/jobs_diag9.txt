@@ -1,0 +1,12 @@
+long 402 s19y
+long 403 s19y
+long 405 s19y
+long 409 s19y
+long 410 s19y
+long 411 s19y
+food4 421 s19y
+food4 422 s19y
+food4 423 s19y
+food4 424 s19y
+food4 425 s19y
+food4 426 s19y
