@@ -1,0 +1,11 @@
+b_mig_s317_w16c {"t": 0.0, "area": 548, "V": 1344.0, "Vinj": 0.0, "cx": 95.4995, "cy": 95.4991, "Cmax": 2.5997, "hmax": 3.0335, "young": 548, "elapsed": 0.3}
+b_mig_s317_w16c {"t": 50.0, "area": 2117, "V": 1344.0, "Vinj": 0.0, "cx": 100.4736, "cy": 99.4877, "Cmax": 1211.5915, "hmax": 1.2401, "young": 133, "elapsed": 9.8}
+b_mig_s317_w16c {"t": 100.0, "area": 2906, "V": 1344.0, "Vinj": 0.0, "cx": 107.6102, "cy": 102.985, "Cmax": 1772.0731, "hmax": 0.9595, "young": 130, "elapsed": 19.6}
+b_mig_s317_w16c {"t": 150.0, "area": 2880, "V": 1344.0, "Vinj": 0.0, "cx": 117.0141, "cy": 107.2803, "Cmax": 1118.6869, "hmax": 0.9423, "young": 153, "elapsed": 32.1}
+b_mig_s317_w16c {"t": 200.0, "area": 2954, "V": 1344.0, "Vinj": 0.0, "cx": 124.657, "cy": 111.4339, "Cmax": 931.2682, "hmax": 0.9235, "young": 95, "elapsed": 43.4}
+b_mig_s317_w16c {"t": 250.0, "area": 2989, "V": 1344.0, "Vinj": 0.0, "cx": 135.2157, "cy": 115.9763, "Cmax": 837.0216, "hmax": 0.9307, "young": 109, "elapsed": 55.3}
+b_mig_s317_w16c {"t": 300.0, "area": 3011, "V": 1344.0, "Vinj": 0.0, "cx": 145.2046, "cy": 118.1715, "Cmax": 595.707, "hmax": 0.9531, "young": 122, "elapsed": 67.0}
+b_mig_s317_w16c {"t": 350.0, "area": 2970, "V": 1344.0, "Vinj": 0.0, "cx": 154.392, "cy": 120.5146, "Cmax": 686.824, "hmax": 0.9449, "young": 130, "elapsed": 77.8}
+b_mig_s317_w16c {"t": 400.0, "area": 3038, "V": 1344.0, "Vinj": 0.0, "cx": 162.2507, "cy": 123.7165, "Cmax": 684.2259, "hmax": 1.0475, "young": 123, "elapsed": 88.6}
+b_mig_s317_w16c MET {"t_end": 400.0, "disp": 72.47, "area_end": 3038, "mass_err_max": 1.691768418476429e-16, "h_min_seen": 0.0, "t_touch": [232.9], "t_cover": [252.8], "t_exh": [null], "Vinj": 0.0, "runtime": 88.8}
+b_mig_s317_w16c VEIN {"edges": 1502, "nodes": 1523, "comps": 64, "largest": 0.903, "comps_ge10": 2, "endpoints": 285, "junctions": 218, "cycles": 43, "end_per_junc": 1.307, "C_med": 18.08, "C_p90": 173.4, "C_max": 683.1, "largest_ws": 0.968, "touch_sheet": 0.968, "sheet_cells": 1120} BODY {"comps": 25, "largest_area": 0.985, "largest_vol": 0.993}

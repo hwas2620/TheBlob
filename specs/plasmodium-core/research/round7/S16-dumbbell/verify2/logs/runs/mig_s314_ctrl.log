@@ -1,0 +1,11 @@
+b_mig_s314_w16c {"t": 0.0, "area": 548, "V": 1344.0, "Vinj": 0.0, "cx": 95.4991, "cy": 95.4992, "Cmax": 2.5997, "hmax": 3.022, "young": 548, "elapsed": 0.2}
+b_mig_s314_w16c {"t": 50.0, "area": 2158, "V": 1344.0, "Vinj": 0.0, "cx": 97.3638, "cy": 96.2852, "Cmax": 1066.7995, "hmax": 1.082, "young": 137, "elapsed": 9.4}
+b_mig_s314_w16c {"t": 100.0, "area": 2969, "V": 1344.0, "Vinj": 0.0, "cx": 102.515, "cy": 99.7952, "Cmax": 1892.3266, "hmax": 1.0159, "young": 123, "elapsed": 18.2}
+b_mig_s314_w16c {"t": 150.0, "area": 2882, "V": 1344.0, "Vinj": 0.0, "cx": 113.4948, "cy": 103.0147, "Cmax": 1067.104, "hmax": 0.9535, "young": 145, "elapsed": 29.5}
+b_mig_s314_w16c {"t": 200.0, "area": 2990, "V": 1344.0, "Vinj": 0.0, "cx": 121.7457, "cy": 105.7883, "Cmax": 1025.1962, "hmax": 0.937, "young": 94, "elapsed": 41.5}
+b_mig_s314_w16c {"t": 250.0, "area": 2959, "V": 1344.0, "Vinj": 0.0, "cx": 130.9622, "cy": 111.7872, "Cmax": 883.2791, "hmax": 0.9479, "young": 102, "elapsed": 53.0}
+b_mig_s314_w16c {"t": 300.0, "area": 3077, "V": 1344.0, "Vinj": 0.0, "cx": 139.6817, "cy": 116.0088, "Cmax": 966.2441, "hmax": 1.0121, "young": 124, "elapsed": 63.3}
+b_mig_s314_w16c {"t": 350.0, "area": 3072, "V": 1344.0, "Vinj": 0.0, "cx": 151.1622, "cy": 119.8411, "Cmax": 903.5523, "hmax": 0.951, "young": 102, "elapsed": 74.3}
+b_mig_s314_w16c {"t": 400.0, "area": 3057, "V": 1344.0, "Vinj": 0.0, "cx": 162.0181, "cy": 124.5545, "Cmax": 730.703, "hmax": 0.971, "young": 124, "elapsed": 85.9}
+b_mig_s314_w16c MET {"t_end": 400.0, "disp": 72.63, "area_end": 3057, "mass_err_max": 3.383536836952858e-16, "h_min_seen": 0.0, "t_touch": [240.8], "t_cover": [256.4], "t_exh": [null], "Vinj": 0.0, "runtime": 86.1}
+b_mig_s314_w16c VEIN {"edges": 1167, "nodes": 1197, "comps": 53, "largest": 0.913, "comps_ge10": 1, "endpoints": 216, "junctions": 141, "cycles": 23, "end_per_junc": 1.532, "C_med": 22.7, "C_p90": 211.3, "C_max": 731.6, "largest_ws": 0.961, "touch_sheet": 0.961, "sheet_cells": 1114} BODY {"comps": 42, "largest_area": 0.962, "largest_vol": 0.983}
