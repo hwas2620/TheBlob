@@ -69,6 +69,8 @@ DEF = dict(
     ret_tip=0,     # [S13] 1: a thread end (a wet cell with exactly one wet 8-neighbour) that meets the other ret_h conditions retracts whatever its thickness: a blob hanging on a thread rolls back along it
     bridge_h=0.0,  # [S10] >0: with bridge_keep, a bridge cell is also kept while h >= bridge_h whatever its conductance (a thread breaks only once it is nearly empty)
     sup_cap=0.0,   # [S10] >0: the S7 ageing factor is at most 1 + sup_cap
+    neg_fill_global=0,   # [S16] 1: a kept (would-tear) cell that went negative takes its deficit from all positive wet cells of the body in proportion to their thickness, not from its neighbours only.
+                   #      With neighbours only, a negative chain along a kept thread passes the deficit back and forth, piles it up and freezes (non-conducting negative cells)
     conn_rel=1,    # [S16] with keep_conn=3: how many kept runs are tested (one labelling each) per step, taken in turn
     hang_age=0.0,  # [S16] >0 (with keep_conn): a piece that hangs on the body only through kept (would-tear) drying cells - every piece of the staying body but the biggest - ages (1 + hang_age) times faster,
                    #      so a lobe or blob hanging on a dead thread draws back into the main body. Off while fed (ret_fed window). Recomputed each step that has kept cells
@@ -719,6 +721,10 @@ def run(name, over):
                 for d in ALL: h += np.where(stay, nb(give, d), 0.0)
             h[Dm] = 0.0; wet = stay; slime[Dm] = 1.0; age[Dm] = 0.0; sage[Dm] = 0.0; p[Dm] = 0.0; pm[Dm] = 0.0; Hres[Dm] = 1.0; Cpk[Dm] = 0.0; Cwall[Dm] = 0.0; neck[Dm] = False; neckp[Dm] = False
             ser_dry[step] = int(Dm.sum())
+        if fill is not None and fill.any() and P['neg_fill_global']:      # [S16] body-wide fill: exact mass, no negative chain
+            fill &= wet; giver = wet & ~fill; hpos = np.where(giver, np.maximum(h, 0.0), 0.0); tot_ = float(hpos.sum()); dfc_ = float(np.minimum(h[fill], 0.0).sum())
+            if tot_ > -dfc_:
+                h = h + dfc_ * hpos / tot_; h[fill & (h < 0)] = 0.0; nneg_fill += int(fill.sum()); fill = None
         if fill is not None and fill.any():
             fill &= wet
             giver = wet & ~fill; hpos = np.where(giver, np.maximum(h, 0.0), 0.0); sh = np.zeros((N, N))
