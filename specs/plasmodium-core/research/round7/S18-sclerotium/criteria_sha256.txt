@@ -1,0 +1,7 @@
+1f4b530d17fa932efcc238f726f6f16f19449a2b5c619cf3076987e6bb649ead  CRITERIA.md
+cd3b6c5b1c6c6ecc6cd910f2f976cd9f19d1866173a00fc127ea791d0e858519  scripts/judge_final_s18.py
+f7a84cbec3de8b5f0825bbf3cea6f899bb2411cf7021ddaa8ddc4efa9185360a  ../S16-dumbbell/verify/scripts/vlib.py
+05abc143f3e4cfedaf3edc63ee15eb7b08757cc492847618f986a6152415af83  ../S16-dumbbell/verify2/scripts/measure.py
+a706399ce26a7af8993d3aef70fc757f486d5a9e07effa8b7ac986cf1acf7cc5  scripts/run_one.sh
+b70cc2124f5252878c0f665178beee9fee2059b20b2045ed0a66e6382461bdb2  model/ref_model.py
+UTC 2026-11-23T15:52:18Z
