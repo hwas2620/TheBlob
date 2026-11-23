@@ -1,0 +1,295 @@
+{
+ "claim1": "틀림",
+ "claim2": "맞음",
+ "claim3": "맞음",
+ "claim3_sub": {
+  "3a": "맞음",
+  "3b": "맞음",
+  "3c": "맞음"
+ },
+ "claim4": "판정 못 함",
+ "claim4_fails": [
+  "mig:ii_mtt"
+ ],
+ "claim4_hard": [],
+ "claim4_sens": {
+  "margin0.05": {
+   "verdict": "판정 못 함",
+   "fails": [
+    "mig:ii_mtt"
+   ],
+   "hard": []
+  },
+  "margin0.15": {
+   "verdict": "맞음",
+   "fails": [],
+   "hard": []
+  },
+  "cover": {
+   "verdict": "맞음",
+   "fails": [],
+   "hard": []
+  }
+ },
+ "claim5": "틀림",
+ "criteria_sha256": "7b67458f70376fe3a1756d3649e9561bd512c72550a534d8f9b8778850075223",
+ "extra_notes": {
+  "strict_dead_thread": [
+   [
+    351,
+    4,
+    0
+   ],
+   [
+    352,
+    2,
+    0
+   ],
+   [
+    353,
+    2,
+    0
+   ],
+   [
+    354,
+    5,
+    0
+   ],
+   [
+    355,
+    122,
+    29
+   ],
+   [
+    356,
+    3,
+    0
+   ],
+   [
+    357,
+    3,
+    0
+   ],
+   [
+    358,
+    1,
+    0
+   ],
+   [
+    359,
+    14,
+    0
+   ],
+   [
+    360,
+    3,
+    0
+   ],
+   [
+    361,
+    34,
+    4
+   ],
+   [
+    362,
+    3,
+    0
+   ],
+   [
+    363,
+    2,
+    0
+   ],
+   [
+    364,
+    3,
+    0
+   ]
+  ],
+  "strict_dead_thread_ctrl": [
+   [
+    351,
+    12,
+    0
+   ],
+   [
+    352,
+    9,
+    0
+   ],
+   [
+    353,
+    10,
+    0
+   ],
+   [
+    354,
+    5,
+    0
+   ],
+   [
+    355,
+    12,
+    0
+   ],
+   [
+    356,
+    10,
+    0
+   ],
+   [
+    357,
+    11,
+    0
+   ],
+   [
+    358,
+    7,
+    0
+   ],
+   [
+    359,
+    8,
+    0
+   ],
+   [
+    360,
+    9,
+    0
+   ],
+   [
+    361,
+    8,
+    0
+   ],
+   [
+    362,
+    6,
+    0
+   ],
+   [
+    363,
+    10,
+    0
+   ],
+   [
+    364,
+    17,
+    0
+   ]
+  ],
+  "piece_events_lt5pct": [
+   {
+    "run": "long_351",
+    "t0": 1340.0,
+    "frames": 14,
+    "fmin": 0.0401,
+    "phase": "migrating"
+   },
+   {
+    "run": "long_353",
+    "t0": 1780.0,
+    "frames": 13,
+    "fmin": 0.0362,
+    "phase": "trapped"
+   },
+   {
+    "run": "long_357",
+    "t0": 960.0,
+    "frames": 1,
+    "fmin": 0.0356,
+    "phase": "migrating"
+   },
+   {
+    "run": "food4_351",
+    "t0": 700.0,
+    "frames": 3,
+    "fmin": 0.0308,
+    "phase": "food"
+   },
+   {
+    "run": "food4_351",
+    "t0": 700.0,
+    "frames": 1,
+    "fmin": 0.0308,
+    "phase": "food"
+   },
+   {
+    "run": "food4_352",
+    "t0": 540.0,
+    "frames": 10,
+    "fmin": 0.0257,
+    "phase": "food"
+   },
+   {
+    "run": "food4_353",
+    "t0": 460.0,
+    "frames": 4,
+    "fmin": 0.0334,
+    "phase": "food"
+   },
+   {
+    "run": "food4_354",
+    "t0": 640.0,
+    "frames": 2,
+    "fmin": 0.0479,
+    "phase": "food"
+   },
+   {
+    "run": "food4_355",
+    "t0": 480.0,
+    "frames": 13,
+    "fmin": 0.0365,
+    "phase": "food"
+   },
+   {
+    "run": "food4_356",
+    "t0": 420.0,
+    "frames": 5,
+    "fmin": 0.0256,
+    "phase": "food"
+   },
+   {
+    "run": "food4_356",
+    "t0": 640.0,
+    "frames": 5,
+    "fmin": 0.038,
+    "phase": "food"
+   },
+   {
+    "run": "food3_351",
+    "t0": 480.0,
+    "frames": 2,
+    "fmin": 0.0456,
+    "phase": "food"
+   },
+   {
+    "run": "food3_355",
+    "t0": 460.0,
+    "frames": 1,
+    "fmin": 0.0376,
+    "phase": "food"
+   },
+   {
+    "run": "food3_357",
+    "t0": 480.0,
+    "frames": 2,
+    "fmin": 0.042,
+    "phase": "food"
+   },
+   {
+    "run": "food3_358",
+    "t0": 360.0,
+    "frames": 1,
+    "fmin": 0.032,
+    "phase": "food"
+   }
+  ],
+  "end_piece_runs_lt3pct": [],
+  "end_piece_runs_lt2pct": [],
+  "body_volume_change_max_nofeed": {
+   "x17c": 0.0036001721668068717,
+   "x17fs": 4.285605876952937e-05
+  }
+ }
+}

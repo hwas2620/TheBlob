@@ -1,0 +1,12 @@
+{
+ "x17c": {
+  "pairs": 610,
+  "worst_rel_change": 0.24517936884111297,
+  "where": "food4_354_t540.0"
+ },
+ "x17fs": {
+  "pairs": 246,
+  "worst_rel_change": 0.18758075074519584,
+  "where": "food4_351_t520.0"
+ }
+}
