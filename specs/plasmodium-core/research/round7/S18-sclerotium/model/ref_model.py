@@ -73,6 +73,7 @@ DEF = dict(
     scl_tau=30.0,  #      for scl_tau time units is trapped: it stops extending (no new wet cells) and its smaller thick lobes age (1 + scl_size) times faster (S7 parts),
     scl_size=10.0, #      so it draws together into one compact mass. It leaves the state when fresh ground reappears (share > 3 scl_f) or it eats
     scl_H=1.0,     # [S18] >1: in the sclerotium state each body's largest thick part (h >= sup_h) is its core: it does not age and its rest thickness is scl_H times larger,
+    scl_C=0.0,     # [S18] >0: in the sclerotium state every edge of the body conducts at least scl_C (the contracting body pumps its cytoplasm into the core)
     scl_age=0.0,   #      so it draws the cytoplasm in through the veins; every other cell of the body ages (1 + scl_age) times faster. Each separate body forms its own core
     hang_C=0.0,    # [S18] >0: an edge touching a cell kept by keep_conn within the last time unit conducts at least hang_C, so a piece hanging on a dead thread can pump its volume back
                    #      along the thread as it ages (a retracting lobe returns its cytoplasm through the strand) instead of freezing as a thick lump at the end of it
@@ -558,6 +559,7 @@ def run(name, over):
             f = (F[k] / Q0) ** P['gamma']
             rt = P['rate'] if P['rate_down'] <= 0 else np.where(f >= C[k], P['rate'], P['rate_down'])
             C[k] = np.clip(C[k] + dt * rt * (f - C[k]), 0.0, P['Cmax']) * act[k]
+            if scl and P['scl_C'] > 0: C[k] = np.where(act[k], np.maximum(C[k], P['scl_C']), C[k])      # [S18] sclerotium: the body pumps into the core
             if P['hang_C'] > 0:      # [S18] kept threads conduct
                 km_ = (t - t_kept) <= 1.0; C[k] = np.where(act[k] & (km_ | nb(km_, DIRS[k])), np.maximum(C[k], P['hang_C']), C[k])
             if P['neck_keep'] and neckp.any(): C[k] = np.where(act[k] & neckp & nb(neckp, DIRS[k]), np.maximum(C[k], P['neck_C']), C[k])
