@@ -1,0 +1,10 @@
+long 351 s18a
+long 353 s18a
+long 355 s18a
+long 357 s18a
+food4 352 s18a
+food4 356 s18a
+mig 355 s18a
+mig 357 s18a
+long 351 s18s
+long 353 s18s

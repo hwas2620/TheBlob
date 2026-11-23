@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+"""[7차 S17] 거르기 판정. 기준은 ../SCREEN.md (실행 전에 커밋, sha256은 ../screen_sha256.txt).
+두 독립 검증자의 측정 코드를 그대로 쓴다:
+  첫 검증자 ../../S16-dumbbell/verify/scripts/vlib.py (실 아령 dumbbell D2)
+  둘째 검증자 ../../S16-dumbbell/verify2/scripts/measure.py (frame: 덩이 둘 이상, 죽은 실, 가지 끝, 막)
+usage: screen_s17.py [후보=s17fs]   (대조 s17c = 지금 모델, 같은 모델 복사본)"""
+import json, os, sys, glob, re
+import numpy as np
+from multiprocessing import Pool
+HERE = os.path.dirname(os.path.abspath(__file__)); RUNS = os.path.join(HERE, '..', 'model', 'runs')
+sys.path.insert(0, os.path.join(HERE, '..', '..', 'S16-dumbbell', 'verify', 'scripts'))
+sys.path.insert(0, os.path.join(HERE, '..', '..', 'S16-dumbbell', 'verify2', 'scripts'))
+import vlib
+import measure as M2
+sys.path.insert(0, os.path.join(HERE, '..', 'model')); from ref_model import rev, DIRS
+def dead_tips(Z, w, h):     # 가지 끝 줄(길이 3 이상, 둘째 검증자의 tip_lines) 칸 가운데 흐름 없는 칸(주변 간선 Cmean 최대 ≤ 4) 수
+    N = w.shape[0]; lab8, n8 = M2.torus_label(w, 8); vol = np.bincount(lab8.ravel(), weights=np.where(w, h, 0.0).ravel(), minlength=n8 + 1); vol[0] = -1; body = lab8 == int(np.argmax(vol))
+    cells = set()
+    for _, c in M2.tip_lines(w, body):
+        if len(c) >= 3: cells |= c
+    if not cells: return 0
+    ys, xs = np.divmod(np.array(sorted(cells)), N); Cm = Z['Cmean']; CM = np.zeros(w.shape)
+    for k, d in enumerate(DIRS): CM = np.maximum(CM, np.maximum(Cm[k], rev(Cm[k], d)))
+    return int((CM[ys, xs] <= 4.0).sum())
+cand = sys.argv[1] if len(sys.argv) > 1 else 's17fs'; C = 's17c'
+LONG = range(331, 341); FOOD4 = range(331, 337); FOOD3 = (331, 332); ASYM3 = (331, 332); MIG = range(331, 335)
+PK = 'M=wet|r=3|f=0.10|neck=any'
+
+def rd(scn, s, tag): return os.path.join(RUNS, f'b_{scn}_s{s}_{tag}')
+def met(scn, s, tag): return json.load(open(os.path.join(rd(scn, s, tag), 'metrics.json')))
+
+def long_stats(arg):
+    s, tag = arg
+    fs = sorted(glob.glob(os.path.join(rd('long', s, tag), 'vs_t*.npz')), key=lambda f: int(re.findall(r'vs_t(\d+)', f)[0]))
+    out = dict(mc_act=[], mc_end=[], d2_act=[], dead_act=[], tip_act=[], dtip_act=[], film_act=[], dead_end=[], tip_end=[], debris=[], bodies=[])
+    for f in fs:
+        Z = np.load(f); t = float(Z['t'])
+        if t < 100: continue
+        w = Z['wet'].astype(bool); h = np.where(w, Z['h'].astype(float), 0.0)
+        lab, n = vlib.torus_label(w); vol = np.bincount(lab.ravel(), weights=h.ravel())[1:]
+        out['debris'].append(int((vol < 0.03 * vol.sum()).sum())); out['bodies'].append(int((vol >= 0.03 * vol.sum()).sum()))
+        fr = M2.frame(Z)
+        if t <= 1600:
+            out['mc_act'].append(fr['db'][PK])
+            if t >= 200: out['d2_act'].append(vlib.dumbbell(w, h, lab_w=lab)['D2'])
+            if t >= 1000:
+                out['dead_act'].append(fr['dead']['line=3|F0.1|smin=4']); out['tip_act'].append(fr['tip']['L=3|cells']); out['film_act'].append(fr['film']['h=0.3|a=40|b=3']); out['dtip_act'].append(dead_tips(Z, w, h))
+        else:
+            out['mc_end'].append(fr['db'][PK]); out['dead_end'].append(fr['dead']['line=3|F0.1|smin=4']); out['tip_end'].append(fr['tip']['L=3|cells'])
+    m = met('long', s, tag)
+    return (s, tag), dict({k: float(np.mean(v)) for k, v in out.items()}, bodies_end=out['bodies'][-1], fission=m.get('fission_runs') or 0)
+
+if __name__ == '__main__':
+    with Pool(4) as p: L = dict(p.map(long_stats, [(s, t) for t in (C, cand) for s in LONG]))
+    def col(tag, k): return [L[(s, tag)][k] for s in LONG]
+    def mean(tag, k): return float(np.mean(col(tag, k)))
+    lines = []; ok = {}
+    def cond(key, text, val):
+        ok[key] = bool(val); lines.append(f'{key} {text} → {"넘음" if val else "못 넘음"}')
+    for k in ('mc_act', 'd2_act', 'dead_act', 'dtip_act', 'tip_act', 'film_act', 'debris', 'bodies', 'mc_end', 'dead_end', 'tip_end', 'bodies_end', 'fission'):
+        lines.append(f'  long {k}: 대조 {mean(C, k):.3f}  후보 {mean(cand, k):.3f}   후보 시드별 {[round(x, 3) for x in col(cand, k)]}')
+    low = sum(1 for a, b in zip(col(C, 'mc_act'), col(cand, 'mc_act')) if b < a)
+    cond('A1', f'옮겨 다니는 구간(t 100~1600) 한 몸 안 덩이 둘 이상 비율 ≤ 0.5배, 후보가 낮은 시드 ≥ 7/10: {mean(cand, "mc_act"):.3f} / {mean(C, "mc_act"):.3f}, {low}/10',
+         mean(cand, 'mc_act') <= 0.5 * mean(C, 'mc_act') and low >= 7)
+    cond('A2', f'실 아령 비율(t 200~1600) ≤ 0.5배: {mean(cand, "d2_act"):.3f} / {mean(C, "d2_act"):.3f}', mean(cand, 'd2_act') <= 0.5 * mean(C, 'd2_act'))
+    cond('A3', f'죽은 실(t 1000~1600) ≤ 1배: {mean(cand, "dead_act"):.1f} / {mean(C, "dead_act"):.1f}', mean(cand, 'dead_act') <= mean(C, 'dead_act'))
+    cond('A4', f'흐름 없는 가지 끝 줄(t 1000~1600, Cmean ≤ 4) ≤ 1배: {mean(cand, "dtip_act"):.1f} / {mean(C, "dtip_act"):.1f}', mean(cand, 'dtip_act') <= mean(C, 'dtip_act'))
+    lines.append(f'  (관문 아님) 가지 끝 줄 전체(t 1000~1600): {mean(cand, "tip_act"):.1f} / {mean(C, "tip_act"):.1f} ({mean(cand, "tip_act") / max(mean(C, "tip_act"), 1e-9):.2f}배)')
+    cond('A5', f'얇은 막(t 1000~1600) ≤ 1배: {mean(cand, "film_act"):.1f} / {mean(C, "film_act"):.1f}', mean(cand, 'film_act') <= mean(C, 'film_act'))
+    cond('A6', f'부스러기(몸 부피 3% 미만 조각 수, t ≥ 100 평균) ≤ 0.1배: {mean(cand, "debris"):.2f} / {mean(C, "debris"):.2f}', mean(cand, 'debris') <= 0.1 * mean(C, 'debris'))
+
+    allr = {C: 0, cand: 0}; late = []; early = []; dall = []
+    for s in FOOD4:
+        a, b = met('food4', s, C)['t_touch'], met('food4', s, cand)['t_touch']
+        allr[C] += all(x is not None for x in a); allr[cand] += all(x is not None for x in b)
+        for i in range(4):
+            if a[i] is not None and (b[i] is None or b[i] > a[i] + 50): late.append((s, i + 1, a[i], b[i]))
+            if b[i] is not None and (a[i] is None or a[i] > b[i] + 50): early.append((s, i + 1, a[i], b[i]))
+        dall.append(round(max(x if x is not None else 700.0 for x in b) - max(x if x is not None else 700.0 for x in a), 1))
+        lines.append(f'  food4 s{s}: 대조 {a}  후보 {b}')
+    cond('F1', f'food4 모두 닿음 ≥ 대조 − 1, 늦음 ≤ 이름 + 2, 마지막 먹이 차이 중앙 ≤ +20: {allr[cand]} / {allr[C]}, 늦음 {len(late)} {late}, 이름 {len(early)}, 중앙 {float(np.median(dall)):+.1f} {dall}',
+         allr[cand] >= allr[C] - 1 and len(late) <= len(early) + 2 and float(np.median(dall)) <= 20.0)
+    late3 = 0
+    for scn_, s in [('food3', x) for x in FOOD3] + [('asym3', x) for x in ASYM3]:
+        a, b = met(scn_, s, C)['t_touch'], met(scn_, s, cand)['t_touch']
+        late3 += sum(1 for i in range(3) if a[i] is not None and (b[i] is None or b[i] > a[i] + 50))
+    cond('F2', f'food3·asym3 늦음 ≤ 1 (12쌍): {late3}', late3 <= 1)
+    good = 0
+    for s in MIG:
+        a, b = met('mig', s, C), met('mig', s, cand); r = b['disp'] / a['disp']; q = b['area_end'] / a['area_end']; good += (r >= 0.8 and q <= 1.2)
+        lines.append(f'  mig s{s}: 이동 {r:.2f}배, 끝 넓이 {q:.2f}배')
+    cond('M1', f'mig 이동 ≥ 0.8배·넓이 ≤ 1.2배인 쌍 ≥ 3/4: {good}/4', good >= 3)
+    bad = []; nr = 0
+    for scn, ss in (('long', LONG), ('food4', FOOD4), ('food3', FOOD3), ('asym3', ASYM3), ('mig', MIG)):
+        for s in ss:
+            b = met(scn, s, cand); nr += 1
+            w = np.load(os.path.join(rd(scn, s, cand), 'wet.npy')).astype(bool); h = np.where(w, np.load(os.path.join(rd(scn, s, cand), 'h.npy')), 0.0)
+            lab, n = vlib.torus_label(w); vol = np.bincount(lab.ravel(), weights=h.ravel())[1:]
+            tiny = int((vol < 0.03 * vol.sum()).sum())
+            if not (b['neg_end_cellsteps'] == 0 and b['mass_err_max'] < 1e-10 and abs(b['V_crumb']) / b['V0'] < 0.001 and tiny == 0 and b.get('stop', '') in ('', None)):
+                bad.append(f'{scn}{s}: 음수 {b["neg_end_cellsteps"]} 오차 {b["mass_err_max"]:.1e} 버린 {b["V_crumb"]:.3f} 끝 부스러기 {tiny}')
+    cond('H1', f'건강 (후보 {nr} 실행: 스텝 끝 음수 0, 부피 오차 < 1e-10, |버린 부피| < 0.1%, 끝에 3% 미만 조각 0, 끝까지 돎) 어긴 것 {bad}', not bad)
+    print('\n'.join(lines)); print(f'\n후보 {cand}: ' + ('넘김' if all(ok.values()) else '탈락 (' + ', '.join(k for k, v in ok.items() if not v) + ')'))
+    json.dump(dict(cand=cand, ok=ok, long={f'{k[0]}_{k[1]}': v for k, v in L.items()}, food4=dict(late=late, early=early, dall=dall, allr=allr), food3_asym3_late=late3, mig_good=good, health_bad=bad),
+              open(os.path.join(HERE, '..', 'screen.json'), 'w'), indent=1, default=float)
