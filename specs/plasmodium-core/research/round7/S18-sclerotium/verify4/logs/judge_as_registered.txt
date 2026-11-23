@@ -1,0 +1,115 @@
+# verify4 판정 출력 (judge.py)
+실행 수: 88  끝까지 돈 실행: 88
+
+## 주장 6: 후보 실행은 모두 건강하다
+v4w: 실행 44, 건강 43, 안 건강 1
+   mass_err_max 최대 2.09e-13, 버린 부피/몸 부피 최대 0.000155, 음수 끝 칸-스텝 합 3
+   안 건강: {"complete": true, "neg_end": false, "mass": true, "crumb": true, "endvol": true, "mass_err_max": 1.3026616822268503e-13, "V_crumb_rel": 0.0, "neg_end_cellsteps": 3, "h_min_end": -0.8344490011784682, "crumb_cells": 0, "t_end": 480.0, "stop": "", "ok": false} b_asym3_s413_v4w
+v4c: 실행 44, 건강 44, 안 건강 0
+   mass_err_max 최대 2.2e-13, 버린 부피/몸 부피 최대 0.000418, 음수 끝 칸-스텝 합 0
+주장 6 판정: 틀림
+
+## 주장 1: 부스러기가 없다 (t >= 100 과 끝)
+v4c: 실행 44, 부스러기 있는 실행 44, 부스러기 스냅숏 합 1805 / 1848, 끝에 남은 실행 44, 외톨이 셀 마름(crumb) 있는 실행 27
+   asym3: 부스러기 실행 8/8, 스냅숏 155/160, 끝 8
+   food3: 부스러기 실행 8/8, 스냅숏 151/160, 끝 8
+   food4: 부스러기 실행 8/8, 스냅숏 248/248, 끝 8
+   long: 부스러기 실행 12/12, 스냅숏 1134/1152, 끝 12
+   mig: 부스러기 실행 8/8, 스냅숏 117/128, 끝 8
+v4w: 실행 44, 부스러기 있는 실행 0, 부스러기 스냅숏 합 0 / 1848, 끝에 남은 실행 0, 외톨이 셀 마름(crumb) 있는 실행 3
+   asym3: 부스러기 실행 0/8, 스냅숏 0/160, 끝 0
+   food3: 부스러기 실행 0/8, 스냅숏 0/160, 끝 0
+   food4: 부스러기 실행 0/8, 스냅숏 0/248, 끝 0
+   long: 부스러기 실행 0/12, 스냅숏 0/1152, 끝 0
+   mig: 부스러기 실행 0/8, 스냅숏 0/128, 끝 0
+1a 후보에 부스러기 없음: 맞음 (부스러기 낸 후보 실행 0)  1b 대조는 많이 만든다 (실행의 50% 이상): 맞음 (1.00)
+주장 1 판정: 맞음
+
+## long: 갇힘 시각 (내 측정: 가장자리의 새 땅 비율 < 0.05 가 끝까지)
+   s401: T_trap 대조 1740.0, 후보 None, 후보 t_scl 1809.1000000000001, 이주 창 끝 1600.0, 점액 포착률 c 1.0 w 0.9984
+   s402: T_trap 대조 1820.0, 후보 1380.0, 후보 t_scl 1858.7, 이주 창 끝 1380.0, 점액 포착률 c 1.0 w 0.999
+   s403: T_trap 대조 1820.0, 후보 None, 후보 t_scl 1794.6000000000001, 이주 창 끝 1600.0, 점액 포착률 c 1.0 w 0.999
+   s404: T_trap 대조 1700.0, 후보 1160.0, 후보 t_scl 1600.4, 이주 창 끝 1160.0, 점액 포착률 c 1.0 w 0.9999
+   s405: T_trap 대조 1840.0, 후보 1920.0, 후보 t_scl 1618.7, 이주 창 끝 1600.0, 점액 포착률 c 1.0 w 1.0
+   s406: T_trap 대조 1840.0, 후보 None, 후보 t_scl 1693.6000000000001, 이주 창 끝 1600.0, 점액 포착률 c 1.0 w 0.997
+   s407: T_trap 대조 1780.0, 후보 1700.0, 후보 t_scl 1844.3000000000002, 이주 창 끝 1600.0, 점액 포착률 c 1.0 w 0.999
+   s408: T_trap 대조 1780.0, 후보 1680.0, 후보 t_scl 1764.7, 이주 창 끝 1600.0, 점액 포착률 c 1.0 w 0.9978
+   s409: T_trap 대조 1800.0, 후보 None, 후보 t_scl 1635.0, 이주 창 끝 1600.0, 점액 포착률 c 1.0 w 0.9991
+   s410: T_trap 대조 1800.0, 후보 1740.0, 후보 t_scl 1835.8000000000002, 이주 창 끝 1600.0, 점액 포착률 c 1.0 w 0.9995
+   s411: T_trap 대조 1820.0, 후보 1760.0, 후보 t_scl 1867.8000000000002, 이주 창 끝 1600.0, 점액 포착률 c 1.0 w 0.9993
+   s412: T_trap 대조 1780.0, 후보 1520.0, 후보 t_scl 1867.9, 이주 창 끝 1520.0, 점액 포착률 c 1.0 w 0.9984
+
+## 주장 2: 옮겨 다니는 동안 덩이가 갈리지 않는다 (long, 100 <= t <= 창 끝)
+   multi              (주) n=12, mean_c=0.6064, mean_w=0.1723, med_d=-0.3947, p_less=0.0002441, p_greater=1, verdict=pass
+   dumb               (주) n=12, mean_c=0.2742, mean_w=0.06299, med_d=-0.1974, p_less=0.0004883, p_greater=0.9998, verdict=pass
+   multi_h0.5_s0.1    (민감도) n=12, mean_c=0.2451, mean_w=0.0717, med_d=-0.1418, p_less=0.0002441, p_greater=1, verdict=pass
+   dumb_h0.5_s0.1     (민감도) n=12, mean_c=0.1048, mean_w=0.02628, med_d=-0.06993, p_less=0.007324, p_greater=0.9956, verdict=pass
+   multi_h0.7_s0.05   (민감도) n=12, mean_c=0.02502, mean_w=0.1031, med_d=0.07237, p_less=1, p_greater=0.0004883, verdict=fail
+   dumb_h0.7_s0.05    (민감도) n=12, mean_c=0.003736, mean_w=0.008894, med_d=0, p_less=0.9219, p_greater=0.1406, verdict=unclear
+주장 2 판정: 맞음  짝: [401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412]
+
+## 주장 3: 죽은 구조가 적다 (같은 창)
+   film_cells         (주) n=12, mean_c=179, mean_w=104.1, med_d=-74.34, p_less=0.0002441, p_greater=1, verdict=pass
+   dead_thread        (주) n=12, mean_c=275.7, mean_w=55.4, med_d=-227.1, p_less=0.0002441, p_greater=1, verdict=pass
+   dead_tips          (주) n=12, mean_c=28.65, mean_w=16.52, med_d=-12.24, p_less=0.0004883, p_greater=0.9998, verdict=pass
+   film_cells_0.2     (민감도) n=12, mean_c=2.975, mean_w=0.4589, med_d=-2.75, p_less=0.0004883, p_greater=1, verdict=pass
+   film_cells_0.4     (민감도) n=12, mean_c=495, mean_w=337, med_d=-152.2, p_less=0.0002441, p_greater=1, verdict=pass
+   dead_thread_0.02   (민감도) n=12, mean_c=207.9, mean_w=14.92, med_d=-196.4, p_less=0.0002441, p_greater=1, verdict=pass
+   dead_thread_0.1    (민감도) n=12, mean_c=363.7, mean_w=159.8, med_d=-213.5, p_less=0.0002441, p_greater=1, verdict=pass
+   dead_tips_0.02     (민감도) n=12, mean_c=24.64, mean_w=6.019, med_d=-18.5, p_less=0.0002441, p_greater=1, verdict=pass
+   dead_tips_0.1      (민감도) n=12, mean_c=33.85, mean_w=29.36, med_d=-4.776, p_less=0.01709, p_greater=0.9866, verdict=pass
+   narrow_cells       (참고) n=12, mean_c=1010, mean_w=907.6, med_d=-110.5, p_less=0.0007324, p_greater=0.9995, verdict=pass
+   tips               (참고) n=12, mean_c=79.79, mean_w=78.35, med_d=-1.757, p_less=0.1697, p_greater=0.8494, verdict=unclear
+   area               (참고) n=12, mean_c=3059, mean_w=2726, med_d=-334.4, p_less=0.0002441, p_greater=1, verdict=pass
+주장 3 판정: 맞음
+
+## 주장 4: 갇히면 균핵이 된다 (long, 각 실행의 [T_trap + 100, 2000])
+   s401: 갇힘 없음 (대조 1740.0, 후보 None), 뺌
+   s403: 갇힘 없음 (대조 1820.0, 후보 None), 뺌
+   s405: 갇힌 뒤 스냅숏 4/0 < 3, 뺌
+   s406: 갇힘 없음 (대조 1840.0, 후보 None), 뺌
+   s409: 갇힘 없음 (대조 1800.0, 후보 None), 뺌
+   n_mass             n=7, mean_c=1.033, mean_w=1.494, med_d=0.1111, p_less=0.9688, p_greater=0.04688, verdict=fail
+   K                  n=7, mean_c=0.4724, mean_w=0.3297, med_d=-0.1973, p_less=0.1484, p_greater=0.8906, verdict=fail
+   lam                n=7, mean_c=0.535, mean_w=0.6886, med_d=0.3244, p_less=0.9219, p_greater=0.1094, verdict=unclear
+   main_narrow_share  n=7, mean_c=0.2531, mean_w=0.3131, med_d=0.04991, p_less=0.8516, p_greater=0.1875, verdict=fail
+   n_lumps            n=7, mean_c=0.491, mean_w=1.312, med_d=0.7778, p_less=1, p_greater=0.007812
+   n_big              n=7, mean_c=1, mean_w=1.429, med_d=0, p_less=1, p_greater=0.125
+   끝 상태 후보 s402: 덩이 1, 몸 1, K 0.057, lam 0.629 -> 아님
+   끝 상태 후보 s404: 덩이 1, 몸 1, K 0.998, lam 0.973 -> 균핵
+   끝 상태 후보 s407: 덩이 2, 몸 2, K 0.998, lam 1.000 -> 아님
+   끝 상태 후보 s408: 덩이 2, 몸 2, K 0.998, lam 1.000 -> 아님
+   끝 상태 후보 s410: 덩이 1, 몸 1, K 0.062, lam 0.462 -> 아님
+   끝 상태 후보 s411: 덩이 1, 몸 1, K 0.076, lam 0.147 -> 아님
+   끝 상태 후보 s412: 덩이 2, 몸 2, K 0.998, lam 0.951 -> 아님
+절대(끝 상태 균핵 비율 >= 0.8): 틀림 (0.14285714285714285, 실행 7)  상대(대조와 비교, 짝 7): 틀림
+   (참고, 고정 창 1800~2000) n_mass             n=12, mean_c=1.159, mean_w=1.318, med_d=0, p_less=0.6992, p_greater=0.3281
+   (참고, 고정 창 1800~2000) K                  n=12, mean_c=0.4427, mean_w=0.4557, med_d=0.01781, p_less=0.575, p_greater=0.4548
+   (참고, 고정 창 1800~2000) lam                n=12, mean_c=0.5162, mean_w=0.6445, med_d=0.1127, p_less=0.9243, p_greater=0.08813
+   (참고, 고정 창 1800~2000) main_narrow_share  n=12, mean_c=0.2551, mean_w=0.2328, med_d=-0.04458, p_less=0.311, p_greater=0.7153
+주장 4 판정: 틀림
+
+## 주장 5: 먹이 찾기와 이주는 나빠지지 않는다
+   food4 닿은 수       n=8, mean_c=3.875, mean_w=3.875, worse_eff=0, margin=0.25, p_worse=1, verdict=pass
+   food4 닿는 시각 평균 n=8, med_c=286.9, med_w=305.2, worse_eff=-0.15, margin=28.69, p_worse=0.4219, verdict=pass
+   food4 첫 닿음(참고)   n=8, med_c=50.25, med_w=50.25, worse_eff=0, margin=5.025, p_worse=1, verdict=pass
+   food3 닿은 수       n=8, mean_c=3, mean_w=3, worse_eff=0, margin=0.25, p_worse=1, verdict=pass
+   food3 닿는 시각 평균 n=8, med_c=67.65, med_w=69.48, worse_eff=0, margin=6.765, p_worse=0.25, verdict=pass
+   food3 첫 닿음(참고)   n=8, med_c=58.8, med_w=58.8, worse_eff=0, margin=5.88, p_worse=1, verdict=pass
+   asym3 닿은 수       n=8, mean_c=3, mean_w=3, worse_eff=0, margin=0.25, p_worse=1, verdict=pass
+   asym3 닿는 시각 평균 n=8, med_c=60.85, med_w=61.37, worse_eff=0, margin=6.085, p_worse=0.5, verdict=pass
+   asym3 첫 닿음(참고)   n=8, med_c=39, med_w=39.05, worse_eff=0, margin=3.9, p_worse=0.5, verdict=pass
+   먹이 셋 묶음 닿은 수 (후보-대조 줄어듦) n=24, worse_eff=0, margin=0.25, p_worse=1, verdict=pass
+   먹이 셋 묶음 닿는 시각 (상대)         n=24, worse_eff=0, margin=0.1, p_worse=0.08813, verdict=pass
+   mig 유인원 닿는 시각 (400 에서 자름) n=20, med_c=241, med_w=224.2, worse_eff=-14.45, margin=24.1, p_worse=1, verdict=pass
+   mig t=200 유인원 쪽 이동 거리        n=20, med_c=28.33, med_w=33.32, worse_eff=-4.997, margin=2.833, p_worse=1, verdict=pass
+   mig 방향 오차(도)                     n=20, med_c=4.303, med_w=13.34, worse_eff=8.17, margin=10, p_worse=9.537e-07, verdict=pass
+주장 5 판정: 맞음
+
+## 요약
+주장 1: 맞음
+주장 2: 맞음
+주장 3: 맞음
+주장 4: 틀림
+주장 5: 맞음
+주장 6: 틀림

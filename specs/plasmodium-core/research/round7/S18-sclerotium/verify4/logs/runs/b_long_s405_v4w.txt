@@ -1,0 +1,46 @@
+b_long_s405_v4w {"t": 0.0, "area": 548, "V": 1344.0, "Vinj": 0.0, "cx": 95.4985, "cy": 95.4995, "Cmax": 2.5998, "hmax": 3.0241, "young": 548, "elapsed": 0.2}
+b_long_s405_v4w {"t": 50.0, "area": 2107, "V": 1344.0, "Vinj": 0.0, "cx": 99.5453, "cy": 96.5226, "Cmax": 1410.9267, "hmax": 1.249, "young": 118, "elapsed": 10.3}
+b_long_s405_v4w {"t": 100.0, "area": 3056, "V": 1344.0, "Vinj": 0.0, "cx": 101.5909, "cy": 101.9288, "Cmax": 1417.4781, "hmax": 0.9856, "young": 124, "elapsed": 20.9}
+b_long_s405_v4w {"t": 150.0, "area": 2685, "V": 1344.0, "Vinj": 0.0, "cx": 101.9522, "cy": 118.097, "Cmax": 1037.5949, "hmax": 0.9727, "young": 152, "elapsed": 36.0}
+b_long_s405_v4w {"t": 200.0, "area": 2906, "V": 1344.0, "Vinj": 0.0, "cx": 110.1504, "cy": 121.2285, "Cmax": 882.9043, "hmax": 0.9528, "young": 95, "elapsed": 50.9}
+b_long_s405_v4w {"t": 250.0, "area": 2831, "V": 1344.0, "Vinj": 0.0, "cx": 127.08, "cy": 120.3478, "Cmax": 702.4358, "hmax": 0.9961, "young": 103, "elapsed": 64.7}
+b_long_s405_v4w {"t": 300.0, "area": 2929, "V": 1344.0, "Vinj": 0.0, "cx": 137.7914, "cy": 122.9496, "Cmax": 826.8018, "hmax": 0.9628, "young": 107, "elapsed": 79.1}
+b_long_s405_v4w {"t": 350.0, "area": 2863, "V": 1344.0, "Vinj": 0.0, "cx": 151.1627, "cy": 123.1509, "Cmax": 1115.1652, "hmax": 0.9425, "young": 116, "elapsed": 92.8}
+b_long_s405_v4w {"t": 400.0, "area": 2948, "V": 1344.0, "Vinj": 0.0, "cx": 161.1272, "cy": 125.1875, "Cmax": 1588.104, "hmax": 1.0118, "young": 118, "elapsed": 106.7}
+b_long_s405_v4w {"t": 450.0, "area": 2953, "V": 1344.0, "Vinj": 0.0, "cx": 169.6049, "cy": 130.1372, "Cmax": 1159.074, "hmax": 0.9287, "young": 103, "elapsed": 120.6}
+b_long_s405_v4w {"t": 500.0, "area": 2924, "V": 1344.0, "Vinj": 0.0, "cx": 177.6325, "cy": 133.9002, "Cmax": 850.234, "hmax": 0.8951, "young": 88, "elapsed": 133.7}
+b_long_s405_v4w {"t": 550.0, "area": 3016, "V": 1344.0, "Vinj": 0.0, "cx": 183.2485, "cy": 142.7702, "Cmax": 677.4902, "hmax": 0.9693, "young": 130, "elapsed": 146.0}
+b_long_s405_v4w {"t": 600.0, "area": 2797, "V": 1344.0, "Vinj": 0.0, "cx": 189.8873, "cy": 149.3019, "Cmax": 613.3848, "hmax": 0.9529, "young": 111, "elapsed": 158.2}
+b_long_s405_v4w {"t": 650.0, "area": 2881, "V": 1344.0, "Vinj": 0.0, "cx": 196.6273, "cy": 157.5892, "Cmax": 604.7053, "hmax": 0.9776, "young": 128, "elapsed": 171.8}
+b_long_s405_v4w {"t": 700.0, "area": 2642, "V": 1344.0, "Vinj": 0.0, "cx": 196.6106, "cy": 162.4127, "Cmax": 615.0389, "hmax": 1.0399, "young": 115, "elapsed": 186.0}
+b_long_s405_v4w {"t": 750.0, "area": 2595, "V": 1344.0, "Vinj": 0.0, "cx": 193.9515, "cy": 167.1494, "Cmax": 419.3605, "hmax": 1.0516, "young": 144, "elapsed": 202.9}
+b_long_s405_v4w {"t": 800.0, "area": 2444, "V": 1344.0, "Vinj": 0.0, "cx": 182.7395, "cy": 181.727, "Cmax": 384.0456, "hmax": 1.0015, "young": 187, "elapsed": 219.7}
+b_long_s405_v4w {"t": 850.0, "area": 2890, "V": 1344.0, "Vinj": 0.0, "cx": 173.5024, "cy": 220.3854, "Cmax": 588.9961, "hmax": 1.0151, "young": 101, "elapsed": 236.5}
+b_long_s405_v4w {"t": 900.0, "area": 2368, "V": 1344.0, "Vinj": 0.0, "cx": 167.4415, "cy": 208.6871, "Cmax": 752.6202, "hmax": 1.2006, "young": 71, "elapsed": 251.4}
+b_long_s405_v4w {"t": 950.0, "area": 2378, "V": 1344.0, "Vinj": 0.0, "cx": 117.9157, "cy": 197.7707, "Cmax": 623.1026, "hmax": 1.1069, "young": 122, "elapsed": 266.6}
+b_long_s405_v4w {"t": 1000.0, "area": 2810, "V": 1344.0, "Vinj": 0.0, "cx": 103.4541, "cy": 197.2382, "Cmax": 583.2048, "hmax": 1.0672, "young": 62, "elapsed": 284.3}
+b_long_s405_v4w {"t": 1050.0, "area": 2905, "V": 1344.0, "Vinj": 0.0, "cx": 90.8838, "cy": 197.8063, "Cmax": 667.6869, "hmax": 1.0359, "young": 111, "elapsed": 304.9}
+b_long_s405_v4w {"t": 1100.0, "area": 2905, "V": 1344.0, "Vinj": 0.0, "cx": 80.1117, "cy": 194.5598, "Cmax": 768.8534, "hmax": 0.9886, "young": 110, "elapsed": 322.3}
+b_long_s405_v4w {"t": 1150.0, "area": 2563, "V": 1344.0, "Vinj": 0.0, "cx": 74.9103, "cy": 191.071, "Cmax": 583.6021, "hmax": 1.0687, "young": 97, "elapsed": 342.5}
+b_long_s405_v4w {"t": 1200.0, "area": 2679, "V": 1344.0, "Vinj": 0.0, "cx": 61.987, "cy": 182.6642, "Cmax": 731.374, "hmax": 1.002, "young": 74, "elapsed": 363.5}
+b_long_s405_v4w {"t": 1250.0, "area": 2943, "V": 1344.0, "Vinj": 0.0, "cx": 54.1456, "cy": 187.1897, "Cmax": 798.9301, "hmax": 1.0319, "young": 66, "elapsed": 377.0}
+b_long_s405_v4w {"t": 1300.0, "area": 2423, "V": 1344.0, "Vinj": 0.0, "cx": 48.686, "cy": 199.7671, "Cmax": 667.3405, "hmax": 1.1399, "young": 116, "elapsed": 396.6}
+b_long_s405_v4w {"t": 1350.0, "area": 2563, "V": 1344.0, "Vinj": 0.0, "cx": 48.4016, "cy": 212.583, "Cmax": 553.1374, "hmax": 1.317, "young": 98, "elapsed": 415.1}
+b_long_s405_v4w {"t": 1400.0, "area": 2675, "V": 1344.0, "Vinj": 0.0, "cx": 45.0486, "cy": 220.2193, "Cmax": 646.3157, "hmax": 1.0677, "young": 57, "elapsed": 430.3}
+b_long_s405_v4w {"t": 1450.0, "area": 2495, "V": 1344.0, "Vinj": 0.0, "cx": 37.6941, "cy": 232.0253, "Cmax": 625.716, "hmax": 1.0103, "young": 69, "elapsed": 446.2}
+b_long_s405_v4w {"t": 1500.0, "area": 2606, "V": 1344.0, "Vinj": 0.0, "cx": 31.0511, "cy": 242.8301, "Cmax": 772.5354, "hmax": 1.0661, "young": 55, "elapsed": 461.0}
+b_long_s405_v4w {"t": 1550.0, "area": 2643, "V": 1344.0, "Vinj": 0.0, "cx": 22.6626, "cy": 252.2195, "Cmax": 866.4941, "hmax": 1.0947, "young": 96, "elapsed": 475.0}
+b_long_s405_v4w {"t": 1600.0, "area": 2483, "V": 1344.0, "Vinj": 0.0, "cx": 14.3024, "cy": 257.493, "Cmax": 900.0309, "hmax": 1.1832, "young": 45, "elapsed": 489.4}
+b_long_s405_v4w {"t": 1650.0, "area": 985, "V": 1344.0, "Vinj": 0.0, "cx": -17.3385, "cy": 255.2877, "Cmax": 284.0294, "hmax": 3.2355, "young": 7, "elapsed": 504.7}
+b_long_s405_v4w {"t": 1700.0, "area": 754, "V": 1344.0, "Vinj": 0.0, "cx": -18.6531, "cy": 256.2021, "Cmax": 391.7017, "hmax": 3.2425, "young": 0, "elapsed": 518.6}
+b_long_s405_v4w {"t": 1750.0, "area": 633, "V": 1344.0, "Vinj": 0.0, "cx": -18.8208, "cy": 256.7077, "Cmax": 675.9116, "hmax": 3.2756, "young": 1, "elapsed": 533.0}
+b_long_s405_v4w {"t": 1800.0, "area": 940, "V": 1344.0, "Vinj": 0.0, "cx": -21.5763, "cy": 256.1315, "Cmax": 547.4073, "hmax": 1.844, "young": 474, "elapsed": 546.0}
+b_long_s405_v4w {"t": 1850.0, "area": 1762, "V": 1344.0, "Vinj": 0.0, "cx": -41.0449, "cy": 252.9406, "Cmax": 1726.2236, "hmax": 1.2738, "young": 90, "elapsed": 557.5}
+b_long_s405_v4w {"t": 1900.0, "area": 2200, "V": 1344.0, "Vinj": 0.0, "cx": -54.8842, "cy": 248.8074, "Cmax": 1713.8572, "hmax": 1.3717, "young": 64, "elapsed": 569.0}
+b_long_s405_v4w {"t": 1950.0, "area": 1782, "V": 1344.0, "Vinj": 0.0, "cx": -78.5937, "cy": 246.0856, "Cmax": 1001.5686, "hmax": 1.325, "young": 50, "elapsed": 583.1}
+b_long_s405_v4w {"t": 2000.0, "area": 840, "V": 1344.0, "Vinj": 0.0, "cx": -82.4744, "cy": 247.2058, "Cmax": 467.4567, "hmax": 3.079, "young": 50, "elapsed": 597.0}
+b_long_s405_v4w MET {"t_end": 2000.0, "disp": 233.86, "area_end": 840, "mass_err_max": 1.0150610510858574e-15, "h_min_seen": -1.8735719544896985, "t_touch": [256.0], "t_cover": [273.9], "t_exh": [null], "Vinj": 0.0, "runtime": 597.3}
+b_long_s405_v4w VEIN {"edges": 2352, "nodes": 840, "comps": 1, "largest": 1.0, "comps_ge10": 1, "endpoints": 14, "junctions": 659, "cycles": 1513, "end_per_junc": 0.021, "C_med": 20.0, "C_p90": 23.0, "C_max": 465.3, "largest_ws": 1.0, "touch_sheet": 1.0, "sheet_cells": 639} BODY {"comps": 1, "largest_area": 1.0, "largest_vol": 1.0}
+exit=0 wall=599s
+b_long_s405_v4w snaps 100 ok
+measure_exit=0

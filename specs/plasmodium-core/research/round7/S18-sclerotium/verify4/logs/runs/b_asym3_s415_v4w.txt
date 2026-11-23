@@ -1,0 +1,16 @@
+b_asym3_s415_v4w {"t": 0.0, "area": 548, "V": 1344.0, "Vinj": 0.0, "cx": 95.5, "cy": 95.5004, "Cmax": 2.5984, "hmax": 3.0274, "young": 548, "elapsed": 0.2}
+b_asym3_s415_v4w {"t": 50.0, "area": 2605, "V": 1348.11, "Vinj": 4.11, "cx": 95.2002, "cy": 100.6653, "Cmax": 1160.5542, "hmax": 1.3491, "young": 158, "elapsed": 9.9}
+b_asym3_s415_v4w {"t": 100.0, "area": 3116, "V": 1607.805, "Vinj": 263.805, "cx": 94.5235, "cy": 103.3056, "Cmax": 2189.5909, "hmax": 3.7114, "young": 161, "elapsed": 21.5}
+b_asym3_s415_v4w {"t": 150.0, "area": 3400, "V": 2189.0, "Vinj": 845.0, "cx": 93.8163, "cy": 106.9184, "Cmax": 1947.1139, "hmax": 4.5448, "young": 217, "elapsed": 34.8}
+b_asym3_s415_v4w {"t": 200.0, "area": 4226, "V": 2781.5, "Vinj": 1437.5, "cx": 89.799, "cy": 108.1327, "Cmax": 1403.3546, "hmax": 4.6595, "young": 272, "elapsed": 47.5}
+b_asym3_s415_v4w {"t": 250.0, "area": 5297, "V": 3374.0, "Vinj": 2030.0, "cx": 88.6849, "cy": 110.4403, "Cmax": 1699.8762, "hmax": 4.8699, "young": 316, "elapsed": 60.3}
+b_asym3_s415_v4w {"t": 300.0, "area": 6648, "V": 3966.5, "Vinj": 2622.5, "cx": 90.7318, "cy": 109.1806, "Cmax": 1770.3027, "hmax": 4.736, "young": 260, "elapsed": 74.4}
+b_asym3_s415_v4w {"t": 350.0, "area": 8121, "V": 4559.0, "Vinj": 3215.0, "cx": 92.7657, "cy": 106.2629, "Cmax": 2434.5, "hmax": 4.4223, "young": 306, "elapsed": 89.2}
+b_asym3_s415_v4w {"t": 400.0, "area": 9342, "V": 4936.56, "Vinj": 3592.56, "cx": 92.6231, "cy": 106.139, "Cmax": 2758.8296, "hmax": 4.339, "young": 361, "elapsed": 104.7}
+b_asym3_s415_v4w {"t": 450.0, "area": 10348, "V": 4944.0, "Vinj": 3600.0, "cx": 94.6129, "cy": 108.6109, "Cmax": 2489.9209, "hmax": 2.3079, "young": 443, "elapsed": 122.2}
+b_asym3_s415_v4w {"t": 480.0, "area": 8189, "V": 4944.0, "Vinj": 3600.0, "cx": 126.8142, "cy": 173.5062, "Cmax": 1264.687, "hmax": 1.6057, "young": 607, "elapsed": 134.2}
+b_asym3_s415_v4w MET {"t_end": 480.0, "disp": 88.65, "area_end": 8189, "mass_err_max": 1.1757790508411182e-13, "h_min_seen": -0.2837979646410531, "t_touch": [39.5, 80.9, 62.3], "t_cover": [57.0, 98.9, 81.2], "t_exh": [357.3, 401.9, 388.8], "Vinj": 3600.000000000057, "runtime": 134.6}
+b_asym3_s415_v4w VEIN {"edges": 2816, "nodes": 2971, "comps": 236, "largest": 0.473, "comps_ge10": 33, "endpoints": 764, "junctions": 378, "cycles": 81, "end_per_junc": 2.021, "C_med": 12.16, "C_p90": 344.2, "C_max": 1271.2, "largest_ws": 0.65, "touch_sheet": 0.809, "sheet_cells": 4187} BODY {"comps": 1, "largest_area": 1.0, "largest_vol": 1.0}
+exit=0 wall=135s
+b_asym3_s415_v4w snaps 24 ok
+measure_exit=0

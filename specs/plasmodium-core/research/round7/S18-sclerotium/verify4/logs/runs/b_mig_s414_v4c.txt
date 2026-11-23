@@ -1,0 +1,14 @@
+b_mig_s414_v4c {"t": 0.0, "area": 548, "V": 1344.0, "Vinj": 0.0, "cx": 95.4997, "cy": 95.5002, "Cmax": 2.5996, "hmax": 3.0334, "young": 548, "elapsed": 0.2}
+b_mig_s414_v4c {"t": 50.0, "area": 2154, "V": 1344.0, "Vinj": 0.0, "cx": 99.2532, "cy": 97.9385, "Cmax": 752.7842, "hmax": 1.058, "young": 135, "elapsed": 10.1}
+b_mig_s414_v4c {"t": 100.0, "area": 2985, "V": 1344.0, "Vinj": 0.0, "cx": 105.5155, "cy": 101.2201, "Cmax": 1902.3755, "hmax": 0.958, "young": 117, "elapsed": 21.3}
+b_mig_s414_v4c {"t": 150.0, "area": 2896, "V": 1344.0, "Vinj": 0.0, "cx": 118.0269, "cy": 104.1112, "Cmax": 1240.09, "hmax": 0.996, "young": 147, "elapsed": 31.8}
+b_mig_s414_v4c {"t": 200.0, "area": 2942, "V": 1344.0, "Vinj": 0.0, "cx": 126.9983, "cy": 106.2859, "Cmax": 777.8917, "hmax": 0.9206, "young": 89, "elapsed": 42.4}
+b_mig_s414_v4c {"t": 250.0, "area": 2937, "V": 1344.0, "Vinj": 0.0, "cx": 135.7412, "cy": 113.3308, "Cmax": 757.8255, "hmax": 0.9224, "young": 93, "elapsed": 52.9}
+b_mig_s414_v4c {"t": 300.0, "area": 3017, "V": 1344.0, "Vinj": 0.0, "cx": 145.1275, "cy": 116.7577, "Cmax": 606.0661, "hmax": 0.9654, "young": 125, "elapsed": 64.6}
+b_mig_s414_v4c {"t": 350.0, "area": 2972, "V": 1344.0, "Vinj": 0.0, "cx": 153.7171, "cy": 119.7301, "Cmax": 717.0364, "hmax": 0.9543, "young": 111, "elapsed": 76.8}
+b_mig_s414_v4c {"t": 400.0, "area": 3035, "V": 1344.0, "Vinj": 0.0, "cx": 161.3485, "cy": 123.2889, "Cmax": 527.5539, "hmax": 1.0566, "young": 117, "elapsed": 89.2}
+b_mig_s414_v4c MET {"t_end": 400.0, "disp": 71.47, "area_end": 3035, "mass_err_max": 3.383536836952858e-16, "h_min_seen": 0.0, "t_touch": [241.0], "t_cover": [259.8], "t_exh": [null], "Vinj": 0.0, "runtime": 89.4}
+b_mig_s414_v4c VEIN {"edges": 1489, "nodes": 1498, "comps": 57, "largest": 0.913, "comps_ge10": 2, "endpoints": 261, "junctions": 214, "cycles": 48, "end_per_junc": 1.22, "C_med": 23.88, "C_p90": 203.6, "C_max": 526.2, "largest_ws": 0.973, "touch_sheet": 0.974, "sheet_cells": 1118} BODY {"comps": 35, "largest_area": 0.971, "largest_vol": 0.987}
+exit=0 wall=90s
+b_mig_s414_v4c snaps 20 ok
+measure_exit=0

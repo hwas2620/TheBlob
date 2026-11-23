@@ -1,0 +1,14 @@
+b_mig_s420_v4w {"t": 0.0, "area": 548, "V": 1344.0, "Vinj": 0.0, "cx": 95.4999, "cy": 95.4986, "Cmax": 2.599, "hmax": 3.0184, "young": 548, "elapsed": 0.2}
+b_mig_s420_v4w {"t": 50.0, "area": 2120, "V": 1344.0, "Vinj": 0.0, "cx": 97.0595, "cy": 97.659, "Cmax": 667.6811, "hmax": 1.079, "young": 124, "elapsed": 10.3}
+b_mig_s420_v4w {"t": 100.0, "area": 2951, "V": 1344.0, "Vinj": 0.0, "cx": 100.0598, "cy": 100.9691, "Cmax": 2034.6237, "hmax": 1.1106, "young": 82, "elapsed": 21.1}
+b_mig_s420_v4w {"t": 150.0, "area": 2481, "V": 1344.0, "Vinj": 0.0, "cx": 120.6034, "cy": 110.5153, "Cmax": 1239.8938, "hmax": 1.0135, "young": 139, "elapsed": 34.5}
+b_mig_s420_v4w {"t": 200.0, "area": 2837, "V": 1344.0, "Vinj": 0.0, "cx": 128.3044, "cy": 115.567, "Cmax": 722.6043, "hmax": 0.9274, "young": 112, "elapsed": 47.0}
+b_mig_s420_v4w {"t": 250.0, "area": 2917, "V": 1344.0, "Vinj": 0.0, "cx": 137.1365, "cy": 121.8, "Cmax": 809.4156, "hmax": 0.9386, "young": 97, "elapsed": 60.0}
+b_mig_s420_v4w {"t": 300.0, "area": 2873, "V": 1344.0, "Vinj": 0.0, "cx": 146.7763, "cy": 125.6127, "Cmax": 451.245, "hmax": 0.9432, "young": 87, "elapsed": 73.9}
+b_mig_s420_v4w {"t": 350.0, "area": 2958, "V": 1344.0, "Vinj": 0.0, "cx": 153.5418, "cy": 134.5795, "Cmax": 581.2929, "hmax": 0.9765, "young": 118, "elapsed": 89.8}
+b_mig_s420_v4w {"t": 400.0, "area": 2840, "V": 1344.0, "Vinj": 0.0, "cx": 161.0642, "cy": 145.1925, "Cmax": 778.4567, "hmax": 0.9335, "young": 139, "elapsed": 104.1}
+b_mig_s420_v4w MET {"t_end": 400.0, "disp": 82.27, "area_end": 2840, "mass_err_max": 3.383536836952858e-16, "h_min_seen": 0.0, "t_touch": [201.8], "t_cover": [220.2], "t_exh": [null], "Vinj": 0.0, "runtime": 104.3}
+b_mig_s420_v4w VEIN {"edges": 1468, "nodes": 1483, "comps": 56, "largest": 0.902, "comps_ge10": 3, "endpoints": 237, "junctions": 181, "cycles": 41, "end_per_junc": 1.309, "C_med": 19.72, "C_p90": 145.3, "C_max": 780.1, "largest_ws": 0.948, "touch_sheet": 0.948, "sheet_cells": 1230} BODY {"comps": 1, "largest_area": 1.0, "largest_vol": 1.0}
+exit=0 wall=106s
+b_mig_s420_v4w snaps 20 ok
+measure_exit=0

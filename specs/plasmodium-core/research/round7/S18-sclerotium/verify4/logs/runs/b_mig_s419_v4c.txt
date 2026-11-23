@@ -1,0 +1,14 @@
+b_mig_s419_v4c {"t": 0.0, "area": 548, "V": 1344.0, "Vinj": 0.0, "cx": 95.4996, "cy": 95.5002, "Cmax": 2.599, "hmax": 3.0238, "young": 548, "elapsed": 0.2}
+b_mig_s419_v4c {"t": 50.0, "area": 2124, "V": 1344.0, "Vinj": 0.0, "cx": 101.6938, "cy": 97.3013, "Cmax": 697.3195, "hmax": 1.2722, "young": 135, "elapsed": 9.4}
+b_mig_s419_v4c {"t": 100.0, "area": 2921, "V": 1344.0, "Vinj": 0.0, "cx": 108.3966, "cy": 99.95, "Cmax": 2230.9108, "hmax": 0.9675, "young": 121, "elapsed": 18.7}
+b_mig_s419_v4c {"t": 150.0, "area": 2893, "V": 1344.0, "Vinj": 0.0, "cx": 118.1703, "cy": 102.6173, "Cmax": 1094.1703, "hmax": 0.9421, "young": 137, "elapsed": 28.9}
+b_mig_s419_v4c {"t": 200.0, "area": 2961, "V": 1344.0, "Vinj": 0.0, "cx": 125.3529, "cy": 106.6744, "Cmax": 1141.6699, "hmax": 0.9145, "young": 94, "elapsed": 40.8}
+b_mig_s419_v4c {"t": 250.0, "area": 2953, "V": 1344.0, "Vinj": 0.0, "cx": 135.4682, "cy": 112.1621, "Cmax": 543.4279, "hmax": 0.933, "young": 82, "elapsed": 52.0}
+b_mig_s419_v4c {"t": 300.0, "area": 2959, "V": 1343.9442, "Vinj": 0.0, "cx": 147.0379, "cy": 114.2351, "Cmax": 667.9487, "hmax": 0.9542, "young": 120, "elapsed": 63.1}
+b_mig_s419_v4c {"t": 350.0, "area": 2982, "V": 1343.9442, "Vinj": 0.0, "cx": 155.5411, "cy": 117.701, "Cmax": 596.3891, "hmax": 0.9463, "young": 115, "elapsed": 74.9}
+b_mig_s419_v4c {"t": 400.0, "area": 3046, "V": 1343.9442, "Vinj": 0.0, "cx": 164.298, "cy": 124.3596, "Cmax": 837.3029, "hmax": 1.0007, "young": 121, "elapsed": 87.3}
+b_mig_s419_v4c MET {"t_end": 400.0, "disp": 74.64, "area_end": 3046, "mass_err_max": 3.383536836952858e-16, "h_min_seen": 0.0, "t_touch": [232.7], "t_cover": [252.8], "t_exh": [null], "Vinj": 0.0, "runtime": 87.5}
+b_mig_s419_v4c VEIN {"edges": 1495, "nodes": 1521, "comps": 64, "largest": 0.896, "comps_ge10": 3, "endpoints": 289, "junctions": 200, "cycles": 38, "end_per_junc": 1.445, "C_med": 19.9, "C_p90": 180.6, "C_max": 836.6, "largest_ws": 0.958, "touch_sheet": 0.958, "sheet_cells": 1089} BODY {"comps": 30, "largest_area": 0.98, "largest_vol": 0.991}
+exit=0 wall=88s
+b_mig_s419_v4c snaps 20 ok
+measure_exit=0

@@ -113,9 +113,10 @@ def main():
     for k in sorted(R):
         r = R[k]; m = r.get('metrics') or {}; e = r.get('end_check') or {}
         Vb = (m.get('V0') or 0) + (m.get('Vinj') or 0)
+        # [CRITERIA_CHANGES 1] 버린 부피는 절댓값으로 본다 (음수 외톨이 칸을 버리면 V_crumb 가 음수가 된다)
         chk = dict(run=r['name'], complete=complete(r), neg_end=(m.get('neg_end_cellsteps') == 0 and (m.get('h_min_end_of_step') or 0) >= 0 and r['hmin_snapshots'] >= 0 and e.get('hmin_wet', -1) >= 0),
-                   mass=(m.get('mass_err_max') is not None and m['mass_err_max'] < 1e-10), crumb=(m.get('V_crumb') is not None and m['V_crumb'] < 1e-3 * Vb),
-                   endvol=(e.get('vol_rel_err', 1) < 1e-5), mass_err_max=m.get('mass_err_max'), V_crumb_rel=(m.get('V_crumb', 0) / Vb if Vb else None),
+                   mass=(m.get('mass_err_max') is not None and m['mass_err_max'] < 1e-10), crumb=(m.get('V_crumb') is not None and abs(m['V_crumb']) < 1e-3 * Vb),
+                   endvol=(e.get('vol_rel_err', 1) < 1e-5), mass_err_max=m.get('mass_err_max'), V_crumb_rel=(abs(m.get('V_crumb', 0)) / Vb if Vb else None), V_crumb=m.get('V_crumb'),
                    neg_end_cellsteps=m.get('neg_end_cellsteps'), h_min_end=m.get('h_min_end_of_step'), crumb_cells=m.get('crumb_cells'), t_end=m.get('t_end'), stop=m.get('stop'))
         chk['ok'] = all(chk[x] for x in ('complete', 'neg_end', 'mass', 'crumb', 'endvol'))
         h6.append((k, chk))
