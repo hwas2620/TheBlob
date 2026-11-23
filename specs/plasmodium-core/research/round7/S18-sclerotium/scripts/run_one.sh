@@ -26,6 +26,7 @@ case "$tag" in
   s18r)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=2 scl_dlim=1";;   # s18i + 균핵 때 한 칸이 한 스텝에 가진 만큼만 내보냄(주는 쪽 제한)
   s18u)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=2 scl_dlim=1 scl_bk=1";;   # s18r + 균핵 때 다리 지키기 끔
   s18v)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=2 scl_dlim=1 scl_bk=2";;   # s18u에서 4색 차례 말리기는 남김
+  s18w)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=2 scl_dlim=1 scl_bk=2 scl_shmin=1e-9";;   # s18v + 마름 나눔의 이웃 합 바닥(1e-30)에서 부피가 새지 않게
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1

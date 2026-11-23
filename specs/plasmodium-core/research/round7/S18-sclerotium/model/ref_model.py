@@ -78,6 +78,7 @@ DEF = dict(
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
     scl_bk=0,      # [S18] 1: while a sclerotium forms, bridge_keep is off (its 'strong' test would see the scl_C floor everywhere and keep every emptied cell of a drained sheet); keep_conn still never tears the body. 2: only its protection is off; its 4-colour drying order stays (two neighbours never dry in the same step, so a drying cell always has someone to hand its volume to)
+    scl_shmin=0.0,  # [S18] >0: while a sclerotium forms, a drying cell whose staying neighbours hold less than this in total shares its volume equally among them (the thickness-weighted share divides by that sum, and below 1e-30 the old floor lost volume)
     scl_dlim=0,    # [S18] 1: while a sclerotium forms, a cell sends out at most what it holds in one step: all its outgoing edge fluxes are scaled by max(h, 0) / (dt * outflow) when that is below 1 (one pass, never negative, exact mass)
     scl_lim=0,     # [S18] n>0: the positivity limiter (limit_net) runs (up to n passes, until no cell would go negative) while a sclerotium forms - the strong pumping
                    #      would otherwise empty cells below zero, and one pass can push the deficit onto the neighbours whose inflow it cut
@@ -800,7 +801,8 @@ def run(name, over):
             if P['dry_weight'] == 'h':        # share the drying cell's volume (or deficit, if negative) among staying neighbours in proportion to their thickness
                 hpos = np.where(stay, np.maximum(h, 0.0), 0.0); sh = np.zeros((N, N))
                 for d in ALL: sh += nb(hpos, d)
-                gh = np.where(Dm & (sh > 0), h / np.maximum(sh, 1e-30), 0.0); ge = np.where(Dm & (sh <= 0), h / np.maximum(ns, 1), 0.0)
+                sh0_ = P['scl_shmin'] if (scl and P['scl_shmin'] > 0) else 0.0      # [S18]
+                gh = np.where(Dm & (sh > sh0_), h / np.maximum(sh, 1e-30), 0.0); ge = np.where(Dm & (sh <= sh0_), h / np.maximum(ns, 1), 0.0)
                 add = np.zeros((N, N))
                 for d in ALL: add += np.where(stay, nb(gh, d) * hpos + nb(ge, d), 0.0)
                 h += add
