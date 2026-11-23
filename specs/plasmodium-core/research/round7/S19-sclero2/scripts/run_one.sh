@@ -18,6 +18,13 @@ case "$tag" in
   s19g)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1";;     # s19d + 먹이 쪽으로 오르는 부채는 경쟁에서 아끼기
   s19h)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1";;              # s19d + 균핵 때 핵 밖 관 몫 없앰(버린 관이 빔)
   s19i)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 scl_nowet=1";;  # s19h + 원반 안으로도 젖지 않음(불규칙한 덩어리)
+  g_nos7)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 sup_age=0";;          # 이주 방향 빼보기: 굶음 경쟁(S7) 끔
+  g_nosz)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 sup_size=0";;         # 작은 덩이 더 늙기 끔
+  g_nosc)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 sup_scent=0";;        # 냄새 쪽 경쟁 끔
+  g_nohc)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 hang_C=0";;           # 지켜진 실 전도도 끔
+  g_noret) extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 ret_h=0 ret_glob=0";; # 오그라듦 끔
+  g_notri) extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 tri_k=0";;            # 흐르는 맥동 무늬 끔
+  c_notri) extra="tri_k=0";;                # 대조, 흐르는 맥동 무늬 끔
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}
