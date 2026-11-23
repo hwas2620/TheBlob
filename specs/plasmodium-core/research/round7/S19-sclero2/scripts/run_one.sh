@@ -28,6 +28,7 @@ case "$tag" in
   g_tau80) extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 sup_tau=80";;            # S7 흐름 평균을 맥동 무늬 한 주기로
   g_rot)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 sup_rot=1";;             # S7 구역 넓히기 방향 순서 돌리기
   g_both)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 sup_tau=80 sup_rot=1";;  # 둘 다
+  s19x)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 sup_climb=1";;   # S19 후보: s18w + 안 풀림 + 줄 통째 거두기 + 흐름 제한 늘 + 버린 관 비우기 + 먹이 쪽 부채 아끼기
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}
