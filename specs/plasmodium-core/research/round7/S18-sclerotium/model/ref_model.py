@@ -72,6 +72,8 @@ DEF = dict(
     scl_f=0.0,     # [S18] >0: sclerotium. A hungry body whose rim has almost no fresh ground left (share of the dry cells next to it that carry no slime < scl_f, averaged)
     scl_tau=30.0,  #      for scl_tau time units is trapped: it stops extending (no new wet cells) and its smaller thick lobes age (1 + scl_size) times faster (S7 parts),
     scl_size=10.0, #      so it draws together into one compact mass. It leaves the state when fresh ground reappears (share > 3 scl_f) or it eats
+    scl_H=1.0,     # [S18] >1: in the sclerotium state each body's largest thick part (h >= sup_h) is its core: it does not age and its rest thickness is scl_H times larger,
+    scl_age=0.0,   #      so it draws the cytoplasm in through the veins; every other cell of the body ages (1 + scl_age) times faster. Each separate body forms its own core
     hang_C=0.0,    # [S18] >0: an edge touching a cell kept by keep_conn within the last time unit conducts at least hang_C, so a piece hanging on a dead thread can pump its volume back
                    #      along the thread as it ages (a retracting lobe returns its cytoplasm through the strand) instead of freezing as a thick lump at the end of it
     sup_size=0.0,  # [S17] >0: in S7, every big thick part but the biggest also ages (1 + sup_size) times faster - a starving body draws its smaller lobes into the main mass (with sup_fed: only when hungry)
@@ -250,7 +252,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; sclcore = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -409,6 +411,17 @@ def run(name, over):
             Hres = Hres + dt * resmask * wet * gate_ * (P['h_res'] - Hres) / P['res_tau']
         Hfac = Hres if P['res_acc'] else (1.0 + (P['h_res'] - 1.0) * resmask)
         hstar = P['h_old'] + (P['h0'] * Hfac - P['h_old']) * np.exp(-sage / P['tau_a'])   # h_res>1: thick reservoir on live food (N3 variant)
+        if scl and P['scl_H'] > 1.0 and step % max(1, int(round(1.0 / dt))) == 0:      # [S18] sclerotium cores (each body's largest thick part), every time unit
+            lw_ = _torus_label(wet); lt_ = _torus_label(wet & (h >= P['sup_h'])); nt_ = int(lt_.max()); sclcore[:] = False
+            if nt_ > 0:
+                tv_ = np.bincount(lt_.ravel(), weights=np.where(lt_ > 0, h, 0.0).ravel(), minlength=nt_ + 1); tv_[0] = -1.0
+                bid_ = np.zeros(nt_ + 1, np.int64); fl_ = lt_.ravel(); bid_[fl_[fl_ > 0]] = lw_.ravel()[fl_ > 0]
+                best_ = {}
+                for k_ in range(1, nt_ + 1):
+                    if bid_[k_] not in best_ or tv_[k_] > tv_[best_[bid_[k_]]]: best_[bid_[k_]] = k_
+                sclcore[:] = np.isin(lt_, list(best_.values()))
+        if scl and P['scl_H'] > 1.0:
+            sage = np.where(sclcore & wet, 0.0, sage); hstar = np.where(sclcore & wet, hstar * P['scl_H'], hstar)
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))   # new cell inflates gradually
         if P['wall_tau'] > 0: Cwall = np.where(wet, np.maximum(Cn, Cwall * np.exp(-dt / P['wall_tau'])), 0.0)
         tube = np.minimum(P['beta'] * np.sqrt(np.maximum(Cn, Cwall) if P['wall_tau'] > 0 else Cn), P['cap'])
@@ -549,7 +562,8 @@ def run(name, over):
                 km_ = (t - t_kept) <= 1.0; C[k] = np.where(act[k] & (km_ | nb(km_, DIRS[k])), np.maximum(C[k], P['hang_C']), C[k])
             if P['neck_keep'] and neckp.any(): C[k] = np.where(act[k] & neckp & nb(neckp, DIRS[k]), np.maximum(C[k], P['neck_C']), C[k])
         age = np.where(wet, age + dt, 0.0)
-        sage = np.where(wet, sage + dt * (1.0 - resmask) * (supm if P['sup_age'] > 0 else 1.0) * ((1.0 + P['hang_age'] * hangm) if P['hang_age'] > 0 else 1.0), 0.0)
+        sage = np.where(wet, sage + dt * (1.0 - resmask) * (supm if P['sup_age'] > 0 else 1.0) * ((1.0 + P['hang_age'] * hangm) if P['hang_age'] > 0 else 1.0)
+                        * ((1.0 + P['scl_age'] * ~sclcore) if (scl and P['scl_age'] > 0) else 1.0), 0.0)      # [S18] sclerotium: non-core cells age faster
         if P['fan_comp']:
             fan_k = max(1, int(round(P['fan_every'] / dt)))
             if step % fan_k == 0:
