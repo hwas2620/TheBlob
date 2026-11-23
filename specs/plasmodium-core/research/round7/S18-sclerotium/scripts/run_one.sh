@@ -15,6 +15,7 @@ case "$tag" in
   s18g)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1";;   # s18e와 같은 값 + (모델) 균핵 때 갈라짐 끔
   s18g)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1";;   # s18e와 같은 값 + (모델) 균핵 때 갈라짐 끔
   s18h)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0";;   # s18g + 균핵 때 얇은 칸 흐름 제한 끔
+  s18i)  extra="${F/fis_min=0.03/fis_min=0.10} hang_C=20 scl_f=0.02 scl_H=3 scl_age=5 scl_C=20 scl_disc=1 scl_thin=0 sup_scent=2";;   # s18h + 경쟁 승자를 크기 + 냄새로
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1

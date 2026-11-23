@@ -69,6 +69,7 @@ DEF = dict(
     ret_tip=0,     # [S13] 1: a thread end (a wet cell with exactly one wet 8-neighbour) that meets the other ret_h conditions retracts whatever its thickness: a blob hanging on a thread rolls back along it
     bridge_h=0.0,  # [S10] >0: with bridge_keep, a bridge cell is also kept while h >= bridge_h whatever its conductance (a thread breaks only once it is nearly empty)
     sup_cap=0.0,   # [S10] >0: the S7 ageing factor is at most 1 + sup_cap
+    sup_scent=0.0, # [S18] >0: the S7 parts are ranked by (volume share + sup_scent * mean food field / food_amp) instead of volume alone: the lobe nearest the scent wins the size competition (sup_size) and the sclerotium core
     scl_f=0.0,     # [S18] >0: sclerotium. A hungry body whose rim has almost no fresh ground left (share of the dry cells next to it that carry no slime < scl_f, averaged)
     scl_tau=30.0,  #      for scl_tau time units is trapped: it stops extending (no new wet cells) and its smaller thick lobes age (1 + scl_size) times faster (S7 parts),
     scl_size=10.0, #      so it draws together into one compact mass. It leaves the state when fresh ground reappears (share > 3 scl_f) or it eats
@@ -646,6 +647,10 @@ def run(name, over):
             if ns_ >= 2:
                 vs_ = np.bincount(ls_.ravel(), weights=np.where(thk_, h, 0.0).ravel(), minlength=ns_ + 1); vs_[0] = 0.0
                 bg_ = [k_ for k_ in np.argsort(vs_)[::-1] if vs_[k_] >= P['sup_min'] * float(h[wet].sum())]
+                if P['sup_scent'] > 0 and nf and len(bg_) >= 2:      # [S18] rank by volume share + scent
+                    fs_ = np.bincount(ls_.ravel(), weights=np.where(thk_, food, 0.0).ravel(), minlength=ns_ + 1) / np.maximum(np.bincount(ls_.ravel(), minlength=ns_ + 1), 1)
+                    sc_ = {k_: vs_[k_] / float(h[wet].sum()) + P['sup_scent'] * fs_[k_] / max(P['food_amp'], 1e-12) for k_ in bg_}
+                    bg_ = sorted(bg_, key=lambda k_: -sc_[k_])
                 if len(bg_) >= 2:
                     rg_ = np.zeros((N, N), np.int32)
                     for j_, k_ in enumerate(bg_): rg_[ls_ == k_] = j_ + 1
