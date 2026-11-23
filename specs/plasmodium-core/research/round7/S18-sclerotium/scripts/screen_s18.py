@@ -3,7 +3,7 @@
 두 독립 검증자의 측정 코드를 그대로 쓴다:
   첫 검증자 ../../S16-dumbbell/verify/scripts/vlib.py (실 아령 dumbbell D2)
   둘째 검증자 ../../S16-dumbbell/verify2/scripts/measure.py (frame: 덩이 둘 이상, 죽은 실, 가지 끝, 막)
-usage: screen_s18.py [후보=s18h]   (대조 s18c = 지금 모델, 같은 모델 복사본)"""
+usage: screen_s18.py [후보=s18i]   (대조 s18c = 지금 모델, 같은 모델 복사본)"""
 import json, os, sys, glob, re
 import numpy as np
 from multiprocessing import Pool
@@ -22,8 +22,8 @@ def dead_tips(Z, w, h):     # 가지 끝 줄(길이 3 이상, 둘째 검증자�
     ys, xs = np.divmod(np.array(sorted(cells)), N); Cm = Z['Cmean']; CM = np.zeros(w.shape)
     for k, d in enumerate(DIRS): CM = np.maximum(CM, np.maximum(Cm[k], rev(Cm[k], d)))
     return int((CM[ys, xs] <= 4.0).sum())
-cand = sys.argv[1] if len(sys.argv) > 1 else 's18h'; C = 's18c'
-LONG = range(371, 381); FOOD4 = range(371, 377); FOOD3 = (371, 372); ASYM3 = (371, 372); MIG = range(371, 375)
+cand = sys.argv[1] if len(sys.argv) > 1 else 's18i'; C = 's18c'
+LONG = range(371, 381); FOOD4 = range(371, 377); FOOD3 = (371, 372); ASYM3 = (371, 372); MIG = range(371, 379)
 TINY = 0.05
 PK = 'M=wet|r=3|f=0.10|neck=any'
 
@@ -91,11 +91,23 @@ if __name__ == '__main__':
         a, b = met(scn_, s, C)['t_touch'], met(scn_, s, cand)['t_touch']
         late3 += sum(1 for i in range(3) if a[i] is not None and (b[i] is None or b[i] > a[i] + 50))
     cond('F2', f'food3·asym3 늦음 ≤ 1 (12쌍): {late3}', late3 <= 1)
-    good = 0
+    def direction_err(tag, s):      # 처음 → t 200 무게중심 이동 방향이 유인원 방향(27°)에서 벗어난 각도
+        fs = sorted(glob.glob(os.path.join(rd('mig', s, tag), 'vs_t*.npz')), key=lambda f: int(re.findall(r'vs_t(\d+)', f)[0]))
+        c0 = np.load(fs[0])['cen']; c1 = None
+        for f in fs:
+            Z = np.load(f)
+            if float(Z['t']) <= 200: c1 = Z['cen']
+        N = np.load(fs[0])['wet'].shape[0]; d = ((c1 - c0 + N / 2) % N) - N / 2; a = np.arctan2(d[1], d[0])
+        return float(np.degrees((a - np.radians(27) + np.pi) % (2 * np.pi) - np.pi))
+    good = 0; reach = 0; errs = {C: [], cand: []}
     for s in MIG:
         a, b = met('mig', s, C), met('mig', s, cand); r = b['disp'] / a['disp']; q = b['area_end'] / a['area_end']; good += (r >= 0.8 and q <= 1.2)
-        lines.append(f'  mig s{s}: 이동 {r:.2f}배, 끝 넓이 {q:.2f}배')
-    cond('M1', f'mig 이동 ≥ 0.8배·넓이 ≤ 1.2배인 쌍 ≥ 3/4: {good}/4', good >= 3)
+        reach += b['t_touch'][0] is not None
+        for tg in (C, cand): errs[tg].append(direction_err(tg, s))
+        lines.append(f'  mig s{s}: 이동 {r:.2f}배, 끝 넓이 {q:.2f}배, 닿은 시각 {a["t_touch"][0]} → {b["t_touch"][0]}, 방향 오차 {errs[C][-1]:+.1f}° → {errs[cand][-1]:+.1f}°')
+    cond('M1', f'mig 이동 ≥ 0.8배·넓이 ≤ 1.2배인 쌍 ≥ 6/8: {good}/8', good >= 6)
+    me = float(np.mean(np.abs(errs[cand]))); mc = float(np.mean(np.abs(errs[C])))
+    cond('M2', f'mig 후보가 모두 유인원에 닿고({reach}/8), 방향 오차 평균 ≤ 25°: {me:.1f}° (대조 {mc:.1f}°)', reach == len(MIG) and me <= 25.0)
     bad = []; nr = 0
     for scn, ss in (('long', LONG), ('food4', FOOD4), ('food3', FOOD3), ('asym3', ASYM3), ('mig', MIG)):
         for s in ss:
