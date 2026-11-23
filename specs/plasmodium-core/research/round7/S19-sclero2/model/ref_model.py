@@ -79,6 +79,8 @@ DEF = dict(
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
     t_eat0=-1e18,  # [S19] time of the 'last meal' at the start. With t_eat0=0 the plasmodium starts fed: starvation rules (sup_fed, ret_fed) begin only after sup_fed / ret_fed time units
     sup_climb=0,   # [S19] 1: in the [S7] competition a losing part whose rim is richer in food scent than its inside (it climbs toward a food) is not suppressed
+    scl_notube=0,  # [S19] 1: while a sclerotium forms, cells outside the core lose the tube part of their rest thickness (an abandoned tube empties; with the scl_C floor the tube part alone was 0.05*sqrt(20) = 0.22 > h_min, so abandoned tubes never dried)
+    scl_nowet=0,   # [S19] 1: no wetting while a sclerotium forms, even into the round core (the core is the part of the body inside the disc: an irregular mass, not a drawn disc)
     scl_stay=0,    # [S19] 1: once a sclerotium forms it stays until the body eats again (no waking up because fresh ground shows at the rim)
     scl_rundry=0,  # [S19] 1: while a sclerotium forms, drying is not held to the 4-colour order and each 8-connected run of drying cells hands its whole volume to the staying cells it touches (a thin tail is withdrawn at once into the body; exact mass)
     scl_nofis=0,   # [S19] 1: no fission while a sclerotium forms (also without scl_disc)
@@ -455,6 +457,7 @@ def run(name, over):
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))   # new cell inflates gradually
         if P['wall_tau'] > 0: Cwall = np.where(wet, np.maximum(Cn, Cwall * np.exp(-dt / P['wall_tau'])), 0.0)
         tube = np.minimum(P['beta'] * np.sqrt(np.maximum(Cn, Cwall) if P['wall_tau'] > 0 else Cn), P['cap'])
+        if scl and P['scl_notube']: tube = np.where(sclcore, tube, 0.0)      # [S19]
         hbar_prev = hstar + tube          # unmodulated mean rest thickness (stretch reference for the mechanical phase feedback)
         if eps > 0:
             th_eff = theta
@@ -895,7 +898,7 @@ def run(name, over):
             if scl and ((ff_ema > 3 * P['scl_f'] and not P['scl_stay']) or not hungry_): scl = False      # [S19] scl_stay: only eating wakes it
             if scl: scl_steps += 1
         cand = ~wet & (ptest > yld)
-        if scl: cand &= sclcore if P['scl_disc'] else False      # [S18] a sclerotium does not extend (with scl_disc: only into its round core)
+        if scl: cand &= sclcore if (P['scl_disc'] and not P['scl_nowet']) else False      # [S18] a sclerotium does not extend (with scl_disc: only into its round core)
         if cand.any():
             ys, xs = np.nonzero(cand); a = arg[ys, xs]
             dx = np.array([d[0] for d in ALL])[a]; dy = np.array([d[1] for d in ALL])[a]

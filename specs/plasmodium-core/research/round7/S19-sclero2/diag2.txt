@@ -1,0 +1,49 @@
+s19w 402 음수 0 버린 0.0 외톨이 0 부피오차 1.2e-15 균핵 1858.7 빠진 시간 -0.1 끝 2000.0
+s19w 403 음수 0 버린 0.0 외톨이 0 부피오차 8.5e-16 균핵 1794.6000000000001 빠진 시간 68.7 끝 2000.0
+s19w 409 음수 0 버린 0.0 외톨이 0 부피오차 1.0e-15 균핵 1635.0 빠진 시간 62.2 끝 2000.0
+s19w 410 음수 0 버린 0.0 외톨이 0 부피오차 8.5e-16 균핵 1835.8000000000002 빠진 시간 -0.1 끝 2000.0
+s19b 402 음수 0 버린 0.0 외톨이 0 부피오차 1.0e-15 균핵 1858.7 빠진 시간 -0.1 끝 2000.0
+s19b 403 음수 0 버린 0.0 외톨이 0 부피오차 1.0e-15 균핵 1794.6000000000001 빠진 시간 -0.1 끝 2000.0
+s19b 409 음수 0 버린 0.0 외톨이 0 부피오차 1.0e-15 균핵 1635.0 빠진 시간 -0.1 끝 2000.0
+s19b 410 음수 0 버린 0.0 외톨이 0 부피오차 6.8e-16 균핵 1835.8000000000002 빠진 시간 -0.1 끝 2000.0
+s19d 402 음수 0 버린 0.0 외톨이 0 부피오차 6.8e-16 균핵 1604.9 빠진 시간 -0.1 끝 2000.0
+s19d 403 음수 0 버린 0.0 외톨이 0 부피오차 1.0e-15 균핵 1822.6000000000001 빠진 시간 -0.1 끝 2000.0
+s19d 409 음수 0 버린 0.0 외톨이 0 부피오차 8.5e-16 균핵 1810.0 빠진 시간 -0.1 끝 2000.0
+s19d 410 음수 0 버린 0.0 외톨이 0 부피오차 8.5e-16 균핵 1558.0 빠진 시간 -0.1 끝 2000.0
+s19e 402 음수 0 버린 0.0 외톨이 0 부피오차 8.5e-16 균핵 1604.9 빠진 시간 -0.1 끝 2000.0
+s19e 403 음수 0 버린 0.0 외톨이 0 부피오차 8.5e-16 균핵 1822.6000000000001 빠진 시간 -0.1 끝 2000.0
+s19e 409 음수 0 버린 0.0 외톨이 0 부피오차 8.5e-16 균핵 1810.0 빠진 시간 -0.1 끝 2000.0
+s19e 410 음수 0 버린 0.0 외톨이 0 부피오차 8.5e-16 균핵 1558.0 빠진 시간 -0.1 끝 2000.0
+b_long_s402_s19w {"mc_mid": 0.0, "dead_mid": 3.5, "dead3_mid": 0.2, "mc_end": 0.0, "area_end": 2060, "peri_end": 21.4, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1858.7, "fission": 0}
+b_long_s403_s19w {"mc_mid": 0.0, "dead_mid": 1.0, "dead3_mid": 0.0, "mc_end": 0.0, "area_end": 1755, "peri_end": 16.2, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1794.6000000000001, "fission": 0}
+b_long_s409_s19w {"mc_mid": 0.0, "dead_mid": 7.0, "dead3_mid": 0.2, "mc_end": 0.0, "area_end": 943, "peri_end": 11.8, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1635.0, "fission": 0}
+b_long_s410_s19w {"mc_mid": 0.0, "dead_mid": 2.5, "dead3_mid": 0.2, "mc_end": 0.15, "area_end": 1918, "peri_end": 20.1, "blobs_end": 1.15, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1835.8000000000002, "fission": 0}
+b_long_s402_s19b {"mc_mid": 0.0, "dead_mid": 2.8, "dead3_mid": 0.0, "mc_end": 0.0, "area_end": 2093, "peri_end": 22.3, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1858.7, "fission": 0}
+b_long_s403_s19b {"mc_mid": 0.039, "dead_mid": 2.2, "dead3_mid": 0.0, "mc_end": 0.0, "area_end": 1541, "peri_end": 15.2, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1794.6000000000001, "fission": 0}
+b_long_s409_s19b {"mc_mid": 0.171, "dead_mid": 5.7, "dead3_mid": 0.2, "mc_end": 0.0, "area_end": 726, "peri_end": 8.8, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1635.0, "fission": 0}
+b_long_s410_s19b {"mc_mid": 0.039, "dead_mid": 3.5, "dead3_mid": 0.1, "mc_end": 0.15, "area_end": 1854, "peri_end": 18.1, "blobs_end": 1.15, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1835.8000000000002, "fission": 0}
+b_long_s402_s19d {"mc_mid": 0.026, "dead_mid": 4.0, "dead3_mid": 0.2, "mc_end": 0.0, "area_end": 622, "peri_end": 8.1, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1604.9, "fission": 1}
+b_long_s403_s19d {"mc_mid": 0.026, "dead_mid": 4.1, "dead3_mid": 0.1, "mc_end": 0.3, "area_end": 1832, "peri_end": 24.5, "blobs_end": 1.3, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1822.6000000000001, "fission": 0}
+b_long_s409_s19d {"mc_mid": 0.026, "dead_mid": 4.8, "dead3_mid": 0.2, "mc_end": 0.0, "area_end": 1683, "peri_end": 12.3, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1810.0, "fission": 1}
+b_long_s410_s19d {"mc_mid": 0.039, "dead_mid": 4.7, "dead3_mid": 0.4, "mc_end": 0.0, "area_end": 494, "peri_end": 4.3, "blobs_end": 1.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1558.0, "fission": 0}
+b_long_s402_s19e {"mc_mid": 0.026, "dead_mid": 4.0, "dead3_mid": 0.2, "mc_end": 0.05, "area_end": 955, "peri_end": 24.9, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1604.9, "fission": 1}
+b_long_s403_s19e {"mc_mid": 0.026, "dead_mid": 4.1, "dead3_mid": 0.1, "mc_end": 0.7, "area_end": 1901, "peri_end": 27.6, "blobs_end": 1.9, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1822.6000000000001, "fission": 0}
+b_long_s409_s19e {"mc_mid": 0.026, "dead_mid": 4.8, "dead3_mid": 0.2, "mc_end": 0.45, "area_end": 1736, "peri_end": 16.0, "blobs_end": 1.45, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1810.0, "fission": 1}
+b_long_s410_s19e {"mc_mid": 0.039, "dead_mid": 4.9, "dead3_mid": 0.5, "mc_end": 0.05, "area_end": 543, "peri_end": 8.7, "blobs_end": 1.05, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1558.0, "fission": 0}
+# 끝 상태(t 2000): 핵(h ≥ 1) 밖에 남은 칸
+402 s19w 젖은 770 핵 447 핵 밖 323 핵 밖 부피 40.2 몸 부피몫 [1.0]
+402 s19b 젖은 912 핵 448 핵 밖 464 핵 밖 부피 47.7 몸 부피몫 [1.0]
+402 s19d 젖은 451 핵 450 핵 밖 1 핵 밖 부피 0.9 몸 부피몫 [1.0]
+402 s19e 젖은 750 핵 430 핵 밖 320 핵 밖 부피 38.7 몸 부피몫 [1.0]
+403 s19w 젖은 1629 핵 309 핵 밖 1320 핵 밖 부피 999.0 몸 부피몫 [1.0]
+403 s19b 젖은 458 핵 450 핵 밖 8 핵 밖 부피 5.8 몸 부피몫 [1.0]
+403 s19d 젖은 794 핵 454 핵 밖 340 핵 밖 부피 43.9 몸 부피몫 [1.0]
+403 s19e 젖은 1276 핵 338 핵 밖 938 핵 밖 부피 655.0 몸 부피몫 [1.0]
+409 s19w 젖은 457 핵 450 핵 밖 7 핵 밖 부피 3.9 몸 부피몫 [1.0]
+409 s19b 젖은 460 핵 455 핵 밖 5 핵 밖 부피 4.3 몸 부피몫 [1.0]
+409 s19d 젖은 740 핵 392 핵 밖 348 핵 밖 부피 158.8 몸 부피몫 [0.883, 0.117]
+409 s19e 젖은 770 핵 424 핵 밖 346 핵 밖 부피 157.7 몸 부피몫 [0.883, 0.117]
+410 s19w 젖은 616 핵 460 핵 밖 156 핵 밖 부피 21.0 몸 부피몫 [1.0]
+410 s19b 젖은 456 핵 453 핵 밖 3 핵 밖 부피 2.5 몸 부피몫 [1.0]
+410 s19d 젖은 457 핵 450 핵 밖 7 핵 밖 부피 3.6 몸 부피몫 [1.0]
+410 s19e 젖은 477 핵 477 핵 밖 0 핵 밖 부피 0.0 몸 부피몫 [1.0]
