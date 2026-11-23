@@ -25,6 +25,9 @@ case "$tag" in
   g_noret) extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 ret_h=0 ret_glob=0";; # 오그라듦 끔
   g_notri) extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 tri_k=0";;            # 흐르는 맥동 무늬 끔
   c_notri) extra="tri_k=0";;                # 대조, 흐르는 맥동 무늬 끔
+  g_tau80) extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 sup_tau=80";;            # S7 흐름 평균을 맥동 무늬 한 주기로
+  g_rot)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 sup_rot=1";;             # S7 구역 넓히기 방향 순서 돌리기
+  g_both)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 sup_climb=1 sup_tau=80 sup_rot=1";;  # 둘 다
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}

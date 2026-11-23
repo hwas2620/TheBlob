@@ -78,6 +78,7 @@ DEF = dict(
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
     t_eat0=-1e18,  # [S19] time of the 'last meal' at the start. With t_eat0=0 the plasmodium starts fed: starvation rules (sup_fed, ret_fed) begin only after sup_fed / ret_fed time units
+    sup_rot=0,     # [S19] 1: the [S7] part regions grow with a direction order that turns at every update (otherwise a cell two parts reach in the same round always goes to the part on its +x side, then +y: a fixed anisotropy)
     sup_climb=0,   # [S19] 1: in the [S7] competition a losing part whose rim is richer in food scent than its inside (it climbs toward a food) is not suppressed
     scl_notube=0,  # [S19] 1: while a sclerotium forms, cells outside the core lose the tube part of their rest thickness (an abandoned tube empties; with the scl_C floor the tube part alone was 0.05*sqrt(20) = 0.22 > h_min, so abandoned tubes never dried)
     scl_nowet=0,   # [S19] 1: no wetting while a sclerotium forms, even into the round core (the core is the part of the body inside the disc: an irregular mass, not a drawn disc)
@@ -687,7 +688,7 @@ def run(name, over):
                     fr_ = rg_ > 0
                     while fr_.any():                                      # grow all parts at once along wet cells (nearest part wins, no distance limit)
                         new_ = np.zeros((N, N), np.int32)
-                        for d_ in ALL:
+                        for d_ in ((ALL[sup_steps % 8:] + ALL[:sup_steps % 8])[::(1 if (sup_steps // 8) % 2 == 0 else -1)] if P['sup_rot'] else ALL):      # [S19] sup_rot
                             cand_ = nb(rg_, d_) * nb(fr_, d_)
                             new_ = np.where((new_ == 0) & (cand_ > 0), cand_, new_)
                         new_ = np.where(wet & (rg_ == 0), new_, 0); fr_ = new_ > 0; rg_ += new_
