@@ -1,0 +1,14 @@
+b_long_s307_s16c {"bodies": 1.26, "bodies_end": 1, "debris_n": 74.6, "debris_v": 0.0296, "fD2": 0.341, "fD2_late": 0.353, "film": 416, "dead": 122, "endline": 155, "fission": null, "neg_end": 0, "V_crumb": 0.3425, "t_touch": [245.0]}
+b_long_s307_s16gm {"bodies": 1.0, "bodies_end": 1, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.154, "fD2_late": 0.0, "film": 42, "dead": 10, "endline": 115, "fission": null, "neg_end": 0, "V_crumb": 0.0, "t_touch": [227.8]}
+b_long_s307_s17f {"bodies": 1.27, "bodies_end": 2, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.341, "fD2_late": 0.157, "film": 0, "dead": 53, "endline": 94, "fission": 1, "neg_end": 0, "V_crumb": 0.0, "t_touch": [227.7]}
+b_long_s308_s16c {"bodies": 1.27, "bodies_end": 1, "debris_n": 61.0, "debris_v": 0.0247, "fD2": 0.341, "fD2_late": 0.353, "film": 275, "dead": 104, "endline": 146, "fission": null, "neg_end": 0, "V_crumb": 0.3842, "t_touch": [237.2]}
+b_long_s308_s16gm {"bodies": 1.0, "bodies_end": 1, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.462, "fD2_late": 0.608, "film": 0, "dead": 104, "endline": 135, "fission": null, "neg_end": 0, "V_crumb": 0.0, "t_touch": [229.0]}
+b_long_s308_s17f {"bodies": 1.0, "bodies_end": 1, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.286, "fD2_late": 0.275, "film": 31, "dead": 10, "endline": 140, "fission": 0, "neg_end": 0, "V_crumb": 0.0, "t_touch": [229.0]}
+b_long_s315_w16c {"bodies": 1.27, "bodies_end": 1, "debris_n": 73.7, "debris_v": 0.027, "fD2": 0.231, "fD2_late": 0.118, "film": 389, "dead": 142, "endline": 132, "fission": null, "neg_end": 0, "V_crumb": 0.2967, "t_touch": [256.1]}
+b_long_s315_w16gm {"bodies": 1.0, "bodies_end": 1, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.33, "fD2_late": 0.373, "film": 13, "dead": 30, "endline": 168, "fission": null, "neg_end": 0, "V_crumb": 0.0, "t_touch": [241.1]}
+b_long_s315_s17f {"bodies": 1.0, "bodies_end": 1, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.275, "fD2_late": 0.333, "film": 18, "dead": 313, "endline": 229, "fission": 0, "neg_end": 0, "V_crumb": 0.0, "t_touch": [241.1]}
+b_long_s319_w16c {"bodies": 1.26, "bodies_end": 1, "debris_n": 60.1, "debris_v": 0.0239, "fD2": 0.242, "fD2_late": 0.157, "film": 608, "dead": 174, "endline": 124, "fission": null, "neg_end": 0, "V_crumb": 0.0879, "t_touch": [236.7]}
+b_long_s319_w16gm {"bodies": 1.0, "bodies_end": 1, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.275, "fD2_late": 0.176, "film": 0, "dead": 126, "endline": 244, "fission": null, "neg_end": 0, "V_crumb": 0.0, "t_touch": [227.8]}
+b_long_s319_s17f {"bodies": 1.0, "bodies_end": 1, "debris_n": 0.0, "debris_v": 0.0, "fD2": 0.44, "fD2_late": 0.431, "film": 7, "dead": 158, "endline": 236, "fission": 0, "neg_end": 0, "V_crumb": 0.0, "t_touch": [227.8]}
+301 {'s16c': [72.6, None, 522.9, 49.5], 's16gm': [72.6, None, 505.4, 49.5], 's17f': [72.6, None, 505.4, 49.5]} fission 0
+302 {'s16c': [72.2, 529.4, 389.5, 49.6], 's16gm': [72.2, 539.0, 356.9, 49.6], 's17f': [72.2, 539.0, 356.9, 49.6]} fission 1

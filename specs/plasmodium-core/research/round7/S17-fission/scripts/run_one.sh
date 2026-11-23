@@ -8,6 +8,7 @@ case "$tag" in
   s17c)  extra="";;                                   # 지금 모델
   s17g)  extra="$G";;                                 # S16 후보 + 음수 고침 (찢어지지 않음)
   s17f)  extra="${G/keep_conn=3/keep_conn=4} fis_min=0.15";;   # 갈라짐 허용: 닿은 조각이 모두 몸 부피 15% 이상이면 끊어지게 둔다
+  s17f3) extra="${G/keep_conn=3/keep_conn=4} fis_min=0.03";;  # 갈라짐 문턱 3%: 그보다 작은 부스러기만 막고 거둬들인다
   *) echo "bad tag $tag"; exit 2;;
 esac
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1 MKL_NUM_THREADS=1
