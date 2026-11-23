@@ -7,7 +7,7 @@ blk = src[src.index("        if P['keep_conn'] and Dm.any():"):src.index("      
 blk = '\n'.join(l[8:] for l in blk.split('\n'))
 def run(kc, wet, h, Dm):
     g = dict(np=np, _torus_label=R._torus_label, nb=R.nb, ALL=R.ALL, N=wet.shape[0], P=dict(R.DEF, keep_conn=kc, hang_age=4.0), wet=wet, Dm=Dm.copy(), negm=None, fill=None,
-             nconn=0, nrel=0, nfis=0, step=0, h=h, t=0.0, t_eat=-1e18, hangm=np.zeros(wet.shape, bool), nhang=0)
+             nconn=0, nrel=0, nfis=0, step=0, h=h, t=0.0, t_eat=-1e18, hangm=np.zeros(wet.shape, bool), nhang=0, scl=False, t_kept=np.full(wet.shape, -1e18))
     exec(blk, g); return g['Dm'], g['hangm'], g['nfis']
 N = 48
 for name, (a, b, xb) in (('큰 덩이 둘', ((5, 15), (30, 40), (5, 15))), ('큰 덩이 + 작은 덩이', ((5, 15), (22, 24), (8, 12)))):

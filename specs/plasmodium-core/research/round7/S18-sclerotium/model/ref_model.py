@@ -730,6 +730,7 @@ def run(name, over):
                     cc4_ = np.concatenate(cc4_); pp4_ = np.concatenate(pp4_)
                     minv4_ = np.full(badc_.size, np.inf); np.minimum.at(minv4_, cc4_, pv4_[pp4_])
                     ok4_ = badc_ & (minv4_ >= P['fis_min'] * float(h[wet].sum()))
+                    if scl and P['scl_disc']: ok4_[:] = False      # [S18] no fission while forming a round sclerotium (the body must stay joined to drain into the core)
                     if ok4_.any(): nfis += int(ok4_.sum()); badc_ &= ~ok4_
                     if P['hang_age'] > 0:      # pieces hanging on a kept run: every touched piece but the run's biggest
                         kp4_ = badc_[cc4_]; cc4_ = cc4_[kp4_]; pp4_ = pp4_[kp4_]

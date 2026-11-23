@@ -1,0 +1,4 @@
+b_long_s351_s18e {"mc_mid": 0.079, "dead_mid": 4.9, "dead3_mid": 0.1, "mc_end": 0.1, "area_end": 1809, "peri_end": 18.7, "blobs_end": 1.1, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1710.4, "fission": 9}
+b_long_s353_s18e {"mc_mid": 0.039, "dead_mid": 3.4, "dead3_mid": 0.2, "mc_end": 0.5, "area_end": 2444, "peri_end": 24.2, "blobs_end": 2.0, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1788.8000000000002, "fission": 1857}
+b_long_s355_s18e {"mc_mid": 0.026, "dead_mid": 3.2, "dead3_mid": 0.2, "mc_end": 0.5, "area_end": 1916, "peri_end": 16.6, "blobs_end": 1.5, "frames_with_piece_lt10": 10, "max_piece_lt10": 0.0944, "t_scl": 1799.5, "fission": 33}
+b_long_s357_s18e {"mc_mid": 0.039, "dead_mid": 3.9, "dead3_mid": 0.2, "mc_end": 0.3, "area_end": 2547, "peri_end": 22.6, "blobs_end": 1.3, "frames_with_piece_lt10": 0, "max_piece_lt10": 0.0, "t_scl": 1877.2, "fission": 3}
