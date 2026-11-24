@@ -77,6 +77,7 @@ DEF = dict(
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
+    scl_star=0,    # [S20] 1 (with scl_disc): the core radius depends on direction, R(theta)^2 proportional to the body's cytoplasm in that direction (36 sectors, smoothed over 20 degrees, 0.5..2 R), same area as the disc: the mass sets where the sclerotium hardens, not a drawn circle
     scl_dens=0.0,  # [S20] >0 (with scl_disc=0): the sclerotium core of each body is where its thickness, blurred over scl_dens cells, is at least scl_dfrac of the body's peak (dense lumps, not thick tubes; an irregular mass that follows where the cytoplasm already is)
     scl_dfrac=0.5, # [S20]
     scl_dgrow=0,   # [S20] 1: with scl_dens, a sclerotium may wet dry cells next to the body where the blurred thickness is above the core threshold (fills hollows of the dense lump)
@@ -469,7 +470,19 @@ def run(name, over):
                         cxp_ = (np.arctan2((wgt_ * np.sin(xs_ * ang_)).sum(), (wgt_ * np.cos(xs_ * ang_)).sum()) / ang_) % N
                         cyp_ = (np.arctan2((wgt_ * np.sin(ys_ * ang_)).sum(), (wgt_ * np.cos(ys_ * ang_)).sum()) / ang_) % N
                         R_ = np.sqrt(Vb_ / (np.pi * P['h0'] * P['scl_H']))
-                        disc_ |= np.hypot(mimg(X - cxp_), mimg(Y - cyp_)) <= R_
+                        dxa_ = mimg(X - cxp_); dya_ = mimg(Y - cyp_); rr_ = np.hypot(dxa_, dya_)
+                        if P['scl_star']:      # [S20] star-shaped core that follows the body's mass by direction
+                            th_ = np.arctan2(dya_, dxa_); K_ = 36
+                            bi_ = ((th_ + np.pi) / (2 * np.pi) * K_).astype(int) % K_
+                            mth_ = np.bincount(bi_[bm_], weights=h[bm_], minlength=K_).astype(float)
+                            kk_ = np.arange(-6, 7); ker_ = np.exp(-0.5 * (kk_ / 2.0) ** 2); ker_ /= ker_.sum()
+                            ms_ = sum(ker_[i_] * np.roll(mth_, kk_[i_]) for i_ in range(len(kk_)))
+                            ms_ = np.maximum(ms_, 0.3 * ms_.mean()); Rb_ = np.clip(R_ * np.sqrt(ms_ / ms_.mean()), 0.5 * R_, 2.0 * R_)
+                            Rb_ *= np.sqrt(np.pi * R_ ** 2 / (0.5 * float((Rb_ ** 2).sum()) * 2 * np.pi / K_))
+                            pos_ = (th_ + np.pi) / (2 * np.pi) * K_ - 0.5; i0_ = np.floor(pos_).astype(int); f_ = pos_ - i0_
+                            disc_ |= rr_ <= (1 - f_) * Rb_[i0_ % K_] + f_ * Rb_[(i0_ + 1) % K_]
+                        else:
+                            disc_ |= rr_ <= R_
                     sclcore[:] = disc_
         if scl and P['scl_H'] > 1.0:
             sage = np.where(sclcore & wet, 0.0, sage); hstar = np.where(sclcore & wet, hstar * P['scl_H'], hstar)
