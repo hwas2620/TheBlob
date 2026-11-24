@@ -17,6 +17,8 @@ case "$tag" in
   s20f)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1";;            # 꼬리 감기 + 서서히 배고픔 + 별 모양 핵
   s20g)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_C=8";;    # + 균핵 전도도 바닥 8 (천천히)
   s20h)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_C=4";;    # + 균핵 전도도 바닥 4 (더 천천히)
+  s20i)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1";;           # 별 모양 핵을 들 때 한 번 정하고 굳힘
+  s20j)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_C=4";;   # + 균핵 전도도 바닥 4
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}

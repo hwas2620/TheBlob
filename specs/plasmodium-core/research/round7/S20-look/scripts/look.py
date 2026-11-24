@@ -46,11 +46,13 @@ for s in seeds:
         d = os.path.join(R, f'b_long_s{s}_{tag}'); m = json.load(open(os.path.join(d, 'metrics.json'))); ts = m.get('t_scl')
         w = np.load(os.path.join(d, 'wet.npy')).astype(bool); h = np.where(w, np.load(os.path.join(d, 'h.npy')), 0.0)
         lab = _torus_label(w); vol = np.bincount(lab.ravel(), weights=h.ravel())[1:]; big = lab == int(np.argmax(vol)) + 1
-        ar, cv, hcv = shape(big, h); tf = None
+        ar, cv, hcv = shape(big, h); tf = None; t90 = None
         if ts is not None:
             for f in frames(d):
                 t = int(re.findall(r'vs_t(\d+)', f)[0])
                 if t < ts: continue
                 Z = np.load(f); ww = Z['wet'].astype(bool); hh = np.where(ww, Z['h'], 0.0)
-                if (ww & (hh < 0.5)).sum() / max(ww.sum(), 1) <= 0.05: tf = round(t - ts, 1); break
-        print(tag, s, '균핵', ts, '맺힘에 걸린 시간', tf, '| 끝 몸', len(vol), '가장 큰 몸 넓이', int(big.sum()), '축비', round(ar, 2), '볼록도', round(cv, 2), '두께 변동', round(hcv, 2), '얇은 칸 몫', round(float((w & (h < 0.5)).sum()) / w.sum(), 3))
+                if (ww & (hh < 0.5)).sum() / max(ww.sum(), 1) <= 0.05 and tf is None: tf = round(t - ts, 1)
+                if hh[ww & (hh >= 1.5)].sum() >= 0.9 * hh.sum() and t90 is None: t90 = round(t - ts, 1)
+                if tf is not None and t90 is not None: break
+        print(tag, s, '균핵', ts, '얇은 칸 사라짐', tf, '부피 90%가 두꺼운 칸', t90, '| 끝 몸', len(vol), '가장 큰 몸 넓이', int(big.sum()), '축비', round(ar, 2), '볼록도', round(cv, 2), '두께 변동', round(hcv, 2), '얇은 칸 몫', round(float((w & (h < 0.5)).sum()) / w.sum(), 3))

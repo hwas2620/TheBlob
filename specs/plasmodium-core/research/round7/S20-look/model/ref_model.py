@@ -77,6 +77,7 @@ DEF = dict(
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
+    scl_freeze=0,  # [S20] 1: the sclerotium core is drawn once when the sclerotium starts and kept (re-drawing every time unit smoothed a star-shaped core back to a circle)
     scl_star=0,    # [S20] 1 (with scl_disc): the core radius depends on direction, R(theta)^2 proportional to the body's cytoplasm in that direction (36 sectors, smoothed over 20 degrees, 0.5..2 R), same area as the disc: the mass sets where the sclerotium hardens, not a drawn circle
     scl_dens=0.0,  # [S20] >0 (with scl_disc=0): the sclerotium core of each body is where its thickness, blurred over scl_dens cells, is at least scl_dfrac of the body's peak (dense lumps, not thick tubes; an irregular mass that follows where the cytoplasm already is)
     scl_dfrac=0.5, # [S20]
@@ -278,7 +279,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; sclcore = np.zeros((N, N), bool); sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_drawn = False; sclcore = np.zeros((N, N), bool); sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -437,7 +438,8 @@ def run(name, over):
             Hres = Hres + dt * resmask * wet * gate_ * (P['h_res'] - Hres) / P['res_tau']
         Hfac = Hres if P['res_acc'] else (1.0 + (P['h_res'] - 1.0) * resmask)
         hstar = P['h_old'] + (P['h0'] * Hfac - P['h_old']) * np.exp(-sage / P['tau_a'])   # h_res>1: thick reservoir on live food (N3 variant)
-        if scl and P['scl_H'] > 1.0 and step % max(1, int(round(1.0 / dt))) == 0:      # [S18] sclerotium cores (each body's largest thick part), every time unit
+        if not scl: scl_drawn = False      # [S20] scl_freeze: draw the core again only in a new sclerotium episode
+        if scl and P['scl_H'] > 1.0 and step % max(1, int(round(1.0 / dt))) == 0 and not (P['scl_freeze'] and scl_drawn):      # [S18] sclerotium cores (each body's largest thick part), every time unit
             lw_ = _torus_label(wet); lt_ = _torus_label(wet & (h >= P['sup_h'])); nt_ = int(lt_.max()); sclcore[:] = False
             if nt_ > 0:
                 tv_ = np.bincount(lt_.ravel(), weights=np.where(lt_ > 0, h, 0.0).ravel(), minlength=nt_ + 1); tv_[0] = -1.0
@@ -484,6 +486,7 @@ def run(name, over):
                         else:
                             disc_ |= rr_ <= R_
                     sclcore[:] = disc_
+                scl_drawn = True
         if scl and P['scl_H'] > 1.0:
             sage = np.where(sclcore & wet, 0.0, sage); hstar = np.where(sclcore & wet, hstar * P['scl_H'], hstar)
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))   # new cell inflates gradually
