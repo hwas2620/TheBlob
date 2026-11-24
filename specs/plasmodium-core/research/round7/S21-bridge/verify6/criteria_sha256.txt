@@ -1,0 +1,13 @@
+# verify6 기준 등록 (첫 실행 전). sha256  파일
+aae4701ba15f3f85a76a9652f36b8e0f00195a3ffb4a4917b0405057934b45e7  CRITERIA.md
+e2feb5eeee90e3f9c877b063e171d7be5393863314b61f711701ab96231a643a  jobs.txt
+9cf3ac4216bd1789df8566bf071869d64b71ff93e31581e290837acc4df0e64a  scripts/meas.py
+a5ac805f0a630793f334f54831b4921e9dcfb04c88f53208c5c1e665b8613425  scripts/measure_runs.py
+5295a4a0677beff027cdc7a2825784b0a641dcd6d408c4ddb5b7671d65a6d883  scripts/judge.py
+bb836971c4ca2dde1166dd66c5f90e3b3c4eec1f51763afc1379146e2e9f34c5  scripts/mg_ab.py
+03835e1bb1282b775675001590d2d98dab27a9a46d916ea7f3a00f9239e4f745  scripts/test_meas.py
+4c186221fe4e032393a9e7e2ac093f09e19564a36285be7c5d97d0aab9e4bed5  scripts/test_pipeline.py
+43050fbcc7b549f768e499cf2e1bd3b2a45293c8ba987380d26f9985c8e4e0ce  scripts/run_job.sh
+ee3bcdc8f1471637a6afcb16635d64cf54ae32c5859fa70b9b6dd6c0c18a3404  scripts/run_all.sh
+# 작성 UTC: 2026-11-24T17:45:35Z
+# 시험: test_meas.py 42/42, test_pipeline.py 10/10 (가짜 상태만)
