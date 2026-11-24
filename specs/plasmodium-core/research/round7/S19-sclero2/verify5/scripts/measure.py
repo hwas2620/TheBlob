@@ -11,6 +11,8 @@ import v5lib as L
 
 TRAP_ON = 0.05      # 갇힘: 둘레의 '새 땅' 몫 r(t) < 0.05 인 첫 스냅샷이고
 TRAP_STAY = 0.10    #       그 뒤 모든 스냅샷에서 r < 0.10
+# [CRITERIA_CHANGES 1] 바뀐 갇힘 시각 T_trap2 = min(판의 새 땅 몫 F < 0.02 인 첫 스냅샷, 둘레 새 땅 셀 수 <= 10 이고 그 뒤 계속 <= 30 인 첫 스냅샷)
+TRAP2_F = 0.02; TRAP2_N = 10; TRAP2_NSTAY = 30
 
 
 def debris_of(pieces):
@@ -47,32 +49,44 @@ def main(rd, outp):
                           n_debris=len(deb), n_debris_new=n_new, debris_shares=[round(p['share'], 5) for p in deb], debris_area=int(sum(p['area'] for p in deb)),
                           bodies=bodies, any_multi=any(b['n_lumps'] >= 2 for b in bodies), any_dumb=any(b['dumbbell'] for b in bodies),
                           all_scl=bool(bodies) and all(b['scl'] for b in bodies), sens=sens,
-                          rimfresh=round(r, 5), board_fresh=round(1.0 - float(U.sum()) / (N * N), 5), dead=ds, cen=[float(v) for v in Z['cen']]))
+                          rimfresh=round(r, 5), rimfresh_n=int((rim & ~U).sum()), rim_n=int(rim.sum()), board_fresh=round(1.0 - float(U.sum()) / (N * N), 5), dead=ds, cen=[float(v) for v in Z['cen']]))
         labs.append(lab.astype(np.int32))
     # 갇힘 시각
     rs = [s['rimfresh'] for s in snaps]; T_trap = None
     for k in range(len(snaps)):
         if rs[k] < TRAP_ON and all(x < TRAP_STAY for x in rs[k:]):
             T_trap = snaps[k]['t']; break
+    # [CRITERIA_CHANGES 1] 바뀐 갇힘 시각
+    tF = next((x['t'] for x in snaps if x['board_fresh'] < TRAP2_F), None)
+    ns = [x['rimfresh_n'] for x in snaps]
+    tN = next((snaps[k]['t'] for k in range(len(snaps)) if ns[k] <= TRAP2_N and all(v <= TRAP2_NSTAY for v in ns[k:])), None)
+    T_trap2 = min([x for x in (tF, tN) if x is not None], default=None)
     # 끝 상태
     wetE = np.load(os.path.join(rd, 'wet.npy')).astype(bool); hE = np.load(os.path.join(rd, 'h.npy')).astype(np.float64)
     labE, piecesE, bodiesE = L.bodies_and_lumps(wetE, hE, N)
     final = dict(area=int(wetE.sum()), n_pieces=len(piecesE), n_debris=len(debris_of(piecesE)), debris_shares=[round(p['share'], 5) for p in debris_of(piecesE)], bodies=bodiesE,
                  same_as_last_snapshot=bool(snaps and np.array_equal(wetE, np.load(files[-1])['wet'].astype(bool))))
     # 갇힐 때 10% 넘게 나뉜 몸들이 끝에 각자 균핵인지 (4d)
-    split = None
-    if T_trap is not None:
-        k = [s['t'] for s in snaps].index(T_trap); labT = labs[k]
+    def split_at(Tt, fallback):
+        if Tt is None: return None
+        k = [s['t'] for s in snaps].index(Tt); labT = labs[k]
         bigT = [b for b in snaps[k]['bodies'] if b['share'] > 0.10]
         rec = []
         for b in bigT:
             ov = np.bincount(labE[labT == b['id']], minlength=int(labE.max()) + 1); ov[0] = 0
             e = int(np.argmax(ov)) if ov.sum() > 0 else 0
+            how = 'overlap' if e else None
+            dist = None
+            if fallback and e == 0 and bodiesE and b.get('cx') is not None:      # [CRITERIA_CHANGES 2] 겹침이 없으면(균핵 원판이 옛 몸 셀 밖에 맺힘) 중심이 가장 가까운 끝 몸
+                dd = [(float(np.hypot(L.mimg(x['cx'] - b['cx'], N), L.mimg(x['cy'] - b['cy'], N))), x['id']) for x in bodiesE if x.get('cx') is not None]
+                if dd: dist, e = min(dd); how = 'nearest'
             eb = next((x for x in bodiesE if x['id'] == e), None)
-            rec.append(dict(share_trap=b['share'], end_id=e, end_share=None if eb is None else eb['share'], end_scl=None if eb is None else eb['scl']))
+            rec.append(dict(share_trap=b['share'], end_id=e, end_share=None if eb is None else eb['share'], end_scl=None if eb is None else eb['scl'], match=how,
+                            dist=None if dist is None else round(dist, 2)))
         ends = [x['end_id'] for x in rec]
         for x in rec: x['merged'] = ends.count(x['end_id']) > 1
-        split = dict(n_big=len(bigT), bodies=rec)
+        return dict(n_big=len(bigT), bodies=rec)
+    split = split_at(T_trap, False); split2 = split_at(T_trap2, True)      # 원래 기준(split)은 겹침만, 바뀐 기준(split2)은 겹침이 없으면 가장 가까운 중심
     # 점액 어림 확인: 끝의 점액 중 스냅샷 합집합에 없는 몫
     sl = np.load(os.path.join(rd, 'slime.npy')) > 0.5
     slime_missed = float((sl & ~U).sum()) / max(int(sl.sum()), 1)
@@ -81,11 +95,11 @@ def main(rd, outp):
     met = {k: M.get(k) for k in keys}
     met['traj'] = M.get('traj')
     out = dict(run=os.path.basename(rd.rstrip('/')), N=N, T=float(P['T']), dt=float(P['dt']), steps_expected=int(round(P['T'] / P['dt'])) + 1, seed=int(P['seed']),
-               foods_param=P['foods'], T_trap=T_trap, slime_missed=round(slime_missed, 5), board_slime_end=round(float(sl.mean()), 5),
+               foods_param=P['foods'], T_trap=T_trap, T_trap2=T_trap2, T_trap2_parts=[tF, tN], split2=split2, slime_missed=round(slime_missed, 5), board_slime_end=round(float(sl.mean()), 5),
                snaps=snaps, final=final, split=split, metrics=met)
     os.makedirs(os.path.dirname(os.path.abspath(outp)), exist_ok=True)
     json.dump(out, open(outp, 'w'), default=lambda o: o.item() if hasattr(o, 'item') else str(o))
-    print(os.path.basename(rd), 'snaps', len(snaps), 'T_trap', T_trap, 'final debris', final['n_debris'], 'slime_missed', round(slime_missed, 4))
+    print(os.path.basename(rd), 'snaps', len(snaps), 'T_trap', T_trap, 'T_trap2', T_trap2, 'final debris', final['n_debris'], 'slime_missed', round(slime_missed, 4))
 
 
 if __name__ == '__main__':

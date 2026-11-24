@@ -1,0 +1,177 @@
+2026-11-24T01:36:13Z start b_long_s451_v5y
+2026-11-24T01:36:13Z start b_long_s452_v5y
+2026-11-24T01:36:13Z start b_long_s452_v5c
+2026-11-24T01:36:13Z start b_long_s451_v5c
+2026-11-24T01:42:35Z done b_long_s451_v5c 28M avail=2859M
+2026-11-24T01:42:35Z start b_long_s453_v5c
+2026-11-24T01:42:37Z done b_long_s452_v5c 28M avail=2862M
+2026-11-24T01:42:37Z start b_long_s453_v5y
+2026-11-24T01:44:46Z done b_long_s451_v5y 25M avail=2838M
+2026-11-24T01:44:46Z start b_long_s454_v5c
+2026-11-24T01:44:53Z done b_long_s452_v5y 22M avail=2834M
+2026-11-24T01:44:53Z start b_long_s454_v5y
+2026-11-24T01:49:07Z done b_long_s453_v5c 28M avail=2776M
+2026-11-24T01:49:07Z start b_long_s455_v5c
+2026-11-24T01:50:57Z done b_long_s454_v5c 28M avail=2749M
+2026-11-24T01:50:57Z start b_long_s455_v5y
+2026-11-24T01:51:24Z done b_long_s453_v5y 24M avail=2743M
+2026-11-24T01:51:24Z start b_long_s456_v5c
+2026-11-24T01:53:40Z done b_long_s454_v5y 24M avail=2712M
+2026-11-24T01:53:40Z start b_long_s456_v5y
+2026-11-24T01:55:24Z done b_long_s455_v5c 28M avail=2686M
+2026-11-24T01:55:24Z start b_long_s457_v5c
+2026-11-24T01:57:53Z done b_long_s456_v5c 28M avail=2649M
+2026-11-24T01:57:53Z start b_long_s457_v5y
+2026-11-24T01:59:24Z done b_long_s455_v5y 24M avail=2630M
+2026-11-24T01:59:24Z start b_long_s458_v5c
+2026-11-24T02:01:37Z done b_long_s457_v5c 28M avail=2597M
+2026-11-24T02:01:37Z start b_long_s458_v5y
+2026-11-24T02:01:40Z done b_long_s456_v5y 25M avail=2594M
+2026-11-24T02:01:40Z start b_long_s459_v5c
+2026-11-24T02:05:24Z done b_long_s458_v5c 28M avail=2539M
+2026-11-24T02:05:24Z start b_long_s459_v5y
+2026-11-24T02:06:05Z done b_long_s457_v5y 25M avail=2530M
+2026-11-24T02:06:05Z start b_long_s460_v5c
+2026-11-24T02:08:05Z done b_long_s459_v5c 29M avail=2502M
+2026-11-24T02:08:05Z start b_long_s460_v5y
+2026-11-24T02:10:23Z done b_long_s458_v5y 22M avail=2475M
+2026-11-24T02:10:23Z start b_long_s461_v5c
+2026-11-24T02:12:22Z done b_long_s460_v5c 28M avail=2446M
+2026-11-24T02:12:22Z start b_long_s461_v5y
+2026-11-24T02:13:48Z done b_long_s459_v5y 22M avail=2429M
+2026-11-24T02:13:48Z start b_long_s462_v5c
+2026-11-24T02:16:31Z done b_long_s460_v5y 23M avail=2392M
+2026-11-24T02:16:31Z start b_long_s462_v5y
+2026-11-24T02:16:37Z done b_long_s461_v5c 28M avail=2389M
+2026-11-24T02:16:37Z start b_food4_s451_v5c
+2026-11-24T02:20:12Z done b_long_s462_v5c 28M avail=2341M
+2026-11-24T02:20:12Z start b_food4_s451_v5y
+2026-11-24T02:20:49Z done b_long_s461_v5y 24M avail=2334M
+2026-11-24T02:20:49Z start b_food4_s452_v5c
+2026-11-24T02:21:12Z done b_food4_s451_v5c 18M avail=2328M
+2026-11-24T02:21:12Z start b_food4_s452_v5y
+2026-11-24T02:25:08Z done b_long_s462_v5y 24M avail=2286M
+2026-11-24T02:25:08Z start b_food4_s453_v5c
+2026-11-24T02:25:26Z done b_food4_s452_v5c 18M avail=2280M
+2026-11-24T02:25:26Z start b_food4_s453_v5y
+2026-11-24T02:26:01Z done b_food4_s451_v5y 17M avail=2272M
+2026-11-24T02:26:01Z start b_food4_s454_v5c
+2026-11-24T02:27:06Z done b_food4_s452_v5y 17M avail=2258M
+2026-11-24T02:27:06Z start b_food4_s454_v5y
+2026-11-24T02:29:57Z done b_food4_s453_v5c 18M avail=2219M
+2026-11-24T02:29:57Z start b_food4_s455_v5c
+2026-11-24T02:30:39Z done b_food4_s454_v5c 18M avail=2210M
+2026-11-24T02:30:39Z start b_food4_s455_v5y
+2026-11-24T02:31:13Z done b_food4_s453_v5y 17M avail=2201M
+2026-11-24T02:31:13Z start b_food4_s456_v5c
+2026-11-24T02:32:43Z done b_food4_s454_v5y 17M avail=2182M
+2026-11-24T02:32:43Z start b_food4_s456_v5y
+2026-11-24T02:34:28Z done b_food4_s455_v5c 18M avail=2159M
+2026-11-24T02:34:28Z start b_food3_s451_v5c
+2026-11-24T02:35:52Z done b_food4_s456_v5c 18M avail=2131M
+2026-11-24T02:35:52Z start b_asym3_s451_v5c
+2026-11-24T02:36:07Z done b_food3_s451_v5c 15M avail=2126M
+2026-11-24T02:36:07Z start b_food3_s451_v5y
+2026-11-24T02:36:11Z done b_food4_s455_v5y 17M avail=2122M
+2026-11-24T02:36:11Z start b_asym3_s451_v5y
+2026-11-24T02:37:36Z done b_asym3_s451_v5c 15M avail=2090M
+2026-11-24T02:37:36Z start b_food3_s452_v5c
+2026-11-24T02:38:11Z done b_food4_s456_v5y 17M avail=2073M
+2026-11-24T02:38:11Z start b_asym3_s452_v5c
+2026-11-24T02:38:17Z done b_food3_s451_v5y 15M avail=2070M
+2026-11-24T02:38:17Z start b_food3_s452_v5y
+2026-11-24T02:38:26Z done b_asym3_s451_v5y 15M avail=2065M
+2026-11-24T02:38:26Z start b_asym3_s452_v5y
+2026-11-24T02:39:23Z done b_food3_s452_v5c 15M avail=2041M
+2026-11-24T02:39:23Z start b_food3_s453_v5c
+2026-11-24T02:39:58Z done b_asym3_s452_v5c 15M avail=2020M
+2026-11-24T02:39:59Z start b_asym3_s453_v5c
+2026-11-24T02:40:22Z done b_food3_s452_v5y 14M avail=2008M
+2026-11-24T02:40:22Z start b_food3_s453_v5y
+2026-11-24T02:40:32Z done b_asym3_s452_v5y 15M avail=2002M
+2026-11-24T02:40:32Z start b_asym3_s453_v5y
+2026-11-24T02:41:00Z done b_food3_s453_v5c 15M avail=1988M
+2026-11-24T02:41:01Z start b_food3_s454_v5c
+2026-11-24T02:41:44Z done b_asym3_s453_v5c 15M avail=1968M
+2026-11-24T02:41:44Z start b_asym3_s454_v5c
+2026-11-24T02:42:25Z done b_food3_s453_v5y 14M avail=1944M
+2026-11-24T02:42:25Z start b_food3_s454_v5y
+2026-11-24T02:42:38Z done b_asym3_s453_v5y 15M avail=1930M
+2026-11-24T02:42:38Z start b_asym3_s454_v5y
+2026-11-24T02:42:39Z done b_food3_s454_v5c 15M avail=1935M
+2026-11-24T02:42:39Z start b_food3_s455_v5c
+2026-11-24T02:43:25Z done b_asym3_s454_v5c 15M avail=1915M
+2026-11-24T02:43:25Z start b_asym3_s455_v5c
+2026-11-24T02:44:24Z done b_food3_s455_v5c 15M avail=1883M
+2026-11-24T02:44:24Z start b_food3_s455_v5y
+2026-11-24T02:44:27Z done b_food3_s454_v5y 14M avail=1881M
+2026-11-24T02:44:27Z start b_asym3_s455_v5y
+2026-11-24T02:44:44Z done b_asym3_s454_v5y 15M avail=1873M
+2026-11-24T02:44:44Z start b_food3_s456_v5c
+2026-11-24T02:45:09Z done b_asym3_s455_v5c 15M avail=1861M
+2026-11-24T02:45:09Z start b_asym3_s456_v5c
+2026-11-24T02:46:25Z done b_food3_s455_v5y 15M avail=1813M
+2026-11-24T02:46:25Z start b_food3_s456_v5y
+2026-11-24T02:46:26Z done b_food3_s456_v5c 15M avail=1818M
+2026-11-24T02:46:26Z start b_asym3_s456_v5y
+2026-11-24T02:46:33Z done b_asym3_s455_v5y 15M avail=1814M
+2026-11-24T02:46:33Z start b_food3_s457_v5c
+2026-11-24T02:46:48Z done b_asym3_s456_v5c 15M avail=1808M
+2026-11-24T02:46:48Z start b_asym3_s457_v5c
+2026-11-24T02:48:17Z done b_food3_s457_v5c 15M avail=1761M
+2026-11-24T02:48:17Z start b_food3_s457_v5y
+2026-11-24T02:48:22Z done b_food3_s456_v5y 14M avail=1758M
+2026-11-24T02:48:22Z start b_asym3_s457_v5y
+2026-11-24T02:48:29Z done b_asym3_s456_v5y 15M avail=1755M
+2026-11-24T02:48:29Z start b_food3_s458_v5c
+2026-11-24T02:48:33Z done b_asym3_s457_v5c 15M avail=1752M
+2026-11-24T02:48:33Z start b_asym3_s458_v5c
+2026-11-24T02:50:13Z done b_food3_s458_v5c 15M avail=1698M
+2026-11-24T02:50:13Z start b_food3_s458_v5y
+2026-11-24T02:50:13Z done b_asym3_s458_v5c 15M avail=1702M
+2026-11-24T02:50:13Z start b_asym3_s458_v5y
+2026-11-24T02:50:25Z done b_food3_s457_v5y 15M avail=1697M
+2026-11-24T02:50:25Z start b_food3_s459_v5c
+2026-11-24T02:50:33Z done b_asym3_s457_v5y 15M avail=1693M
+2026-11-24T02:50:33Z start b_asym3_s459_v5c
+2026-11-24T02:52:06Z done b_food3_s459_v5c 15M avail=1647M
+2026-11-24T02:52:06Z start b_food3_s459_v5y
+2026-11-24T02:52:16Z done b_asym3_s458_v5y 15M avail=1641M
+2026-11-24T02:52:16Z start b_asym3_s459_v5y
+2026-11-24T02:52:19Z done b_asym3_s459_v5c 15M avail=1633M
+2026-11-24T02:52:19Z start b_mig_s463_v5c
+2026-11-24T02:52:19Z done b_food3_s458_v5y 14M avail=1637M
+2026-11-24T02:52:19Z start b_mig_s463_v5y
+2026-11-24T02:53:32Z done b_mig_s463_v5c 9M avail=1611M
+2026-11-24T02:53:32Z start b_mig_s464_v5c
+2026-11-24T02:53:46Z done b_mig_s463_v5y 8M avail=1603M
+2026-11-24T02:53:46Z start b_mig_s464_v5y
+2026-11-24T02:54:15Z done b_food3_s459_v5y 15M avail=1590M
+2026-11-24T02:54:15Z start b_mig_s465_v5c
+2026-11-24T02:54:26Z done b_asym3_s459_v5y 15M avail=1586M
+2026-11-24T02:54:26Z start b_mig_s465_v5y
+2026-11-24T02:54:48Z done b_mig_s464_v5c 9M avail=1577M
+2026-11-24T02:54:48Z start b_mig_s466_v5c
+2026-11-24T02:55:21Z done b_mig_s464_v5y 8M avail=1565M
+2026-11-24T02:55:21Z start b_mig_s466_v5y
+2026-11-24T02:55:33Z done b_mig_s465_v5c 9M avail=1561M
+2026-11-24T02:55:33Z start b_mig_s467_v5c
+2026-11-24T02:56:00Z done b_mig_s465_v5y 8M avail=1550M
+2026-11-24T02:56:00Z start b_mig_s467_v5y
+2026-11-24T02:56:03Z done b_mig_s466_v5c 9M avail=1548M
+2026-11-24T02:56:03Z start b_mig_s468_v5c
+2026-11-24T02:56:49Z done b_mig_s467_v5c 9M avail=1531M
+2026-11-24T02:56:49Z start b_mig_s468_v5y
+2026-11-24T02:57:00Z done b_mig_s466_v5y 8M avail=1527M
+2026-11-24T02:57:00Z start b_mig_s469_v5c
+2026-11-24T02:57:17Z done b_mig_s468_v5c 9M avail=1521M
+2026-11-24T02:57:17Z start b_mig_s469_v5y
+2026-11-24T02:57:30Z done b_mig_s467_v5y 8M avail=1516M
+2026-11-24T02:57:30Z start b_mig_s470_v5c
+2026-11-24T02:58:19Z done b_mig_s469_v5c 9M avail=1498M
+2026-11-24T02:58:19Z start b_mig_s470_v5y
+2026-11-24T02:58:22Z done b_mig_s468_v5y 8M avail=1496M
+2026-11-24T02:58:48Z done b_mig_s469_v5y 8M avail=1483M
+2026-11-24T02:58:49Z done b_mig_s470_v5c 9M avail=1487M
+2026-11-24T02:59:40Z done b_mig_s470_v5y 8M avail=1481M
+2026-11-24T02:59:40Z ALLDONE
