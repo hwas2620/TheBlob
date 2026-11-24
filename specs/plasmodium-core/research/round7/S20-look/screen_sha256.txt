@@ -1,0 +1,7 @@
+0220d1e7df739c363232971cede097c9313fb232b1c0dadb50c058e48a2cd877  SCREEN.md
+cfc1e0318f0752604e65b86f9d47c0db2f09b4519c2ddcdca76d0d5ff882d67e  scripts/screen_s20.py
+f7a84cbec3de8b5f0825bbf3cea6f899bb2411cf7021ddaa8ddc4efa9185360a  ../S16-dumbbell/verify/scripts/vlib.py
+05abc143f3e4cfedaf3edc63ee15eb7b08757cc492847618f986a6152415af83  ../S16-dumbbell/verify2/scripts/measure.py
+fb3f0bebbcb9b149bdeb1d1a4c961df2e5a5d17f777eacb0952d33eb942064eb  scripts/run_one.sh
+6776642bcee8ec74c288d68fdd6b894729f9d345c34577560757849d86b40192  model/ref_model.py
+UTC 2026-11-24T06:42:05Z
