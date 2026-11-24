@@ -91,6 +91,12 @@ DEF = dict(
                    #      the cell's age counts (1 - s) for its rest thickness, s = (m - 1) / (scl_emH - 1). Cells that are not hardened dry gradually: over scl_emramp time units after
                    #      the sclerotium starts their tube part fades and their ageing speeds up to (1 + scl_age). No extension while it forms. Replaces scl_disc / scl_star / scl_H cores
     scl_ema=2.0, scl_emtau=60.0, scl_emH=4.0, scl_emramp=150.0,   # [S22]
+    scl_tgt=0.0,   # [S22] >0: sclerotium where the cytoplasm is dense. When the sclerotium starts, each body (>= 3% of the volume) picks its wet cells with the highest thickness
+                   #      blurred over scl_tgt cells, as many as hold its volume at mean thickness scl_tgH (pieces under 10% of that dropped). Their rest thickness goes to
+                   #      R ~ (blurred thickness)^scl_tgq, scaled so the body's volume fills them, within [0.3, scl_tgmax] h0 (thick where it was dense: not a flat plate).
+                   #      Over scl_tgramp time units the rest thickness of those cells moves from what it was to R, and the other cells' tube part fades and their ageing
+                   #      speeds up to (1 + scl_age). Chosen once per sclerotium episode. Only those cells may wet while it forms
+    scl_tgH=2.5, scl_tgmax=5.0, scl_tgq=1.0, scl_tgramp=150.0,   # [S22]
     mg_sc1=0.0, mg_sc2=0.0, mg_sc3=0.0,   # [S22] >0: multigrid over-correction per coarse level (level 1, level 2, levels >= 3). Set all three to use them (overrides mg_deep)
     mg_pcg=0,      # [S22] 1: the pressure solve is ncyc steps of conjugate gradients preconditioned by one V-cycle each (never diverges, whatever the over-correction)
     mg_om=0.8, mg_nu=2,   # [S22] Jacobi weight and pre/post smoothing sweeps of the pressure multigrid
@@ -298,7 +304,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_drawn = False; scl_t0 = 0.0; sclcore = np.zeros((N, N), bool); sclm = np.ones((N, N)); scl_s = np.zeros((N, N)); scl_g = 0.0; sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_drawn = False; scl_t0 = 0.0; sclcore = np.zeros((N, N), bool); sclm = np.ones((N, N)); scl_s = np.zeros((N, N)); scl_g = 0.0; scl_T = np.zeros((N, N), bool); scl_R = np.zeros((N, N)); scl_tg_done = False; sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -460,7 +466,7 @@ def run(name, over):
         Hfac = Hres if P['res_acc'] else (1.0 + (P['h_res'] - 1.0) * resmask)
         hstar = P['h_old'] + (P['h0'] * Hfac - P['h_old']) * np.exp(-sage / P['tau_a'])   # h_res>1: thick reservoir on live food (N3 variant)
         if not scl: scl_drawn = False      # [S20] scl_freeze: draw the core again only in a new sclerotium episode
-        if scl and P['scl_H'] > 1.0 and not P['scl_em'] and step % max(1, int(round(1.0 / dt))) == 0 and not (P['scl_freeze'] and scl_drawn):      # [S18] sclerotium cores (each body's largest thick part), every time unit
+        if scl and P['scl_H'] > 1.0 and not P['scl_em'] and not P['scl_tgt'] and step % max(1, int(round(1.0 / dt))) == 0 and not (P['scl_freeze'] and scl_drawn):      # [S18] sclerotium cores (each body's largest thick part), every time unit
             lw_ = _torus_label(wet); lt_ = _torus_label(wet & (h >= P['sup_h'])); nt_ = int(lt_.max()); sclcore[:] = False
             if nt_ > 0:
                 tv_ = np.bincount(lt_.ravel(), weights=np.where(lt_ > 0, h, 0.0).ravel(), minlength=nt_ + 1); tv_[0] = -1.0
@@ -523,13 +529,35 @@ def run(name, over):
                 scl_s = np.clip((sclm - 1.0) / max(P['scl_emH'] - 1.0, 1e-9), 0.0, 1.0)
             hb2_ = P['h_old'] + (P['h0'] * Hfac - P['h_old']) * np.exp(-sage * (1.0 - scl_s) / P['tau_a'])
             hstar = np.where(wet, hb2_ * sclm, hstar)
-        if scl and P['scl_H'] > 1.0 and not P['scl_em']:
+        if not scl: scl_tg_done = False; scl_T[:] = False
+        if scl and P['scl_tgt'] > 0:      # [S22] sclerotium where the cytoplasm is dense (chosen once, filled gradually)
+            if not scl_tg_done:
+                hw_ = np.where(wet, np.maximum(h, 0.0), 0.0); G_ = gaussian_filter(hw_, P['scl_tgt'], mode='wrap', truncate=3.0)
+                lw_ = _torus_label(wet); Vt_ = float(hw_.sum()); scl_T[:] = False; scl_R[:] = 0.0
+                for b_ in range(1, int(lw_.max()) + 1):
+                    bm_ = lw_ == b_; Vb_ = float(hw_[bm_].sum())
+                    if Vb_ < 0.03 * Vt_: continue
+                    A_ = int(min(bm_.sum(), max(1, round(Vb_ / (P['h0'] * P['scl_tgH'])))))
+                    fi_ = np.flatnonzero(bm_); sel_ = fi_[np.argsort(-G_.ravel()[fi_], kind='stable')[:A_]]
+                    Tb_ = np.zeros(N * N, bool); Tb_[sel_] = True; Tb_ = Tb_.reshape(N, N)
+                    lt_ = _torus_label(Tb_); nl_ = int(lt_.max())
+                    if nl_ > 1:
+                        sz_ = np.bincount(lt_.ravel(), minlength=nl_ + 1); sz_[0] = 0
+                        Tb_ = np.isin(lt_, [k_ for k_ in range(1, nl_ + 1) if sz_[k_] >= 0.1 * A_ or sz_[k_] == sz_.max()])
+                    w_ = np.maximum(G_[Tb_], 1e-9) ** P['scl_tgq']; R_ = Vb_ * w_ / w_.sum()
+                    for _ in range(6): R_ = np.clip(R_ * Vb_ / R_.sum(), 0.3 * P['h0'], P['scl_tgmax'] * P['h0'])
+                    scl_T |= Tb_; scl_R[Tb_] = R_
+                scl_tg_done = True
+            scl_g = min(1.0, (t - scl_t0) / P['scl_tgramp']) if P['scl_tgramp'] > 0 else 1.0
+            scl_s = scl_T.astype(float)
+            hstar = np.where(scl_T & wet, (1.0 - scl_g) * hstar + scl_g * scl_R, hstar)
+        if scl and P['scl_H'] > 1.0 and not P['scl_em'] and not P['scl_tgt']:
             Hm_ = 1.0 + (P['scl_H'] - 1.0) * (min(1.0, (t - scl_t0) / P['scl_Hramp']) if P['scl_Hramp'] > 0 else 1.0)      # [S20] scl_Hramp
             sage = np.where(sclcore & wet, 0.0, sage); hstar = np.where(sclcore & wet, hstar * Hm_, hstar)
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))   # new cell inflates gradually
         if P['wall_tau'] > 0: Cwall = np.where(wet, np.maximum(Cn, Cwall * np.exp(-dt / P['wall_tau'])), 0.0)
         tube = np.minimum(P['beta'] * np.sqrt(np.maximum(Cn, Cwall) if P['wall_tau'] > 0 else Cn), P['cap'])
-        if scl and P['scl_notube']: tube = (tube * (1.0 - scl_g * (1.0 - scl_s))) if P['scl_em'] > 0 else np.where(sclcore, tube, 0.0)      # [S19] ([S22] emergent: fades over scl_emramp)
+        if scl and P['scl_notube']: tube = (tube * (1.0 - scl_g * (1.0 - scl_s))) if (P['scl_em'] > 0 or P['scl_tgt'] > 0) else np.where(sclcore, tube, 0.0)      # [S19] ([S22] emergent: fades over scl_emramp)
         hbar_prev = hstar + tube          # unmodulated mean rest thickness (stretch reference for the mechanical phase feedback)
         if eps > 0:
             th_eff = theta
@@ -692,7 +720,7 @@ def run(name, over):
             if P['neck_keep'] and neckp.any(): C[k] = np.where(act[k] & neckp & nb(neckp, DIRS[k]), np.maximum(C[k], P['neck_C']), C[k])
         age = np.where(wet, age + dt, 0.0)
         sage = np.where(wet, sage + dt * (1.0 - resmask) * (supm if P['sup_age'] > 0 else 1.0) * ((1.0 + P['hang_age'] * hangm) if P['hang_age'] > 0 else 1.0)
-                        * (((1.0 + P['scl_age'] * scl_g * (1.0 - scl_s)) if P['scl_em'] > 0 else (1.0 + P['scl_age'] * ~sclcore)) if (scl and P['scl_age'] > 0) else 1.0), 0.0)      # [S18] sclerotium: non-core cells age faster
+                        * (((1.0 + P['scl_age'] * scl_g * (1.0 - scl_s)) if (P['scl_em'] > 0 or P['scl_tgt'] > 0) else (1.0 + P['scl_age'] * ~sclcore)) if (scl and P['scl_age'] > 0) else 1.0), 0.0)      # [S18] sclerotium: non-core cells age faster
         if P['fan_comp']:
             fan_k = max(1, int(round(P['fan_every'] / dt)))
             if step % fan_k == 0:
@@ -992,7 +1020,7 @@ def run(name, over):
             if scl and ((ff_ema > 3 * P['scl_f'] and not P['scl_stay']) or not hungry_): scl = False      # [S19] scl_stay: only eating wakes it
             if scl: scl_steps += 1
         cand = ~wet & (ptest > yld)
-        if scl: cand &= False if P['scl_em'] > 0 else sclcore if (P['scl_disc'] and not P['scl_nowet']) else (sclgrow if (P['scl_dens'] > 0 and P['scl_dgrow']) else False)      # [S18] a sclerotium does not extend (with scl_disc: only into its round core)
+        if scl: cand &= scl_T if P['scl_tgt'] > 0 else False if P['scl_em'] > 0 else sclcore if (P['scl_disc'] and not P['scl_nowet']) else (sclgrow if (P['scl_dens'] > 0 and P['scl_dgrow']) else False)      # [S18] a sclerotium does not extend (with scl_disc: only into its round core)
         if cand.any():
             ys, xs = np.nonzero(cand); a = arg[ys, xs]
             dx = np.array([d[0] for d in ALL])[a]; dy = np.array([d[1] for d in ALL])[a]
