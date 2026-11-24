@@ -97,6 +97,9 @@ DEF = dict(
                    #      Over scl_tgramp time units the rest thickness of those cells moves from what it was to R, and the other cells' tube part fades and their ageing
                    #      speeds up to (1 + scl_age). Chosen once per sclerotium episode. Only those cells may wet while it forms
     scl_tgH=2.5, scl_tgmax=5.0, scl_tgq=1.0, scl_tgramp=150.0,   # [S22]
+    scl_tgfrac=0.0,  # [S22] >0 (with scl_tgflood): the region grows while the next cell's blurred thickness is at least scl_tgfrac x the body's peak, so its size comes from the body
+                     #      (kept between the volume over scl_tgmax and over scl_tgmin mean thickness) instead of volume / scl_tgH
+    scl_tgmin=1.5,   # [S22]
     scl_tgflood=0, # [S22] 1: the chosen cells are one connected region: start at the body's densest cell and keep adding the densest 8-neighbour of the region (follows ridges of dense cytoplasm; no outlying lobes)
     mg_sc1=0.0, mg_sc2=0.0, mg_sc3=0.0,   # [S22] >0: multigrid over-correction per coarse level (level 1, level 2, levels >= 3). Set all three to use them (overrides mg_deep)
     mg_pcg=0,      # [S22] 1: the pressure solve is ncyc steps of conjugate gradients preconditioned by one V-cycle each (never diverges, whatever the over-correction)
@@ -243,14 +246,16 @@ def _torus_label(mask):
     return comp[lab]
 
 
-def _flood_top(G, mask, A):
+def _flood_top(G, mask, A, thr=None, amin=0):
     """[S22] A cells of mask, one 8-connected region (torus): start at the largest G and keep adding the neighbour with the largest G"""
     import heapq
     N0, N1 = G.shape; out = np.zeros((N0, N1), bool); fi = np.flatnonzero(mask)
     if fi.size == 0: return out
     s0 = int(fi[np.argmax(G.ravel()[fi])]); hp = [(-float(G.ravel()[s0]), s0)]; seen = {s0}; n = 0
     while hp and n < A:
-        _, c = heapq.heappop(hp); y, x = divmod(c, N1); out[y, x] = True; n += 1
+        g_, c = heapq.heappop(hp)
+        if thr is not None and n >= amin and -g_ < thr: break
+        y, x = divmod(c, N1); out[y, x] = True; n += 1
         for dy in (-1, 0, 1):
             for dx in (-1, 0, 1):
                 yy = (y + dy) % N0; xx = (x + dx) % N1; cc = yy * N1 + xx
@@ -555,7 +560,10 @@ def run(name, over):
                     if Vb_ < 0.03 * Vt_: continue
                     A_ = int(min(bm_.sum(), max(1, round(Vb_ / (P['h0'] * P['scl_tgH'])))))
                     fi_ = np.flatnonzero(bm_)
-                    if P['scl_tgflood']: Tb_ = _flood_top(G_, bm_, A_)
+                    if P['scl_tgflood'] and P['scl_tgfrac'] > 0:
+                        Tb_ = _flood_top(G_, bm_, int(min(bm_.sum(), Vb_ / (P['h0'] * P['scl_tgmin']))), thr=P['scl_tgfrac'] * float(G_[bm_].max()), amin=int(Vb_ / (P['h0'] * P['scl_tgmax'])) + 1)
+                        A_ = int(Tb_.sum())
+                    elif P['scl_tgflood']: Tb_ = _flood_top(G_, bm_, A_)
                     else:
                         sel_ = fi_[np.argsort(-G_.ravel()[fi_], kind='stable')[:A_]]
                         Tb_ = np.zeros(N * N, bool); Tb_[sel_] = True; Tb_ = Tb_.reshape(N, N)
