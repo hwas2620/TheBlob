@@ -77,6 +77,9 @@ DEF = dict(
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
+    scl_dens=0.0,  # [S20] >0 (with scl_disc=0): the sclerotium core of each body is where its thickness, blurred over scl_dens cells, is at least scl_dfrac of the body's peak (dense lumps, not thick tubes; an irregular mass that follows where the cytoplasm already is)
+    scl_dfrac=0.5, # [S20]
+    scl_dgrow=0,   # [S20] 1: with scl_dens, a sclerotium may wet dry cells next to the body where the blurred thickness is above the core threshold (fills hollows of the dense lump)
     ret_tipfree=0, # [S20] 1: a thread end (exactly one wet 8-neighbour) retracts even when its rest thickness incl. the tube part is above h_min (shuttle flow in a dead-end tail kept C ~ 14, tube part 0.19 > h_min, so trailing tails never drew back)
     sup_ramp=0.0,  # [S20] >0: the [S7] ageing factors fade in over sup_ramp time units after hunger starts (t - t_eat > sup_fed), instead of switching on at once
     t_eat0=-1e18,  # [S19] time of the 'last meal' at the start. With t_eat0=0 the plasmodium starts fed: starvation rules (sup_fed, ret_fed) begin only after sup_fed / ret_fed time units
@@ -274,7 +277,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; sclcore = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; sclcore = np.zeros((N, N), bool); sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -442,6 +445,19 @@ def run(name, over):
                 for k_ in range(1, nt_ + 1):
                     if bid_[k_] not in best_ or tv_[k_] > tv_[best_[bid_[k_]]]: best_[bid_[k_]] = k_
                 sclcore[:] = np.isin(lt_, list(best_.values()))
+                if P['scl_dens'] > 0 and not P['scl_disc']:      # [S20] dense-lump core
+                    G_ = gaussian_filter(np.where(wet, h, 0.0), P['scl_dens'], mode='wrap', truncate=3.0); core_ = np.zeros((N, N), bool); sclgrow[:] = False; Vt_ = float(h[wet].sum())
+                    for b_ in np.unique(lw_[lw_ > 0]):
+                        bm_ = lw_ == b_
+                        if float(h[bm_].sum()) < 0.03 * Vt_: continue
+                        thr_ = P['scl_dfrac'] * float(G_[bm_].max()); cm_ = bm_ & (G_ >= thr_); lc_ = _torus_label(cm_)
+                        if lc_.max() == 0: continue
+                        cv_ = np.bincount(lc_.ravel(), weights=np.where(cm_, h, 0.0).ravel()); cv_[0] = -1.0; core_ |= lc_ == int(np.argmax(cv_))
+                        if P['scl_dgrow']:
+                            nbm_ = np.zeros((N, N), bool)
+                            for d_ in ALL: nbm_ |= nb(bm_, d_)
+                            sclgrow |= nbm_ & ~wet & (G_ >= thr_)
+                    sclcore[:] = core_
                 if P['scl_disc']:      # round core: disc at the circular centroid of each body's largest thick part
                     disc_ = np.zeros((N, N), bool); Vt_ = float(h[wet].sum())
                     for b_, k_ in best_.items():
@@ -903,7 +919,7 @@ def run(name, over):
             if scl and ((ff_ema > 3 * P['scl_f'] and not P['scl_stay']) or not hungry_): scl = False      # [S19] scl_stay: only eating wakes it
             if scl: scl_steps += 1
         cand = ~wet & (ptest > yld)
-        if scl: cand &= sclcore if (P['scl_disc'] and not P['scl_nowet']) else False      # [S18] a sclerotium does not extend (with scl_disc: only into its round core)
+        if scl: cand &= sclcore if (P['scl_disc'] and not P['scl_nowet']) else (sclgrow if (P['scl_dens'] > 0 and P['scl_dgrow']) else False)      # [S18] a sclerotium does not extend (with scl_disc: only into its round core)
         if cand.any():
             ys, xs = np.nonzero(cand); a = arg[ys, xs]
             dx = np.array([d[0] for d in ALL])[a]; dy = np.array([d[1] for d in ALL])[a]

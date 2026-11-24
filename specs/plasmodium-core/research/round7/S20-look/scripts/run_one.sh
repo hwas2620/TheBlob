@@ -12,6 +12,8 @@ case "$tag" in
   s20r)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 sup_ramp=100";;                   # + 굶음 경쟁이 100 시간에 걸쳐 서서히 켜짐 (배고픔 순간 옆 뜀)
   s20n)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 scl_disc=0 scl_nofis=1";;         # + 균핵을 원판 대신 가장 굵은 덩이 제 모양으로
   s20s)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 scl_disc=0 scl_nofis=1 scl_C=5";; # s20n + 균핵 모드 전도도 바닥 20 → 5 (천천히 맺힘)
+  s20d)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 scl_disc=0 scl_nofis=1 scl_dens=4 scl_dgrow=1";;   # 균핵 핵 = 빽빽한 덩이(흐림 4칸, 최대의 50% 이상) + 빈 곳 메움
+  s20e)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 scl_disc=0 scl_nofis=1 scl_dens=6 scl_dgrow=1";;   # 흐림 6칸
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}

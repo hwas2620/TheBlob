@@ -1,0 +1,12 @@
+long 452 s20d
+long 454 s20d
+long 456 s20d
+long 458 s20d
+long 452 s20e
+long 454 s20e
+long 456 s20e
+long 458 s20e
+long 454 s20r
+long 456 s20r
+long 458 s20r
+long 460 s20r
