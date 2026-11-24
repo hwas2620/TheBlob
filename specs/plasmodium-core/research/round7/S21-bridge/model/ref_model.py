@@ -85,6 +85,7 @@ DEF = dict(
     scl_dens=0.0,  # [S20] >0 (with scl_disc=0): the sclerotium core of each body is where its thickness, blurred over scl_dens cells, is at least scl_dfrac of the body's peak (dense lumps, not thick tubes; an irregular mass that follows where the cytoplasm already is)
     scl_dfrac=0.5, # [S20]
     scl_dgrow=0,   # [S20] 1: with scl_dens, a sclerotium may wet dry cells next to the body where the blurred thickness is above the core threshold (fills hollows of the dense lump)
+    tip_home=0,    # [S21] 1 (with ret_tipfree): a retracting thread end hands its cytoplasm to its whole body (in proportion to thickness) instead of its one neighbour: the content flows back through the thread, so no thick bead builds up at the end and stalls
     tip_h=0.6,     # [S21] with ret_tipfree=2: a cell thinner than this whose wet 8-neighbours (at most 3) form one run around it (Yokoi number 1) is also a thread end
     ret_tipfree=0, # [S20] 1: a thread end (exactly one wet 8-neighbour) retracts even when its rest thickness incl. the tube part is above h_min (shuttle flow in a dead-end tail kept C ~ 14, tube part 0.19 > h_min, so trailing tails never drew back)
     sup_ramp=0.0,  # [S20] >0: the [S7] ageing factors fade in over sup_ramp time units after hunger starts (t - t_eat > sup_fed), instead of switching on at once
@@ -261,7 +262,7 @@ def run(name, over):
             for sy in (-N, 0, N): g += np.exp(-((X - fx - sx) ** 2 + (Y - fy - sy) ** 2) / (2 * P['food_sigma'] ** 2))
         cfield.append(P['food_amp'] * g); fdisc.append(np.hypot(mimg(X - fx), mimg(Y - fy)) < P['food_r'])
     fM = np.full(nf, float(P['food_M']) if P['food_M'] > 0 else np.inf, dtype=float); famp = np.ones(nf); t_exh = np.full(nf, np.nan); t_touch = np.full(nf, np.nan); t_cover = np.full(nf, np.nan)
-    Vinj = 0.0; V_crumb = 0.0; ncrumb = 0; nret = 0; nconn = 0; nrel = 0; nfis = 0; t_eat = P['t_eat0']; sup_fed_skips = 0
+    Vinj = 0.0; V_crumb = 0.0; ncrumb = 0; nret = 0; ntiphome = 0; nconn = 0; nrel = 0; nfis = 0; t_eat = P['t_eat0']; sup_fed_skips = 0
 
     def food_now():
         f = np.zeros((N, N))
@@ -769,7 +770,7 @@ def run(name, over):
             nd_ = np.zeros((N, N), np.int8)
             for d in ALL: nd_ += ~nb(wet, d)
             Dm &= nd_ > 0
-        retm = None
+        retm = None; tipret = None
         if P['ret_h'] > 0 and not (P['ret_fed'] > 0 and t - t_eat <= P['ret_fed']):      # [S16] ret_fed: fed bodies do not retract. [S10] tip/rim retraction (never cuts a bridge: Yokoi <= 1; one colour of the 4-colouring per step, like bridge_keep)
             xr_ = [~nb(wet, d) for d in RING]
             Ncr_ = np.zeros((N, N), np.int8); ndr_ = np.zeros((N, N), np.int8)
@@ -778,6 +779,8 @@ def run(name, over):
             thin_ok_ = (h < P['ret_h']) | ((ndr_ == 7) if P['ret_tip'] else False)      # [S13] ndr_ == 7: exactly one wet neighbour
             retm = wet & (ndr_ > 0) & ((Ncr_ <= 1) | (P['ret_glob'] > 0)) & thin_ok_ & ((hbar_prev < P['h_min']) | ((ndr_ == 7) if P['ret_tipfree'] else False) | (((ndr_ >= 5) & (Ncr_ == 1) & (h < P['tip_h'])) if P['ret_tipfree'] >= 2 else False)) & (age > P['grace']) & (colour == step % 4)
             if scl and P['scl_rstep'] > 1 and (step // 4) % int(P['scl_rstep']) != 0: retm[:] = False      # [S20] slower rim retraction in a sclerotium
+            if P['tip_home'] and P['ret_tipfree']:      # [S21] thread ends among the retracting cells
+                tipret = retm & ((ndr_ == 7) | ((((ndr_ >= 5) & (Ncr_ == 1) & (h < P['tip_h'])) if P['ret_tipfree'] >= 2 else False)))
         negm = (wet & (h < 0)) if P['neg_dry'] else None; prot = None
         if Dm.any() or (P['neg_fill'] and negm is not None and negm.any()):
             if P['tube_keep'] > 0:
@@ -875,6 +878,15 @@ def run(name, over):
                 Dm &= ns > 0
             stay = wet & ~Dm; ns[:] = 0
             for d in ALL: ns += nb(stay, d)
+            if tipret is not None and (Dm & tipret).any():      # [S21] tip_home: a drying thread end gives its volume to its body (every staying cell of the piece it touches, by thickness)
+                Dt_ = Dm & tipret; ls_t = _torus_label(stay); own_ = np.zeros((N, N), np.int64)
+                for d in ALL: own_ = np.maximum(own_, nb(ls_t, d))
+                own_ = np.where(Dt_, own_, 0); nl_t = int(ls_t.max()) + 1
+                hp_t = np.where(stay, np.maximum(h, 0.0), 0.0); W_t = np.bincount(ls_t.ravel(), weights=hp_t.ravel(), minlength=nl_t)
+                okt_ = Dt_ & (own_ > 0) & (W_t[own_] > 1e-12)
+                if okt_.any():
+                    V_t = np.bincount(own_[okt_], weights=h[okt_], minlength=nl_t)
+                    h = h + np.where(stay, V_t[ls_t] * hp_t / np.maximum(W_t[ls_t], 1e-300), 0.0); h[okt_] = 0.0; ntiphome += int(okt_.sum())
             if P['dry_weight'] == 'h':        # share the drying cell's volume (or deficit, if negative) among staying neighbours in proportion to their thickness
                 hpos = np.where(stay, np.maximum(h, 0.0), 0.0); sh = np.zeros((N, N))
                 for d in ALL: sh += nb(hpos, d)
@@ -1024,7 +1036,7 @@ def run(name, over):
                area_end=int(wet.sum()), foods=[[round(a, 2), round(b, 2)] for a, b in fpos],
                t_touch=[None if np.isnan(v) else round(float(v), 1) for v in t_touch], t_cover=[None if np.isnan(v) else round(float(v), 1) for v in t_cover],
                t_exh=[None if np.isnan(v) else round(float(v), 1) for v in t_exh], fM_end=[None if np.isinf(v) else round(float(v), 2) for v in fM],
-               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), sup_updates=int(sup_steps), sup_spared=int(sup_spared), sup_log=sup_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), ret_cellsteps=int(nret), conn_kept_cellsteps=int(nconn), conn_released_cells=int(nrel), sup_fed_skips=int(sup_fed_skips), t_scl=t_scl, scl_steps=int(scl_steps), hang_cellsteps=int(nhang), fission_runs=int(nfis), traj=traj,
+               bridge_kept_cellsteps=int(nbridge_kept), tube_kept_cellsteps=int(ntube_kept), neg_fill_cellsteps=int(nneg_fill), fan_log=fan_log, neck_updates=int(neck_steps), neck_cells=int(neck_cells), sup_updates=int(sup_steps), sup_spared=int(sup_spared), sup_log=sup_log, V_crumb=float(V_crumb), crumb_cells=int(ncrumb), ret_cellsteps=int(nret), tiphome_cells=int(ntiphome), conn_kept_cellsteps=int(nconn), conn_released_cells=int(nrel), sup_fed_skips=int(sup_fed_skips), t_scl=t_scl, scl_steps=int(scl_steps), hang_cellsteps=int(nhang), fission_runs=int(nfis), traj=traj,
                mg_err=([float(np.median([e[1] for e in mg_err])), float(np.percentile([e[1] for e in mg_err], 90)), float(max(e[1] for e in mg_err)), float(np.median([e[2] for e in mg_err]))] if mg_err else None), mg_err_n=len(mg_err),
                h_min_end_of_step=float(hmin_end), neg_end_cellsteps=int(neg_end_cellsteps), neg_end_steps=int(neg_end_steps), steps_done=int(nstep), lim_steps=int(nlim_steps), lim_cells=int(nlim_cells), lim_cut_max=float(lim_cut_max), h_prelimit_min=float(hpre_min), neg_cellsteps=int(neg_cellsteps))
     wm = hmean_last > 0
