@@ -6,7 +6,7 @@ S20 설명: [7차 S20] 거르기 판정. S19 screen_s19.py에서 시드·꼬리�
 두 독립 검증자의 측정 코드를 그대로 쓴다:
   첫 검증자 ../../S16-dumbbell/verify/scripts/vlib.py (실 아령 dumbbell D2)
   둘째 검증자 ../../S16-dumbbell/verify2/scripts/measure.py (frame: 덩이 둘 이상, 죽은 실, 가지 끝, 막)
-usage: screen_s21.py [후보=s21g]   (대조 s21c = 지금 모델, 같은 모델 복사본)"""
+usage: screen_s21.py [후보=s21gm]   (대조 s21c = 지금 모델, 같은 모델 복사본)"""
 import json, os, sys, glob, re
 import numpy as np
 from multiprocessing import Pool
@@ -25,7 +25,7 @@ def dead_tips(Z, w, h):     # 가지 끝 줄(길이 3 이상, 둘째 검증자�
     ys, xs = np.divmod(np.array(sorted(cells)), N); Cm = Z['Cmean']; CM = np.zeros(w.shape)
     for k, d in enumerate(DIRS): CM = np.maximum(CM, np.maximum(Cm[k], rev(Cm[k], d)))
     return int((CM[ys, xs] <= 4.0).sum())
-cand = sys.argv[1] if len(sys.argv) > 1 else 's21g'; C = 's21c'
+cand = sys.argv[1] if len(sys.argv) > 1 else 's21gm'; C = 's21c'
 LONG = range(501, 511); FOOD4 = range(501, 507); FOOD3 = range(501, 505); ASYM3 = range(501, 505); MIG = range(501, 509)
 TINY = 0.05
 PK = 'M=wet|r=3|f=0.10|neck=any'
