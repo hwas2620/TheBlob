@@ -86,6 +86,7 @@ DEF = dict(
     scl_dfrac=0.5, # [S20]
     scl_dgrow=0,   # [S20] 1: with scl_dens, a sclerotium may wet dry cells next to the body where the blurred thickness is above the core threshold (fills hollows of the dense lump)
     tip_home=0,    # [S21] 1 (with ret_tipfree): a retracting thread end hands its cytoplasm to its whole body (in proportion to thickness) instead of its one neighbour: the content flows back through the thread, so no thick bead builds up at the end and stalls
+    mg_deep=0.0,   # [S21] >0: the multigrid over-correction (1/1.5 on edge weights) is applied at the first coarsening only; deeper levels use 1/mg_deep (1.0 = Galerkin). 0 = old (1/1.5 at every level, compounding)
     tri_rnd=0,     # [S21] 1: the pulse pattern (tri_k) gets a per-seed random spatial offset (x, y in [0, tri_P)), time offset (in [0, tri_T)) and drift signs (x, y), so runs do not all start from the same place in the pattern
     tip_h=0.6,     # [S21] with ret_tipfree=2: a cell thinner than this whose wet 8-neighbours (at most 3) form one run around it (Yokoi number 1) is also a thread end
     ret_tipfree=0, # [S20] 1: a thread end (exactly one wet 8-neighbour) retracts even when its rest thickness incl. the tube part is above h_min (shuttle flow in a dead-end tail kept C ~ 14, tube part 0.19 > h_min, so trailing tails never drew back)
@@ -295,7 +296,7 @@ def run(name, over):
     elif P['slime0'] == 'all': slime[~wet] = 1.0
     C = [np.zeros((N, N)) for _ in DIRS]; eage = [np.zeros((N, N)) for _ in DIRS]
     act_prev = [np.zeros((N, N), bool) for _ in DIRS]
-    p = np.zeros((N, N)); pm = np.zeros((N, N)); mgs = mgt.MGT(N, FT=np.float32 if P['f32'] >= 2 else np.float64) if P['solver'] == 'mg' else None; mg_err = []
+    p = np.zeros((N, N)); pm = np.zeros((N, N)); mgs = mgt.MGT(N, FT=np.float32 if P['f32'] >= 2 else np.float64, deep=(P['mg_deep'] if P['mg_deep'] > 0 else None)) if P['solver'] == 'mg' else None; mg_err = []
     V0 = h.sum()
     steps = int(round(P['T'] / dt))
     snaps = sorted(set(int(steps * (i + 1) / P['nsnap']) for i in range(P['nsnap'])))

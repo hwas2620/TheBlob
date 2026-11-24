@@ -103,8 +103,8 @@ def k_prolong_add(p, e, D):
 
 
 class MGT:
-    def __init__(self, N, nmin=4, scale=1.5, FT=np.float64):
-        self.f = 1.0 / scale
+    def __init__(self, N, nmin=4, scale=1.5, FT=np.float64, deep=None):
+        self.f = 1.0 / scale; self.fd = self.f if deep is None else 1.0 / deep     # [S21] deep: 둘째 조대층부터의 과보정 (None 이면 scale 과 같다 = 예전). 1.0 이면 과보정이 층마다 곱해지지 않는다
         sizes = [N]
         while sizes[-1] > nmin and sizes[-1] % 2 == 0: sizes.append(sizes[-1] // 2)
         self.sizes = sizes; self.L = len(sizes); z = lambda n: np.zeros((n, n), FT)
@@ -116,7 +116,7 @@ class MGT:
         """레벨 0 의 W, M 은 호출자가 채운다."""
         k_diag(self.W[0], self.M[0], self.D[0])
         for l in range(1, self.L):
-            k_coarsen(self.W[l - 1], self.M[l - 1], self.W[l], self.M[l], self.f); k_diag(self.W[l], self.M[l], self.D[l])
+            k_coarsen(self.W[l - 1], self.M[l - 1], self.W[l], self.M[l], self.f if l == 1 else self.fd); k_diag(self.W[l], self.M[l], self.D[l])
 
     def vcycle(self, l=0, nu1=2, nu2=2, nc=4, om=0.8):
         p, S, W, D = self.p[l], self.S[l], self.W[l], self.D[l]

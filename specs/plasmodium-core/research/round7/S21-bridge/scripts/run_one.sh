@@ -18,6 +18,8 @@ case "$tag" in
   s21g0)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_rstep=10 scl_Hramp=200 tip_home=1 tri_k=0";;       # s21g − 맥동 무늬 (진단용)
   s21cr)  extra="tri_rnd=1";;         # 지금 모델 + 무작위 무늬 (진단용)
   s21c0)  extra="tri_k=0";;           # 지금 모델 − 맥동 무늬 (진단용)
+  s21gm)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_rstep=10 scl_Hramp=200 tip_home=1 tri_rnd=1 mg_deep=1";;     # s21gr + 멀티그리드 과보정을 첫 조대층에만 (층마다 곱해져 발산하던 것을 막음)
+  s21cm)  extra="mg_deep=1";;         # 지금 모델 + 멀티그리드 고침 (풀이 고침만의 효과, 진단용)
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}
