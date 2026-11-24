@@ -77,6 +77,7 @@ DEF = dict(
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
+    scl_rstep=1,   # [S20] k>1: while a sclerotium forms, rim retraction acts in only one of every k colour cycles (retraction hands a cell's cytoplasm straight to its neighbours; at one rim layer per 4 steps it drew a whole fan in within ~20 time units, whatever the flow)
     scl_visc=1.0,  # [S20] >1: while a sclerotium forms the cytoplasm thickens: every edge conducts scl_visc times less (the body draws together more slowly)
     scl_freeze=0,  # [S20] 1: the sclerotium core is drawn once when the sclerotium starts and kept (re-drawing every time unit smoothed a star-shaped core back to a circle)
     scl_star=0,    # [S20] 1 (with scl_disc): the core radius depends on direction, R(theta)^2 proportional to the body's cytoplasm in that direction (36 sectors, smoothed over 20 degrees, 0.5..2 R), same area as the disc: the mass sets where the sclerotium hardens, not a drawn circle
@@ -773,6 +774,7 @@ def run(name, over):
             for q in range(8): ndr_ += xr_[q]
             thin_ok_ = (h < P['ret_h']) | ((ndr_ == 7) if P['ret_tip'] else False)      # [S13] ndr_ == 7: exactly one wet neighbour
             retm = wet & (ndr_ > 0) & ((Ncr_ <= 1) | (P['ret_glob'] > 0)) & thin_ok_ & ((hbar_prev < P['h_min']) | ((ndr_ == 7) if P['ret_tipfree'] else False)) & (age > P['grace']) & (colour == step % 4)
+            if scl and P['scl_rstep'] > 1 and (step // 4) % int(P['scl_rstep']) != 0: retm[:] = False      # [S20] slower rim retraction in a sclerotium
         negm = (wet & (h < 0)) if P['neg_dry'] else None; prot = None
         if Dm.any() or (P['neg_fill'] and negm is not None and negm.any()):
             if P['tube_keep'] > 0:

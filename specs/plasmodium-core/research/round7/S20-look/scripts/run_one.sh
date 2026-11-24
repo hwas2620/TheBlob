@@ -23,6 +23,8 @@ case "$tag" in
   s20l)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_C=2 scl_age=0.5";;   # 1.5배, 바닥 2 (더 천천히)
   s20m)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_visc=5";;    # 균핵 때 원형질 5배 끈적 (천천히)
   s20o)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_visc=15";;   # 15배
+  s20p)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_visc=5 scl_rstep=10";;   # + 균핵 때 가장자리 벗기기 10번에 한 번
+  s20q)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_visc=5 scl_rstep=25";;   # 25번에 한 번
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}
