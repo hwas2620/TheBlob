@@ -1,0 +1,18 @@
+mig 587 s22g
+mig 587 xp1 mg_deep=0 mg_pcg=1
+mig 587 xp2 mg_deep=1 mg_pcg=1
+mig 587 xp3 mg_pcg=1 mg_sc1=2 mg_sc2=2 mg_sc3=2
+mig 588 s22g
+mig 588 xp1 mg_deep=0 mg_pcg=1
+mig 588 xp2 mg_deep=1 mg_pcg=1
+mig 588 xp3 mg_pcg=1 mg_sc1=2 mg_sc2=2 mg_sc3=2
+food4 589 s22g
+food4 589 xp1 mg_deep=0 mg_pcg=1
+food4 589 xp2 mg_deep=1 mg_pcg=1
+food4 589 xp3 mg_pcg=1 mg_sc1=2 mg_sc2=2 mg_sc3=2
+long 583 xp1 mg_deep=0 mg_pcg=1
+long 583 xp2 mg_deep=1 mg_pcg=1
+long 583 xp3 mg_pcg=1 mg_sc1=2 mg_sc2=2 mg_sc3=2
+long 584 xp1 mg_deep=0 mg_pcg=1
+long 584 xp2 mg_deep=1 mg_pcg=1
+long 584 xp3 mg_pcg=1 mg_sc1=2 mg_sc2=2 mg_sc3=2

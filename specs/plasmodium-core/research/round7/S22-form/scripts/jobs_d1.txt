@@ -1,0 +1,6 @@
+long 577 s22d
+long 578 s22d
+slimeall 579 s22d
+slimeall 580 s22d
+mig 581 s22d
+food4 582 s22d

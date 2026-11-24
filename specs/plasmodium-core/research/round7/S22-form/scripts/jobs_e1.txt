@@ -1,0 +1,20 @@
+slimeall 585 s22g
+slimeall 586 s22g
+long 583 s22g
+long 584 s22g
+slimeall 585 xe1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4
+slimeall 586 xe1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4
+slimeall 585 xe2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=6
+slimeall 586 xe2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=6
+slimeall 585 xe3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4 scl_emtau=120
+slimeall 586 xe3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4 scl_emtau=120
+slimeall 585 xe4 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4 scl_ema=4
+slimeall 586 xe4 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4 scl_ema=4
+long 583 xe1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4
+long 584 xe1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4
+long 583 xe2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=6
+long 584 xe2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=6
+long 583 xe3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4 scl_emtau=120
+long 584 xe3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4 scl_emtau=120
+long 583 xe4 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4 scl_ema=4
+long 584 xe4 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_em=4 scl_ema=4
