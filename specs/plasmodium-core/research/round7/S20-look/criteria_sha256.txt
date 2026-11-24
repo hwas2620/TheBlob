@@ -1,0 +1,8 @@
+cf2a488dfbca3da1f68b0c215884771bb9e735bb3c574ab5df2f0588df83f8dd  CRITERIA.md
+f0600ad33fead341d6780833b10fb281bf7f266c3c415f4455d706733640d482  scripts/judge_final_s20.py
+f7a84cbec3de8b5f0825bbf3cea6f899bb2411cf7021ddaa8ddc4efa9185360a  ../S16-dumbbell/verify/scripts/vlib.py
+05abc143f3e4cfedaf3edc63ee15eb7b08757cc492847618f986a6152415af83  ../S16-dumbbell/verify2/scripts/measure.py
+fb3f0bebbcb9b149bdeb1d1a4c961df2e5a5d17f777eacb0952d33eb942064eb  scripts/run_one.sh
+6776642bcee8ec74c288d68fdd6b894729f9d345c34577560757849d86b40192  model/ref_model.py
+fd896813e2fa93f563c805956a4a1592b6fc01e425667ae3de8737c3a9d166a6  scripts/jobs_final.txt
+UTC 2026-11-24T07:58:08Z
