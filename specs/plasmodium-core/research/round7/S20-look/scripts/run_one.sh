@@ -25,6 +25,8 @@ case "$tag" in
   s20o)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_visc=15";;   # 15배
   s20p)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_visc=5 scl_rstep=10";;   # + 균핵 때 가장자리 벗기기 10번에 한 번
   s20q)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_visc=5 scl_rstep=25";;   # 25번에 한 번
+  s20u)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_rstep=10 scl_Hramp=100";;   # 핵 두께 100 시간에 걸쳐 오름
+  s20v)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_rstep=10 scl_Hramp=200";;   # 200 시간
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}

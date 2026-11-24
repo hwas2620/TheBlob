@@ -77,6 +77,7 @@ DEF = dict(
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
+    scl_Hramp=0.0, # [S20] >0: the core rest thickness rises from 1x to scl_H x over scl_Hramp time units after the sclerotium starts (it hardens gradually instead of jumping)
     scl_rstep=1,   # [S20] k>1: while a sclerotium forms, rim retraction acts in only one of every k colour cycles (retraction hands a cell's cytoplasm straight to its neighbours; at one rim layer per 4 steps it drew a whole fan in within ~20 time units, whatever the flow)
     scl_visc=1.0,  # [S20] >1: while a sclerotium forms the cytoplasm thickens: every edge conducts scl_visc times less (the body draws together more slowly)
     scl_freeze=0,  # [S20] 1: the sclerotium core is drawn once when the sclerotium starts and kept (re-drawing every time unit smoothed a star-shaped core back to a circle)
@@ -281,7 +282,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_drawn = False; sclcore = np.zeros((N, N), bool); sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_drawn = False; scl_t0 = 0.0; sclcore = np.zeros((N, N), bool); sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -490,7 +491,8 @@ def run(name, over):
                     sclcore[:] = disc_
                 scl_drawn = True
         if scl and P['scl_H'] > 1.0:
-            sage = np.where(sclcore & wet, 0.0, sage); hstar = np.where(sclcore & wet, hstar * P['scl_H'], hstar)
+            Hm_ = 1.0 + (P['scl_H'] - 1.0) * (min(1.0, (t - scl_t0) / P['scl_Hramp']) if P['scl_Hramp'] > 0 else 1.0)      # [S20] scl_Hramp
+            sage = np.where(sclcore & wet, 0.0, sage); hstar = np.where(sclcore & wet, hstar * Hm_, hstar)
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))   # new cell inflates gradually
         if P['wall_tau'] > 0: Cwall = np.where(wet, np.maximum(Cn, Cwall * np.exp(-dt / P['wall_tau'])), 0.0)
         tube = np.minimum(P['beta'] * np.sqrt(np.maximum(Cn, Cwall) if P['wall_tau'] > 0 else Cn), P['cap'])
@@ -935,7 +937,7 @@ def run(name, over):
             ff_ema += min(1.0, dt / 5.0) * (ff_ - ff_ema)
             hungry_ = not (P['sup_fed'] > 0 and t - t_eat <= P['sup_fed'])
             scl_below = scl_below + dt if (hungry_ and ff_ema < P['scl_f']) else 0.0
-            if not scl and scl_below >= P['scl_tau']: scl = True; t_scl = t if t_scl is None else t_scl
+            if not scl and scl_below >= P['scl_tau']: scl = True; scl_t0 = t; t_scl = t if t_scl is None else t_scl
             if scl and ((ff_ema > 3 * P['scl_f'] and not P['scl_stay']) or not hungry_): scl = False      # [S19] scl_stay: only eating wakes it
             if scl: scl_steps += 1
         cand = ~wet & (ptest > yld)
