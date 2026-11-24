@@ -207,6 +207,63 @@ def threads(wet, sheet, fl, qdead, k=THREAD_OPEN):
     return res, thr
 
 
+RING8 = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]      # 한 칸 둘레를 도는 순서
+
+
+def crossing(K):
+    """8-고리를 한 바퀴 돌며 빈칸→찬칸 넘어감 수 (1 = 끝점, 2 = 줄 위, 3 이상 = 갈림점)"""
+    nbv = [nb(K, d) for d in RING8]
+    cn = np.zeros(K.shape, np.int8)
+    for q in range(8):
+        cn += (~nbv[q] & nbv[(q + 1) % 8]).astype(np.int8)
+    return np.where(K, cn, 0)
+
+
+def skeleton_torus(T):
+    from skimage.morphology import skeletonize
+    p = 12; Tp = np.pad(T, p, mode='wrap')
+    return skeletonize(Tp)[p:-p, p:-p] & T
+
+
+def strands(T, sheet, fl, qdead):
+    """[CRITERIA_CHANGES 1] 실 칸(T)의 뼈대를 갈림점에서 끊은 외가닥 조각마다: 길이, 닿는 곳 수(판·갈림점), 끝의 흐름.
+    뼈대의 끝점 가운데 판에 닿지 않는 것을 두 번 깎아(2칸 이하 잔가지 없앰) 갈림점(넘어감 수 >= 3)을 찾고,
+    깎지 않은 뼈대에서 갈림점 3x3 을 뺀 나머지의 8-연결 덩어리가 외가닥 조각이다."""
+    K = skeleton_torus(T)
+    near_sheet = dilate8(sheet)
+    Kp = K.copy()
+    for _ in range(2):
+        cn = crossing(Kp); Kp &= ~((cn <= 1) & ~near_sheet)
+    J = Kp & (crossing(Kp) >= 3)
+    Jd = dilate8(J)
+    Sg = K & ~Jd
+    lab, n = tlabel(Sg)
+    res = []
+    if n == 0:
+        return res
+    cnt = np.bincount(lab.ravel(), minlength=n + 1)
+    g, idx, nn = _graph(Sg)
+    contact_mask = sheet | (Jd & ~K) | J
+    for i in range(1, n + 1):
+        if cnt[i] < 2:
+            continue
+        cm = lab == i; nodes = idx[cm]
+        d0 = dijkstra(g, indices=int(nodes[0])); far = nodes[np.argmax(np.where(np.isfinite(d0[nodes]), d0[nodes], -1))]
+        d1 = dijkstra(g, indices=int(far)); L = float(np.max(d1[nodes][np.isfinite(d1[nodes])])) + 1.0
+        ct = dilate8(cm) & ~cm & (contact_mask | (Jd & K))
+        _, nc = tlabel(ct)
+        r = dict(length=L, contacts=int(nc))
+        if nc == 1:
+            src = cm & dilate8(ct)
+            ds = dijkstra(g, indices=idx[src].astype(int), min_only=True)
+            dn = ds[nodes]; fin = np.isfinite(dn)
+            if fin.any():
+                endsel = fin & (dn >= dn[fin].max() - (TIP_END - 1))
+                r['tip_fl_max'] = float(fl[cm][endsel].max()); r['dead_tip'] = bool(r['tip_fl_max'] < qdead)
+        res.append(r)
+    return res
+
+
 def frame_measures(S):
     """S: wet, h, age, Qgross, C (npz 에서 읽은 dict). 한 장면의 측정값 dict"""
     wet = S['wet'].astype(bool); h = S['h'].astype(float); age = S['age'].astype(float)
@@ -281,6 +338,16 @@ def frame_measures(S):
     out['n_long60'] = int(sum(1 for L in lens if L >= 60))
     out['n_long25_tail'] = int(sum(1 for r in th3 if r['length'] >= LONG_L and r['n_attach'] <= 1))
     out['n_long25_bridge'] = int(sum(1 for r in th3 if r['length'] >= LONG_L and r['n_attach'] >= 2))
+    # [CRITERIA_CHANGES 1] 외가닥 조각 (갈림점에서 끊음)
+    st = strands(thr3, sheet3, fl, qdead)
+    sl = [r['length'] for r in st]
+    out['strand_maxlen'] = float(max(sl)) if sl else 0.0
+    for L_ in (25, 40, 60, 96):
+        out[f'n_strand{L_}'] = int(sum(1 for L in sl if L >= L_))
+    out['n_strand25_tail'] = int(sum(1 for r in st if r['length'] >= LONG_L and r['contacts'] <= 1))
+    out['n_strand25_bridge'] = int(sum(1 for r in st if r['length'] >= LONG_L and r['contacts'] >= 2))
+    out['n_tips2'] = int(sum(1 for r in st if r['contacts'] == 1 and r['length'] >= 3))
+    out['n_dead_tips2'] = int(sum(1 for r in st if r.get('dead_tip') and r['length'] >= 3))
     film = wet & sheet3 & (h < FILM_H) & (age >= MATURE_AGE)
     lf, nf_ = tlabel(film)
     if nf_:

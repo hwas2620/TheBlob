@@ -158,12 +158,13 @@ def claim2(runs):
     return dict(verdict=V(ok, bad), dumbbell=D, divided=Dv, secondary=dict(dumbbell_any_neck=D1, split=Sp, food_scn_dumbbell=food))
 
 
-def claim3(runs):
+def claim3(runs, TIPKEY='n_dead_tips2'):
+    """TIPKEY = 'n_dead_tips2': [CRITERIA_CHANGES 1] 매달린 외가닥 조각의 끝. 'n_dead_tips' = 등록 때 정의"""
     pp = pairs(runs, STRUCT)
     wf = lambda R: win(R, 60.0, tcut(runs, R['scn'], R['seed']))
     subs = dict(dead_thread=paired_summary(pp, lambda R: fmean(wf(R), 'dead_thread_cells', 'area')),
                 film=paired_summary(pp, lambda R: fmean(wf(R), 'film_cells', 'area')),
-                dead_tip=paired_summary(pp, lambda R: fmean(wf(R), 'n_dead_tips')))
+                dead_tip=paired_summary(pp, lambda R: fmean(wf(R), TIPKEY)))
     floor = dict(dead_thread=0.001, film=0.001, dead_tip=0.05)
     sv = {}
     for nm, S in subs.items():
@@ -178,7 +179,7 @@ def claim3(runs):
                film_h025=paired_summary(pp, lambda R: fmean(wf(R), 'film_cells_h0.25', 'area')),
                film_h05=paired_summary(pp, lambda R: fmean(wf(R), 'film_cells_h0.5', 'area')),
                n_dead_threads=paired_summary(pp, lambda R: fmean(wf(R), 'n_dead_threads')),
-               n_tips=paired_summary(pp, lambda R: fmean(wf(R), 'n_tips')),
+               n_tips=paired_summary(pp, lambda R: fmean(wf(R), 'n_tips')), n_tips2=paired_summary(pp, lambda R: fmean(wf(R), 'n_tips2')),
                thread_cells=paired_summary(pp, lambda R: fmean(wf(R), 'thread_cells', 'area')))
     return dict(verdict=overall, sub_verdicts=sv, **subs, secondary=sec)
 
@@ -253,21 +254,27 @@ def max_consec(fr, key, thr=1):
     return best
 
 
-def claim6(runs):
+ORIG6 = dict(k25='n_long25', k40='n_long40', k60='n_long60', tail='n_long25_tail', bridge='n_long25_bridge', maxlen='thread_maxlen', k96=None)
+NEW6 = dict(k25='n_strand25', k40='n_strand40', k60='n_strand60', tail='n_strand25_tail', bridge='n_strand25_bridge', maxlen='strand_maxlen', k96='n_strand96')
+
+
+def claim6(runs, K=NEW6):
+    """K = NEW6: [CRITERIA_CHANGES 1] 외가닥 조각. K = ORIG6: 등록 때의 실 덩어리 정의"""
     cand = [(k, R) for k, R in runs.items() if k[2] == CAND]
     allf = [f for _, R in cand for f in win(R, 60.0)]
-    f25 = float(np.mean([f['n_long25'] >= 1 for f in allf])) if allf else None
-    f40 = float(np.mean([f['n_long40'] >= 1 for f in allf])) if allf else None
-    pers25 = {f'{k[0]}_s{k[1]}': max_consec(win(R, 60.0), 'n_long25') for k, R in cand}
-    pers40 = {f'{k[0]}_s{k[1]}': max_consec(win(R, 60.0), 'n_long40') for k, R in cand}
+    f25 = float(np.mean([f[K['k25']] >= 1 for f in allf])) if allf else None
+    f40 = float(np.mean([f[K['k40']] >= 1 for f in allf])) if allf else None
+    pers25 = {f'{k[0]}_s{k[1]}': max_consec(win(R, 60.0), K['k25']) for k, R in cand}
+    pers40 = {f'{k[0]}_s{k[1]}': max_consec(win(R, 60.0), K['k40']) for k, R in cand}
     pp = pairs(runs, STRUCT); fc = []; fk = []
     for (s, sd), c, k in pp:
         tc = tcut(runs, s, sd); fc += win(c, 60.0, tc); fk += win(k, 60.0, tc)
-    g = lambda fr, key: float(np.mean([f[key] >= 1 for f in fr])) if fr else None
-    rel = dict(cand25=g(fc, 'n_long25'), ctrl25=g(fk, 'n_long25'), cand40=g(fc, 'n_long40'), ctrl40=g(fk, 'n_long40'),
-               cand25_tail=g(fc, 'n_long25_tail'), ctrl25_tail=g(fk, 'n_long25_tail'), cand25_bridge=g(fc, 'n_long25_bridge'), ctrl25_bridge=g(fk, 'n_long25_bridge'),
-               cand25_w4=g(fc, 'n_long25_w4'), ctrl25_w4=g(fk, 'n_long25_w4'), cand60=g(fc, 'n_long60'), ctrl60=g(fk, 'n_long60'),
-               cand_maxlen_mean=float(np.mean([f['thread_maxlen'] for f in fc])) if fc else None, ctrl_maxlen_mean=float(np.mean([f['thread_maxlen'] for f in fk])) if fk else None)
+    g = lambda fr, key: (float(np.mean([f[key] >= 1 for f in fr])) if fr else None) if key else None
+    rel = dict(cand25=g(fc, K['k25']), ctrl25=g(fk, K['k25']), cand40=g(fc, K['k40']), ctrl40=g(fk, K['k40']),
+               cand25_tail=g(fc, K['tail']), ctrl25_tail=g(fk, K['tail']), cand25_bridge=g(fc, K['bridge']), ctrl25_bridge=g(fk, K['bridge']),
+               cand25_w4=g(fc, 'n_long25_w4'), ctrl25_w4=g(fk, 'n_long25_w4'), cand60=g(fc, K['k60']), ctrl60=g(fk, K['k60']), cand96=g(fc, K['k96']), ctrl96=g(fk, K['k96']),
+               cand_abs96=g(allf, K['k96']),
+               cand_maxlen_mean=float(np.mean([f[K['maxlen']] for f in fc])) if fc else None, ctrl_maxlen_mean=float(np.mean([f[K['maxlen']] for f in fk])) if fk else None)
     if f25 is None or rel['ctrl25'] is None:
         return dict(verdict='판정 못 함', why='자료 없음')
     ok = f40 <= 0.01 and max(pers25.values()) < 3 and f25 <= 0.05 and (rel['cand25'] <= rel['ctrl25'] or rel['ctrl25'] <= 0.05)
@@ -404,12 +411,14 @@ def main():
     J = dict(n_runs=len(runs), n_expected=len(expected), missing=[f'{a}_s{b}_{c}' for a, b, c in expected if (a, b, c) not in runs])
     J['c1'] = claim1(runs); J['c2'] = claim2(runs); J['c3'] = claim3(runs); J['c4'] = claim4(runs)
     J['c5'] = claim5(runs); J['c6'] = claim6(runs); J['c7'] = claim7(runs); J['c8'] = claim8(runs, expected)
+    J['orig'] = dict(c3=claim3(runs, 'n_dead_tips'), c6=claim6(runs, ORIG6))      # 등록 때 정의 그대로의 판정 (CRITERIA_CHANGES 1)
     J['solver'] = solver_acc(runs); J['scl_thickness'] = scl_thickness(runs)
     json.dump(J, open(os.path.join(V6, 'judge.json'), 'w'), indent=1, ensure_ascii=False, default=lambda o: str(o))
     with open(os.path.join(V6, 'judge.txt'), 'w') as f:
         f.write(f"실행 {J['n_runs']} / 예정 {J['n_expected']}, 빠진 것 {J['missing']}\n")
         for i in range(1, 9):
             c = J[f'c{i}']; f.write(f"주장 {i}: {c['verdict']}" + (f"  {c.get('sub_verdicts')}" if c.get('sub_verdicts') else '') + '\n')
+        f.write(f"(등록 때 정의) 주장 3: {J['orig']['c3']['verdict']} {J['orig']['c3'].get('sub_verdicts')}, 주장 6: {J['orig']['c6']['verdict']}\n")
     print(open(os.path.join(V6, 'judge.txt')).read())
 
 

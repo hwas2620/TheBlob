@@ -11,3 +11,11 @@ bb836971c4ca2dde1166dd66c5f90e3b3c4eec1f51763afc1379146e2e9f34c5  scripts/mg_ab.
 ee3bcdc8f1471637a6afcb16635d64cf54ae32c5859fa70b9b6dd6c0c18a3404  scripts/run_all.sh
 # 작성 UTC: 2026-11-24T17:45:35Z
 # 시험: test_meas.py 42/42, test_pipeline.py 10/10 (가짜 상태만)
+
+# 바꿈 1 (CRITERIA_CHANGES.md) 뒤, 두 설정을 견준 측정 전: 2026-11-24T17:52:32Z
+0ef1572090fbafe10d85e25c31d7ca9a2ec962da8bbbf3bea9e3c15cd50450d7  CRITERIA_CHANGES.md
+2859414f5e07810378b849d8f536abdc353b62e23174ec4028bd8a2947336da2  scripts/meas.py
+99354e7f8afb9bb3cd885542d4654ac00f33dbfa55e6554d88441e854ce545aa  scripts/judge.py
+164c50823ba9d4382a3b8118918113a1bb8d5feefd0a5389badfecb9c8774c70  scripts/test_strands.py
+8f79f922a3ca99f1f3ebd62d38c02d47252b031f6b6d0831157be888d0cb7aeb  scripts/figs.py
+# 시험: test_meas 42/42, test_strands 9/9, test_pipeline 10/10
