@@ -306,7 +306,8 @@ def run(name, over):
     C = [np.zeros((N, N)) for _ in DIRS]; eage = [np.zeros((N, N)) for _ in DIRS]
     act_prev = [np.zeros((N, N), bool) for _ in DIRS]
     p = np.zeros((N, N)); pm = np.zeros((N, N)); mgs = mgt.MGT(N, FT=np.float32 if P['f32'] >= 2 else np.float64, deep=(P['mg_deep'] if P['mg_deep'] > 0 else None), scales=([P['mg_sc1'], P['mg_sc2'], P['mg_sc3']] if P['mg_sc1'] > 0 else None), om=P['mg_om'], nu=int(P['mg_nu'])) if P['solver'] == 'mg' else None
-    if mgs is not None: mgs.pcg = bool(P['mg_pcg'])      # [S22]; mg_err = []
+    mg_err = []
+    if mgs is not None: mgs.pcg = bool(P['mg_pcg'])      # [S22]
     V0 = h.sum()
     steps = int(round(P['T'] / dt))
     snaps = sorted(set(int(steps * (i + 1) / P['nsnap']) for i in range(P['nsnap'])))
