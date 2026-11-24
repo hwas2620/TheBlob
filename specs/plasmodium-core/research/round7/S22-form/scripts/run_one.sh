@@ -10,6 +10,7 @@ case "$tag" in
   s22g)  extra="$G";;                # S21 후보 그대로 (기준)
   s22d)  extra="$G mgdump=100";;     # S21 후보 + 풀이 입력 저장 (10 시간마다)
   s22p)  extra="$G mg_deep=0 mg_pcg=1";;   # S21 후보 + 켤레기울기 풀이 (예전 V 사이클을 앞풀이로)
+  s22x)  extra="$G mg_deep=0 mg_pcg=1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_tgt=5 scl_tgfrac=0.7 scl_tgq=2 scl_tgmin=1.8 scl_tgflood=1";;   # S22 후보: 켤레기울기 풀이 + 짙은 곳에서 맺히는 균핵
   x*)    extra="$G";;                # 진단: S21 후보 + 명령줄 덧붙임
   *) echo "bad tag $tag"; exit 2;;
 esac
