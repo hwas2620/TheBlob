@@ -72,6 +72,7 @@ for sd in (541, 542):
 open(os.path.join(root, 'jobs.txt'), 'w').write('\n'.join(jobs) + '\n')
 env = dict(os.environ, VERIFY6_DATA=data, VERIFY6_OUT=root, VERIFY6_JOBS=os.path.join(root, 'jobs.txt'), NPROC='4')
 subprocess.run([sys.executable, os.path.join(HERE, 'measure_runs.py'), '--force'] + [os.path.join(runs, d) for d in sorted(os.listdir(runs))], env=env, check=True, stdout=subprocess.DEVNULL)
+subprocess.run([sys.executable, os.path.join(HERE, 'scl_mass.py')] + [os.path.join(runs, d) for d in sorted(os.listdir(runs)) if d.startswith('b_slimeall') and d.endswith('v6g')], env=env, check=True, stdout=subprocess.DEVNULL)
 subprocess.run([sys.executable, os.path.join(HERE, 'judge.py')], env=env, check=True)
 J = json.load(open(os.path.join(root, 'judge.json')))
 ok = []
@@ -87,4 +88,5 @@ chk('7: 길쭉한 덩이 (다) 지킴', all(r['c'] for r in r7), [(r['final_main
 chk('7: (마) 후보가 대조보다 촘촘·매끈', J['c7']['frac_e'] == 1.0, J['c7']['erows'][:1])
 chk('8: 가짜 실행 모두 건강', J['c8']['verdict'] == '맞음', J['c8']['n_ok'])
 chk('4: 먹이 하나 덜 닿음 -> 수는 경계 안', list(J['c4']['food_reached']) == [4, 6] and J['c4']['verdict'] == '판정 못 함', J['c4']['food_reached'])
+chk('7: 부피가 천천히 모이는 가짜 균핵 = 바꾼 (라) 지킴', all(r['d2'] for r in r7), [(round(r.get('mass_gain_total', 0), 3), round(r.get('mass_gain_max_step', 0), 3)) for r in r7][:1])
 print(f'{sum(ok)}/{len(ok)} 통과'); sys.exit(0 if all(ok) else 1)

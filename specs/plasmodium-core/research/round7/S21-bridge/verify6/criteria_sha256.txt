@@ -19,3 +19,9 @@ ee3bcdc8f1471637a6afcb16635d64cf54ae32c5859fa70b9b6dd6c0c18a3404  scripts/run_al
 164c50823ba9d4382a3b8118918113a1bb8d5feefd0a5389badfecb9c8774c70  scripts/test_strands.py
 8f79f922a3ca99f1f3ebd62d38c02d47252b031f6b6d0831157be888d0cb7aeb  scripts/figs.py
 # 시험: test_meas 42/42, test_strands 9/9, test_pipeline 10/10
+
+# 바꿈 2 (CRITERIA_CHANGES.md) 뒤, 판정 전: 2026-11-24T17:58:11Z
+105bea86b4339ae902c5ca3afb082e0690272385a2a0a3947372f25898d5f341  CRITERIA_CHANGES.md
+019f77c0cbe5f5068b23d75182163fda24e61763b4909f82e6a532cd613acf04  scripts/judge.py
+a5ff4be3fad017f882494eb4939e43fc93dc152ce39d09349f5223871206db79  scripts/scl_mass.py
+1a6d232205c8bf08411bc6f758cd7f78f06048a1a4bcee569aed9c762aadd7fe  scripts/test_pipeline.py

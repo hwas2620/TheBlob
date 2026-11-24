@@ -283,7 +283,14 @@ def claim6(runs, K=NEW6):
                 runs_consec25_ge2={k: v for k, v in pers25.items() if v >= 2}, rel=rel, n_frames=len(allf))
 
 
-def claim7(runs):
+def scl_mass():
+    p = os.path.join(DATA, 'scl_mass.json')
+    return json.load(open(p)) if os.path.exists(p) else {}
+
+
+def claim7(runs, dkey='d2'):
+    """dkey = 'd2': [CRITERIA_CHANGES 2] (라) 에 부피가 모이는 빠르기를 더함. 'd_orig' = 등록 때 (라)"""
+    SM = scl_mass()
     trap = []
     for (s, sd, tg), R in sorted(runs.items()):
         if tg != CAND or s not in TRAP: continue
@@ -309,9 +316,20 @@ def claim7(runs):
             if seg.size > 11:
                 drops = seg[:-10] - seg[10:]; tot_drop = seg[0] - seg.min()
                 row['area_drop_max10_share'] = float(drops.max() / tot_drop) if tot_drop > 0 else 0.0
-            row['d'] = bool(row['form_dur'] >= 50.0 and (tot <= 0.1 or row['iou_gain_max_step'] <= 0.5 * tot))
+            row['d_orig'] = bool(row['form_dur'] >= 50.0 and (tot <= 0.1 or row['iou_gain_max_step'] <= 0.5 * tot))
+            ms = SM.get(f'b_{s}_s{sd}_{CAND}')
+            if ms:
+                mseq = [v for t_, v in ms if ton - 20.0 <= t_ <= tf]
+                mg = [b - a for a, b in zip(mseq[:-1], mseq[1:])]; mtot = (mseq[-1] - mseq[0]) if mseq else 0.0
+                row['mass_in_final_on'] = mseq[0] if mseq else None; row['mass_in_final_form'] = mseq[-1] if mseq else None
+                row['mass_gain_total'] = mtot; row['mass_gain_max_step'] = max(mg) if mg else 0.0
+                row['mass_gain_max_share'] = (max(mg) / mtot) if (mg and mtot > 0) else None
+                row['d2'] = bool(row['d_orig'] and (mtot <= 0.1 or max(mg or [0.0]) <= 0.5 * mtot))
+            else:
+                row['d2'] = False; row['why_d2'] = 'scl_mass 자료 없음'
         else:
-            row['b'] = False; row['d'] = False
+            row['b'] = False; row['d_orig'] = False; row['d2'] = False
+        row['d'] = row[dkey]
         last = fr[-1]; P = last.get('pieces', [])
         if P:
             mp = max(P, key=lambda p: p['vfrac'])
@@ -411,14 +429,14 @@ def main():
     J = dict(n_runs=len(runs), n_expected=len(expected), missing=[f'{a}_s{b}_{c}' for a, b, c in expected if (a, b, c) not in runs])
     J['c1'] = claim1(runs); J['c2'] = claim2(runs); J['c3'] = claim3(runs); J['c4'] = claim4(runs)
     J['c5'] = claim5(runs); J['c6'] = claim6(runs); J['c7'] = claim7(runs); J['c8'] = claim8(runs, expected)
-    J['orig'] = dict(c3=claim3(runs, 'n_dead_tips'), c6=claim6(runs, ORIG6))      # 등록 때 정의 그대로의 판정 (CRITERIA_CHANGES 1)
+    J['orig'] = dict(c3=claim3(runs, 'n_dead_tips'), c6=claim6(runs, ORIG6), c7=claim7(runs, 'd_orig'))      # 등록 때 정의 그대로의 판정 (CRITERIA_CHANGES 1, 2)
     J['solver'] = solver_acc(runs); J['scl_thickness'] = scl_thickness(runs)
     json.dump(J, open(os.path.join(V6, 'judge.json'), 'w'), indent=1, ensure_ascii=False, default=lambda o: str(o))
     with open(os.path.join(V6, 'judge.txt'), 'w') as f:
         f.write(f"실행 {J['n_runs']} / 예정 {J['n_expected']}, 빠진 것 {J['missing']}\n")
         for i in range(1, 9):
             c = J[f'c{i}']; f.write(f"주장 {i}: {c['verdict']}" + (f"  {c.get('sub_verdicts')}" if c.get('sub_verdicts') else '') + '\n')
-        f.write(f"(등록 때 정의) 주장 3: {J['orig']['c3']['verdict']} {J['orig']['c3'].get('sub_verdicts')}, 주장 6: {J['orig']['c6']['verdict']}\n")
+        f.write(f"(등록 때 정의) 주장 3: {J['orig']['c3']['verdict']} {J['orig']['c3'].get('sub_verdicts')}, 주장 6: {J['orig']['c6']['verdict']}, 주장 7: {J['orig']['c7']['verdict']} {J['orig']['c7'].get('sub_verdicts')}\n")
     print(open(os.path.join(V6, 'judge.txt')).read())
 
 
