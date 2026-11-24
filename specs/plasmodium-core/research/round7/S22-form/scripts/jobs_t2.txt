@@ -1,0 +1,36 @@
+slimeall 585 s22p
+slimeall 585 xu1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2
+slimeall 585 xu2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2 scl_tgramp=250
+slimeall 585 xu3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=3 scl_tgH=3 scl_tgq=2
+slimeall 586 s22p
+slimeall 586 xu1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2
+slimeall 586 xu2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2 scl_tgramp=250
+slimeall 586 xu3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=3 scl_tgH=3 scl_tgq=2
+slimeall 590 s22p
+slimeall 590 xu1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2
+slimeall 590 xu2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2 scl_tgramp=250
+slimeall 590 xu3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=3 scl_tgH=3 scl_tgq=2
+slimeall 591 s22p
+slimeall 591 xu1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2
+slimeall 591 xu2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2 scl_tgramp=250
+slimeall 591 xu3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=3 scl_tgH=3 scl_tgq=2
+slimeall 590 s22g
+slimeall 591 s22g
+long 583 s22p
+long 583 xu1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2
+long 583 xu2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2 scl_tgramp=250
+long 583 xu3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=3 scl_tgH=3 scl_tgq=2
+long 584 s22p
+long 584 xu1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2
+long 584 xu2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2 scl_tgramp=250
+long 584 xu3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=3 scl_tgH=3 scl_tgq=2
+long 592 s22p
+long 592 xu1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2
+long 592 xu2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2 scl_tgramp=250
+long 592 xu3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=3 scl_tgH=3 scl_tgq=2
+long 593 s22p
+long 593 xu1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2
+long 593 xu2 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=5 scl_tgH=3 scl_tgq=2 scl_tgramp=250
+long 593 xu3 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 mg_deep=0 mg_pcg=1 scl_tgflood=1 scl_tgt=3 scl_tgH=3 scl_tgq=2
+long 592 s22g
+long 593 s22g

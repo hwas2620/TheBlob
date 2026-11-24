@@ -9,6 +9,7 @@ case "$tag" in
   s22c)  extra="";;                  # 지금 모델
   s22g)  extra="$G";;                # S21 후보 그대로 (기준)
   s22d)  extra="$G mgdump=100";;     # S21 후보 + 풀이 입력 저장 (10 시간마다)
+  s22p)  extra="$G mg_deep=0 mg_pcg=1";;   # S21 후보 + 켤레기울기 풀이 (예전 V 사이클을 앞풀이로)
   x*)    extra="$G";;                # 진단: S21 후보 + 명령줄 덧붙임
   *) echo "bad tag $tag"; exit 2;;
 esac
