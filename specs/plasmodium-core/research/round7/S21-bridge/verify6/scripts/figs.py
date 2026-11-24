@@ -10,13 +10,14 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import meas as M
 V6 = os.path.normpath(os.path.join(HERE, '..')); RUNS = os.path.normpath(os.path.join(V6, '..', 'model', 'runs')); FIG = os.path.join(V6, 'fig'); DATA = os.path.join(V6, 'data')
 CTRL_C = '#2a78d6'; CAND_C = '#eb6834'; INK = '#0b0b0b'; INK2 = '#52514e'; SURF = '#fcfcfb'
-CM = LinearSegmentedColormap.from_list('h', [SURF, '#9ec5f0', '#2a78d6', '#0d2f5c'])
+CM = LinearSegmentedColormap.from_list('h', ['#cfe0f5', '#7fb0ea', '#2a78d6', '#0d2f5c']); CM.set_bad(SURF)
 plt.rcParams.update({'font.size': 8, 'axes.edgecolor': '#c9c8c2', 'axes.labelcolor': INK2, 'xtick.color': INK2, 'ytick.color': INK2, 'axes.titlecolor': INK,
                      'figure.facecolor': SURF, 'axes.facecolor': SURF, 'savefig.facecolor': SURF})
-for fn in ('NanumGothic', 'Noto Sans CJK KR', 'Noto Sans KR', 'UnDotum'):
-    from matplotlib import font_manager as fm_
-    if any(fn in f.name for f in fm_.fontManager.ttflist):
-        plt.rcParams['font.family'] = fn; break
+from matplotlib import font_manager as fm_
+for fp in ('/usr/share/fonts/truetype/nanum/NanumGothic.ttf', '/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf'):
+    if os.path.exists(fp):
+        fm_.fontManager.addfont(fp); plt.rcParams['font.family'] = fm_.FontProperties(fname=fp).get_name(); break
+plt.rcParams['axes.unicode_minus'] = False
 
 
 def frame(scn, sd, tg, t):
@@ -37,7 +38,7 @@ def show(ax, Z, title, cen=None, W=110):
     if Z is None:
         ax.axis('off'); ax.set_title(title + ' (없음)', fontsize=7); return None
     im, cen = crop(Z, W, cen)
-    ax.imshow(im, cmap=CM, vmin=0, vmax=2.5, origin='lower', interpolation='nearest'); ax.set_xticks([]); ax.set_yticks([]); ax.set_title(title, fontsize=7)
+    ax.imshow(np.ma.masked_where(im <= 0, im), cmap=CM, vmin=0, vmax=2.5, origin='lower', interpolation='nearest'); ax.set_xticks([]); ax.set_yticks([]); ax.set_title(title, fontsize=7)
     return cen
 
 
@@ -57,7 +58,7 @@ def fig_trap(R):
         for j, t in enumerate(ts):
             for r, tg in enumerate(('v6g', 'v6c')):
                 show(axs[2 * i + r, j], frame('slimeall', sd, tg, t), f"{'후보' if tg == 'v6g' else '대조'} s{sd} t={t}" + (f' (갇힘 {ton:.0f})' if (tg == 'v6g' and j == 0 and ton) else ''))
-    fig.suptitle('갇힘 시험 slimeall: 두께 h (0~2.5), 무게중심을 가운데로', fontsize=9); fig.tight_layout(); fig.savefig(os.path.join(FIG, 'fig1_trap_slimeall.png'), dpi=110); plt.close(fig)
+    fig.suptitle('갇힘 시험 slimeall: 두께 h (0~2.5), 무게중심을 가운데로', fontsize=9); fig.tight_layout(rect=(0, 0, 1, 0.97)); fig.savefig(os.path.join(FIG, 'fig1_trap_slimeall.png'), dpi=110); plt.close(fig)
 
 
 def fig_long(R):
@@ -68,8 +69,8 @@ def fig_long(R):
         ton = R.get(('long', sd, 'v6g'), {}).get('met', {}).get('t_scl')
         for j, t in enumerate(ts):
             for r, tg in enumerate(('v6g', 'v6c')):
-                show(axs[2 * i + r, j], frame('long', sd, tg, t), f"{'후보' if tg == 'v6g' else '대조'} s{sd} t={t}" + (f' (갇힘 {ton:.0f})' if (tg == 'v6g' and j == 0 and ton) else ''))
-    fig.suptitle('long (T=2000): 두께 h', fontsize=9); fig.tight_layout(); fig.savefig(os.path.join(FIG, 'fig2_long.png'), dpi=100); plt.close(fig)
+                show(axs[2 * i + r, j], frame('long', sd, tg, t), f"{'후보' if tg == 'v6g' else '대조'} s{sd} t={t}" + (f' (갇힘 {ton:.0f})' if (tg == 'v6g' and j == 0 and ton) else ''), W=192)
+    fig.suptitle('long (T=2000): 두께 h', fontsize=9); fig.tight_layout(rect=(0, 0, 1, 0.97)); fig.savefig(os.path.join(FIG, 'fig2_long.png'), dpi=100); plt.close(fig)
 
 
 def fig_mig(R):
@@ -79,8 +80,8 @@ def fig_mig(R):
     for i, sd in enumerate(seeds):
         for j, t in enumerate(ts):
             for r, tg in enumerate(('v6g', 'v6c')):
-                show(axs[2 * i + r, j], frame('mig', sd, tg, t), f"{'후보' if tg == 'v6g' else '대조'} s{sd} t={t}")
-    fig.suptitle('이주 mig: 두께 h', fontsize=9); fig.tight_layout(); fig.savefig(os.path.join(FIG, 'fig3_mig.png'), dpi=110); plt.close(fig)
+                show(axs[2 * i + r, j], frame('mig', sd, tg, t), f"{'후보' if tg == 'v6g' else '대조'} s{sd} t={t}", W=192)
+    fig.suptitle('이주 mig: 두께 h', fontsize=9); fig.tight_layout(rect=(0, 0, 1, 0.97)); fig.savefig(os.path.join(FIG, 'fig3_mig.png'), dpi=110); plt.close(fig)
 
 
 def fig_food(R):
@@ -93,7 +94,7 @@ def fig_food(R):
                 Z = frame(s, sd, tg, t)
                 if Z is not None:
                     N = Z['wet'].shape[0]; show(axs[i, 2 * j + r], Z, f"{'후보' if tg == 'v6g' else '대조'} {s} s{sd} t={t}", cen=(N / 2, N / 2), W=N)
-    fig.suptitle('먹이 시나리오 (판 전체)', fontsize=9); fig.tight_layout(); fig.savefig(os.path.join(FIG, 'fig4_food.png'), dpi=110); plt.close(fig)
+    fig.suptitle('먹이 시나리오 (판 전체)', fontsize=9); fig.tight_layout(rect=(0, 0, 1, 0.97)); fig.savefig(os.path.join(FIG, 'fig4_food.png'), dpi=110); plt.close(fig)
 
 
 def fig_dir(J):
@@ -103,9 +104,9 @@ def fig_dir(J):
         ax.scatter(v, np.full(len(v), y) + np.random.default_rng(0).uniform(-0.12, 0.12, len(v)), s=22, color=col, edgecolor=SURF, linewidth=1.0, zorder=3)
         ax.text(-58, y, nm, va='center', ha='left', color=INK, fontsize=8)
     ax.axvline(0, color='#c9c8c2', lw=1, zorder=1); ax.set_yticks([]); ax.set_xlim(-60, 60); ax.set_ylim(-0.6, 1.6)
-    ax.set_xlabel('25칸 옮겨 간 때의 방향 − 유인원 방향 (도, +는 반시계)'); ax.set_title('이주 방향 오차 (mig 10 + long 6 시드)')
+    ax.set_xlabel('25칸 옮겨 간 때의 방향 - 유인원 방향 (도, +는 반시계)'); ax.set_title('이주 방향 오차 (mig 10 + long 6 시드)')
     for s in ('top', 'right', 'left'): ax.spines[s].set_visible(False)
-    fig.tight_layout(); fig.savefig(os.path.join(FIG, 'fig5_direction.png'), dpi=130); plt.close(fig)
+    fig.tight_layout(rect=(0, 0, 1, 0.97)); fig.savefig(os.path.join(FIG, 'fig5_direction.png'), dpi=130); plt.close(fig)
 
 
 def fig_ts(R):
@@ -126,13 +127,31 @@ def fig_ts(R):
         ax.set_title(nm, fontsize=8); ax.set_xlabel('t'); ax.grid(color='#ecebe6', lw=0.6)
         for s in ('top', 'right'): ax.spines[s].set_visible(False)
     axs[0, 0].legend(frameon=False, fontsize=7)
-    fig.suptitle('mig + long 실행 평균 (t ≤ 400 은 16 실행, 그 뒤는 long 6 실행)', fontsize=9); fig.tight_layout(); fig.savefig(os.path.join(FIG, 'fig6_timeseries.png'), dpi=120); plt.close(fig)
+    fig.suptitle('mig + long 실행 평균 (t ≤ 400 은 16 실행, 그 뒤는 long 6 실행)', fontsize=9); fig.tight_layout(rect=(0, 0, 1, 0.97)); fig.savefig(os.path.join(FIG, 'fig6_timeseries.png'), dpi=120); plt.close(fig)
+
+
+def fig_form(R):
+    SM = json.load(open(os.path.join(DATA, 'scl_mass.json'))) if os.path.exists(os.path.join(DATA, 'scl_mass.json')) else {}
+    cases = [('slimeall', 571, [120, 140, 160, 180, 200, 240, 280]), ('long', 521, [1780, 1800, 1820, 1840, 1880, 1920, 1960])]
+    fig, axs = plt.subplots(len(cases), 8, figsize=(13.5, 2.0 * len(cases)), gridspec_kw=dict(width_ratios=[1] * 7 + [1.6]))
+    for i, (s, sd, ts) in enumerate(cases):
+        c = R.get((s, sd, 'v6g'), {}); ton = c.get('met', {}).get('t_scl'); cen = None
+        Zl = frame(s, sd, 'v6g', ts[-1]); cen = crop(Zl, 90)[1] if Zl is not None else None
+        for j, t in enumerate(ts):
+            Z = frame(s, sd, 'v6g', t); show(axs[i, j], Z, f'{s} s{sd} t={t}' + (f'\nh 최대 {float(Z["h"].max()):.1f}' if Z is not None else ''), cen=cen, W=90)
+        ms = SM.get(f'b_{s}_s{sd}_v6g', []); ax = axs[i, 7]
+        if ms:
+            tt = [a for a, b in ms]; vv = [b for a, b in ms]; ax.plot(tt, vv, color=CAND_C, lw=2, marker='o', ms=3)
+            if ton: ax.axvline(ton, color=INK2, lw=1, ls='--'); ax.text(ton, 0.05, ' 갇힘', color=INK2, fontsize=7)
+            ax.set_xlim(ton - 100, ton + 250); ax.set_ylim(0, 1.05); ax.set_title('마지막 덩이 자리 안 부피 몫', fontsize=7); ax.set_xlabel('t')
+            for q in ('top', 'right'): ax.spines[q].set_visible(False)
+    fig.suptitle('후보 균핵 형성 과정 (20 시간 간격)', fontsize=9); fig.tight_layout(rect=(0, 0, 1, 0.95)); fig.savefig(os.path.join(FIG, 'fig7_formation.png'), dpi=110); plt.close(fig)
 
 
 if __name__ == '__main__':
     os.makedirs(FIG, exist_ok=True)
     R = runs_json(); J = json.load(open(os.path.join(V6, 'judge.json')))
-    for f in (fig_trap, fig_long, fig_mig, fig_food, fig_ts):
+    for f in (fig_trap, fig_long, fig_mig, fig_food, fig_ts, fig_form):
         try: f(R); print('ok', f.__name__)
         except Exception as e: print('fail', f.__name__, e)
     try: fig_dir(J); print('ok fig_dir')
