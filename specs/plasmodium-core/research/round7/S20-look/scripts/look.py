@@ -55,4 +55,11 @@ for s in seeds:
                 if (ww & (hh < 0.5)).sum() / max(ww.sum(), 1) <= 0.05 and tf is None: tf = round(t - ts, 1)
                 if hh[ww & (hh >= 1.5)].sum() >= 0.9 * hh.sum() and t90 is None: t90 = round(t - ts, 1)
                 if tf is not None and t90 is not None: break
+        traj = []
+        if ts is not None:
+            for f in frames(d):
+                t = int(re.findall(r'vs_t(\d+)', f)[0])
+                if t < ts - 20 or len(traj) >= 8: continue
+                Z = np.load(f); ww = Z['wet'].astype(bool); hh = np.where(ww, Z['h'], 0.0); traj.append((t, round(float(hh[ww & (hh >= 1.5)].sum() / max(hh.sum(), 1e-9)), 2)))
+        print(tag, s, '두꺼운 칸 부피 몫 (t, 몫):', traj)
         print(tag, s, '균핵', ts, '얇은 칸 사라짐', tf, '부피 90%가 두꺼운 칸', t90, '| 끝 몸', len(vol), '가장 큰 몸 넓이', int(big.sum()), '축비', round(ar, 2), '볼록도', round(cv, 2), '두께 변동', round(hcv, 2), '얇은 칸 몫', round(float((w & (h < 0.5)).sum()) / w.sum(), 3))

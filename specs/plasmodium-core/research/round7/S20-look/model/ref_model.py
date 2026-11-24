@@ -77,6 +77,7 @@ DEF = dict(
     scl_disc=0,    # [S18] 1: the sclerotium core is a disc around the centroid of the body's largest thick part, sized so the body's volume fills it at thickness h0*scl_H;
                    #      the body may wet only into its core disc (it rounds up into one compact mass)
     scl_thin_h=0.0,   # [S18] >0: while a sclerotium forms the thin-cell conductance limit uses this threshold instead of thin_h (still 0 at h = 0, so cells cannot be emptied below zero)
+    scl_visc=1.0,  # [S20] >1: while a sclerotium forms the cytoplasm thickens: every edge conducts scl_visc times less (the body draws together more slowly)
     scl_freeze=0,  # [S20] 1: the sclerotium core is drawn once when the sclerotium starts and kept (re-drawing every time unit smoothed a star-shaped core back to a circle)
     scl_star=0,    # [S20] 1 (with scl_disc): the core radius depends on direction, R(theta)^2 proportional to the body's cytoplasm in that direction (36 sectors, smoothed over 20 degrees, 0.5..2 R), same area as the disc: the mass sets where the sclerotium hardens, not a drawn circle
     scl_dens=0.0,  # [S20] >0 (with scl_disc=0): the sclerotium core of each body is where its thickness, blurred over scl_dens cells, is at least scl_dfrac of the body's peak (dense lumps, not thick tubes; an irregular mass that follows where the cytoplasm already is)
@@ -524,6 +525,7 @@ def run(name, over):
         if P['neck_keep'] and neck.any(): hstar = np.where(neck & wet, np.maximum(hstar, P['neck_h']), hstar)   # [S5] the kept link refills to a tube
         # ---- pressure / flux / volume ----
         W = [act[k] * G[k] * (C[k] + P['r']) / Ls[k] for k in range(4)]
+        if scl and P['scl_visc'] > 1.0: W = [w_ / P['scl_visc'] for w_ in W]      # [S20] drying cytoplasm flows slower
         if P['thin_h'] > 0 and not (scl and not P['scl_thin']):      # [S18] scl_thin=0: off while a sclerotium forms. [S3] an edge conducts less when either end is nearly empty: x clip(min(h_i, h_j) / thin_h, 0, 1)^thin_pow (an empty tube is a thin tube)
             hp_ = np.maximum(h, 0.0)
             th_h_ = P['scl_thin_h'] if (scl and P['scl_thin_h'] > 0) else P['thin_h']      # [S18]
