@@ -86,6 +86,7 @@ DEF = dict(
     scl_dfrac=0.5, # [S20]
     scl_dgrow=0,   # [S20] 1: with scl_dens, a sclerotium may wet dry cells next to the body where the blurred thickness is above the core threshold (fills hollows of the dense lump)
     tip_home=0,    # [S21] 1 (with ret_tipfree): a retracting thread end hands its cytoplasm to its whole body (in proportion to thickness) instead of its one neighbour: the content flows back through the thread, so no thick bead builds up at the end and stalls
+    tri_rnd=0,     # [S21] 1: the pulse pattern (tri_k) gets a per-seed random spatial offset (x, y in [0, tri_P)), time offset (in [0, tri_T)) and drift signs (x, y), so runs do not all start from the same place in the pattern
     tip_h=0.6,     # [S21] with ret_tipfree=2: a cell thinner than this whose wet 8-neighbours (at most 3) form one run around it (Yokoi number 1) is also a thread end
     ret_tipfree=0, # [S20] 1: a thread end (exactly one wet 8-neighbour) retracts even when its rest thickness incl. the tube part is above h_min (shuttle flow in a dead-end tail kept C ~ 14, tube part 0.19 > h_min, so trailing tails never drew back)
     sup_ramp=0.0,  # [S20] >0: the [S7] ageing factors fade in over sup_ramp time units after hunger starts (t - t_eat > sup_fed), instead of switching on at once
@@ -240,6 +241,9 @@ def run(name, over):
         XI1 = _gf(_r.normal(size=(P['N'], P['N'])), P['om_noise_len'], mode='wrap'); XI1 = XI1 / XI1.std()
         XI2 = _gf(_r.normal(size=(P['N'], P['N'])), P['om_noise_len'], mode='wrap'); XI2 = XI2 / XI2.std(); XI = XI1
     N = P['N']; dt = P['dt']; kap = P['kappa']
+    if P['tri_rnd']:        # [S21] own stream: the other random streams are unchanged
+        _rt = np.random.default_rng(P['seed'] + 15485863)
+        tri_ox, tri_oy = (float(v) for v in _rt.uniform(0.0, P['tri_P'], 2)); tri_t0 = float(_rt.uniform(0.0, P['tri_T'])); tri_sx, tri_sy = (1.0 if v < 0.5 else -1.0 for v in _rt.random(2))
     jj, ii = np.mgrid[0:N, 0:N].astype(float)
     X = ii; Y = jj; c0 = N / 2 - 0.5
     mimg = lambda v: (v + N / 2) % N - N / 2
@@ -507,7 +511,11 @@ def run(name, over):
                 th_eff = theta + (2 * np.pi / P['wave_lambda']) * (mimg(X - cen_u[0]) * np.cos(al_) + mimg(Y - cen_u[1]) * np.sin(al_))
             if P['tri_k'] > 0:
                 _tri = lambda u: np.abs(((u + P['tri_P'] / 2) % P['tri_P']) - P['tri_P'] / 2) - P['tri_P'] / 4
-                th_eff = th_eff + P['tri_k'] * (np.cos(2 * np.pi * t / P['tri_T']) * _tri(X - P['tri_v'] * t) + np.sin(2 * np.pi * t / P['tri_T']) * _tri(Y - 0.618 * P['tri_v'] * t))
+                if P['tri_rnd']:
+                    ph_ = 2 * np.pi * (t + tri_t0) / P['tri_T']
+                    th_eff = th_eff + P['tri_k'] * (np.cos(ph_) * _tri(X - tri_ox - tri_sx * P['tri_v'] * t) + np.sin(ph_) * _tri(Y - tri_oy - tri_sy * 0.618 * P['tri_v'] * t))
+                else:
+                    th_eff = th_eff + P['tri_k'] * (np.cos(2 * np.pi * t / P['tri_T']) * _tri(X - P['tri_v'] * t) + np.sin(2 * np.pi * t / P['tri_T']) * _tri(Y - 0.618 * P['tri_v'] * t))
             if P['ph_noise'] > 0:
                 th_eff = th_eff + P['ph_noise'] * (PX1 if P['ph_noise_T'] <= 0 else np.cos(2 * np.pi * t / P['ph_noise_T']) * PX1 + np.sin(2 * np.pi * t / P['ph_noise_T']) * PX2)
             if (P['food_phase'] or P['food_dw']) and nf:

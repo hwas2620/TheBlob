@@ -14,6 +14,10 @@ case "$tag" in
   s21s12) extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_rstep=10 scl_Hramp=200 ret_tipfree=2 sup_scent=12";;     # s21a + 냄새 순위 무게 12
   s21h)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_rstep=10 scl_Hramp=200 ret_tipfree=2 tip_home=1";;     # s21a + 오그라드는 실 끝의 원형질을 몸 전체로 (끝에 구슬이 생기지 않게)
   s21g)   extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_rstep=10 scl_Hramp=200 tip_home=1";;                   # s20z + 실 끝 원형질을 몸 전체로 (끝 판별은 그대로)
+  s21gr)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_rstep=10 scl_Hramp=200 tip_home=1 tri_rnd=1";;     # s21g + 맥동 무늬를 실행마다 무작위 자리·시각·흐름 방향에서 시작
+  s21g0)  extra="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 sup_ramp=100 scl_star=1 scl_freeze=1 scl_rstep=10 scl_Hramp=200 tip_home=1 tri_k=0";;       # s21g − 맥동 무늬 (진단용)
+  s21cr)  extra="tri_rnd=1";;         # 지금 모델 + 무작위 무늬 (진단용)
+  s21c0)  extra="tri_k=0";;           # 지금 모델 − 맥동 무늬 (진단용)
   *) echo "bad tag $tag"; exit 2;;
 esac
 name=b_${scn}_s${seed}_${tag}
