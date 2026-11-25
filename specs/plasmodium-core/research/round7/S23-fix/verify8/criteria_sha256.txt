@@ -1,0 +1,10 @@
+# verify8 기준 등록 (첫 실행 전). 만든 시각(UTC): 2026-11-25T12:44:32Z
+# 시험: test_measure.py 실패 0, test_judge.py 실패 0 (가짜 상태·가짜 측정값만)
+8796bb1230f5c3a7cf6eba51f3a420ca31702b0e5dc1b0dc89cb0f4ccd191bf2  CRITERIA.md
+d58b7fdd1b3aba320aae35169d5c16c86187f30c815295b3db7b97dc40b790bb  scripts/measure.py
+1d9daeb0c4fe4af0ade19096bad57c9724defe00116f869eb88191b4978610f8  scripts/judge.py
+70cd414b9269ff611b45fb2d8c51c8313fda314571b94864a6ebadb363f1621e  scripts/jobs.txt
+c39309e0a555d8d68b2067e045b0fad01e19d5c539755f3eed2a7b4d6d58a038  scripts/worker.sh
+aa1c6e58fd5530c822c7dd26836ce4888a98939af05c375ed17a9c9ae9bd0ad3  scripts/run_all.sh
+dc5b81ae167421cfd7aa212c7a94d338d646b8b9b0cb8363723c59b091830cb7  scripts/test_measure.py
+3591069c579944a52133417d6cec30928ee7b3be3716e5bccb6918900782b644  scripts/test_judge.py

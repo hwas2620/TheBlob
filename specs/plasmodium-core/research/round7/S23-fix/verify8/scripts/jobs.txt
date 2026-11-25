@@ -1,0 +1,83 @@
+# verify8 일 목록: 시나리오 시드 꼬리표 [덧붙일 설정]. v8c = 대조(지금 모델), v8v = 후보. 긴 것부터 (4코어, xargs -P 4)
+long 821 v8v
+long 821 v8c
+long 822 v8v
+long 822 v8c
+long 823 v8v
+long 823 v8c
+food4 851 v8v
+food4 851 v8c
+food4 852 v8v
+food4 852 v8c
+food4 853 v8v
+food4 853 v8c
+food4 854 v8v
+food4 854 v8c
+slimeall 861 v8v T=800
+slimeall 861 v8c T=800
+slimeall 862 v8v T=800
+slimeall 862 v8c T=800
+slimeall 863 v8v T=800
+slimeall 863 v8c T=800
+slimeall 864 v8v T=800
+slimeall 864 v8c T=800
+slimeall 865 v8v T=800
+slimeall 866 v8v T=800
+slimeall 867 v8v T=800
+slimeall 868 v8v T=800
+food3 831 v8v
+food3 831 v8c
+food3 832 v8v
+food3 832 v8c
+food3 833 v8v
+food3 833 v8c
+food3 834 v8v
+food3 834 v8c
+food3 835 v8v
+food3 835 v8c
+food3 836 v8v
+food3 836 v8c
+food3 837 v8v
+food3 837 v8c
+food3 838 v8v
+food3 838 v8c
+asym3 841 v8v
+asym3 841 v8c
+asym3 842 v8v
+asym3 842 v8c
+asym3 843 v8v
+asym3 843 v8c
+asym3 844 v8v
+asym3 844 v8c
+asym3 845 v8v
+asym3 845 v8c
+asym3 846 v8v
+asym3 846 v8c
+asym3 847 v8v
+asym3 847 v8c
+asym3 848 v8v
+asym3 848 v8c
+mig 801 v8v
+mig 801 v8c
+mig 802 v8v
+mig 802 v8c
+mig 803 v8v
+mig 803 v8c
+mig 804 v8v
+mig 804 v8c
+mig 805 v8v
+mig 805 v8c
+mig 806 v8v
+mig 806 v8c
+mig 807 v8v
+mig 807 v8c
+mig 808 v8v
+mig 808 v8c
+mig 809 v8v
+mig 809 v8c
+mig 810 v8v
+mig 810 v8c
+mig 811 v8v
+mig 811 v8c
+mig 812 v8v
+mig 812 v8c
