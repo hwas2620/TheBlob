@@ -109,6 +109,8 @@ DEF = dict(
                    #      4: also the flood may cross the gaps and holes the body encloses (body closed by 2 cells)
     scl_tgs2=0.0,  # [S23] >0: the region is chosen (flood order and threshold) on the thickness blurred over this many cells instead of scl_tgt (a young, evenly thick body gave a wide, winding region; a wider blur peaks at its mass centre). The thickness profile still uses scl_tgt
     tip_fage=0.0,  # [S23] with tip_fed: while fed, only a thread end wet for longer than this retracts (a thread growing toward food keeps a young tip)
+    scl_tgfill=0.0, # [S23] >0: the region holds at least volume / (h0 * scl_tgfill) cells (instead of volume / scl_tgmax): when the dense part is too small, the lump spreads to the next cells
+                    #      so its mean thickness stays below scl_tgfill (with the bound at scl_tgmax nearly every cell sat at the cap: a flat plate)
     scl_tgcap=0.0, # [S23] >0: the rest thickness R is also multiplied by (1 + scl_tgcap * u / max u), u the drop shape of the region (-Lap u = 1 inside, 0 at the rim): a body that was evenly thin
                    #      when trapped (R ~ G^q flat) still becomes a lump thick in the middle and thinning gradually to its rim, as a drop of cytoplasm held by surface tension
     tip_fed=0,     # [S23] 1: thread ends (exactly one wet neighbour) retract even while fed (a fed body kept 120-134 cell free tails for hundreds of time units)
@@ -597,7 +599,7 @@ def run(name, over):
                                 cl_ = e_
                             cl_ |= bm_; lo_ = _torus_label(~cl_); so_ = np.bincount(lo_.ravel()); so_[0] = 0
                             fm_ = ~((lo_ > 0) & (lo_ == int(np.argmax(so_))))
-                        Tb_ = _flood_top(Gs_, fm_, int(min(fm_.sum(), Vb_ / (P['h0'] * P['scl_tgmin']))), thr=P['scl_tgfrac'] * float(Gs_[bm_].max()), amin=int(Vb_ / (P['h0'] * P['scl_tgmax'])) + 1)
+                        Tb_ = _flood_top(Gs_, fm_, int(min(fm_.sum(), Vb_ / (P['h0'] * P['scl_tgmin']))), thr=P['scl_tgfrac'] * float(Gs_[bm_].max()), amin=int(Vb_ / (P['h0'] * (P['scl_tgfill'] if P['scl_tgfill'] > 0 else P['scl_tgmax']))) + 1)
                         A_ = int(Tb_.sum())
                     elif P['scl_tgflood']: Tb_ = _flood_top(G_, bm_, A_)
                     else:

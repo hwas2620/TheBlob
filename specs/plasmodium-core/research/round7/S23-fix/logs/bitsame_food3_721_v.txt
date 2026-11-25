@@ -1,0 +1,2 @@
+metrics.json 다른 키 ['name', 'runtime', 'log']
+견준 파일 54 다른 것(NaN 같게, 그림 제목 줄·이름·시간 빼고) []
