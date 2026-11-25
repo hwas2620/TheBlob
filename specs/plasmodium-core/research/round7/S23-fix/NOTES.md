@@ -153,3 +153,34 @@
 - 꼬리: food4 643·644·701·703 × `tip_fed=1 tip_fage=60`.
 
 참고: 균핵 모양 자료 — [Approximation of Statistical Analysis and Estimation by Morphological Adaptation in a Model of Slime Mould (arXiv 1503.03261)](https://arxiv.org/pdf/1503.03261), [Keller, Fungi magazine](https://www.fungimag.com/spring-08-articles/Keller.pdf), [Wikipedia: Physarum polycephalum](https://en.wikipedia.org/wiki/Physarum_polycephalum).
+
+## 디스크 (S23 거르기 뒤)
+
+- S19·S20 실행 폴더에서 끝 배열(`*.npy` 가운데 `wet.npy`·`h.npy`가 아닌 것: 간선 전도도·흐름·나이 등)을 지웠다(3.4G).
+- 남긴 것: `metrics.json`, 풀이 오차 기록, 끝 젖음·두께, 중간 장면. 지운 배열은 `export_ref.py`로 같은 시드를 다시 돌리면 다시 생긴다.
+
+## 진단 4 — 균핵 두께가 고르게 굳는 까닭과 방울 모양 (첫 거르기 탈락 뒤, 쓴 시드)
+
+- 첫 거르기에서 slimeall s736의 끝 덩이 두께 CV가 0.112였다(S3 문턱 0.12).
+- `scripts/tprof.py`(`logs/tprof.txt`): 갇히기 직전 장면에서 자리와 쉼 두께를 따로 만들었다.
+  - 지금 규칙 R ∝ G5²은 끝 덩이 CV를 따라간다(s736 0.10 대 0.11).
+  - slimeall은 몸이 고르게 얇은 막이라 G5가 자리 안에서 거의 평평하다.
+- 지수만 키우면(q3, q4) 이미 거친 덩이는 더 거칠어지고, 평평한 덩이는 조금밖에 바뀌지 않는다(q3 가장 작은 CV 0.148, q4는 R 가장 얇은 것 0.38).
+- 방울 모양 `scl_tgcap`: R ∝ G5² · (1 + K u / max u), 자리 안에서 -Δu = 1, 가장자리 u = 0.
+  - 얇은 방울을 표면 장력이 잡고 있을 때의 높이 모양이다(작은 기울기의 Young–Laplace).
+  - 모델에서는 `_cap_shape`가 5점 라플라시안을 토러스에서 희소 행렬로 한 번 푼다.
+  - 오프라인에서 K=1은 CV 가장 작은 것 0.190, 중앙 0.286이었다.
+- `s23w` = `s23z` + `scl_tgcap=1`로 쓴 시드 12개(slimeall 731~736, long 721~726)를 돌렸다. `scripts/d4look.py`, `logs/d4look.txt`, `fig/d4_cap.png`.
+
+| | `s23z` | `s23w` |
+|---|---|---|
+| 두께 CV 중앙 / 가장 작은 것 | 0.181 / 0.112 | 0.289 / 0.176 |
+| ±10% 안 칸 몫 중앙 | 0.402 | 0.209 |
+| 짙던 자리 IoU 평균 (S1) | 0.462 | 0.462 |
+| 한 장면 최대 몫, 오름 90% 중앙 | 0.37, 96 | 0.37, 96 |
+| 얇은 칸 몫 최대 | 0.000 | 0.004 |
+| 구멍 최대, 볼록 최소 | 0, 0.93 | 0, 0.93 |
+
+  - 12 실행 모두 갇히기 전 마지막 장면이 비트까지 같다.
+  - 그림: 가운데가 두껍고 가장자리로 천천히 얇아진다. 짙던 곳의 줄무늬(G5²)는 그대로 남는다.
+- food3 s721을 `s23w`로 돌렸다. 갇히지 않는 판이라 `s23z`와 비트까지 같다(`logs/bitsame_food3_721.txt`, 그림은 제목 줄만 다름).

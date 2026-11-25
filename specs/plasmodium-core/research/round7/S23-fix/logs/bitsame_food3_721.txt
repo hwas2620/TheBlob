@@ -1,0 +1,6 @@
+metrics differ ['name', 'runtime', 'log']
+files compared 54 different ['hfood.npy', 'metrics.json', 'params.json', 'snapshot_1_t0120.png', 'snapshot_2_t0240.png', 'snapshot_3_t0360.png', 'snapshot_4_t0480.png', 'theta.npy']
+hfood.npy NaN을 같게 보면 같음: True
+theta.npy NaN을 같게 보면 같음: True
+snapshot 1_t0120 (960, 960, 3) 다른 픽셀 187 행 범위 (np.int64(6), np.int64(13))
+snapshot 4_t0480 (960, 960, 3) 다른 픽셀 198 행 범위 (np.int64(6), np.int64(13))

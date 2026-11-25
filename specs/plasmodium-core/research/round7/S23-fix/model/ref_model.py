@@ -109,6 +109,8 @@ DEF = dict(
                    #      4: also the flood may cross the gaps and holes the body encloses (body closed by 2 cells)
     scl_tgs2=0.0,  # [S23] >0: the region is chosen (flood order and threshold) on the thickness blurred over this many cells instead of scl_tgt (a young, evenly thick body gave a wide, winding region; a wider blur peaks at its mass centre). The thickness profile still uses scl_tgt
     tip_fage=0.0,  # [S23] with tip_fed: while fed, only a thread end wet for longer than this retracts (a thread growing toward food keeps a young tip)
+    scl_tgcap=0.0, # [S23] >0: the rest thickness R is also multiplied by (1 + scl_tgcap * u / max u), u the drop shape of the region (-Lap u = 1 inside, 0 at the rim): a body that was evenly thin
+                   #      when trapped (R ~ G^q flat) still becomes a lump thick in the middle and thinning gradually to its rim, as a drop of cytoplasm held by surface tension
     tip_fed=0,     # [S23] 1: thread ends (exactly one wet neighbour) retract even while fed (a fed body kept 120-134 cell free tails for hundreds of time units)
     scl_tgflood=0, # [S22] 1: the chosen cells are one connected region: start at the body's densest cell and keep adding the densest 8-neighbour of the region (follows ridges of dense cytoplasm; no outlying lobes)
     mg_sc1=0.0, mg_sc2=0.0, mg_sc3=0.0,   # [S22] >0: multigrid over-correction per coarse level (level 1, level 2, levels >= 3). Set all three to use them (overrides mg_deep)
@@ -272,6 +274,15 @@ def _flood_top(G, mask, A, thr=None, amin=0):
                 if cc not in seen and mask[yy, xx]: seen.add(cc); heapq.heappush(hp, (-float(G[yy, xx]), cc))
     return out
 
+
+def _cap_shape(T):
+    """[S23] u with -Lap u = 1 on the cells of T (5-point, torus), u = 0 outside: the height of a thin drop held by surface tension on that footprint (thick in the middle, thinning gradually to the rim)"""
+    N0, N1 = T.shape; ys, xs = np.nonzero(T); n = len(ys); idx = -np.ones((N0, N1), int); idx[ys, xs] = np.arange(n)
+    rows = [np.arange(n)]; cols = [np.arange(n)]; vals = [np.full(n, 4.0)]
+    for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        j = idx[(ys + dy) % N0, (xs + dx) % N1]; k = j >= 0; rows.append(np.arange(n)[k]); cols.append(j[k]); vals.append(-np.ones(int(k.sum())))
+    A = sp.csr_matrix((np.concatenate(vals), (np.concatenate(rows), np.concatenate(cols))), shape=(n, n))
+    U = np.zeros((N0, N1)); U[ys, xs] = spl.spsolve(A, np.ones(n)); return U
 
 def run(name, over):
     P = dict(DEF); P.update(BASE); P.update(over)
@@ -599,7 +610,9 @@ def run(name, over):
                     if P['scl_hole'] >= 3:      # [S23] the region takes in the dry holes it encloses (a young body trapped at t 130 already had holes; they stayed in the lump)
                         lo_ = _torus_label(~Tb_); so_ = np.bincount(lo_.ravel()); so_[0] = 0
                         Tb_ = Tb_ | ((lo_ > 0) & (lo_ != int(np.argmax(so_))))
-                    w_ = np.maximum(G_[Tb_], 1e-9) ** P['scl_tgq']; R_ = Vb_ * w_ / w_.sum()
+                    w_ = np.maximum(G_[Tb_], 1e-9) ** P['scl_tgq']
+                    if P['scl_tgcap'] > 0: U_ = _cap_shape(Tb_)[Tb_]; w_ = w_ * (1.0 + P['scl_tgcap'] * U_ / max(float(U_.max()), 1e-12))      # [S23] drop shape
+                    R_ = Vb_ * w_ / w_.sum()
                     for _ in range(6): R_ = np.clip(R_ * Vb_ / R_.sum(), 0.3 * P['h0'], P['scl_tgmax'] * P['h0'])
                     scl_T |= Tb_; scl_R[Tb_] = R_
                 scl_tg_done = True
