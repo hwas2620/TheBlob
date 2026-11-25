@@ -103,7 +103,9 @@ DEF = dict(
     mg_guard=0,    # [S23] 1: if the warm start p0 leaves a larger residual than starting from zero, start from zero (a near-cut region made p0 300x worse than zero: flux error 1.8)
     mg_kadapt=0.0, # [S23] >0: when the last solve ended with relative residual above this, the next solve runs mg_kmax iterations instead of ncyc (one step late, as a GPU would read it back)
     mg_kmax=4,     # [S23]
-    scl_hole=0,    # [S23] 1: inside the chosen sclerotium region the slime term does not raise the yield (holes left by drying fill back). 2: also a dry region cell with >= 5 wet 8-neighbours wets whatever the pressure
+    scl_hole=0,    # [S23] 1: inside the chosen sclerotium region the slime term does not raise the yield (holes left by drying fill back). 2: also a dry region cell with >= 5 wet 8-neighbours wets whatever the pressure.
+                   #      3: also the region takes in the dry holes it encloses when it is chosen (the region was picked among wet cells only, so holes present at trapping stayed)
+    tip_fage=0.0,  # [S23] with tip_fed: while fed, only a thread end wet for longer than this retracts (a thread growing toward food keeps a young tip)
     tip_fed=0,     # [S23] 1: thread ends (exactly one wet neighbour) retract even while fed (a fed body kept 120-134 cell free tails for hundreds of time units)
     scl_tgflood=0, # [S22] 1: the chosen cells are one connected region: start at the body's densest cell and keep adding the densest 8-neighbour of the region (follows ridges of dense cytoplasm; no outlying lobes)
     mg_sc1=0.0, mg_sc2=0.0, mg_sc3=0.0,   # [S22] >0: multigrid over-correction per coarse level (level 1, level 2, levels >= 3). Set all three to use them (overrides mg_deep)
@@ -577,6 +579,9 @@ def run(name, over):
                     if nl_ > 1:
                         sz_ = np.bincount(lt_.ravel(), minlength=nl_ + 1); sz_[0] = 0
                         Tb_ = np.isin(lt_, [k_ for k_ in range(1, nl_ + 1) if sz_[k_] >= 0.1 * A_ or sz_[k_] == sz_.max()])
+                    if P['scl_hole'] >= 3:      # [S23] the region takes in the dry holes it encloses (a young body trapped at t 130 already had holes; they stayed in the lump)
+                        lo_ = _torus_label(~Tb_); so_ = np.bincount(lo_.ravel()); so_[0] = 0
+                        Tb_ = Tb_ | ((lo_ > 0) & (lo_ != int(np.argmax(so_))))
                     w_ = np.maximum(G_[Tb_], 1e-9) ** P['scl_tgq']; R_ = Vb_ * w_ / w_.sum()
                     for _ in range(6): R_ = np.clip(R_ * Vb_ / R_.sum(), 0.3 * P['h0'], P['scl_tgmax'] * P['h0'])
                     scl_T |= Tb_; scl_R[Tb_] = R_
@@ -880,7 +885,7 @@ def run(name, over):
             for q in range(8): ndr_ += xr_[q]
             thin_ok_ = (h < P['ret_h']) | ((ndr_ == 7) if P['ret_tip'] else False)      # [S13] ndr_ == 7: exactly one wet neighbour
             retm = wet & (ndr_ > 0) & ((Ncr_ <= 1) | (P['ret_glob'] > 0)) & thin_ok_ & ((hbar_prev < P['h_min']) | ((ndr_ == 7) if P['ret_tipfree'] else False) | (((ndr_ >= 5) & (Ncr_ == 1) & (h < P['tip_h'])) if P['ret_tipfree'] >= 2 else False)) & (age > P['grace']) & (colour == step % 4)
-            if fed_r_: retm &= (ndr_ == 7) | ((((ndr_ >= 5) & (Ncr_ == 1) & (h < P['tip_h'])) if P['ret_tipfree'] >= 2 else False))      # [S23] fed: only thread ends
+            if fed_r_: retm &= ((ndr_ == 7) | ((((ndr_ >= 5) & (Ncr_ == 1) & (h < P['tip_h'])) if P['ret_tipfree'] >= 2 else False))) & ((t - twet) > P['tip_fage'])      # [S23] fed: only thread ends (tip_fage: only stalled ones, wet for longer than this)
             if scl and P['scl_rstep'] > 1 and (step // 4) % int(P['scl_rstep']) != 0: retm[:] = False      # [S20] slower rim retraction in a sclerotium
             if P['tip_home'] and P['ret_tipfree']:      # [S21] thread ends among the retracting cells
                 tipret = retm & ((ndr_ == 7) | ((((ndr_ >= 5) & (Ncr_ == 1) & (h < P['tip_h'])) if P['ret_tipfree'] >= 2 else False)))

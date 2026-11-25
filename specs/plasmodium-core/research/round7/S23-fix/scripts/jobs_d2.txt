@@ -1,0 +1,16 @@
+long 641 xa1 scl_hole=3 tip_fed=1 tip_fage=30 mg_guard=1 mg_kadapt=0.2 mg_kmax=4
+long 642 xa1 scl_hole=3 tip_fed=1 tip_fage=30 mg_guard=1 mg_kadapt=0.2 mg_kmax=4
+slimeall 652 xh3 scl_hole=3
+slimeall 655 xh3 scl_hole=3
+slimeall 684 xh3 scl_hole=3
+slimeall 685 xh3 scl_hole=3
+slimeall 686 xh3 scl_hole=3
+slimeall 688 xh3 scl_hole=3
+food4 642 xt2 tip_fed=1 tip_fage=30
+food4 649 xt2 tip_fed=1 tip_fage=30
+food4 701 xt2 tip_fed=1 tip_fage=30
+food4 703 xt2 tip_fed=1 tip_fage=30
+food4 642 xt3 tip_fed=1 tip_fage=60
+food4 649 xt3 tip_fed=1 tip_fage=60
+mig 673 xa1 scl_hole=3 tip_fed=1 tip_fage=30 mg_guard=1 mg_kadapt=0.2 mg_kmax=4
+mig 641 xa1 scl_hole=3 tip_fed=1 tip_fage=30 mg_guard=1 mg_kadapt=0.2 mg_kmax=4
