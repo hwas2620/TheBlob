@@ -1,0 +1,12 @@
+# S22 결승 기준 등록 (첫 실행 전). sha256  파일
+d5d813ee6badc1bf42f4f43d2da09d5cb1e0c821e1a3cecc12d8c09c66bcdfa5  CRITERIA.md
+c4cb8ac2b6a0d24ba42715e409305a2d98d978f94d27fb38e8cbdd2a9d0b6a2c  scripts/judge_final_s22.py
+5d978ebfd54b85f615f7137a1e8a8cd265c3fb3427d82c67abd60c00550716b3  scripts/sclform.py
+5211ff6361e9454708481cf9c816f3281b951d894562cc74ed44e4902b24d3c7  scripts/run_one.sh
+0078943baba2fc0952d413b2ebb1dae23089007c5968b6b23272e7a5748999ce  scripts/jobs_final.txt
+012ee2ecd3a3b67b95d1101258fcfbef1e2121560d7e48fd95f8bf5cef91aca5  model/ref_model.py
+5c3dc58f881e97c22a7c565d7020b78dbd3e4b1796368528c61d7343f7532b21  model/mgt.py
+d04736d1226efcf1f0e2675426192e3b23b3e023164dc248eac415e2bb9d7b2d  model/export_ref.py
+f7a84cbec3de8b5f0825bbf3cea6f899bb2411cf7021ddaa8ddc4efa9185360a  ../S16-dumbbell/verify/scripts/vlib.py
+05abc143f3e4cfedaf3edc63ee15eb7b08757cc492847618f986a6152415af83  ../S16-dumbbell/verify2/scripts/measure.py
+# 작성 UTC: 2026-11-25T01:39:07Z
