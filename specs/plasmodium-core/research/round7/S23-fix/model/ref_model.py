@@ -100,11 +100,14 @@ DEF = dict(
     scl_tgfrac=0.0,  # [S22] >0 (with scl_tgflood): the region grows while the next cell's blurred thickness is at least scl_tgfrac x the body's peak, so its size comes from the body
                      #      (kept between the volume over scl_tgmax and over scl_tgmin mean thickness) instead of volume / scl_tgH
     scl_tgmin=1.5,   # [S22]
-    mg_guard=0,    # [S23] 1: if the warm start p0 leaves a larger residual than starting from zero, start from zero (a near-cut region made p0 300x worse than zero: flux error 1.8)
+    mg_guard=0,    # [S23] 1: if the warm start p0 leaves a larger residual than starting from zero, start from zero (a near-cut region made p0 300x worse than zero: flux error 1.8).
+                   #      2: start from a*p0 with a = p0.S / p0.A.p0 clipped to [0, 1] (best scale in the energy norm; zero start is itself bad on many problems)
     mg_kadapt=0.0, # [S23] >0: when the last solve ended with relative residual above this, the next solve runs mg_kmax iterations instead of ncyc (one step late, as a GPU would read it back)
     mg_kmax=4,     # [S23]
     scl_hole=0,    # [S23] 1: inside the chosen sclerotium region the slime term does not raise the yield (holes left by drying fill back). 2: also a dry region cell with >= 5 wet 8-neighbours wets whatever the pressure.
-                   #      3: also the region takes in the dry holes it encloses when it is chosen (the region was picked among wet cells only, so holes present at trapping stayed)
+                   #      3: also the region takes in the dry holes it encloses when it is chosen (the region was picked among wet cells only, so holes present at trapping stayed).
+                   #      4: also the flood may cross the gaps and holes the body encloses (body closed by 2 cells)
+    scl_tgs2=0.0,  # [S23] >0: the region is chosen (flood order and threshold) on the thickness blurred over this many cells instead of scl_tgt (a young, evenly thick body gave a wide, winding region; a wider blur peaks at its mass centre). The thickness profile still uses scl_tgt
     tip_fage=0.0,  # [S23] with tip_fed: while fed, only a thread end wet for longer than this retracts (a thread growing toward food keeps a young tip)
     tip_fed=0,     # [S23] 1: thread ends (exactly one wet neighbour) retract even while fed (a fed body kept 120-134 cell free tails for hundreds of time units)
     scl_tgflood=0, # [S22] 1: the chosen cells are one connected region: start at the body's densest cell and keep adding the densest 8-neighbour of the region (follows ridges of dense cytoplasm; no outlying lobes)
@@ -341,7 +344,7 @@ def run(name, over):
     act_prev = [np.zeros((N, N), bool) for _ in DIRS]
     p = np.zeros((N, N)); pm = np.zeros((N, N)); mgs = mgt.MGT(N, FT=np.float32 if P['f32'] >= 2 else np.float64, deep=(P['mg_deep'] if P['mg_deep'] > 0 else None), scales=([P['mg_sc1'], P['mg_sc2'], P['mg_sc3']] if P['mg_sc1'] > 0 else None), om=P['mg_om'], nu=int(P['mg_nu'])) if P['solver'] == 'mg' else None
     mg_err = []
-    if mgs is not None: mgs.pcg = bool(P['mg_pcg']); mgs.guard = bool(P['mg_guard'])      # [S22] [S23]
+    if mgs is not None: mgs.pcg = bool(P['mg_pcg']); mgs.guard = int(P['mg_guard'])      # [S22] [S23]
     mg_k_next = int(P['ncyc']); mg_nadapt = 0      # [S23]
     V0 = h.sum()
     steps = int(round(P['T'] / dt))
@@ -562,6 +565,7 @@ def run(name, over):
         if scl and P['scl_tgt'] > 0:      # [S22] sclerotium where the cytoplasm is dense (chosen once, filled gradually)
             if not scl_tg_done:
                 hw_ = np.where(wet, np.maximum(h, 0.0), 0.0); G_ = gaussian_filter(hw_, P['scl_tgt'], mode='wrap', truncate=3.0)
+                G2_ = gaussian_filter(hw_, P['scl_tgs2'], mode='wrap', truncate=3.0) if P['scl_tgs2'] > 0 else None      # [S23]
                 lw_ = _torus_label(wet); Vt_ = float(hw_.sum()); scl_T[:] = False; scl_R[:] = 0.0
                 for b_ in range(1, int(lw_.max()) + 1):
                     bm_ = lw_ == b_; Vb_ = float(hw_[bm_].sum())
@@ -569,7 +573,20 @@ def run(name, over):
                     A_ = int(min(bm_.sum(), max(1, round(Vb_ / (P['h0'] * P['scl_tgH'])))))
                     fi_ = np.flatnonzero(bm_)
                     if P['scl_tgflood'] and P['scl_tgfrac'] > 0:
-                        Tb_ = _flood_top(G_, bm_, int(min(bm_.sum(), Vb_ / (P['h0'] * P['scl_tgmin']))), thr=P['scl_tgfrac'] * float(G_[bm_].max()), amin=int(Vb_ / (P['h0'] * P['scl_tgmax'])) + 1)
+                        Gs_ = G2_ if P['scl_tgs2'] > 0 else G_; fm_ = bm_
+                        if P['scl_hole'] >= 4:      # [S23] the region may also take the gaps and holes the body encloses (closing by 2 cells, then everything not reached from outside)
+                            cl_ = bm_.copy()
+                            for _ in range(2):
+                                d_ = cl_.copy()
+                                for dd_ in RING: d_ |= nb(cl_, dd_)
+                                cl_ = d_
+                            for _ in range(2):
+                                e_ = cl_.copy()
+                                for dd_ in RING: e_ &= nb(cl_, dd_)
+                                cl_ = e_
+                            cl_ |= bm_; lo_ = _torus_label(~cl_); so_ = np.bincount(lo_.ravel()); so_[0] = 0
+                            fm_ = ~((lo_ > 0) & (lo_ == int(np.argmax(so_))))
+                        Tb_ = _flood_top(Gs_, fm_, int(min(fm_.sum(), Vb_ / (P['h0'] * P['scl_tgmin']))), thr=P['scl_tgfrac'] * float(Gs_[bm_].max()), amin=int(Vb_ / (P['h0'] * P['scl_tgmax'])) + 1)
                         A_ = int(Tb_.sum())
                     elif P['scl_tgflood']: Tb_ = _flood_top(G_, bm_, A_)
                     else:

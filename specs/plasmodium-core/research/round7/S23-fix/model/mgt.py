@@ -105,7 +105,7 @@ def k_prolong_add(p, e, D):
 class MGT:
     def __init__(self, N, nmin=4, scale=1.5, FT=np.float64, deep=None, scales=None, om=0.8, nu=2):
         self.f = 1.0 / scale; self.fd = self.f if deep is None else 1.0 / deep     # [S21] deep: 둘째 조대층부터의 과보정 (None 이면 scale 과 같다 = 예전). 1.0 이면 과보정이 층마다 곱해지지 않는다
-        self.scales = scales; self.om = om; self.nu = nu; self.pcg = False; self.guard = False; self.nguard = 0; self.rel = 0.0; self.Z0 = np.zeros((N, N), FT)     # [S22] scales: 층 1, 2, 3(이후 모두)의 과보정 값 목록 (주면 scale/deep 대신 쓴다). om: Jacobi 무게, nu: 앞뒤 스무딩 횟수
+        self.scales = scales; self.om = om; self.nu = nu; self.pcg = False; self.guard = 0; self.nguard = 0; self.rel = 0.0; self.Z0 = np.zeros((N, N), FT)     # [S22] scales: 층 1, 2, 3(이후 모두)의 과보정 값 목록 (주면 scale/deep 대신 쓴다). om: Jacobi 무게, nu: 앞뒤 스무딩 횟수
         sizes = [N]
         while sizes[-1] > nmin and sizes[-1] % 2 == 0: sizes.append(sizes[-1] // 2)
         self.sizes = sizes; self.L = len(sizes); z = lambda n: np.zeros((n, n), FT)
@@ -149,7 +149,11 @@ class MGT:
             self.S[0][...] = r; self.p[0][...] = 0.0; self.vcycle(0, self.nu, self.nu, nc, self.om); return self.p[0].copy()
         p = np.where(act, p0, 0.0); ra = np.where(act, rhs, 0.0); r = ra - A(p)
         ns = float((ra * ra).sum())
-        if self.guard and float((r * r).sum()) > ns: p = np.zeros_like(p); r = ra.copy(); self.nguard += 1      # [S23] 웜스타트가 0보다 나쁘면 0에서 출발
+        if self.guard == 1 and float((r * r).sum()) > ns: p = np.zeros_like(p); r = ra.copy(); self.nguard += 1      # [S23] 웜스타트가 0보다 나쁘면 0에서 출발
+        elif self.guard == 2:      # [S23] 웜스타트를 a 배로: a = p0·S / p0·A·p0 (에너지 노름으로 가장 좋은 배율, 0~1로 자름). 점곱 둘
+            Ap = ra - r; den = float((p * Ap).sum()); a = min(1.0, max(0.0, float((p * ra).sum()) / den)) if den > 0 else 0.0
+            if a < 0.9: self.nguard += 1
+            p = a * p; r = ra - a * Ap
         z = B(r); d = z.copy(); rz = float((r * z).sum())
         for i in range(k):
             q = A(d).copy(); dq = float((d * q).sum())

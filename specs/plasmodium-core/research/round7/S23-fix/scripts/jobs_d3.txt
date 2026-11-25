@@ -1,0 +1,18 @@
+long 641 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+long 642 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+long 645 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+long 647 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+slimeall 652 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+slimeall 655 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+slimeall 684 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+slimeall 685 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+slimeall 686 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+slimeall 688 xs1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4
+mig 673 xg3 mg_guard=2
+mig 673 xg4 mg_guard=2 mg_kadapt=0.2 mg_kmax=4
+mig 641 xg3 mg_guard=2
+mig 641 xg4 mg_guard=2 mg_kadapt=0.2 mg_kmax=4
+food4 643 xt3 tip_fed=1 tip_fage=60
+food4 644 xt3 tip_fed=1 tip_fage=60
+food4 701 xt3 tip_fed=1 tip_fage=60
+food4 703 xt3 tip_fed=1 tip_fage=60
