@@ -63,6 +63,11 @@ def main(tags):
                 print(f"{name:26s} 닿음 기준 [{' '.join(f(v) for v in mb['t_touch'])}] → [{' '.join(f(v) for v in m['t_touch'])}]")
                 print(f"{'':26s} 가장 긴 외가닥 (t 100~{T}, 50마다) 기준 {[a for a, _ in tb]}\n{'':26s}                               후보 {[a for a, _ in tc]}")
                 print(f"{'':26s} 자유 끝 기준 {[b_ for _, b_ in tb]}\n{'':26s}         후보 {[b_ for _, b_ in tc]}  되감은 칸 {m.get('tiphome_cells')}, ret {m.get('ret_cellsteps')}")
+            elif scn == 'long':
+                for lab_, dd, mm in (('기준', b, mb), (tag, d, m)):
+                    if dd is None: continue
+                    L = lump(dd, 2000); tl = tails(dd, 1600)
+                    print(f"{name:26s} {lab_:5s} 갇힘 {mm.get('t_scl')} 넓이 {L['area']:4d} 조각 {L['pieces']} 구멍 {L['holes']:2d}({L['hole_cells']:3d}칸) solidity {L['solid']:.2f} 볼록 {L['csolid']:.2f} CV {L['cv']:.2f}  외가닥(100~1600) 최대 {max(a for a, _ in tl)} 자유 끝 평균 {np.mean([b_ for _, b_ in tl]):.1f}  풀이 최대 {mm['mg_err'][2]:.3f}")
             elif scn == 'mig':
                 print(f"{name:26s} 풀이 오차 [중앙, 90%, 최대] 기준 {np.round(mb['mg_err'][:3], 3).tolist()} → {np.round(m['mg_err'][:3], 3).tolist()}  더 푼 스텝 {m.get('mg_nadapt')} 0 출발 {m.get('mg_nguard')}  닿음 {mb['t_touch']} → {m['t_touch']} 이동 {mb['disp']} → {m['disp']}")
                 e = json.load(open(os.path.join(d, 'mg_err_series.json'))); print(f"{'':26s} > 0.2 인 검사: {[(int(x[0]), round(x[1], 2)) for x in e if x[1] > 0.2]}")
