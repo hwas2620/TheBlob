@@ -1,0 +1,86 @@
+long 661 v7c
+long 661 v7y
+long 662 v7c
+long 662 v7y
+long 663 v7c
+long 663 v7y
+long 664 v7c
+long 664 v7y
+long 665 v7c
+long 665 v7y
+long 666 v7c
+long 666 v7y
+food4 701 v7c
+food4 701 v7y
+food4 702 v7c
+food4 702 v7y
+food4 703 v7c
+food4 703 v7y
+food4 704 v7c
+food4 704 v7y
+slimeall 681 v7c T=800
+slimeall 681 v7y T=800
+slimeall 682 v7c T=800
+slimeall 682 v7y T=800
+slimeall 683 v7c T=800
+slimeall 683 v7y T=800
+slimeall 684 v7c T=800
+slimeall 684 v7y T=800
+slimeall 685 v7c T=800
+slimeall 685 v7y T=800
+slimeall 686 v7c T=800
+slimeall 686 v7y T=800
+slimeall 687 v7c T=800
+slimeall 687 v7y T=800
+slimeall 688 v7c T=800
+slimeall 688 v7y T=800
+food3 691 v7c
+food3 691 v7y
+food3 692 v7c
+food3 692 v7y
+food3 693 v7c
+food3 693 v7y
+food3 694 v7c
+food3 694 v7y
+food3 695 v7c
+food3 695 v7y
+asym3 696 v7c
+asym3 696 v7y
+asym3 697 v7c
+asym3 697 v7y
+asym3 698 v7c
+asym3 698 v7y
+asym3 699 v7c
+asym3 699 v7y
+asym3 700 v7c
+asym3 700 v7y
+mig 667 v7c
+mig 667 v7y
+mig 668 v7c
+mig 668 v7y
+mig 669 v7c
+mig 669 v7y
+mig 670 v7c
+mig 670 v7y
+mig 671 v7c
+mig 671 v7y
+mig 672 v7c
+mig 672 v7y
+mig 673 v7c
+mig 673 v7y
+mig 674 v7c
+mig 674 v7y
+mig 675 v7c
+mig 675 v7y
+mig 676 v7c
+mig 676 v7y
+mig 677 v7c
+mig 677 v7y
+mig 678 v7c
+mig 678 v7y
+mig 711 v7cm mgdump=200
+mig 711 v7ym mgdump=200
+food3 712 v7cm mgdump=240
+food3 712 v7ym mgdump=240
+slimeall 713 v7cm T=800 mgdump=400
+slimeall 713 v7ym T=800 mgdump=400
