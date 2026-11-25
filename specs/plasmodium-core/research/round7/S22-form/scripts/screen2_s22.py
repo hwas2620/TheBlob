@@ -11,7 +11,7 @@ S20 설명: [7차 S20] 거르기 판정. S19 screen_s19.py에서 시드·꼬리�
 두 독립 검증자의 측정 코드를 그대로 쓴다:
   첫 검증자 ../../S16-dumbbell/verify/scripts/vlib.py (실 아령 dumbbell D2)
   둘째 검증자 ../../S16-dumbbell/verify2/scripts/measure.py (frame: 덩이 둘 이상, 죽은 실, 가지 끝, 막)
-usage: screen_s22.py [후보=s22x]   (대조 s22c = 지금 모델, 같은 모델 복사본)"""
+usage: screen2_s22.py [후보=s22y]   (대조 s22c = 지금 모델, 같은 모델 복사본)"""
 import json, os, sys, glob, re
 import numpy as np
 from multiprocessing import Pool
@@ -31,7 +31,7 @@ def dead_tips(Z, w, h):     # 가지 끝 줄(길이 3 이상, 둘째 검증자�
     ys, xs = np.divmod(np.array(sorted(cells)), N); Cm = Z['Cmean']; CM = np.zeros(w.shape)
     for k, d in enumerate(DIRS): CM = np.maximum(CM, np.maximum(Cm[k], rev(Cm[k], d)))
     return int((CM[ys, xs] <= 4.0).sum())
-cand = sys.argv[1] if len(sys.argv) > 1 else 's22x'; C = 's22c'
+cand = sys.argv[1] if len(sys.argv) > 1 else 's22y'; C = 's22c'
 LONG = range(621, 631); FOOD4 = range(621, 627); FOOD3 = range(621, 625); ASYM3 = range(621, 625); MIG = range(621, 629); SLIME = range(631, 637)
 OUT = os.path.join(HERE, '..', 'screen2.json')
 if os.environ.get('S22_TEST'):
