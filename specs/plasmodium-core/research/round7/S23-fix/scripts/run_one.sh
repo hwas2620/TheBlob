@@ -8,6 +8,7 @@ G="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 su
 case "$tag" in
   s23c)  extra="";;                  # 지금 모델
   s23y)  extra="$G mg_deep=0 mg_pcg=1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_tgt=5 scl_tgfrac=0.7 scl_tgq=2 scl_tgmin=1.2 scl_tgflood=1";;   # S22 후보 s22y 그대로 (기준)
+  s23z)  extra="$G mg_deep=0 mg_pcg=1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_tgt=5 scl_tgfrac=0.7 scl_tgq=2 scl_tgmin=1.2 scl_tgflood=1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4 tip_fed=1 tip_fage=60 mg_guard=2 mg_kadapt=0.2 mg_kmax=4";;   # S23 후보: s22y + 자리 고르기(σ 10, 0.8, 틈 메우기) + 먹은 몸의 멈춘 실 끝 되감기 + a배 웜스타트·반복 늘리기
   x*)    extra="$G mg_deep=0 mg_pcg=1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_tgt=5 scl_tgfrac=0.7 scl_tgq=2 scl_tgmin=1.2 scl_tgflood=1";;   # 진단: s22y + 명령줄 덧붙임
   *) echo "bad tag $tag"; exit 2;;
 esac
