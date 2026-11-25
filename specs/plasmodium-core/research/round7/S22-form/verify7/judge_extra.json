@@ -1,0 +1,129 @@
+{
+ "v7c": {
+  "frames": 1500,
+  "frac_tree_tail30": 0.334,
+  "tree100_frames": 149,
+  "runs_tree100_ge2": [
+   "b_long_s665_v7c",
+   "b_food4_s701_v7c",
+   "b_asym3_s697_v7c",
+   "b_long_s663_v7c",
+   "b_food3_s695_v7c",
+   "b_long_s662_v7c",
+   "b_mig_s672_v7c",
+   "b_mig_s674_v7c",
+   "b_long_s661_v7c",
+   "b_food3_s691_v7c",
+   "b_food4_s703_v7c",
+   "b_asym3_s696_v7c",
+   "b_mig_s671_v7c",
+   "b_food3_s693_v7c",
+   "b_asym3_s699_v7c",
+   "b_food3_s692_v7c",
+   "b_asym3_s698_v7c",
+   "b_long_s666_v7c",
+   "b_asym3_s700_v7c",
+   "b_food3_s694_v7c",
+   "b_long_s664_v7c"
+  ],
+  "reach100_frames": 0,
+  "runs_reach100_ge2": [],
+  "frac_tree100": 0.09933333333333333,
+  "frac_reach100": 0.0,
+  "max_tree": 237.66399692442914,
+  "max_reach": 84.20213774008353,
+  "p95_reach": 70.0699606231973,
+  "by_scn": {
+   "long": {
+    "frames": 594,
+    "tree100": 103,
+    "reach100": 0
+   },
+   "mig": {
+    "frames": 228,
+    "tree100": 11,
+    "reach100": 0
+   },
+   "food3": {
+    "frames": 115,
+    "tree100": 14,
+    "reach100": 0
+   },
+   "asym3": {
+    "frames": 115,
+    "tree100": 16,
+    "reach100": 0
+   },
+   "food4": {
+    "frames": 136,
+    "tree100": 5,
+    "reach100": 0
+   },
+   "slimeall": {
+    "frames": 312,
+    "tree100": 0,
+    "reach100": 0
+   }
+  }
+ },
+ "v7y": {
+  "frames": 1138,
+  "frac_tree_tail30": 0.4015817223198594,
+  "tree100_frames": 106,
+  "runs_tree100_ge2": [
+   "b_food4_s703_v7y",
+   "b_long_s666_v7y",
+   "b_food3_s692_v7y",
+   "b_long_s663_v7y",
+   "b_long_s664_v7y",
+   "b_long_s662_v7y",
+   "b_food4_s704_v7y",
+   "b_food3_s693_v7y",
+   "b_long_s665_v7y",
+   "b_long_s661_v7y",
+   "b_mig_s672_v7y",
+   "b_food4_s701_v7y"
+  ],
+  "reach100_frames": 1,
+  "runs_reach100_ge2": [],
+  "frac_tree100": 0.09314586994727592,
+  "frac_reach100": 0.0008787346221441124,
+  "max_tree": 336.81832585698044,
+  "max_reach": 104.20172743289815,
+  "p95_reach": 76.28721346915688,
+  "by_scn": {
+   "long": {
+    "frames": 504,
+    "tree100": 73,
+    "reach100": 1
+   },
+   "mig": {
+    "frames": 228,
+    "tree100": 2,
+    "reach100": 0
+   },
+   "food3": {
+    "frames": 115,
+    "tree100": 7,
+    "reach100": 0
+   },
+   "asym3": {
+    "frames": 115,
+    "tree100": 2,
+    "reach100": 0
+   },
+   "food4": {
+    "frames": 136,
+    "tree100": 22,
+    "reach100": 0
+   },
+   "slimeall": {
+    "frames": 40,
+    "tree100": 0,
+    "reach100": 0
+   }
+  }
+ },
+ "verdict_B": "틀림",
+ "verdict_C": "틀림"
+}

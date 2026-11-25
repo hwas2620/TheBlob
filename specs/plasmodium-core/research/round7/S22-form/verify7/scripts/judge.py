@@ -20,6 +20,7 @@ OK, NO, UND, NA = '맞음', '틀림', '판정 못 함', '해당 없음'
 def load():
     D = {}
     for f in glob.glob(os.path.join(DATA, 'b_*.json')):
+        if f.endswith('.extra.json'): continue          # 보충 측정 파일 (CRITERIA_CHANGES.md 1절)
         r = json.load(open(f)); D[r['name']] = r
     return D
 
