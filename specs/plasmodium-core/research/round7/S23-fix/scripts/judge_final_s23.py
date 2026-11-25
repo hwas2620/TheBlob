@@ -17,7 +17,7 @@ S20 설명: [7차 S20] 거르기 판정. S19 screen_s19.py에서 시드·꼬리�
 두 독립 검증자의 측정 코드를 그대로 쓴다:
   첫 검증자 ../../S16-dumbbell/verify/scripts/vlib.py (실 아령 dumbbell D2)
   둘째 검증자 ../../S16-dumbbell/verify2/scripts/measure.py (frame: 덩이 둘 이상, 죽은 실, 가지 끝, 막)
-usage: judge_final_s23.py [후보=s23w]   (대조 s23c = 지금 모델, 같은 모델 복사본)"""
+usage: judge_final_s23.py [후보=s23v]   (대조 s23c = 지금 모델, 같은 모델 복사본)"""
 import json, os, sys, glob, re
 import numpy as np
 from multiprocessing import Pool
@@ -38,7 +38,7 @@ def dead_tips(Z, w, h):     # 가지 끝 줄(길이 3 이상, 둘째 검증자�
     ys, xs = np.divmod(np.array(sorted(cells)), N); Cm = Z['Cmean']; CM = np.zeros(w.shape)
     for k, d in enumerate(DIRS): CM = np.maximum(CM, np.maximum(Cm[k], rev(Cm[k], d)))
     return int((CM[ys, xs] <= 4.0).sum())
-cand = sys.argv[1] if len(sys.argv) > 1 else 's23w'; C = 's23c'
+cand = sys.argv[1] if len(sys.argv) > 1 else 's23v'; C = 's23c'
 LONG = range(761, 771); FOOD4 = range(761, 771); FOOD3 = range(761, 765); ASYM3 = range(761, 765); MIG = range(761, 769); SLIME = range(771, 777)
 OUT = os.path.join(HERE, '..', 'judge_final.json')
 RUNS_C = os.environ.get('S23_RUNS_C', RUNS)
