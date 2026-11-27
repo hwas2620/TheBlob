@@ -1,0 +1,8 @@
+slimeall 913 y26 scl_dord=5 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1
+slimeall 911 y26 scl_dord=5 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1
+slimeall 912 y26 scl_dord=5 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1
+slimeall 914 y26 scl_dord=5 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1
+slimeall 915 y26 scl_dord=5 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1
+slimeall 916 y26 scl_dord=5 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1
+long 902 y26 scl_dord=5 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1
+long 907 y26 scl_dord=5 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1

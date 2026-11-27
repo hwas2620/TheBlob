@@ -120,10 +120,14 @@ DEF = dict(
                    #      scl_dtf for the farthest cells, scl_dtn for the cells next to the region (one ring of the body after another)
                    #      scl_dord=3: as 2, and an outside cell is drawn in at the rim only once its own drying time tc has passed (not when its rest thickness
                    #      falls below h_min: a long-starved body is old everywhere and would otherwise be drawn in all at once)
+                   #      scl_dord=4: as 3, and before tc an outside cell does not dry even when it is drained thin (the region pulls the volume in; the cell stays a film until tc)
+                   #      scl_dord=5: as 4, but tc follows the rank of the distance (the share of outside cells farther out), not the distance itself:
+                   #      the body draws in at an even pace even when most of it lies close to the region and only thin threads reach far
     scl_dtn=140.0, # [S24] scl_dord=2: drying time of the cells next to the region
     scl_dtf=30.0,  # [S24] scl_dord=2: drying time of the farthest cells
     scl_hstep=0,   # [S24] >0: while a sclerotium forms, a dry cell of the region wets only on its colour of the 4-colouring and only every scl_hstep-th round of 4 steps
                    #      (holes the region encloses close one ring at a time, about every 0.4 * scl_hstep time units, instead of within a few hours)
+    scl_hcol=0,    # [S24] 1 (with scl_hstep): only one colour of the 4-colouring per opening, in turn (a ring of a hole closes over 4 openings, 1.6 * scl_hstep time units)
     scl_tggrow=0,  # [S24] 1: when the dense part is smaller than the least area, the region grows by whole rings (one-cell dilation inside the body) until it holds it, instead of
                    #      flooding to exactly that many cells (bodies of the same volume no longer get the same cell count)
     scl_tgcap=0.0, # [S23] >0: the rest thickness R is also multiplied by (1 + scl_tgcap * u / max u), u the drop shape of the region (-Lap u = 1 inside, 0 at the rim): a body that was evenly thin
@@ -650,7 +654,11 @@ def run(name, over):
                         if ob_.any():
                             dmx_ = max(int(D_[ob_].max()), 1); dn_ = np.where(D_[ob_] > 0, D_[ob_] / dmx_, 1.0)
                             if P['scl_dord'] >= 2:      # F * (tc + scl_age tc^2 / (2 scl_tgramp)) = tau_a ln(h0 / h_min): rest thickness h0 exp(-sage / tau_a) reaches h_min at tc
-                                tc_ = (1.0 - dn_) * P['scl_dtn'] + dn_ * P['scl_dtf']
+                                if P['scl_dord'] >= 5:      # [S24] rank: share of outside cells strictly farther, plus half of those at the same distance
+                                    dv_ = D_[ob_].astype(np.int64); dv_ = np.where(dv_ > 0, dv_, dmx_ + 1); cnt_ = np.bincount(dv_); far_ = np.cumsum(cnt_[::-1])[::-1]
+                                    q_ = (np.append(far_[1:], 0)[dv_] + 0.5 * cnt_[dv_]) / max(dv_.size, 1)
+                                    tc_ = q_ * P['scl_dtn'] + (1.0 - q_) * P['scl_dtf']
+                                else: tc_ = (1.0 - dn_) * P['scl_dtn'] + dn_ * P['scl_dtf']
                                 scl_F[ob_] = P['tau_a'] * np.log(P['h0'] / P['h_min']) / (tc_ + P['scl_age'] * tc_ ** 2 / (2.0 * max(P['scl_tgramp'], 1e-9)))
                                 scl_Gt[ob_] = max(P['scl_tgramp'], 1e-9) / np.maximum(tc_, 1e-9)      # the tube part is gone by tc too
                                 scl_tc[ob_] = tc_
@@ -942,6 +950,7 @@ def run(name, over):
             cnt_q = 0
         # ---- drying ----
         Dm = wet & (h < P['h_min']) & (age > P['grace'])
+        if scl and P['scl_tgt'] > 0 and P['scl_dord'] >= 4: Dm &= scl_T | ((t - scl_t0) >= scl_tc)      # [S24] an outside cell dries only after its drying time
         if P['neck_keep'] and neck.any(): Dm &= ~neck                 # [S5] the kept link does not dry
         if P['dry_edge'] and Dm.any():      # [S9] only rim cells dry
             nd_ = np.zeros((N, N), np.int8)
@@ -1135,7 +1144,9 @@ def run(name, over):
         if scl and P['scl_tgt'] > 0 and P['scl_hole'] > 0: yld = np.where(scl_T, yld - P['y_s'] * slime, yld)      # [S23] the sclerotium covers its own slime
         cand = ~wet & (ptest > yld)
         if scl and P['scl_tgt'] > 0 and P['scl_hole'] >= 2: cand |= ~wet & scl_T & (nw >= 5) & np.isfinite(pmax)      # [S23] enclosed holes in the region close
-        if scl and P['scl_tgt'] > 0 and P['scl_hstep'] > 0: cand &= (colour == step % 4) & ((step // 4) % int(P['scl_hstep']) == 0)      # [S24] slow closing of the region's holes
+        if scl and P['scl_tgt'] > 0 and P['scl_hstep'] > 0:      # [S24] slow closing of the region's holes
+            if P['scl_hcol']: cand &= (step % (4 * int(P['scl_hstep'])) == 0) & (colour == (step // (4 * int(P['scl_hstep']))) % 4)
+            else: cand &= (colour == step % 4) & ((step // 4) % int(P['scl_hstep']) == 0)
         if scl: cand &= scl_T if P['scl_tgt'] > 0 else False if P['scl_em'] > 0 else sclcore if (P['scl_disc'] and not P['scl_nowet']) else (sclgrow if (P['scl_dens'] > 0 and P['scl_dgrow']) else False)      # [S18] a sclerotium does not extend (with scl_disc: only into its round core)
         if cand.any():
             ys, xs = np.nonzero(cand); a = arg[ys, xs]
