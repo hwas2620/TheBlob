@@ -123,6 +123,8 @@ DEF = dict(
                    #      scl_dord=4: as 3, and before tc an outside cell does not dry even when it is drained thin (the region pulls the volume in; the cell stays a film until tc)
                    #      scl_dord=5: as 4, but tc follows the rank of the distance (the share of outside cells farther out), not the distance itself:
                    #      the body draws in at an even pace even when most of it lies close to the region and only thin threads reach far
+                   #      scl_dord=6: as 5, but the distance along the body is a length (orthogonal step 1, diagonal step sqrt 2), not a count of steps:
+                   #      the cells of one ring no longer share one drying time (corners go first and the outline rounds)
     scl_dtn=140.0, # [S24] scl_dord=2: drying time of the cells next to the region
     scl_dtf=30.0,  # [S24] scl_dord=2: drying time of the farthest cells
     scl_hstep=0,   # [S24] >0: while a sclerotium forms, a dry cell of the region wets only on its colour of the 4-colouring and only every scl_hstep-th round of 4 steps
@@ -650,6 +652,15 @@ def run(name, over):
                             k_ += 1; nf_ = np.zeros((N, N), bool)
                             for dd_ in RING: nf_ |= nb(fr_, dd_)
                             nf_ &= M_ & (D_ < 0); D_[nf_] = k_; fr_ = nf_
+                        if P['scl_dord'] >= 6:      # [S24] length along the body: relax with steps 1 (orthogonal) and sqrt 2 (diagonal) until nothing changes
+                            Dl_ = np.where(Tb_, 0.0, np.inf)
+                            while True:
+                                Dn_ = Dl_.copy()
+                                for dd_ in RING: Dn_ = np.minimum(Dn_, nb(Dl_, dd_) + (1.4142135623730951 if (dd_[0] and dd_[1]) else 1.0))
+                                Dn_ = np.where(M_, Dn_, np.inf)
+                                if np.array_equal(Dn_, Dl_): break
+                                Dl_ = Dn_
+                            D_ = np.where(np.isfinite(Dl_), np.round(Dl_ * 1000.0), -1).astype(np.int64)      # integer keys in 1/1000 steps
                         ob_ = bm_ & ~Tb_
                         if ob_.any():
                             dmx_ = max(int(D_[ob_].max()), 1); dn_ = np.where(D_[ob_] > 0, D_[ob_] / dmx_, 1.0)
