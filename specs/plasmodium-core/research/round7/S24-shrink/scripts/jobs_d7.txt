@@ -1,0 +1,6 @@
+long 763 y15 scl_dord=2 scl_dtn=170 scl_dtf=30 scl_tgcap=3 scl_tggrow=1 tip_fage=120
+long 764 y15 scl_dord=2 scl_dtn=170 scl_dtf=30 scl_tgcap=3 scl_tggrow=1 tip_fage=120
+slimeall 774 y15 scl_dord=2 scl_dtn=170 scl_dtf=30 scl_tgcap=3 scl_tggrow=1 tip_fage=120
+slimeall 776 y15 scl_dord=2 scl_dtn=170 scl_dtf=30 scl_tgcap=3 scl_tggrow=1 tip_fage=120
+food4 765 y15 scl_dord=2 scl_dtn=170 scl_dtf=30 scl_tgcap=3 scl_tggrow=1 tip_fage=120
+food4 768 y15 scl_dord=2 scl_dtn=170 scl_dtf=30 scl_tgcap=3 scl_tggrow=1 tip_fage=120
