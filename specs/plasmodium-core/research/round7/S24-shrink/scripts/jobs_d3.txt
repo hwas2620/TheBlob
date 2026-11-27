@@ -1,0 +1,16 @@
+slimeall 771 y5 scl_dord=1 scl_tgramp=80
+slimeall 771 y6 scl_dord=1 scl_tgramp=60 scl_dfn=0.2 scl_dff=5
+slimeall 771 y7 scl_dord=1 scl_tgramp=100
+slimeall 771 y8 scl_dord=1 scl_tgramp=80 scl_tgcap=3 scl_tggrow=1
+slimeall 772 y5 scl_dord=1 scl_tgramp=80
+slimeall 772 y6 scl_dord=1 scl_tgramp=60 scl_dfn=0.2 scl_dff=5
+slimeall 772 y7 scl_dord=1 scl_tgramp=100
+slimeall 772 y8 scl_dord=1 scl_tgramp=80 scl_tgcap=3 scl_tggrow=1
+slimeall 774 y5 scl_dord=1 scl_tgramp=80
+slimeall 774 y6 scl_dord=1 scl_tgramp=60 scl_dfn=0.2 scl_dff=5
+slimeall 774 y7 scl_dord=1 scl_tgramp=100
+slimeall 774 y8 scl_dord=1 scl_tgramp=80 scl_tgcap=3 scl_tggrow=1
+slimeall 776 y5 scl_dord=1 scl_tgramp=80
+slimeall 776 y6 scl_dord=1 scl_tgramp=60 scl_dfn=0.2 scl_dff=5
+slimeall 776 y7 scl_dord=1 scl_tgramp=100
+slimeall 776 y8 scl_dord=1 scl_tgramp=80 scl_tgcap=3 scl_tggrow=1

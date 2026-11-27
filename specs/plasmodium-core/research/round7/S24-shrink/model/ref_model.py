@@ -116,6 +116,10 @@ DEF = dict(
                    #      Factor F = scl_dfn^(1-d) * scl_dff^d, d = distance / largest distance of that body (chosen once, with the region)
     scl_dfn=0.3,   # [S24] ageing factor of the outside cells next to the region
     scl_dff=3.0,   # [S24] ageing factor of the farthest outside cells
+                   #      scl_dord=2: instead, F is set so that a fresh cell (sage 0) reaches the drying rest thickness h_min at a time linear in d:
+                   #      scl_dtf for the farthest cells, scl_dtn for the cells next to the region (one ring of the body after another)
+    scl_dtn=140.0, # [S24] scl_dord=2: drying time of the cells next to the region
+    scl_dtf=30.0,  # [S24] scl_dord=2: drying time of the farthest cells
     scl_tggrow=0,  # [S24] 1: when the dense part is smaller than the least area, the region grows by whole rings (one-cell dilation inside the body) until it holds it, instead of
                    #      flooding to exactly that many cells (bodies of the same volume no longer get the same cell count)
     scl_tgcap=0.0, # [S23] >0: the rest thickness R is also multiplied by (1 + scl_tgcap * u / max u), u the drop shape of the region (-Lap u = 1 inside, 0 at the rim): a body that was evenly thin
@@ -355,7 +359,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_drawn = False; scl_t0 = 0.0; sclcore = np.zeros((N, N), bool); sclm = np.ones((N, N)); scl_s = np.zeros((N, N)); scl_g = 0.0; scl_T = np.zeros((N, N), bool); scl_R = np.zeros((N, N)); scl_F = np.ones((N, N)); scl_tg_done = False; sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_drawn = False; scl_t0 = 0.0; sclcore = np.zeros((N, N), bool); sclm = np.ones((N, N)); scl_s = np.zeros((N, N)); scl_g = 0.0; scl_T = np.zeros((N, N), bool); scl_R = np.zeros((N, N)); scl_F = np.ones((N, N)); scl_Gt = np.ones((N, N)); scl_tg_done = False; sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -581,12 +585,12 @@ def run(name, over):
                 scl_s = np.clip((sclm - 1.0) / max(P['scl_emH'] - 1.0, 1e-9), 0.0, 1.0)
             hb2_ = P['h_old'] + (P['h0'] * Hfac - P['h_old']) * np.exp(-sage * (1.0 - scl_s) / P['tau_a'])
             hstar = np.where(wet, hb2_ * sclm, hstar)
-        if not scl: scl_tg_done = False; scl_T[:] = False; scl_F[:] = 1.0
+        if not scl: scl_tg_done = False; scl_T[:] = False; scl_F[:] = 1.0; scl_Gt[:] = 1.0
         if scl and P['scl_tgt'] > 0:      # [S22] sclerotium where the cytoplasm is dense (chosen once, filled gradually)
             if not scl_tg_done:
                 hw_ = np.where(wet, np.maximum(h, 0.0), 0.0); G_ = gaussian_filter(hw_, P['scl_tgt'], mode='wrap', truncate=3.0)
                 G2_ = gaussian_filter(hw_, P['scl_tgs2'], mode='wrap', truncate=3.0) if P['scl_tgs2'] > 0 else None      # [S23]
-                lw_ = _torus_label(wet); Vt_ = float(hw_.sum()); scl_T[:] = False; scl_R[:] = 0.0; scl_F[:] = 1.0
+                lw_ = _torus_label(wet); Vt_ = float(hw_.sum()); scl_T[:] = False; scl_R[:] = 0.0; scl_F[:] = 1.0; scl_Gt[:] = 1.0
                 for b_ in range(1, int(lw_.max()) + 1):
                     bm_ = lw_ == b_; Vb_ = float(hw_[bm_].sum())
                     if Vb_ < 0.03 * Vt_: continue
@@ -641,7 +645,12 @@ def run(name, over):
                         ob_ = bm_ & ~Tb_
                         if ob_.any():
                             dmx_ = max(int(D_[ob_].max()), 1); dn_ = np.where(D_[ob_] > 0, D_[ob_] / dmx_, 1.0)
-                            scl_F[ob_] = np.exp((1.0 - dn_) * np.log(P['scl_dfn']) + dn_ * np.log(P['scl_dff']))
+                            if P['scl_dord'] >= 2:      # F * (tc + scl_age tc^2 / (2 scl_tgramp)) = tau_a ln(h0 / h_min): rest thickness h0 exp(-sage / tau_a) reaches h_min at tc
+                                tc_ = (1.0 - dn_) * P['scl_dtn'] + dn_ * P['scl_dtf']
+                                scl_F[ob_] = P['tau_a'] * np.log(P['h0'] / P['h_min']) / (tc_ + P['scl_age'] * tc_ ** 2 / (2.0 * max(P['scl_tgramp'], 1e-9)))
+                                scl_Gt[ob_] = max(P['scl_tgramp'], 1e-9) / np.maximum(tc_, 1e-9)      # the tube part is gone by tc too
+                            else:
+                                scl_F[ob_] = np.exp((1.0 - dn_) * np.log(P['scl_dfn']) + dn_ * np.log(P['scl_dff'])); scl_Gt[ob_] = scl_F[ob_]
                 scl_tg_done = True
             scl_g = min(1.0, (t - scl_t0) / P['scl_tgramp']) if P['scl_tgramp'] > 0 else 1.0
             scl_s = scl_T.astype(float)
@@ -652,7 +661,7 @@ def run(name, over):
         if P['tau_f'] > 0: hstar = hstar * (1 - (1 - P['h_fill'] / P['h0']) * np.exp(-age / P['tau_f']))   # new cell inflates gradually
         if P['wall_tau'] > 0: Cwall = np.where(wet, np.maximum(Cn, Cwall * np.exp(-dt / P['wall_tau'])), 0.0)
         tube = np.minimum(P['beta'] * np.sqrt(np.maximum(Cn, Cwall) if P['wall_tau'] > 0 else Cn), P['cap'])
-        if scl and P['scl_notube']: tube = (tube * (1.0 - (np.minimum(1.0, scl_g * scl_F) if P['scl_dord'] else scl_g) * (1.0 - scl_s))) if (P['scl_em'] > 0 or P['scl_tgt'] > 0) else np.where(sclcore, tube, 0.0)      # [S19] ([S22] emergent: fades over scl_emramp)
+        if scl and P['scl_notube']: tube = (tube * (1.0 - (np.minimum(1.0, scl_g * scl_Gt) if P['scl_dord'] else scl_g) * (1.0 - scl_s))) if (P['scl_em'] > 0 or P['scl_tgt'] > 0) else np.where(sclcore, tube, 0.0)      # [S19] ([S22] emergent: fades over scl_emramp)
         hbar_prev = hstar + tube          # unmodulated mean rest thickness (stretch reference for the mechanical phase feedback)
         if eps > 0:
             th_eff = theta

@@ -1,0 +1,16 @@
+long 761 y9 scl_dord=2
+long 763 y9 scl_dord=2
+long 764 y9 scl_dord=2
+long 769 y9 scl_dord=2
+slimeall 771 y9 scl_dord=2
+slimeall 771 y10 scl_dord=2 scl_dtn=170 scl_dtf=20
+slimeall 771 y11 scl_dord=2 scl_tgcap=3 scl_tggrow=1
+slimeall 772 y9 scl_dord=2
+slimeall 772 y10 scl_dord=2 scl_dtn=170 scl_dtf=20
+slimeall 772 y11 scl_dord=2 scl_tgcap=3 scl_tggrow=1
+slimeall 774 y9 scl_dord=2
+slimeall 774 y10 scl_dord=2 scl_dtn=170 scl_dtf=20
+slimeall 774 y11 scl_dord=2 scl_tgcap=3 scl_tggrow=1
+slimeall 776 y9 scl_dord=2
+slimeall 776 y10 scl_dord=2 scl_dtn=170 scl_dtf=20
+slimeall 776 y11 scl_dord=2 scl_tgcap=3 scl_tggrow=1

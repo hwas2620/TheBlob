@@ -3,7 +3,7 @@ import os, sys, json, numpy as np
 from scipy.ndimage import gaussian_filter
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, '..', 'model'))
 from ref_model import _flood_top, _torus_label, nb, RING
-def pick(h, w, s1=5, s2=0, hole=0, frac=0.7, tmin=1.2, tmax=5.0, h0=1.0):
+def pick(h, w, s1=5, s2=0, hole=0, frac=0.7, tmin=1.2, tmax=5.0, h0=1.0, grow=0):
     hw = np.where(w, np.maximum(h, 0), 0); G = gaussian_filter(hw, s1, mode='wrap', truncate=3.0); Gs = gaussian_filter(hw, s2, mode='wrap', truncate=3.0) if s2 > 0 else G
     lw = _torus_label(w); vol = np.bincount(lw.ravel(), weights=hw.ravel()); vol[0] = 0; b = int(np.argmax(vol)); bm = lw == b; Vb = float(hw[bm].sum()); fm = bm
     if hole >= 4:
@@ -17,7 +17,14 @@ def pick(h, w, s1=5, s2=0, hole=0, frac=0.7, tmin=1.2, tmax=5.0, h0=1.0):
             for dd in RING: e &= nb(cl, dd)
             cl = e
         cl |= bm; lo = _torus_label(~cl); so = np.bincount(lo.ravel()); so[0] = 0; fm = ~((lo > 0) & (lo == int(np.argmax(so))))
-    T = _flood_top(Gs, fm, int(min(fm.sum(), Vb / (h0 * tmin))), thr=frac * float(Gs[bm].max()), amin=int(Vb / (h0 * tmax)) + 1)
+    amin = int(Vb / (h0 * tmax)) + 1; Amx = int(min(fm.sum(), Vb / (h0 * tmin)))
+    T = _flood_top(Gs, fm, Amx, thr=frac * float(Gs[bm].max()), amin=(0 if grow else amin))
+    while grow and int(T.sum()) < min(amin, Amx):      # [S24] scl_tggrow
+        g2 = T.copy()
+        for dd in RING: g2 |= nb(T, dd)
+        g2 &= fm
+        if int(g2.sum()) == int(T.sum()): break
+        T = g2
     if hole >= 3:
         lo = _torus_label(~T); so = np.bincount(lo.ravel()); so[0] = 0; T = T | ((lo > 0) & (lo != int(np.argmax(so))))
     return T, Vb

@@ -1,0 +1,4 @@
+food4 762 y12 tip_fage=120
+food4 769 y12 tip_fage=120
+food4 766 y12 tip_fage=120
+food4 767 y12 tip_fage=120
