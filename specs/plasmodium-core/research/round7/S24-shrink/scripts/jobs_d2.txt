@@ -1,0 +1,13 @@
+slimeall 771 y0
+slimeall 771 y2 scl_dord=1
+slimeall 771 y3 scl_dord=1 scl_dfn=0.2 scl_dff=5
+slimeall 771 y4 scl_dord=1 scl_tgcap=3 scl_tggrow=1
+slimeall 772 y2 scl_dord=1
+slimeall 772 y3 scl_dord=1 scl_dfn=0.2 scl_dff=5
+slimeall 772 y4 scl_dord=1 scl_tgcap=3 scl_tggrow=1
+slimeall 774 y2 scl_dord=1
+slimeall 774 y3 scl_dord=1 scl_dfn=0.2 scl_dff=5
+slimeall 774 y4 scl_dord=1 scl_tgcap=3 scl_tggrow=1
+slimeall 776 y2 scl_dord=1
+slimeall 776 y3 scl_dord=1 scl_dfn=0.2 scl_dff=5
+slimeall 776 y4 scl_dord=1 scl_tgcap=3 scl_tggrow=1

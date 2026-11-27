@@ -1,0 +1,39 @@
+long     761 A  385  cur sp 0.83 c/e 2.25 cv 0.35 st 0.25 top 0.23  c3 sp 0.90 c/e 2.90 cv 0.40 st 0.31 top 0.31  q1c2 sp 0.95 c/e 2.42 cv 0.33 st 0.26 top 0.17  drop sp 0.98 c/e 2.91 cv 0.36 st 0.31 top 0.22  end sp 0.87 c/e 2.39 cv 0.36 st 0.24 top 0.11
+long     762 A  545  cur sp 0.84 c/e 2.09 cv 0.30 st 0.23 top 0.00  c3 sp 0.94 c/e 3.17 cv 0.42 st 0.20 top 0.00  q1c2 sp 0.96 c/e 2.38 cv 0.32 st 0.22 top 0.00  drop sp 0.93 c/e 3.26 cv 0.43 st 0.22 top 0.00  end sp 0.77 c/e 2.30 cv 0.42 st 0.40 top 0.01
+long     763 A  385  cur sp 0.84 c/e 2.34 cv 0.35 st 0.25 top 0.22  c3 sp 0.91 c/e 2.99 cv 0.40 st 0.30 top 0.31  q1c2 sp 0.95 c/e 2.47 cv 0.33 st 0.26 top 0.18  drop sp 0.98 c/e 2.90 cv 0.36 st 0.32 top 0.22  end sp 0.88 c/e 2.31 cv 0.33 st 0.26 top 0.04
+long     764 A  459  cur sp 0.81 c/e 2.12 cv 0.33 st 0.21 top 0.00  c3 sp 0.90 c/e 3.15 cv 0.43 st 0.21 top 0.08  q1c2 sp 0.95 c/e 2.41 cv 0.32 st 0.22 top 0.00  drop sp 0.98 c/e 3.31 cv 0.40 st 0.23 top 0.00  end sp 0.82 c/e 2.13 cv 0.33 st 0.21 top 0.00
+long     765 A  434  cur sp 0.90 c/e 2.19 cv 0.32 st 0.22 top 0.00  c3 sp 0.95 c/e 3.17 cv 0.42 st 0.23 top 0.11  q1c2 sp 0.97 c/e 2.39 cv 0.32 st 0.23 top 0.00  drop sp 0.97 c/e 3.09 cv 0.39 st 0.26 top 0.05  end sp 0.92 c/e 2.27 cv 0.32 st 0.23 top 0.00
+long     766 A  430  cur sp 0.88 c/e 2.28 cv 0.33 st 0.22 top 0.03  c3 sp 0.95 c/e 3.14 cv 0.41 st 0.26 top 0.14  q1c2 sp 0.97 c/e 2.48 cv 0.33 st 0.23 top 0.03  drop sp 0.95 c/e 3.11 cv 0.40 st 0.27 top 0.11  end sp 0.79 c/e 2.15 cv 0.34 st 0.29 top 0.00
+long     767 A  385  cur sp 0.80 c/e 2.16 cv 0.34 st 0.25 top 0.20  c3 sp 0.87 c/e 2.78 cv 0.39 st 0.31 top 0.30  q1c2 sp 0.94 c/e 2.37 cv 0.32 st 0.26 top 0.17  drop sp 0.98 c/e 2.90 cv 0.36 st 0.32 top 0.22  end sp 0.83 c/e 2.09 cv 0.32 st 0.25 top 0.04
+long     768 A  346  cur sp 0.87 c/e 2.16 cv 0.32 st 0.25 top 0.10  c3 sp 0.92 c/e 2.86 cv 0.39 st 0.30 top 0.24  q1c2 sp 0.96 c/e 2.36 cv 0.32 st 0.26 top 0.10  drop sp 0.98 c/e 2.95 cv 0.37 st 0.31 top 0.16  end sp 0.93 c/e 2.44 cv 0.35 st 0.23 top 0.10
+long     769 A  405  cur sp 0.78 c/e 1.93 cv 0.31 st 0.25 top 0.06  c3 sp 0.89 c/e 2.70 cv 0.38 st 0.27 top 0.19  q1c2 sp 0.95 c/e 2.28 cv 0.31 st 0.24 top 0.04  drop sp 0.99 c/e 3.12 cv 0.38 st 0.27 top 0.14  end sp 0.86 c/e 1.80 cv 0.25 st 0.25 top 0.00
+long     770 A  504  cur sp 0.79 c/e 2.30 cv 0.40 st 0.24 top 0.00  c3 sp 0.88 c/e 3.32 cv 0.48 st 0.24 top 0.06  q1c2 sp 0.93 c/e 2.40 cv 0.35 st 0.26 top 0.00  drop sp 0.95 c/e 2.94 cv 0.39 st 0.29 top 0.00  end sp 0.84 c/e 2.04 cv 0.32 st 0.30 top 0.02
+slimeall 771 A  627  cur sp 0.71 c/e 1.86 cv 0.32 st 0.20 top 0.00  c3 sp 0.84 c/e 2.79 cv 0.43 st 0.20 top 0.00  q1c2 sp 0.90 c/e 2.20 cv 0.31 st 0.21 top 0.00  drop sp 0.95 c/e 3.14 cv 0.41 st 0.23 top 0.00  end sp 0.86 c/e 1.88 cv 0.26 st 0.27 top 0.00
+slimeall 772 A  608  cur sp 0.93 c/e 1.82 cv 0.23 st 0.22 top 0.00  c3 sp 0.98 c/e 2.81 cv 0.35 st 0.20 top 0.00  q1c2 sp 0.98 c/e 2.26 cv 0.28 st 0.20 top 0.00  drop sp 0.98 c/e 3.47 cv 0.41 st 0.20 top 0.00  end sp 0.87 c/e 2.02 cv 0.28 st 0.17 top 0.00
+slimeall 773 A  715  cur sp 0.70 c/e 1.60 cv 0.23 st 0.30 top 0.00  c3 sp 0.89 c/e 2.44 cv 0.33 st 0.25 top 0.00  q1c2 sp 0.95 c/e 2.08 cv 0.26 st 0.24 top 0.00  drop sp 0.96 c/e 3.29 cv 0.40 st 0.22 top 0.00  end sp 0.91 c/e 1.86 cv 0.24 st 0.23 top 0.00
+slimeall 774 A  599  cur sp 0.76 c/e 1.74 cv 0.26 st 0.22 top 0.00  c3 sp 0.89 c/e 2.66 cv 0.37 st 0.21 top 0.00  q1c2 sp 0.94 c/e 2.18 cv 0.29 st 0.22 top 0.00  drop sp 0.97 c/e 3.35 cv 0.41 st 0.22 top 0.00  end sp 0.61 c/e 1.53 cv 0.26 st 0.29 top 0.00
+slimeall 775 A  569  cur sp 0.80 c/e 1.64 cv 0.21 st 0.31 top 0.00  c3 sp 0.93 c/e 2.51 cv 0.33 st 0.26 top 0.00  q1c2 sp 0.97 c/e 2.12 cv 0.27 st 0.24 top 0.00  drop sp 0.98 c/e 3.36 cv 0.40 st 0.22 top 0.00  end sp 0.69 c/e 1.52 cv 0.20 st 0.35 top 0.00
+slimeall 776 A  460  cur sp 0.72 c/e 1.76 cv 0.28 st 0.24 top 0.00  c3 sp 0.87 c/e 2.67 cv 0.38 st 0.22 top 0.00  q1c2 sp 0.94 c/e 2.19 cv 0.29 st 0.22 top 0.00  drop sp 0.99 c/e 3.31 cv 0.40 st 0.22 top 0.00  end sp 0.91 c/e 1.93 cv 0.26 st 0.23 top 0.00
+long 781 skip FileNotFoundError
+long 782 skip FileNotFoundError
+long 783 skip FileNotFoundError
+long 784 skip FileNotFoundError
+long 785 skip FileNotFoundError
+long 786 skip FileNotFoundError
+long     787 A  391  cur sp 0.86 c/e 2.04 cv 0.29 st 0.23 top 0.08  c3 sp 0.93 c/e 2.77 cv 0.37 st 0.28 top 0.23  q1c2 sp 0.97 c/e 2.33 cv 0.30 st 0.24 top 0.09  drop sp 0.99 c/e 3.02 cv 0.37 st 0.30 top 0.20  end sp 0.89 c/e 1.95 cv 0.27 st 0.23 top 0.01
+long 788 skip FileNotFoundError
+long 789 skip FileNotFoundError
+long 790 skip FileNotFoundError
+slimeall 791 skip FileNotFoundError
+slimeall 792 skip FileNotFoundError
+slimeall 793 skip FileNotFoundError
+slimeall 794 skip FileNotFoundError
+slimeall 795 skip FileNotFoundError
+slimeall 796 skip FileNotFoundError
+
+변형별: 7(f) 실패 수 / 판, sp 최소, c/e 최소, cv 최소·중앙, 위 한도 칸 몫 최대
+  cur   실패 0/17 []  sp 최소 0.70  c/e 최소 1.60  cv 최소 0.21 중앙 0.32  top 최대 0.23
+  c3    실패 0/17 []  sp 최소 0.84  c/e 최소 2.44  cv 최소 0.33 중앙 0.39  top 최대 0.31
+  q1c2  실패 0/17 []  sp 최소 0.90  c/e 최소 2.08  cv 최소 0.26 중앙 0.32  top 최대 0.18
+  drop  실패 0/17 []  sp 최소 0.93  c/e 최소 2.90  cv 최소 0.36 중앙 0.40  top 최대 0.22
+  end   실패 0/17 []  sp 최소 0.61  c/e 최소 1.52  cv 최소 0.20 중앙 0.32  top 최대 0.11
