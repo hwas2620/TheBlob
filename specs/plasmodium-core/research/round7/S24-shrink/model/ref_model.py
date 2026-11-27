@@ -118,8 +118,12 @@ DEF = dict(
     scl_dff=3.0,   # [S24] ageing factor of the farthest outside cells
                    #      scl_dord=2: instead, F is set so that a fresh cell (sage 0) reaches the drying rest thickness h_min at a time linear in d:
                    #      scl_dtf for the farthest cells, scl_dtn for the cells next to the region (one ring of the body after another)
+                   #      scl_dord=3: as 2, and an outside cell is drawn in at the rim only once its own drying time tc has passed (not when its rest thickness
+                   #      falls below h_min: a long-starved body is old everywhere and would otherwise be drawn in all at once)
     scl_dtn=140.0, # [S24] scl_dord=2: drying time of the cells next to the region
     scl_dtf=30.0,  # [S24] scl_dord=2: drying time of the farthest cells
+    scl_hstep=0,   # [S24] >0: while a sclerotium forms, a dry cell of the region wets only on its colour of the 4-colouring and only every scl_hstep-th round of 4 steps
+                   #      (holes the region encloses close one ring at a time, about every 0.4 * scl_hstep time units, instead of within a few hours)
     scl_tggrow=0,  # [S24] 1: when the dense part is smaller than the least area, the region grows by whole rings (one-cell dilation inside the body) until it holds it, instead of
                    #      flooding to exactly that many cells (bodies of the same volume no longer get the same cell count)
     scl_tgcap=0.0, # [S23] >0: the rest thickness R is also multiplied by (1 + scl_tgcap * u / max u), u the drop shape of the region (-Lap u = 1 inside, 0 at the rim): a body that was evenly thin
@@ -359,7 +363,7 @@ def run(name, over):
     age = np.zeros((N, N)); sage = np.zeros((N, N)); slime = np.zeros((N, N)); twet = np.full((N, N), -1.0); twet[wet] = 0.0
     Cpk = np.zeros((N, N))
     Cwall = np.zeros((N, N))     # [S5] remembered conductance of the tube wall
-    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_drawn = False; scl_t0 = 0.0; sclcore = np.zeros((N, N), bool); sclm = np.ones((N, N)); scl_s = np.zeros((N, N)); scl_g = 0.0; scl_T = np.zeros((N, N), bool); scl_R = np.zeros((N, N)); scl_F = np.ones((N, N)); scl_Gt = np.ones((N, N)); scl_tg_done = False; sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
+    Qema = [np.zeros((N, N)) for _ in DIRS]; supm = np.ones((N, N)); hangm = np.zeros((N, N), bool); nhang = 0; t_kept = np.full((N, N), -1e18); scl = False; scl_drawn = False; scl_t0 = 0.0; sclcore = np.zeros((N, N), bool); sclm = np.ones((N, N)); scl_s = np.zeros((N, N)); scl_g = 0.0; scl_T = np.zeros((N, N), bool); scl_R = np.zeros((N, N)); scl_F = np.ones((N, N)); scl_Gt = np.ones((N, N)); scl_tc = np.full((N, N), np.inf); scl_tg_done = False; sclgrow = np.zeros((N, N), bool); scl_below = 0.0; t_scl = None; scl_steps = 0; ff_ema = 1.0; sup_steps = 0; sup_spared = 0; sup_log = []   # [S7] EMA of edge flux, ageing factor
     neck = np.zeros((N, N), bool); neckp = np.zeros((N, N), bool); neck_steps = 0; neck_cells = 0   # [S5] kept link: thin cells (neck) and the whole path incl. its ends (neckp)
     stall = np.zeros((N, N)); fan_log = []      # [R4] per-cell stall clock (inherited by newly wet cells from their donor)
     if P['slime0'] == 'half': slime[(X < c0) & ~wet] = 1.0
@@ -585,12 +589,12 @@ def run(name, over):
                 scl_s = np.clip((sclm - 1.0) / max(P['scl_emH'] - 1.0, 1e-9), 0.0, 1.0)
             hb2_ = P['h_old'] + (P['h0'] * Hfac - P['h_old']) * np.exp(-sage * (1.0 - scl_s) / P['tau_a'])
             hstar = np.where(wet, hb2_ * sclm, hstar)
-        if not scl: scl_tg_done = False; scl_T[:] = False; scl_F[:] = 1.0; scl_Gt[:] = 1.0
+        if not scl: scl_tg_done = False; scl_T[:] = False; scl_F[:] = 1.0; scl_Gt[:] = 1.0; scl_tc[:] = np.inf
         if scl and P['scl_tgt'] > 0:      # [S22] sclerotium where the cytoplasm is dense (chosen once, filled gradually)
             if not scl_tg_done:
                 hw_ = np.where(wet, np.maximum(h, 0.0), 0.0); G_ = gaussian_filter(hw_, P['scl_tgt'], mode='wrap', truncate=3.0)
                 G2_ = gaussian_filter(hw_, P['scl_tgs2'], mode='wrap', truncate=3.0) if P['scl_tgs2'] > 0 else None      # [S23]
-                lw_ = _torus_label(wet); Vt_ = float(hw_.sum()); scl_T[:] = False; scl_R[:] = 0.0; scl_F[:] = 1.0; scl_Gt[:] = 1.0
+                lw_ = _torus_label(wet); Vt_ = float(hw_.sum()); scl_T[:] = False; scl_R[:] = 0.0; scl_F[:] = 1.0; scl_Gt[:] = 1.0; scl_tc[:] = np.inf
                 for b_ in range(1, int(lw_.max()) + 1):
                     bm_ = lw_ == b_; Vb_ = float(hw_[bm_].sum())
                     if Vb_ < 0.03 * Vt_: continue
@@ -649,6 +653,7 @@ def run(name, over):
                                 tc_ = (1.0 - dn_) * P['scl_dtn'] + dn_ * P['scl_dtf']
                                 scl_F[ob_] = P['tau_a'] * np.log(P['h0'] / P['h_min']) / (tc_ + P['scl_age'] * tc_ ** 2 / (2.0 * max(P['scl_tgramp'], 1e-9)))
                                 scl_Gt[ob_] = max(P['scl_tgramp'], 1e-9) / np.maximum(tc_, 1e-9)      # the tube part is gone by tc too
+                                scl_tc[ob_] = tc_
                             else:
                                 scl_F[ob_] = np.exp((1.0 - dn_) * np.log(P['scl_dfn']) + dn_ * np.log(P['scl_dff'])); scl_Gt[ob_] = scl_F[ob_]
                 scl_tg_done = True
@@ -950,7 +955,7 @@ def run(name, over):
             for q in (0, 2, 4, 6): Ncr_ += xr_[q].astype(np.int8) - (xr_[q] & xr_[q + 1] & xr_[(q + 2) % 8]).astype(np.int8)
             for q in range(8): ndr_ += xr_[q]
             thin_ok_ = (h < P['ret_h']) | ((ndr_ == 7) if P['ret_tip'] else False)      # [S13] ndr_ == 7: exactly one wet neighbour
-            retm = wet & (ndr_ > 0) & ((Ncr_ <= 1) | (P['ret_glob'] > 0)) & thin_ok_ & ((hbar_prev < P['h_min']) | ((ndr_ == 7) if P['ret_tipfree'] else False) | (((ndr_ >= 5) & (Ncr_ == 1) & (h < P['tip_h'])) if P['ret_tipfree'] >= 2 else False)) & (age > P['grace']) & (colour == step % 4)
+            retm = wet & (ndr_ > 0) & ((Ncr_ <= 1) | (P['ret_glob'] > 0)) & thin_ok_ & (((~scl_T & ((t - scl_t0) >= scl_tc)) if (scl and P['scl_tgt'] > 0 and P['scl_dord'] >= 3) else (hbar_prev < P['h_min'])) | ((ndr_ == 7) if P['ret_tipfree'] else False) | (((ndr_ >= 5) & (Ncr_ == 1) & (h < P['tip_h'])) if P['ret_tipfree'] >= 2 else False)) & (age > P['grace']) & (colour == step % 4)
             if fed_r_: retm &= ((ndr_ == 7) | ((((ndr_ >= 5) & (Ncr_ == 1) & (h < P['tip_h'])) if P['ret_tipfree'] >= 2 else False))) & ((t - twet) > P['tip_fage'])      # [S23] fed: only thread ends (tip_fage: only stalled ones, wet for longer than this)
             if scl and P['scl_rstep'] > 1 and (step // 4) % int(P['scl_rstep']) != 0: retm[:] = False      # [S20] slower rim retraction in a sclerotium
             if P['tip_home'] and P['ret_tipfree']:      # [S21] thread ends among the retracting cells
@@ -1130,6 +1135,7 @@ def run(name, over):
         if scl and P['scl_tgt'] > 0 and P['scl_hole'] > 0: yld = np.where(scl_T, yld - P['y_s'] * slime, yld)      # [S23] the sclerotium covers its own slime
         cand = ~wet & (ptest > yld)
         if scl and P['scl_tgt'] > 0 and P['scl_hole'] >= 2: cand |= ~wet & scl_T & (nw >= 5) & np.isfinite(pmax)      # [S23] enclosed holes in the region close
+        if scl and P['scl_tgt'] > 0 and P['scl_hstep'] > 0: cand &= (colour == step % 4) & ((step // 4) % int(P['scl_hstep']) == 0)      # [S24] slow closing of the region's holes
         if scl: cand &= scl_T if P['scl_tgt'] > 0 else False if P['scl_em'] > 0 else sclcore if (P['scl_disc'] and not P['scl_nowet']) else (sclgrow if (P['scl_dens'] > 0 and P['scl_dgrow']) else False)      # [S18] a sclerotium does not extend (with scl_disc: only into its round core)
         if cand.any():
             ys, xs = np.nonzero(cand); a = arg[ys, xs]
