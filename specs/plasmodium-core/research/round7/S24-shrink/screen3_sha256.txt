@@ -1,0 +1,13 @@
+# S24 셋째 거르기 기준 잠금 (첫 실행 전). 만든 시각(UTC): 2026-11-27T23:37:45Z
+a35cff52f95f7b8515387ac84a1bfb04f02e6ca31d6b56a2e6c36803c559a41a  SCREEN3.md
+3bf2c0b7b7a375bd3cd46a3ed785469a6a93bbac2b55e01871f3eb1e152d100a  scripts/screen3_s24.py
+e8d7b3b4b520f8f4b6e826f8d9cc8f9a5e96e50566a169b0b093cc2e0f9f8f16  scripts/run_one.sh
+106cb0b5e2f1472573c0d502ef6cde288edff2b06ecaa2049af8bf70f9a9a3bb  scripts/jobs_screen3.txt
+5d978ebfd54b85f615f7137a1e8a8cd265c3fb3427d82c67abd60c00550716b3  scripts/sclform.py
+eb306a3d02d3c737d4dd70549d3754b41b05969b59cc85203283403a2335293a  model/ref_model.py
+d04736d1226efcf1f0e2675426192e3b23b3e023164dc248eac415e2bb9d7b2d  model/export_ref.py
+a1d19ef4fce25456d75e1656b25da4c1beb3dc231f7431374f89558eaa1b5fe8  model/graphm.py
+22a44dd1f1e85751c543525779978eb9153b7bb201a3ecc081be0e445b558e83  model/mgt.py
+d58b7fdd1b3aba320aae35169d5c16c86187f30c815295b3db7b97dc40b790bb  ../S23-fix/verify8/scripts/measure.py
+f7a84cbec3de8b5f0825bbf3cea6f899bb2411cf7021ddaa8ddc4efa9185360a  ../S16-dumbbell/verify/scripts/vlib.py
+05abc143f3e4cfedaf3edc63ee15eb7b08757cc492847618f986a6152415af83  ../S16-dumbbell/verify2/scripts/measure.py
