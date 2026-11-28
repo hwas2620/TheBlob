@@ -1,0 +1,60 @@
+long 1011 y9 scl_tgs2=5 scl_tgrad=1.6
+long 1012 y9 scl_tgs2=5 scl_tgrad=1.6
+long 1013 y9 scl_tgs2=5 scl_tgrad=1.6
+long 1014 y9 scl_tgs2=5 scl_tgrad=1.6
+mig 1015 s25d
+mig 1015 y7 tri_dir=1
+mig 1016 s25d
+mig 1016 y7 tri_dir=1
+mig 1017 s25d
+mig 1017 y7 tri_dir=1
+mig 1018 s25d
+mig 1018 y7 tri_dir=1
+mig 1019 s25d
+mig 1019 y7 tri_dir=1
+mig 1020 s25d
+mig 1020 y7 tri_dir=1
+mig 1021 s25d
+mig 1021 y7 tri_dir=1
+mig 1022 s25d
+mig 1022 y7 tri_dir=1
+mig 1023 s25d
+mig 1023 y7 tri_dir=1
+mig 1024 s25d
+mig 1024 y7 tri_dir=1
+mig 1025 s25d
+mig 1025 y7 tri_dir=1
+mig 1026 s25d
+mig 1026 y7 tri_dir=1
+mig 1027 s25d
+mig 1027 y7 tri_dir=1
+mig 1028 s25d
+mig 1028 y7 tri_dir=1
+mig 1029 s25d
+mig 1029 y7 tri_dir=1
+mig 1030 s25d
+mig 1030 y7 tri_dir=1
+mig 1031 s25d
+mig 1031 y7 tri_dir=1
+mig 1032 s25d
+mig 1032 y7 tri_dir=1
+mig 1033 s25d
+mig 1033 y7 tri_dir=1
+mig 1034 s25d
+mig 1034 y7 tri_dir=1
+mig 1035 s25d
+mig 1035 y7 tri_dir=1
+mig 1036 s25d
+mig 1036 y7 tri_dir=1
+mig 1037 s25d
+mig 1037 y7 tri_dir=1
+mig 1038 s25d
+mig 1038 y7 tri_dir=1
+mig 1039 s25d
+mig 1039 y7 tri_dir=1
+mig 1040 s25d
+mig 1040 y7 tri_dir=1
+mig 1041 s25d
+mig 1041 y7 tri_dir=1
+mig 1042 s25d
+mig 1042 y7 tri_dir=1

@@ -1,0 +1,27 @@
+slimeall 1001 y11 scl_tgs2=3 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1001 y12 scl_tgs2=5 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1001 y13 scl_tgs2=3 scl_tgrad=1.6 scl_tgamin=1 gm_every=5
+slimeall 1002 y11 scl_tgs2=3 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1002 y12 scl_tgs2=5 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1002 y13 scl_tgs2=3 scl_tgrad=1.6 scl_tgamin=1 gm_every=5
+slimeall 1003 y11 scl_tgs2=3 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1003 y12 scl_tgs2=5 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1003 y13 scl_tgs2=3 scl_tgrad=1.6 scl_tgamin=1 gm_every=5
+slimeall 1004 y11 scl_tgs2=3 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1004 y12 scl_tgs2=5 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1004 y13 scl_tgs2=3 scl_tgrad=1.6 scl_tgamin=1 gm_every=5
+slimeall 1005 y11 scl_tgs2=3 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1005 y12 scl_tgs2=5 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1005 y13 scl_tgs2=3 scl_tgrad=1.6 scl_tgamin=1 gm_every=5
+slimeall 1006 y11 scl_tgs2=3 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1006 y12 scl_tgs2=5 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1006 y13 scl_tgs2=3 scl_tgrad=1.6 scl_tgamin=1 gm_every=5
+slimeall 1007 y11 scl_tgs2=3 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1007 y12 scl_tgs2=5 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1007 y13 scl_tgs2=3 scl_tgrad=1.6 scl_tgamin=1 gm_every=5
+slimeall 1008 y11 scl_tgs2=3 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1008 y12 scl_tgs2=5 scl_tgrad=1.3 scl_tgamin=1 gm_every=5
+slimeall 1008 y13 scl_tgs2=3 scl_tgrad=1.6 scl_tgamin=1 gm_every=5
+slimeall 1201 y11 scl_tgs2=3 scl_tgrad=1.3 scl_tgamin=1 gm_every=5 R_init=15
+slimeall 1201 y12 scl_tgs2=5 scl_tgrad=1.3 scl_tgamin=1 gm_every=5 R_init=15
+slimeall 1201 y13 scl_tgs2=3 scl_tgrad=1.6 scl_tgamin=1 gm_every=5 R_init=15

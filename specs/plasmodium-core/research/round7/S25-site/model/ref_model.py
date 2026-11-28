@@ -131,6 +131,8 @@ DEF = dict(
                    #      (holes the region encloses close one ring at a time, about every 0.4 * scl_hstep time units, instead of within a few hours)
     scl_hcol=0,    # [S24] 1 (with scl_hstep): only one colour of the 4-colouring per opening, in turn (a ring of a hole closes over 4 openings, 1.6 * scl_hstep time units)
     scl_tgrad=0.0, # [S25] >0: the region's flood stays within this many least-lump radii (sqrt(least area / pi)) of its seed; the ring growth after it does not
+    scl_tgamin=0,  # [S25] 1 (with scl_tggrow): the flood itself goes on to the least area along the densest cells (ring growth only if it runs out of cells)
+    scl_tgseed=0.0, # [S25] >0: the region's flood starts at the densest body cell on the thickness blurred over this many cells
     tip_kc=0,      # [S25] 1: a retracting thread end is not held by keep_conn's run test (its thin thread was one drying run with the body's other thin cells, so the whole run, end included, was kept: stalled tails crept back one cell per ~5 h)
     scl_tggrow=0,  # [S24] 1: when the dense part is smaller than the least area, the region grows by whole rings (one-cell dilation inside the body) until it holds it, instead of
                    #      flooding to exactly that many cells (bodies of the same volume no longer get the same cell count)
@@ -284,12 +286,12 @@ def _torus_label(mask):
     return comp[lab]
 
 
-def _flood_top(G, mask, A, thr=None, amin=0):
-    """[S22] A cells of mask, one 8-connected region (torus): start at the largest G and keep adding the neighbour with the largest G"""
+def _flood_top(G, mask, A, thr=None, amin=0, seed=None):
+    """[S22] A cells of mask, one 8-connected region (torus): start at the largest G (or at seed, [S25]) and keep adding the neighbour with the largest G"""
     import heapq
     N0, N1 = G.shape; out = np.zeros((N0, N1), bool); fi = np.flatnonzero(mask)
     if fi.size == 0: return out
-    s0 = int(fi[np.argmax(G.ravel()[fi])]); hp = [(-float(G.ravel()[s0]), s0)]; seen = {s0}; n = 0
+    s0 = int(fi[np.argmax(G.ravel()[fi])]) if seed is None else int(seed); hp = [(-float(G.ravel()[s0]), s0)]; seen = {s0}; n = 0
     while hp and n < A:
         g_, c = heapq.heappop(hp)
         if thr is not None and n >= amin and -g_ < thr: break
@@ -627,12 +629,14 @@ def run(name, over):
                             cl_ |= bm_; lo_ = _torus_label(~cl_); so_ = np.bincount(lo_.ravel()); so_[0] = 0
                             fm_ = ~((lo_ > 0) & (lo_ == int(np.argmax(so_))))
                         amin_ = int(Vb_ / (P['h0'] * (P['scl_tgfill'] if P['scl_tgfill'] > 0 else P['scl_tgmax']))) + 1; Amx_ = int(min(fm_.sum(), Vb_ / (P['h0'] * P['scl_tgmin'])))
-                        fmr_ = fm_
+                        fmr_ = fm_; sd_ = None
+                        if P['scl_tgseed'] > 0:      # [S25] the flood starts at the densest cell on a finer blur (sigma scl_tgseed): the locally densest place, not the centre of the wide gathering
+                            Gq_ = gaussian_filter(hw_, P['scl_tgseed'], mode='wrap', truncate=3.0); fq_ = np.flatnonzero(bm_); sd_ = int(fq_[np.argmax(Gq_.ravel()[fq_])])
                         if P['scl_tgrad'] > 0:      # [S25] the flood stays within scl_tgrad x the least lump radius of its seed (a dense rim band no longer bends the lump into a C)
-                            fi2_ = np.flatnonzero(fm_); sy_, sx_ = divmod(int(fi2_[np.argmax(Gs_.ravel()[fi2_])]), N)
+                            fi2_ = np.flatnonzero(fm_); sy_, sx_ = divmod(int(fi2_[np.argmax(Gs_.ravel()[fi2_])]) if sd_ is None else sd_, N)
                             dyy_ = (np.arange(N)[:, None] - sy_ + N // 2) % N - N // 2; dxx_ = (np.arange(N)[None, :] - sx_ + N // 2) % N - N // 2
                             fmr_ = fm_ & (dyy_ ** 2 + dxx_ ** 2 <= (P['scl_tgrad'] ** 2) * max(amin_, 1) / np.pi)
-                        Tb_ = _flood_top(Gs_, fmr_, Amx_, thr=P['scl_tgfrac'] * float(Gs_[bm_].max()), amin=(0 if P['scl_tggrow'] else amin_))
+                        Tb_ = _flood_top(Gs_, fmr_, Amx_, thr=P['scl_tgfrac'] * (float(Gs_[bm_].max()) if sd_ is None else float(Gs_.ravel()[sd_])), amin=(0 if (P['scl_tggrow'] and not P['scl_tgamin']) else amin_), seed=sd_)
                         if P['scl_tggrow']:      # [S24] grow by whole rings inside the body until the least area is held
                             while int(Tb_.sum()) < min(amin_, Amx_):
                                 g2_ = Tb_.copy()
