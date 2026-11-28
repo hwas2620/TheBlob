@@ -145,6 +145,7 @@ DEF = dict(
     mg_om=0.8, mg_nu=2,   # [S22] Jacobi weight and pre/post smoothing sweeps of the pressure multigrid
     mgdump=0,      # [S22] k>0: save the pressure-solver inputs every k steps to runs/<name>/mgdump/ (for solver tests)
     mg_deep=0.0,   # [S21] >0: the multigrid over-correction (1/1.5 on edge weights) is applied at the first coarsening only; deeper levels use 1/mg_deep (1.0 = Galerkin). 0 = old (1/1.5 at every level, compounding)
+    tri_chi=1,     # [S25] sense of the pattern's gradient rotation: 1 counter-clockwise (as before), -1 clockwise, 2 per-seed random (with tri_rnd)
     tri_dir=0,     # [S25] 1 (with tri_rnd): the pattern drifts in a per-seed random direction instead of (+-1, +-0.618)
     tri_rnd=0,     # [S21] 1: the pulse pattern (tri_k) gets a per-seed random spatial offset (x, y in [0, tri_P)), time offset (in [0, tri_T)) and drift signs (x, y), so runs do not all start from the same place in the pattern
     tip_h=0.6,     # [S21] with ret_tipfree=2: a cell thinner than this whose wet 8-neighbours (at most 3) form one run around it (Yokoi number 1) is also a thread end
@@ -330,6 +331,9 @@ def run(name, over):
     if P['tri_rnd']:        # [S21] own stream: the other random streams are unchanged
         _rt = np.random.default_rng(P['seed'] + 15485863)
         tri_ox, tri_oy = (float(v) for v in _rt.uniform(0.0, P['tri_P'], 2)); tri_t0 = float(_rt.uniform(0.0, P['tri_T'])); tri_sx, tri_sy = (1.0 if v < 0.5 else -1.0 for v in _rt.random(2))
+        tri_ch = 1.0      # [S25] sense of the gradient's rotation: +1 counter-clockwise (as before), -1 clockwise, tri_chi=2: a per-seed random sense
+        if P['tri_chi'] in (-1, 1): tri_ch = float(P['tri_chi'])
+        elif P['tri_chi'] == 2: tri_ch = 1.0 if np.random.default_rng(P['seed'] + 49979687).random() < 0.5 else -1.0
         if P['tri_dir']:      # [S25] drift in a per-seed random direction (same speed): with the drift always along +-31.7 deg (vy = 0.618 vx), a migration toward an attractor near that axis was pulled onto it (+4.9 deg mean error, +0.4 deg otherwise)
             _bd = float(np.random.default_rng(P['seed'] + 32452843).uniform(0.0, 2.0 * np.pi)); _vm = float(np.hypot(1.0, 0.618))
             tri_sx = _vm * np.cos(_bd); tri_sy = _vm * np.sin(_bd) / 0.618
@@ -711,7 +715,7 @@ def run(name, over):
                 _tri = lambda u: np.abs(((u + P['tri_P'] / 2) % P['tri_P']) - P['tri_P'] / 2) - P['tri_P'] / 4
                 if P['tri_rnd']:
                     ph_ = 2 * np.pi * (t + tri_t0) / P['tri_T']
-                    th_eff = th_eff + P['tri_k'] * (np.cos(ph_) * _tri(X - tri_ox - tri_sx * P['tri_v'] * t) + np.sin(ph_) * _tri(Y - tri_oy - tri_sy * 0.618 * P['tri_v'] * t))
+                    th_eff = th_eff + P['tri_k'] * (np.cos(ph_) * _tri(X - tri_ox - tri_sx * P['tri_v'] * t) + tri_ch * np.sin(ph_) * _tri(Y - tri_oy - tri_sy * 0.618 * P['tri_v'] * t))
                 else:
                     th_eff = th_eff + P['tri_k'] * (np.cos(2 * np.pi * t / P['tri_T']) * _tri(X - P['tri_v'] * t) + np.sin(2 * np.pi * t / P['tri_T']) * _tri(Y - 0.618 * P['tri_v'] * t))
             if P['ph_noise'] > 0:

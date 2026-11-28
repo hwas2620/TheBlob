@@ -8,6 +8,7 @@ G="$W scl_stay=1 scl_rundry=1 dlim_all=1 scl_notube=1 t_eat0=50 ret_tipfree=1 su
 case "$tag" in
   s25c)  extra="";;                  # 지금 모델
   s25d)  extra="$G mg_deep=0 mg_pcg=1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_tgt=5 scl_tgfrac=0.7 scl_tgq=2 scl_tgmin=1.2 scl_tgflood=1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4 tip_fed=1 tip_fage=60 mg_guard=2 mg_kadapt=0.2 mg_kmax=4 scl_tgcap=1 scl_tgfill=3.5 scl_dord=6 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1";;   # S24 후보 s24d 그대로 (S25 의 출발점)
+  s25a)  extra="$G mg_deep=0 mg_pcg=1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_tgt=5 scl_tgfrac=0.7 scl_tgq=2 scl_tgmin=1.2 scl_tgflood=1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4 tip_fed=1 tip_fage=60 mg_guard=2 mg_kadapt=0.2 mg_kmax=4 scl_tgcap=1 scl_tgfill=3.5 scl_dord=6 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1 scl_tgs2=5 scl_tgrad=1.6 scl_tgfrac=0.7";;   # S25 후보: s24d + 균핵 자리를 σ 5로 흐린 두께가 가장 짙은 곳에서, 시작 칸에서 1.6 x 가장 작은 덩이 반지름 안, 문턱 0.7
   y*)    extra="$G mg_deep=0 mg_pcg=1 scl_disc=0 scl_star=0 scl_freeze=0 scl_Hramp=0 scl_nofis=1 scl_tgt=5 scl_tgfrac=0.7 scl_tgq=2 scl_tgmin=1.2 scl_tgflood=1 scl_tgs2=10 scl_tgfrac=0.8 scl_hole=4 tip_fed=1 tip_fage=60 mg_guard=2 mg_kadapt=0.2 mg_kmax=4 scl_tgcap=1 scl_tgfill=3.5 scl_dord=6 scl_dtn=120 scl_dtf=20 scl_tgcap=3 scl_tggrow=1 scl_rstep=1 scl_hstep=25 scl_hcol=1";;   # 진단: s24d + 명령줄 덧붙임
   *) echo "bad tag $tag"; exit 2;;
 esac
