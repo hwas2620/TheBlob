@@ -1,0 +1,23 @@
+food4 1001 y1 tip_kc=1
+food4 1002 y1 tip_kc=1
+food4 1003 y1 tip_kc=1
+food4 1004 y1 tip_kc=1
+slimeall 1001 y2 scl_tgs2=3 gm_every=5
+slimeall 1002 y2 scl_tgs2=3 gm_every=5
+slimeall 1003 y2 scl_tgs2=3 gm_every=5
+slimeall 1004 y2 scl_tgs2=3 gm_every=5
+slimeall 1201 y2 scl_tgs2=3 gm_every=5 R_init=15
+slimeall 1001 y3 scl_tgs2=5 gm_every=5
+slimeall 1002 y3 scl_tgs2=5 gm_every=5
+slimeall 1003 y3 scl_tgs2=5 gm_every=5
+slimeall 1004 y3 scl_tgs2=5 gm_every=5
+slimeall 1201 y3 scl_tgs2=5 gm_every=5 R_init=15
+food3 1001 y1 tip_kc=1
+food3 1002 y1 tip_kc=1
+asym3 1001 y1 tip_kc=1
+asym3 1002 y1 tip_kc=1
+slimeall 1001 y4 scl_tgs2=7 gm_every=5
+slimeall 1002 y4 scl_tgs2=7 gm_every=5
+slimeall 1003 y4 scl_tgs2=7 gm_every=5
+slimeall 1004 y4 scl_tgs2=7 gm_every=5
+slimeall 1201 y4 scl_tgs2=7 gm_every=5 R_init=15

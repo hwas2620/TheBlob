@@ -1,0 +1,102 @@
+food4 1001 y5 ret_tipfree=2 tip_kc=1
+food4 1001 y6 ret_tipfree=2
+food4 1002 y5 ret_tipfree=2 tip_kc=1
+food4 1002 y6 ret_tipfree=2
+food4 1003 y5 ret_tipfree=2 tip_kc=1
+food4 1003 y6 ret_tipfree=2
+food4 1004 y5 ret_tipfree=2 tip_kc=1
+food4 1004 y6 ret_tipfree=2
+food3 1001 y5 ret_tipfree=2 tip_kc=1
+food3 1001 y6 ret_tipfree=2
+asym3 1001 y5 ret_tipfree=2 tip_kc=1
+asym3 1001 y6 ret_tipfree=2
+food3 1002 y5 ret_tipfree=2 tip_kc=1
+food3 1002 y6 ret_tipfree=2
+asym3 1002 y5 ret_tipfree=2 tip_kc=1
+asym3 1002 y6 ret_tipfree=2
+slimeall 1001 y8 scl_tgs2=5 scl_tgrad=1.3 gm_every=5
+slimeall 1002 y8 scl_tgs2=5 scl_tgrad=1.3 gm_every=5
+slimeall 1003 y8 scl_tgs2=5 scl_tgrad=1.3 gm_every=5
+slimeall 1004 y8 scl_tgs2=5 scl_tgrad=1.3 gm_every=5
+slimeall 1005 y8 scl_tgs2=5 scl_tgrad=1.3 gm_every=5
+slimeall 1006 y8 scl_tgs2=5 scl_tgrad=1.3 gm_every=5
+slimeall 1007 y8 scl_tgs2=5 scl_tgrad=1.3 gm_every=5
+slimeall 1008 y8 scl_tgs2=5 scl_tgrad=1.3 gm_every=5
+slimeall 1201 y8 scl_tgs2=5 scl_tgrad=1.3 gm_every=5 R_init=15
+slimeall 1001 y9 scl_tgs2=5 scl_tgrad=1.6 gm_every=5
+slimeall 1002 y9 scl_tgs2=5 scl_tgrad=1.6 gm_every=5
+slimeall 1003 y9 scl_tgs2=5 scl_tgrad=1.6 gm_every=5
+slimeall 1004 y9 scl_tgs2=5 scl_tgrad=1.6 gm_every=5
+slimeall 1005 y9 scl_tgs2=5 scl_tgrad=1.6 gm_every=5
+slimeall 1006 y9 scl_tgs2=5 scl_tgrad=1.6 gm_every=5
+slimeall 1007 y9 scl_tgs2=5 scl_tgrad=1.6 gm_every=5
+slimeall 1008 y9 scl_tgs2=5 scl_tgrad=1.6 gm_every=5
+slimeall 1201 y9 scl_tgs2=5 scl_tgrad=1.6 gm_every=5 R_init=15
+slimeall 1005 y3 scl_tgs2=5 gm_every=5
+slimeall 1006 y3 scl_tgs2=5 gm_every=5
+slimeall 1007 y3 scl_tgs2=5 gm_every=5
+slimeall 1008 y3 scl_tgs2=5 gm_every=5
+mig 1011 s25d
+mig 1011 y7 tri_dir=1
+mig 1012 s25d
+mig 1012 y7 tri_dir=1
+mig 1013 s25d
+mig 1013 y7 tri_dir=1
+mig 1014 s25d
+mig 1014 y7 tri_dir=1
+mig 1015 s25d
+mig 1015 y7 tri_dir=1
+mig 1016 s25d
+mig 1016 y7 tri_dir=1
+mig 1017 s25d
+mig 1017 y7 tri_dir=1
+mig 1018 s25d
+mig 1018 y7 tri_dir=1
+mig 1019 s25d
+mig 1019 y7 tri_dir=1
+mig 1020 s25d
+mig 1020 y7 tri_dir=1
+mig 1021 s25d
+mig 1021 y7 tri_dir=1
+mig 1022 s25d
+mig 1022 y7 tri_dir=1
+mig 1023 s25d
+mig 1023 y7 tri_dir=1
+mig 1024 s25d
+mig 1024 y7 tri_dir=1
+mig 1025 s25d
+mig 1025 y7 tri_dir=1
+mig 1026 s25d
+mig 1026 y7 tri_dir=1
+mig 1027 s25d
+mig 1027 y7 tri_dir=1
+mig 1028 s25d
+mig 1028 y7 tri_dir=1
+mig 1029 s25d
+mig 1029 y7 tri_dir=1
+mig 1030 s25d
+mig 1030 y7 tri_dir=1
+mig 1031 s25d
+mig 1031 y7 tri_dir=1
+mig 1032 s25d
+mig 1032 y7 tri_dir=1
+mig 1033 s25d
+mig 1033 y7 tri_dir=1
+mig 1034 s25d
+mig 1034 y7 tri_dir=1
+mig 1035 s25d
+mig 1035 y7 tri_dir=1
+mig 1036 s25d
+mig 1036 y7 tri_dir=1
+mig 1037 s25d
+mig 1037 y7 tri_dir=1
+mig 1038 s25d
+mig 1038 y7 tri_dir=1
+mig 1039 s25d
+mig 1039 y7 tri_dir=1
+mig 1040 s25d
+mig 1040 y7 tri_dir=1
+mig 1041 s25d
+mig 1041 y7 tri_dir=1
+mig 1042 s25d
+mig 1042 y7 tri_dir=1
