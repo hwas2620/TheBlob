@@ -1,0 +1,2 @@
+/home/user/TheBlob/specs/plasmodium-core/research/round7/S25-site/scripts/meas9.py:375: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  rho = float(spearmanr(dO[fin], tO[fin])[0]) if fin.sum() > 5 else float('nan')

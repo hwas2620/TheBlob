@@ -1,0 +1,6 @@
+slimeall 1311 y16 scl_tgs2=5 scl_tgrad=1.6 scl_tgfrac=0.7 gm_every=5
+slimeall 1312 y16 scl_tgs2=5 scl_tgrad=1.6 scl_tgfrac=0.7 gm_every=5
+slimeall 1313 y16 scl_tgs2=5 scl_tgrad=1.6 scl_tgfrac=0.7 gm_every=5
+slimeall 1314 y16 scl_tgs2=5 scl_tgrad=1.6 scl_tgfrac=0.7 gm_every=5
+slimeall 1315 y16 scl_tgs2=5 scl_tgrad=1.6 scl_tgfrac=0.7 gm_every=5
+slimeall 1316 y16 scl_tgs2=5 scl_tgrad=1.6 scl_tgfrac=0.7 gm_every=5
